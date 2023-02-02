@@ -3,7 +3,7 @@ import { FaQuestionCircle } from "react-icons/fa";
 export default function Login() {
     return (
         <div className='w-full h-screen font-poppins flex justify-center items-center  '>
-            <div className='w-2/3 lg:w-2/3 h-[400px] -mt-20 flex flex-col bg-slate-100 border border-slate-300 shadow-xl'>
+            <div className='w-2/3 lg:w-2/3 h-[400px] -mt-20 flex flex-col bg-blue-100 border border-slate-300 shadow-xl'>
                 <div className='h-1/5 text-4xl text-center mt-5 font-medium  text-slate-600'>
                     <h1>ASC Online Exam System</h1>
 
@@ -75,7 +75,7 @@ export default function Login() {
                             <button
                                 type="Login"
                                 className="group relative flex w-full justify-center border border-transparent
-                 bg-slate-600 py-2 px-4 text-sm font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                 bg-blue-100 py-2 px-4 text-sm font-medium text-slate-600 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                             >
                                 Login as Faculty
                             </button>
