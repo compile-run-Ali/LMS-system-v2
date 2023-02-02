@@ -1,6 +1,6 @@
 
 import BaseLayout from '@/components/BaseLayout/BaseLayout'
-import Login from '@/components/Login/Login'
+import Register from '@/components/Register/Register'
 import { Poppins } from '@next/font/google'
 
 const poppins = Poppins({
@@ -11,7 +11,7 @@ const poppins = Poppins({
 
 export default function Home() {
   return (
-    <BaseLayout title={"Login"}>
+    <BaseLayout title={"Register"}>
       <style jsx global>
         {`
           :root {
@@ -19,7 +19,7 @@ export default function Home() {
           }
         `}
       </style>
-      <Login/>
+      <Register/>
     </BaseLayout>
        
   )
