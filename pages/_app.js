@@ -1,3 +1,4 @@
+import { SidebarProvider } from '@/context/SidebarContext/GlobalProvider'
 import '@/styles/globals.css'
 import { Poppins } from '@next/font/google'
 
@@ -9,7 +10,7 @@ const poppins = Poppins({
 
 export default function App({ Component, pageProps }) {
   return (
-    <>
+    <SidebarProvider>
       <style jsx global>
         {`
           :root {
@@ -18,6 +19,6 @@ export default function App({ Component, pageProps }) {
         `}
       </style>
       <Component {...pageProps} />
-    </>
+    </SidebarProvider>
   )
 }
