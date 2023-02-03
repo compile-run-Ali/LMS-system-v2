@@ -1,21 +1,7 @@
 import React from 'react'
-/*
- This example requires some changes to your config:
- 
- ```
- // tailwind.config.js
- module.exports = {
-   // ...
-   plugins: [
-     // ...
-     require('@tailwindcss/forms'),
-   ],
- }
- ```
-*/
+
 export default function Register() {
   return (
-
     <div className="w-full h-screen flex justify-center items-center">
       <div className="w-3/4 h-5/6 flex">
         <div className='w-1/2 font-poppins'>
@@ -26,21 +12,10 @@ export default function Register() {
                   <label htmlFor='PA number' className='text-gray-700 font-medium text-sm'>
                     PA Number
                   </label>
-                  <input type="text" className="form-control
-              
-              block
-              w-full
-              px-3
-              py-1.5
-              text-sm
-              font-normal
-              text-gray-700
-              bg-white bg-clip-padding
-              border border-solid border-gray-300
-              rounded
-              transition
-              ease-in-out
-              m-0
+                  <input type="text" className="form-control block
+                  w-full px-3 py-1.5 text-sm font-normal text-gray-700
+                bg-white bg-clip-padding border border-solid border-gray-300
+                  rounded transition ease-in-out m-0
               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id='PA number'
                     aria-describedby="emailHelp123" />
                 </div>
@@ -203,7 +178,6 @@ export default function Register() {
           text-xs
           uppercase
           rounded
-          shadow-md
           hover:bg-blue-500 hover:shadow-lg
           focus:bg-blue-500 focus:shadow-lg focus:outline-none focus:ring-0
           active:bg-blue-500 active:shadow-lg
