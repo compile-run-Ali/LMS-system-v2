@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FaQuestionCircle } from "react-icons/fa";
 
 export default function Login() {
@@ -66,9 +67,11 @@ export default function Login() {
                         </div>
 
                         <div className="my-3 cursor-pointer">
-                            <a className="hover:text-blue-500 text-slate-700">
+                            <Link href={"/register"}>
+                            <span  className="hover:text-blue-500 text-slate-700">
                                 Register as Student
-                            </a>
+                            </span>
+                            </Link>
                         </div>
 
                         <div className='mt-5'>
