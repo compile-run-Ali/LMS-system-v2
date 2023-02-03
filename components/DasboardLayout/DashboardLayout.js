@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import Sidebar from '../Sidebar/Sidebar'
 import Styles from './DashboardLayout.module.css'
 import Topbar from '../Topbar/Topbar'
@@ -11,8 +11,6 @@ export default function DashboardLayout({ children }) {
     const toggleSidebar = () => {
         setShowSidebar(prev => !prev)
     }
-
-
 
     return (
         <div className="w-full">
@@ -31,7 +29,7 @@ export default function DashboardLayout({ children }) {
 
             <div className={`w-full md:w-[calc(100%-270px)] md:ml-[270px] ease-in-out duration-300 ${showSidebar ? ' translate-x-0' : '-translate-x-[100px]'}`}>
                 
-                
+                <Topbar />
                 {children}
             </div>
 
