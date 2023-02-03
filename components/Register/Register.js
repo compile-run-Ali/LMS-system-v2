@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from "next/link";
 /*
  This example requires some changes to your config:
  
@@ -13,6 +14,7 @@ import React from 'react'
  }
  ```
 */
+
 export default function Register() {
   return (
 
@@ -215,11 +217,13 @@ export default function Register() {
           duration-150
           ease-in-out">Sign up</button>
           <div className='mt-4 text-left'>
-          < span > Already registered? <a href='http://localhost:3000' className='text-blue-900 hover:text-blue-700 font-medium'>Login here</a>
-          </span>
-            </div>
-            </form>
+          <span> Already registered? </span>  
+          <Link href={"/"} ><span className='text-blue-900 hover:text-blue-700 font-medium'> Login here </span> 
+          </Link>
           </div>
+
+            </form>
+        </div>
         </div>
 
         <div className=" font-poppins w-1/2 h-full rounded-tr-lg rounded-br-lg shadow-lg bg-blue-900">
