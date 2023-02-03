@@ -1,0 +1,18 @@
+.topBar{
+    position: fixed;
+    top: 0;
+    z-index: 80;
+}
+
+.sideBar{
+    position: fixed;
+    top: 0px;
+    z-index: 50;
+    min-height: 100%;
+}
+
+@media screen and (max-width:760px) {
+    .topBar{
+        position: sticky;
+    }
+}
