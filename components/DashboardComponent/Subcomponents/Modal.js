@@ -48,20 +48,20 @@ export default function Modal({ open, setOpen }) {
                                             </Dialog.Title>
                                             <form>
                                                 <div className="mt-4">
-                                                    <button>
+                                                    <button type='button'>
                                                         <input type={"radio"} value="I.E" onChange={(e) => handleInput(e)} checked={examType === "I.E"} name="paperType" className='mr-2' />
                                                         I.E Exam
                                                     </button>
                                                 </div>
                                                 <div className="mt-2">
-                                                    <button>
+                                                    <button type='button'>
                                                         <input type={"radio"} value="SO" onChange={(e) => handleInput(e)} name='paperType' className='mr-2' />
                                                         Subjective/Objective Exam
                                                     </button>
                                                 </div>
 
                                                 <div className="mt-2">
-                                                    <button>
+                                                    <button type='button'>
                                                         <input type={"radio"} onChange={(e) => handleInput(e)} value="O" name='paperType' className='mr-2' />
                                                         Objective Exam
                                                     </button>

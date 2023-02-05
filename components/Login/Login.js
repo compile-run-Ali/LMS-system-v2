@@ -1,21 +1,26 @@
+import Image from "next/image";
 import Link from "next/link";
 import { FaQuestionCircle } from "react-icons/fa";
 
 export default function Login() {
     return (
-        <div className='w-full h-screen font-poppins flex justify-center items-center  '>
-            <div className='w-2/3 lg:w-2/3 h-[400px] -mt-20 flex flex-col bg-blue-100 border border-slate-300 shadow-xl'>
-                <div className='h-1/5 text-4xl text-center mt-5 font-medium  text-slate-600'>
+        <div className='w-full h-screen font-poppins flex flex-col justify-center items-center  '>
+
+            <div className='w-2/3 lg:w-2/3 h-[90%] flex flex-col bg-blue-900 border border-slate-300 shadow-xl'>
+                <div className='flex justify-center'>
+                    <Image src="/logo.png" width={300} height={300} alt="logo" />
+                </div>
+                <div className='h-1/5 text-4xl text-center mt-2 font-medium  text-white'>
                     <h1>ASC Online Exam System</h1>
 
                     <h2 className="mt-1 text-2xl">Student Portal</h2>
 
                 </div>
-                <div className='w-full h-4/5 mt-2 pt-8  border-t border-slate-300 relative z-10 flex justify-between items-end pb-10 pr-40 bg-white '>
+                <div className='w-full h-4/5 mt-2 pt-5  border-t border-slate-300 relative z-10 flex justify-between items-end pb-20 pr-40 bg-white '>
                     <div className='w-[40%]  ml-14' >
                         <form>
                             <div>
-                                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="username" className="block text-sm font-medium text-blue-900">
                                     Username
                                 </label>
                                 <input
@@ -29,7 +34,7 @@ export default function Login() {
                                 />
                             </div>
                             <div className='mt-5'>
-                                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor="password" className="block text-sm font-medium text-blue-900">
                                     Password
                                 </label>
                                 <input
@@ -46,7 +51,7 @@ export default function Login() {
                                 <button
                                     type="button"
                                     className="group relative flex w-full justify-center border border-transparent
-                 bg-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                 bg-blue-900 py-2 px-4 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                     Login
                                 </button>
                             </div>
@@ -68,9 +73,9 @@ export default function Login() {
 
                         <div className="my-3 cursor-pointer">
                             <Link href={"/register"}>
-                            <span  className="hover:text-blue-500 text-slate-700">
-                                Register as Student
-                            </span>
+                                <span className="hover:text-blue-500 text-slate-700">
+                                    Register as Student
+                                </span>
                             </Link>
                         </div>
 
@@ -78,7 +83,7 @@ export default function Login() {
                             <button
                                 type="Login"
                                 className="group relative flex w-full justify-center border border-transparent
-                 bg-blue-100 py-2 px-4 text-sm font-medium text-slate-00 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                 bg-blue-900 py-2 px-4 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                             >
                                 Login as Faculty
                             </button>
