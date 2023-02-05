@@ -28,7 +28,7 @@ export default function DashboardLayout({ children }) {
             </div>
 
             <div className={`w-full md:w-[calc(100%-270px)] md:ml-[270px] ease-in-out duration-300 ${showSidebar ? ' translate-x-0' : '-translate-x-[100px]'}`}>
-                
+         
                 <Topbar />
                 {children}
             </div>
