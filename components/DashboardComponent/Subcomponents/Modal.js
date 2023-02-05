@@ -1,11 +1,24 @@
 import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { IoIosPaper } from "react-icons/io";
+import { useRouter } from 'next/router';
 
 export default function Modal({ open, setOpen }) {
     const [examType, setExamType] = useState("I.E")
-
+    const router = useRouter()
     const cancelButtonRef = useRef(null)
+
+    const handleNext = () => {
+        if (examType === "I.E") {
+            // Redirect to create exam page for IE
+        } else if (examType === "SO")  {
+            // Redirect to create exam page for subjective/objective
+        } else {
+            // Redirect to create exam page for objective
+            router.push('/faculty/create_exam/objective')
+        }
+    }
+
     const handleInput = (e) => {
         setExamType(e.target.value)
     }
@@ -74,7 +87,7 @@ export default function Modal({ open, setOpen }) {
                                     <button
                                         type="button"
                                         className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-900 px-5 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-800  sm:ml-3 sm:w-auto sm:text-sm"
-                                        onClick={() => setOpen(false)}
+                                        onClick={handleNext}
                                     >
                                         Next
                                     </button>
