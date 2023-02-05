@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {MdDelete, MdEdit}  from "react-icons/md"
 
 const MCQTable = () => {
   const [mcqs, setMCQs] = useState([
@@ -6,6 +7,7 @@ const MCQTable = () => {
       question: "What is the capital of France?",
       options: ["Paris", "London", "Berlin"],
       correctOption: "Paris",
+      marks: 1,
     },
   ]);
 
@@ -13,6 +15,7 @@ const MCQTable = () => {
     question: "",
     options: [],
     correctOption: "",
+    marks:1,
   });
 
   const [editing, setEditing] = useState(false);
@@ -32,6 +35,10 @@ const MCQTable = () => {
     setCurrentMCQ({ ...currentMCQ, correctOption: e.target.value });
   };
 
+  const handleMarksChange = (e) => {
+    setCurrentMCQ({...currentMCQ, marks: e.target.value});
+  }
+
   const handleOptionAddition = () => {
     setCurrentMCQ({ ...currentMCQ, options: [...currentMCQ.options, ""] });
   };
@@ -42,6 +49,7 @@ const MCQTable = () => {
       question: "",
       options: [],
       correctOption: "",
+      marks: 1,
     });
   };
 
@@ -58,6 +66,7 @@ const MCQTable = () => {
       question: "",
       options: [],
       correctOption: "",
+      marks:1,
     });
     setEditing(false);
   };
@@ -74,9 +83,11 @@ const MCQTable = () => {
       <table className="w-full mt-6 text-left table-collapse">
         <thead>
           <tr>
+          <th className="px-4 py-2">SR#</th>
             <th className="px-4 py-2">Question</th>
             <th className="px-4 py-2">Options</th>
             <th className="px-4 py-2">Correct Option</th>
+             <th className="px-4 py-2">Marks</th>
             <th className="px-4 py-2"></th>
             <th className="px-4 py-2"></th>
           </tr>
@@ -84,23 +95,26 @@ const MCQTable = () => {
         <tbody>
           {mcqs.map((mcq, index) => (
             <tr key={index} className="border-t">
+              <td className="px-4 py-2">{index+1}</td>
               <td className="px-4 py-2">{mcq.question}</td>
               <td className="px-4 py-2">{mcq.options.join(", ")}</td>
               <td className="px-4 py-2">{mcq.correctOption}</td>
+              <td className="px-4 py-2">{mcq.marks}</td>
               <td className="px-4 py-2">
                 <button
                   onClick={handleEditMCQ(index)}
-                  className="bg-blue-900 text-white p-2 rounded hover:bg-blue-800"
+                  className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white"
                 >
-                  Edit
+                  <MdEdit />
                 </button>
               </td>
               <td className="px-4 py-2">
                 <button
                   onClick={handleDeleteMCQ(index)}
-                  className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
+                  className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
                 >
-                  Delete
+                  <MdDelete />
+                  
                 </button>
               </td>
             </tr>
@@ -161,6 +175,15 @@ const MCQTable = () => {
                 <option key={index} value={option}>{option}</option>
               ))}
             </select>
+          </div>
+          <div className="mb-4">
+            <label className="block font-bold mb-2">Marks</label>
+            <input
+              type="number"
+              value={currentMCQ.marks}
+              onChange={handleMarksChange}
+              className="bg-gray-200 p-2 rounded w-full"
+            />
           </div>
           {editing ? (
             <button
