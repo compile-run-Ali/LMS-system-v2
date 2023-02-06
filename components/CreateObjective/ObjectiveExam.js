@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import {MdDelete, MdEdit}  from "react-icons/md"
+import { MdDelete, MdEdit } from "react-icons/md"
+import Input from "../Common/Form/Input";
 
 const MCQTable = () => {
   const [mcqs, setMCQs] = useState([
@@ -15,7 +16,7 @@ const MCQTable = () => {
     question: "",
     options: [],
     correctOption: "",
-    marks:1,
+    marks: 1,
   });
 
   const [editing, setEditing] = useState(false);
@@ -36,7 +37,7 @@ const MCQTable = () => {
   };
 
   const handleMarksChange = (e) => {
-    setCurrentMCQ({...currentMCQ, marks: e.target.value});
+    setCurrentMCQ({ ...currentMCQ, marks: e.target.value });
   }
 
   const handleOptionAddition = () => {
@@ -51,6 +52,7 @@ const MCQTable = () => {
       correctOption: "",
       marks: 1,
     });
+    setAdding(false);
   };
 
   const handleEditMCQ = (index) => () => {
@@ -66,7 +68,7 @@ const MCQTable = () => {
       question: "",
       options: [],
       correctOption: "",
-      marks:1,
+      marks: 1,
     });
     setEditing(false);
   };
@@ -78,16 +80,16 @@ const MCQTable = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-6">
+    <div className="flex font-poppins flex-col items-center p-6">
       <h1 className="text-2xl font-bold">MCQ Table</h1>
       <table className="w-full mt-6 text-left table-collapse">
         <thead>
           <tr>
-          <th className="px-4 py-2">SR#</th>
+            <th className="px-4 py-2">SR#</th>
             <th className="px-4 py-2">Question</th>
             <th className="px-4 py-2">Options</th>
             <th className="px-4 py-2">Correct Option</th>
-             <th className="px-4 py-2">Marks</th>
+            <th className="px-4 py-2">Marks</th>
             <th className="px-4 py-2"></th>
             <th className="px-4 py-2"></th>
           </tr>
@@ -95,7 +97,7 @@ const MCQTable = () => {
         <tbody>
           {mcqs.map((mcq, index) => (
             <tr key={index} className="border-t">
-              <td className="px-4 py-2">{index+1}</td>
+              <td className="px-4 py-2">{index + 1}</td>
               <td className="px-4 py-2">{mcq.question}</td>
               <td className="px-4 py-2">{mcq.options.join(", ")}</td>
               <td className="px-4 py-2">{mcq.correctOption}</td>
@@ -114,7 +116,7 @@ const MCQTable = () => {
                   className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
                 >
                   <MdDelete />
-                  
+
                 </button>
               </td>
             </tr>
@@ -124,7 +126,7 @@ const MCQTable = () => {
       <div className="w-full flex justify-center mt-10">
         <button
           onClick={() => setAdding(true)}
-          className="bg-blue-900 text-white py-2 px-4 rounded hover:bg-blue-800"
+          className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
         >
           Add MCQ
         </button>
@@ -136,59 +138,50 @@ const MCQTable = () => {
 
           </h2>
           <div className="mb-4">
-            <label className="block font-bold mb-2">Question</label>
-            <input
-              type="text"
-              value={currentMCQ.question}
-              onChange={handleQuestionChange}
-              className="bg-gray-200 p-2 rounded w-full"
-            />
+            <Input text={"Question"} required value={currentMCQ.question} onChange={handleQuestionChange} />
           </div>
-          <div className="mb-4">
-            <label className="block font-bold mb-2">Options</label>
-            {currentMCQ.options.map((option, index) => (
-              <div key={index} className="mb-2">
-                <input
-                  type="text"
-                  value={option}
-                  onChange={handleOptionChange(index)}
-                  className="bg-gray-200 p-2 rounded w-full"
-                />
-              </div>
-            ))}
+          <div className="">
+            <label className="block mb-2">Options</label>
+            <div className="grid grid-cols-3 w-full gap-x-5">
+              {currentMCQ.options.map((option, index) => (
+                <div key={index} className="mb-2 ">
+                  <input
+                    type="text"
+                    value={option}
+                    onChange={handleOptionChange(index)}
+                    className="bg-white border border-primary-black border-opacity-[0.15] p-2 rounded-lg w-full"
+                  />
+                </div>
+              ))}
+            </div>
             <button
               onClick={handleOptionAddition}
-              className="bg-green-500 text-white p-2 rounded hover:bg-green-700"
+              className="bg-[#FEC703] text-white p-2 rounded hover:bg-[#edbd12]"
             >
               Add Option
             </button>
           </div>
-          <div className="mb-4">
-            <label className="block font-bold mb-2">Correct Option</label>
-            <select
-              type="text"
-              value={currentMCQ.correctOption}
-              onChange={handleCorrectOptionChange}
-              className="bg-gray-200 p-2 rounded w-full">
-              <option value="" disabled>Select Correct Option</option>
-              {currentMCQ.options.map((option, index) => (
-                <option key={index} value={option}>{option}</option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-4">
-            <label className="block font-bold mb-2">Marks</label>
-            <input
-              type="number"
-              value={currentMCQ.marks}
-              onChange={handleMarksChange}
-              className="bg-gray-200 p-2 rounded w-full"
-            />
+          <div className="flex w-full gap-x-5">
+            <div className="mb-4 w-1/2 mt-6">
+              <label className="block mb-2">Correct Option</label>
+              <select
+                type="text"
+                value={currentMCQ.correctOption}
+                onChange={handleCorrectOptionChange}
+                className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]">
+                <option value="" disabled>Select Correct Option</option>
+                {currentMCQ.options.map((option, index) => (
+                  <option key={index} value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+
+            <Input text={"Marks"} type={"number"} required value={currentMCQ.marks} onChange={handleMarksChange} />
           </div>
           {editing ? (
             <button
               onClick={handleUpdateMCQ(mcqs.indexOf(currentMCQ))}
-              className="bg-blue-900 text-white p-2 rounded hover:bg-blue-800"
+              className="bg-blue-800 text-white p-2 rounded hover:bg-blue-700"
             >
               Update
             </button>
@@ -196,7 +189,7 @@ const MCQTable = () => {
 
             <button
               onClick={handleAddMCQ}
-              className="bg-blue-900 text-white p-2 rounded hover:bg-blue-800"
+              className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
             >
               Add
             </button>

@@ -12,7 +12,6 @@ export default function Login() {
                 </div>
                 <div className='h-1/5 text-4xl text-center mt-2 font-medium  text-white'>
                     <h1>ASC Online Exam System</h1>
-
                     <h2 className="mt-1 text-2xl">Student Portal</h2>
 
                 </div>

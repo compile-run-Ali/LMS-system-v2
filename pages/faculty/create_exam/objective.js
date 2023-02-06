@@ -8,9 +8,11 @@ export default function objective() {
   return (
     <BaseLayout title={"Create Objective Exam"}>
       <DashboardLayout>
-        <Wizard active={"Exam Questions"} />
-        <div className='mt-16'>
-          <MCQTable />
+        <div className='pl-10 mt-5'>
+          <Wizard active={"Exam Questions"} />
+          <div className='mt-16'>
+            <MCQTable />
+          </div>
         </div>
       </DashboardLayout>
     </BaseLayout>
