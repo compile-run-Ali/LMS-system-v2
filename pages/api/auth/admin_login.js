@@ -1,0 +1,42 @@
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt"
+
+const confirmPasswordHash = (plainPassword, hashedPassword) => {
+  return new Promise(resolve => {
+      bcrypt.compare(plainPassword, hashedPassword, function(err, res) {
+          resolve(res);
+      });
+  })
+}
+
+export default handler = async (req, res) => {
+  const prisma = new PrismaClient();
+
+  try {
+    const admin = await prisma.faculty.findFirst({
+      where: {
+        email: req.email,
+        level: 6
+      }
+    });
+
+  if (faculty !== null)
+    {
+        //Compare the hash
+        const matched = await confirmPasswordHash(req.password, admin.password);
+        if (matched)
+        {
+          res.status(200).json(admin)   
+        }
+        else
+        {
+            throw new Error("Invalid Password")
+        }
+    }
+    else {
+        throw new Error("Admin not found")
+    }
+  } catch (err) {
+    throw new Error(err.message)
+  }
+}
