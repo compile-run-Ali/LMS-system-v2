@@ -20,7 +20,7 @@ const configuration = {
             async authorize(credentials, req) {
                 try
                 {
-                  if (credentials.role === "student") {
+                  if (req.role === "student") {
                     const studentData = await axios.post("http://localhost:3000/api/auth/student_login", {
                       P_number: credentials.username,
                       password: credentials.password
@@ -34,7 +34,7 @@ const configuration = {
                     } else {
                       throw new Error("An Error has occured")
                     }
-                  } else if (credentials.role === "admin") {
+                  } else if (req.role === "admin") {
                     const adminData = await axios.post("http://localhost:3000/api/auth/admin_login", {
                       email: credentials.username,
                       password: credentials.password

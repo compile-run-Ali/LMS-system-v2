@@ -8,18 +8,18 @@ export default handler = async (req, res) => {
     if (req.method === "POST")
     {
       
-        const {P_number, name, phone_number, email, CGPA, password, DOB } = req.body;
+        const {p_number, name, phone_number, email, cgpa, password, DOB } = req.body;
 
         try
         {
             const hash = await bcrypt.hash(password, 0);
             const newStudent = await prisma.student.create({
                 data: {
-                  P_number,
+                  p_number,
                   name,
                   phone_number,
                   email,
-                  CGPA,
+                  cgpa,
                   DOB,
                   password: hash
                 }

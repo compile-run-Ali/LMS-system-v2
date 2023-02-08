@@ -11,51 +11,53 @@ datasource db {
 }
 
 model Student {
-  P_number           Int      @id
+  p_number           Int      @id
 
   name               String
+  password           String
   phone_number       BigInt
-  CGPA               Float     
+  cgpa               Float     
   email              String
   DOB                DateTime
   profile_picture    String?
 
   courses            SRC[]
   subjective_answers SSA[]
-  Objective_answers  SOA[]
+  objective_answers  SOA[]
 }
 
 model SRC {
-  SRC_ID    Int      @id
+  src_id       String   @id @default(uuid())
 
-  Student   Student  @relation(fields: [P_number], references: [P_number])
-  P_number  Int
+  student      Student  @relation(fields: [p_number], references: [p_number])
+  p_number     Int
 
-  Course    Course   @relation(fields: [CourseId], references: [Course_Code])
-  CourseId  Int  
+  course       Course   @relation(fields: [course_code], references: [course_code])
+  course_code  Int  
 }
 
 model Course {
-  Course_Code  Int      @id
+  course_code  Int      @id @unique
 
-  Course_name  String
-  Credit_hours Int
-  Department   String  
+  course_name  String
+  credit_hours Int
+  department   String  
 
   students     SRC[]
   faculty      FTC[]
 
-  paper        Paper?
+  paper        Paper[]
 }
 
 model Faculty {
-  Faculty_ID      Int               @id
+  faculty_id      String          @id @default(uuid())
 
   name            String
+  password        String
   level           Int
   email           String
   department      String
-  Phone_number    Int
+  phone_number    Int
   profile_picture String?
 
   courses         FTC[]
@@ -63,98 +65,101 @@ model Faculty {
 } 
 
 model FTC {
-  FTC_ID      Int     @id
+  ftc_id      String  @id @default(uuid())
 
-  Faculty     Faculty @relation(fields: [Faculty_ID], references: [Faculty_ID])
-  Faculty_ID  Int
+  faculty     Faculty @relation(fields: [faculty_id], references: [faculty_id])
+  faculty_id  String
 
-  Course      Course  @relation(fields: [Course_Code], references: [Course_Code])
-  Course_Code Int
+  course      Course  @relation(fields: [course_code], references: [course_code])
+  course_code Int
 }
 
 model PaperApproval {
-  PaperApprovalId Int       @id
+  paperapproval_id String    @id @default(uuid())
 
-  level           Int
-  approved        Boolean
+  level            Int
+  approved         Boolean
 
-  Paper_ID        Int       @unique
-  paper           Paper     @relation(fields: [Paper_ID], references: [PaperID])
+  paper_id         String    @unique
+  paper            Paper     @relation(fields: [paper_id], references: [paper_id])
 
 
-  Faculty_ID      Int       @unique
-  faculty         Faculty   @relation(fields: [Faculty_ID], references: [Faculty_ID])
+  faculty_id       String    @unique
+  faculty          Faculty   @relation(fields: [faculty_id], references: [faculty_id])
 }
 
 model Paper {
-  PaperID     Int               @id
+  paper_id                 String            @id @default(uuid())
 
-  Course      Course            @relation(fields: [Course_Code], references: [Course_Code])
-  Course_Code Int               @unique
+  course                   Course            @relation(fields: [course_code], references: [course_code])
+  course_code              Int               
   
-  ExamOfficer PaperApproval?
+  examofficer              PaperApproval?
 
-  Time        DateTime          @db.Time()
-  Date        DateTime          @db.Date()
+  time                     String          
+  date                     DateTime          @db.Date()
+  duration                 Int
+  weightage                Int
 
-  SQs         SubjectiveQuestion[]
-  OQs         ObjectiveQuestion[]
+  subjective_questions     SubjectiveQuestion[]
+  objective_questions      ObjectiveQuestion[]
 }
 
 model SubjectiveQuestion {
-  SQ_ID            Int                  @id
-  
-  Question         String
-  Long_Question    Boolean
-  Marks            Int
+  sq_id            String               @id @default(uuid())
 
-  paper            Paper                @relation(fields: [PaperID], references: [PaperID])
-  PaperID          Int
+  question         String
+  long_question    Boolean
+  marks            Int
+
+  paper            Paper                @relation(fields: [paper_id], references: [paper_id])
+  paper_id         String
 
   
-  Child_Quetion    SubjectiveQuestion[] @relation("QuestionByParts")
+  child_quetion    SubjectiveQuestion[] @relation("QuestionByParts")
   
-  Parent_SQ_ID     Int?
-  Parent_Question  SubjectiveQuestion?  @relation("QuestionByParts", fields: [Parent_SQ_ID], references: [SQ_ID])
+  parent_sq_id     String?
+  parent_question  SubjectiveQuestion?  @relation("QuestionByParts", fields: [parent_sq_id], references: [sq_id])
 
   student_attempts SSA[] 
 }
 
 //Student Subjective Question Attempt
 model SSA {
-  SOA_ID    Int                @id
+  soa_id                 String             @id @default(uuid())
 
-  SQ_ID     Int
-  SQ        SubjectiveQuestion @relation(fields: [SQ_ID], references: [SQ_ID])
+  sq_id                  String
+  subjective_question    SubjectiveQuestion @relation(fields: [sq_id], references: [sq_id])
 
-  P_Number  Int
-  student   Student            @relation(fields: [P_Number], references: [P_number])
+  p_number               Int
+  student                Student            @relation(fields: [p_number], references: [p_number])
 
-  answer    String
+  answer                 String
 }
 
 model ObjectiveQuestion {
-  OQ_ID            Int     @id
+  oq_id            String  @id @default(uuid())
   
-  Question         String
-  Answers          String
-  Marks            Int
+  question         String
+  answers          String
+  correct_answer   String
+  marks            Int
 
-  paper            Paper   @relation(fields: [PaperID], references: [PaperID])
-  PaperID          Int
+  paper            Paper   @relation(fields: [paper_id], references: [paper_id])
+  paper_id         String
 
   student_attempst SOA[]
 }
 
 //Student Objective Question Attempt
 model SOA {
-  SOA_ID    Int                @id
+  soa_id               String             @id @default(uuid())
 
-  OQ_ID     Int
-  OQ        ObjectiveQuestion  @relation(fields: [OQ_ID], references: [OQ_ID])
+  oq_id                String
+  objective_question   ObjectiveQuestion  @relation(fields: [oq_id], references: [oq_id])
 
-  P_Number  Int
-  student   Student            @relation(fields: [P_Number], references: [P_number])
+  p_number             Int
+  student              Student            @relation(fields: [p_number], references: [p_number])
 
-  answer    String
+  answer               String
 }
