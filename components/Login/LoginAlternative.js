@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import Styles from './Login.module.css'
-export default function LoginAlternative() {
+export default function LoginAlternative({ facultyLogin }) {
     return (
         <div className={`w-full flex h-screen font-poppins ${Styles.main} pt-10`}>
             <div className='w-1/2 flex h-full justify-center items-center'>
@@ -13,7 +13,9 @@ export default function LoginAlternative() {
             <div className='w-1/2 h-full flex items-center justify-center'>
                 <div className={`w-[55%] h-[75%] rounded-[40px] bg-white bg-opacity-20 px-16 flex flex-col justify-center`}>
                     <span className='text-white font-semibold text-4xl'>
-                        Student Login
+                        {
+                            facultyLogin ? 'Faculty Login' : 'Student Login'
+                        }
                     </span>
 
                     <div className='w-full flex flex-col mt-10'>
