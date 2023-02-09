@@ -1,14 +1,14 @@
-
 import BaseLayout from '@/components/BaseLayout/BaseLayout'
-import Login from '@/components/Login/Login'
-import LoginAlternative from '@/components/Login/LoginAlternative'
-import LoginTopbar from '@/components/Login/LoginTopbar'
+import DashboardLayout from '@/components/DasboardLayout/DashboardLayout'
+import DashboardComponent from '@/components/DashboardComponent/DashboardComponent'
+import React from 'react'
 
-export default function Home() {
+export default function dashboard() {
   return (
-    <BaseLayout title={"Login"}>
-      <LoginTopbar facultyLogin />
-      <LoginAlternative facultyLogin />
+    <BaseLayout title={"Dashboard"}>
+        <DashboardLayout>
+        <DashboardComponent/>
+        </DashboardLayout>
     </BaseLayout>
   )
 }

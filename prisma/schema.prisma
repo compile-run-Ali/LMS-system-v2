@@ -15,7 +15,7 @@ model Student {
 
   name               String
   password           String
-  phone_number       BigInt
+  phone_number       String
   cgpa               Float     
   email              String
   DOB                DateTime
@@ -57,7 +57,7 @@ model Faculty {
   level           Int
   email           String
   department      String
-  phone_number    Int
+  phone_number    String
   profile_picture String?
 
   courses         FTC[]

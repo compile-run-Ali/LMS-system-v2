@@ -4,7 +4,7 @@ import bcrypt from "bcrypt"
 const prisma = new PrismaClient();
 
 
-export default handler = async (req, res) => {
+const handler = async (req, res) => {
     if (req.method === "POST")
     {
       
@@ -37,3 +37,5 @@ export default handler = async (req, res) => {
         return res.status(405).json({error: "This request only supports POST requests"})
     }
 }
+
+export default handler;

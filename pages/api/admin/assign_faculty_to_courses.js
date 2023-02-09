@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 
-export default handler = async (req, res) => {
+const handler = async (req, res) => {
   const prisma = new PrismaClient()
   try {
     //Create FTC and connect with course code and faculty Id
@@ -23,3 +23,5 @@ export default handler = async (req, res) => {
     throw new Error(err.message)
   }
 }
+
+export default handler;
