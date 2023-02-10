@@ -100,6 +100,22 @@ a {
   text-decoration: none;
 }
 
+input::file-selector-button {
+  background-color:#1e3c72;
+  height: 100%;
+  color: white;
+  border: none;
+}
+
+
+.blue-div{
+  background-image: url('/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

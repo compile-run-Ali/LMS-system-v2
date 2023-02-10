@@ -4,7 +4,7 @@ import Form from '../Common/Form/Form'
 
 export default function CreateExam() {
   return (
-    <div className='w-full pl-10 mt-5'>
+    <div className='w-full pl-6 mt-2'>
         <Wizard active={"Exam Settings"} />
         <Form />
     </div>
