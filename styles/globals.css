@@ -100,14 +100,20 @@ a {
   text-decoration: none;
 }
 
-
 input::file-selector-button {
-  background-color: rgb(30 58 138);
+  background-color:#1e3c72;
   height: 100%;
+  color: white;
+  border: none;
 }
 
-.custom-file-input::before {
-  padding-left: 20px;
+
+.blue-div{
+  background-image: url('/logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
 }
 
 @media (prefers-color-scheme: dark) {

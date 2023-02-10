@@ -149,7 +149,7 @@ const MCQTable = () => {
                     type="text"
                     value={option}
                     onChange={handleOptionChange(index)}
-                    className="bg-white border border-primary-black border-opacity-[0.15] p-2 rounded-lg w-full"
+                    className="bg-white border border-primary-black focus:outline-none border-opacity-[0.15] p-2 rounded-lg w-full"
                   />
                 </div>
               ))}
@@ -201,4 +201,3 @@ const MCQTable = () => {
 };
 
 export default MCQTable;
-

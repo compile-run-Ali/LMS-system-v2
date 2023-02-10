@@ -1,9 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Link from "next/link";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 
 
 export default function Register() {
+  const [inputs, setInputs] = useState(['']);
+
+  const addInput = () => {
+    if (inputs.length<9)
+    setInputs([...inputs, '']);
+  };
+
+  const handleChange = (index, event) => {
+    const newInputs = [...inputs];
+    newInputs[index] = event.target.value;
+    setInputs(newInputs);
+  };
   return (
+
     <div className="w-full h-screen flex justify-center items-center">
       <div className="w-3/4 h-[90%] flex">
         <div className='w-1/2 font-poppins'>
@@ -67,10 +81,6 @@ export default function Register() {
             focus:text-blue-900 focus:bg-white focus:border-blue-600 focus:outline-none" id="Email"
                 />
               </div>
-              <div className='mb-5'>
-                <label className="block mb-2 text-sm font-medium text-blue-900" for="file_input">Profile Picture</label>
-                <input className="block w-full text-sm text-gray-900 border border-gray-300 rounded-md h-9 cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none  custom-file-input " id="file_input" type="file" />
-              </div>
               <div className='grid grid-cols-2 gap-5'>
                 <div className="form-group mb-5">
                   <label htmlFor='Password' className='text-blue-900 font-medium text-sm'>
@@ -88,7 +98,7 @@ export default function Register() {
             rounded
             transition
             ease-in-out
-            m-0
+            m-0 
             focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="Password"
                   />
                 </div>
@@ -118,7 +128,7 @@ export default function Register() {
                 <label htmlFor='Courses' className='text-blue-900 font-medium text-sm'>
                   Courses
                 </label>
-                <input type="email" className="form-control block
+                <select className="form-control block
             w-full
             px-3
             py-1.5
@@ -132,7 +142,11 @@ export default function Register() {
             ease-in-out
             m-0
             focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="Courses"
-                />
+                >
+                  <option>
+Data
+                  </option>
+                </select>
               </div>
 
               <div className='grid grid-cols-2 gap-5'>
@@ -153,7 +167,7 @@ export default function Register() {
             transition
             ease-in-out
             m-0
-            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="Password"
+            focus:text-gray-700  focus:bg-white focus:border-blue-600 focus:outline-none" id="Password"
                   />
                 </div>
                 <div className="form-group mb-6">
@@ -200,15 +214,42 @@ export default function Register() {
           </div>
         </div>
 
-        <div className=" font-poppins w-1/2 h-full rounded-tr-lg rounded-br-lg shadow-lg bg-blue-900">
-          <div className='mt-5'>
-            <h1 className='text-white text-2xl text-center font-semibold mb-3'>Instructions</h1>
+        <div className=" !font-poppins w-1/2 h-full rounded-tr-lg rounded-br-lg shadow-lg blue-div bg-blue-900">
+          <div className="w-full h-full backdrop-blur-sm">
+          <div className='pt-16 px-5'>
+
+            <label className="block mb-2 ml-2 text-sm font-medium text-white" for="file_input">Upload file</label>
+            <input className="block w-full text-sm text-gray-900 h-8 border border-gray-300 rounded-md cursor-pointer bg-gray-50  focus:outline-none" aria-describedby="file_input_help" id="file_input" type="file" />
+            <p className="mt-1 pl-2 text-sm text-gray-100 " id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+          </div>
+          <div className='flex gap-x-2 items-end w-full font-poppins pr-5'>
+            <div className='w-full mt-5'>
+              {inputs.map((input, index) => (
+                <div className='ml-6  mt-3' key={index}>
+                  <select className=' focus:outline-none active:outline-none outline-blue-800 p-1.5 rounded-md w-full '
+                  onChange={event => handleChange(index, event)}>
+                <option className=''>
+                  Select one of the course
+                    </option>
+                    <option className=''>
+                  Staff College
+                    </option>
+                    <option className=''>
+                  Defense Economy 
+                    </option>
+                  </select>
+
+                </div>
+              ))}
+
+            </div>
+            <AiOutlinePlusCircle fontSize={38} className='text-white  hover mt-2 hover:text-[#FEC703] text-bold  cursor-pointer ' onClick={addInput}></AiOutlinePlusCircle> 
+          </div>
           </div>
         </div>
       </div>
     </div>
   )
 }
-
 
 
