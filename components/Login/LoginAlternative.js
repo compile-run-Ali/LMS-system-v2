@@ -6,7 +6,6 @@ import { signIn } from "next-auth/react"
 import { useRouter } from 'next/router'
 
 export default function LoginAlternative({ facultyLogin }) {
-
     const router = useRouter()
 
     const [email, setEmail] = React.useState("")

@@ -11,9 +11,10 @@ export default function DashboardComponent() {
     <div>
       <div className='flex w-full justify-end pr-10 font-poppins'>
       <button onClick={toggleModal} className="bg-blue-900 text-white border rounded-md px-3 py-2">
-      Create Paper
+        Create Paper
       </button>
       </div>
       <Modal open={open} setOpen={setOpen} />
+      
     </div>
 )}

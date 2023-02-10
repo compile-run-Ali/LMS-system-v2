@@ -85,6 +85,9 @@ const configuration = {
         }
   },
     secret: process.env.NEXTAUTH_SECRET,
+    pages: {
+      signIn: '/',
+    },
 }
 
 const auth = (req, res) => NextAuth(req, res, configuration)
