@@ -242,7 +242,8 @@ Data
                 </div>
               ))}
 
-            </div >
+  
+            </div>
             <AiOutlinePlusCircle fontSize={38} className='text-white  hover mt-2 hover:text-[#FEC703] text-bold  cursor-pointer ' onClick={addInput}></AiOutlinePlusCircle> 
           </div>
           </div>
@@ -251,6 +252,5 @@ Data
     </div>
   )
 }
-
 
 

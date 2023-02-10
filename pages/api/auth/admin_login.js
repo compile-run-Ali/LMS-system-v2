@@ -9,13 +9,13 @@ const confirmPasswordHash = (plainPassword, hashedPassword) => {
   })
 }
 
-export default handler = async (req, res) => {
+const handler = async (email, password) => {
   const prisma = new PrismaClient();
 
   try {
     const admin = await prisma.faculty.findFirst({
       where: {
-        email: req.email,
+        email,
         level: 6
       }
     });
@@ -23,7 +23,7 @@ export default handler = async (req, res) => {
   if (faculty !== null)
     {
         //Compare the hash
-        const matched = await confirmPasswordHash(req.password, admin.password);
+        const matched = await confirmPasswordHash(password, admin.password);
         if (matched)
         {
           res.status(200).json(admin)   
@@ -40,3 +40,5 @@ export default handler = async (req, res) => {
     throw new Error(err.message)
   }
 }
+
+export default handler;
