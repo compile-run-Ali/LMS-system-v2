@@ -7,6 +7,7 @@ export default function Register() {
   const [inputs, setInputs] = useState(['']);
 
   const addInput = () => {
+    if (inputs.length<9)
     setInputs([...inputs, '']);
   };
 
@@ -218,7 +219,7 @@ Data
           <div className='pt-16 px-5'>
 
             <label className="block mb-2 ml-2 text-sm font-medium text-white" for="file_input">Upload file</label>
-            <input className="block w-full text-sm text-gray-900 h-8 border border-gray-300 rounded-md cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" aria-describedby="file_input_help" id="file_input" type="file" />
+            <input className="block w-full text-sm text-gray-900 h-8 border border-gray-300 rounded-md cursor-pointer bg-gray-50  focus:outline-none" aria-describedby="file_input_help" id="file_input" type="file" />
             <p className="mt-1 pl-2 text-sm text-gray-100 " id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
           </div>
           <div className='flex gap-x-2 items-end w-full font-poppins pr-5'>
