@@ -149,7 +149,7 @@ const MCQTable = () => {
                     type="text"
                     value={option}
                     onChange={handleOptionChange(index)}
-                    className="bg-white border border-primary-black focus:outline-none border-opacity-[0.15] p-2 rounded-lg w-full"
+                    className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"
                   />
                 </div>
               ))}
@@ -168,7 +168,7 @@ const MCQTable = () => {
                 type="text"
                 value={currentMCQ.correctOption}
                 onChange={handleCorrectOptionChange}
-                className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]">
+                className="bg-white p-2 rounded-lg border border-primary-black  border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]">
                 <option value="" disabled>Select Correct Option</option>
                 {currentMCQ.options.map((option, index) => (
                   <option key={index} value={option}>{option}</option>
