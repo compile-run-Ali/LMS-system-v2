@@ -201,4 +201,3 @@ const MCQTable = () => {
 };
 
 export default MCQTable;
-

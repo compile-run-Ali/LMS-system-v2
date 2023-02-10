@@ -3,29 +3,30 @@ import bcrypt from "bcrypt"
 
 const confirmPasswordHash = (plainPassword, hashedPassword) => {
   return new Promise(resolve => {
-      bcrypt.compare(plainPassword, hashedPassword, function(err, res) {
+    bcrypt.compare(plainPassword, hashedPassword, function (err, res) {
+        console.log(res)
           resolve(res);
       });
   })
 }
 
-export default handler = async (req, res) => {
+const handler = async (email, password) => {
   const prisma = new PrismaClient();
 
   try {
     const faculty = await prisma.faculty.findFirst({
       where: {
-        email: req.email
+        email
       }
     });
 
-  if (faculty !== null)
+  if (faculty !== null && faculty !== undefined && faculty.length !== 0)
     {
         //Compare the hash
-        const matched = await confirmPasswordHash(req.password, faculty.password);
+    const matched = await confirmPasswordHash(password, faculty.password);
         if (matched)
         {
-          res.status(200).json(faculty)   
+          return faculty   
         }
         else
         {
@@ -39,3 +40,5 @@ export default handler = async (req, res) => {
     throw new Error(err.message)
   }
 }
+
+export default handler

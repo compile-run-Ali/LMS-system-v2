@@ -1,62 +1,49 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from "next-auth/providers/credentials";
-import axios from 'axios';
+import FacultyLogin from "./faculty_login"
+import StudentLogin from "./student_login"
+import AdminLogin from "./admin_login"
 
 let userAccount = null;
 
 const configuration = {
-    cookie: {
-        secure: process.env.NODE_ENV && process.env.NODE_ENV === 'production',
-    },
     session: {
         jwt: true,
-        maxAge: 30 * 24 * 60 * 60
-    },
+        maxAge: 3 * 60 * 60, // 3 hours
+  },
     providers: [
         CredentialsProvider({
             id: "credentials",
             name: "credentials",
-            credentials: {},
-            async authorize(credentials, req) {
+          credentials: {},
+          async authorize(credentials, req) {
                 try
                 {
-                  if (credentials.role === "student") {
-                    const studentData = await axios.post("http://localhost:3000/api/auth/student_login", {
-                      P_number: credentials.username,
-                      password: credentials.password
-                    })
-
-                    if (studentData.status === 200) {
+                  if (req.role === "student") {
+                    const studentData = await StudentLogin(credentials.username, credentials.password)
+                    if (studentData) {
                       return {
-                        ...studentData.data,
+                        ...studentData,
                         role: "student"
                       }
                     } else {
                       throw new Error("An Error has occured")
                     }
-                  } else if (credentials.role === "admin") {
-                    const adminData = await axios.post("http://localhost:3000/api/auth/admin_login", {
-                      email: credentials.username,
-                      password: credentials.password
-                    })
-
-                    if (adminData.status === 200) {
+                  } else if (req.role === "admin") {
+                    const adminData = await AdminLogin(credentials.username, credentials.password)
+                    if (adminData) {
                       return {
-                        ...adminData.data,
+                        ...adminData,
                         role: "admin"
                       }
                     } else {
                       throw new Error("An Error has occured")
                     }
                   } else {
-                    const facultyData = await axios.post("http://localhost:3000/api/auth/faculty_login", {
-                      email: credentials.username,
-                      password: credentials.password
-                    })
-
-                    if (facultyData.status === 200) {
+                    const facultyData = await FacultyLogin(credentials.username, credentials.password)
+                    if (facultyData) {
                       return {
-                        ...facultyData.data,
+                        ...facultyData,
                         role: "faculty"
                       }
                     } else {
@@ -76,7 +63,11 @@ const configuration = {
         async signIn(user, account, profile) {
             try
             {
-                res.send(user, account, profile)
+              if (user) {
+                  return user
+              } else {
+                return false
+                }
             }
             catch (err)
             {
@@ -84,29 +75,7 @@ const configuration = {
             }
 
         },
-        async session(session, token) {
-            if (userAccount !== null)
-            {
-                //session.user = userAccount;
-                session.user = {
-                    userId: userAccount.userId,
-                    name: `${userAccount.firstName} ${userAccount.lastName}`,
-                    email: userAccount.email
-                }
-
-            }
-            else if (typeof token.user !== typeof undefined && (typeof session.user === typeof undefined
-                || (typeof session.user !== typeof undefined && typeof session.user.userId === typeof undefined)))
-            {
-                session.user = token.user;
-            }
-            else if (typeof token !== typeof undefined)
-            {
-                session.token = token;
-            }
-            return session;
-        },
-        async jwt(token, user, account, profile, isNewUser) {
+      async jwt({ token, user, account, profile, isNewUser }) {
             console.log("JWT callback. Got User: ", user);
             if (typeof user !== typeof undefined)
             {
@@ -114,7 +83,10 @@ const configuration = {
             }
             return token;
         }
-    }
+  },
+    secret: process.env.NEXTAUTH_SECRET,
 }
 
-export default auth = (req, res) => NextAuth(req, res, configuration)
+const auth = (req, res) => NextAuth(req, res, configuration)
+
+export default auth
