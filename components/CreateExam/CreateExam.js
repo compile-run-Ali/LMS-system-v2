@@ -15,9 +15,9 @@ export default function CreateExam() {
         <Form setActive={setActive} setPaperId={setPaperId} />
       }
       {
-        active === "Exam Questions" &&
+        active === "Exam Questions" && paperId !== 0 &&
         <div className='mt-10'>
-          <MCQTable />
+          <MCQTable paperId={paperId} />
         </div>
       }
     </div>

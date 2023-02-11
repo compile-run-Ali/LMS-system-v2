@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md"
 import Input from "../Common/Form/Input";
 
-const MCQTable = () => {
+const MCQTable = ({paperId}) => {
   const [mcqs, setMCQs] = useState([
     {
       question: "What is the capital of France?",

@@ -53,6 +53,7 @@ const configuration = {
                 }
                 catch (err)
                 {
+                    
                     console.log("Authorize error:", err);
                 }
 
