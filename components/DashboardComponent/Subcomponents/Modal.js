@@ -25,7 +25,7 @@ export default function Modal({ open, setOpen }) {
                 weightage: 10,
             })
             //then redirect to create exam page for objectiv
-            router.push(`/faculty/create_exam/${res.data.paper_id}/objective`)
+            router.push(`/faculty/create_exam/objective`)
         }
     }
 

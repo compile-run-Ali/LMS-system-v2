@@ -1,19 +1,14 @@
 import React, { useState } from 'react'
 import Accordion from './Accordion'
 
-export default function Exam() {
+export default function Exam({exam}) {
     const [totalMarks, setTotalMarks] = useState(0)
     const [totalQuestions, setTotalQuestions] = useState(0)
-    const [exam, setExam] = useState({
-        exam_name: "Mid-term Exam",
-        exam_type: "Objective",
-        exam_duration: "1 hour",
-        exam_date: "2021-05-01",
-        exam_time: "10:00 AM",
-    })
+
+
     return (
         <div className='pr-10 pl-7 font-poppins w-full '>
-            <div className='bg-gray-100 pt-10 rounded-md'>
+            <div className='bg-gray-100 bg-opacity-50 pt-10 rounded-md'>
                 <div className='font-semibold text-center text-3xl mt-5 mb-10'>
                     Exam Details
                 </div>
@@ -80,7 +75,7 @@ export default function Exam() {
 
                 </div>
 
-                <div className='bg-gray-200 py-5 mt-5 px-5'>
+                <div className='bg-gray-100 py-5 mt-5 px-5'>
                     <Accordion />
                 </div>
             </div>
