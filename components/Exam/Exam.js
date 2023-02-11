@@ -1,16 +1,29 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import Accordion from './Accordion'
 
-export default function Exam({exam}) {
+export default function Exam({ exam }) {
+    const router = useRouter()
     const [totalMarks, setTotalMarks] = useState(0)
     const [totalQuestions, setTotalQuestions] = useState(0)
 
+    const editExam = () => {
+        router.push({
+            pathname: '/faculty/create_exam/objective',
+            query: { 
+                ...exam
+             },
+        })
+    }
 
     return (
         <div className='pr-10 pl-7 font-poppins w-full '>
             <div className='bg-gray-100 bg-opacity-50 pt-10 rounded-md'>
                 <div className='font-semibold text-center text-3xl mt-5 mb-10'>
                     Exam Details
+                </div>
+                <div onClick={() => {editExam()}}>
+                    Edit
                 </div>
 
                 <div className='grid grid-cols-3 gap-y-3'>

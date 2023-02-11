@@ -3,13 +3,14 @@ import Input from './Input'
 import axios from "axios"
 import { useRouter } from 'next/router';
 
-export default function Form({ setActive, setPaperId }) {
+export default function Form({ setActive, setPaperId, examDetails }) {
   const router = useRouter();
-  const [paperName, setPaperName] = useState("");
-  const [paperDuration, setPaperDuration] = useState(3);
-  const [dateOfExam, setDateOfExam] = useState("");
-  const [weightage, setWeightage] = useState();
-  const [paperTime, setPaperTime] = useState("09:00:00");
+  const [edit, setEdit] = useState(examDetails ? true : false);
+  const [paperName, setPaperName] = useState(edit? examDetails.exam_name : "");
+  const [paperDuration, setPaperDuration] = useState(edit? Number(examDetails.exam_duration.charAt(0)) : 3);
+  const [dateOfExam, setDateOfExam] = useState(edit? examDetails.exam_date : "");
+  const [weightage, setWeightage] = useState("");
+  const [paperTime, setPaperTime] = useState(edit? examDetails.exam_time : "09:00:00");
 
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
@@ -37,9 +38,10 @@ export default function Form({ setActive, setPaperId }) {
       alert("Please fill all the fields");
       return;
     }
-    const res = await axios.post("http://localhost:3000/api/faculty/paper_creation/new_paper", {
-      paperName: paperName,
-      paperTime: paperTime,
+    const res = await axios.post(`http://localhost:3000/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`, {
+      paper_id: examDetails ? examDetails.exam_id : null,
+      paper_name: paperName,
+      time: paperTime,
       date: new Date(dateOfExam),
       duration: paperDuration,
       weightage: weightage,
@@ -53,15 +55,47 @@ export default function Form({ setActive, setPaperId }) {
     <form>
       <div className='w-full grid grid-cols-2 pr-10 gap-x-5 mt-10 font-poppins'>
 
-        <Input text={"Paper Name"} required={true} type={"text"} placeholder={"Ex: Mid-Term Exam"} onChange={handlePaperName} />
-        <Input text={"Paper Duration (in hours)"} required={true}
-          type={"number"} value={3} min={0} max={3} onChange={handleDuration} />
+        <Input
+          text={"Paper Name"}
+          required={true}
+          type={"text"}
+          placeholder={"Ex: Mid-Term Exam"}
+          onChange={handlePaperName}
+          value={paperName}
+        />
+        <Input
+          text={"Paper Duration (in hours)"}
+          required={true}
+          type={"number"}
+          value={paperDuration}
+          min={0}
+          max={3}
+          onChange={handleDuration}
+        />
 
-        <Input text={"Date of Exam"} required={true} type={"date"} onChange={handleDateOfExam} />
+        <Input
+          text={"Date of Exam"}
+          required={true}
+          type={"date"}
+          onChange={handleDateOfExam}
+          value={dateOfExam}
+        />
 
-        <Input text={"Weightage"} required={true} type={"number"} placeholder={"Ex: 20%"} onChange={handleWeightage} />
+        <Input
+          text={"Weightage"}
+          required={true}
+          type={"number"}
+          placeholder={"Ex: 20%"}
+          value={weightage}
+          onChange={handleWeightage} />
 
-        <Input text={"Paper Start Time"} required={true} type={"time"} onChange={handlePaperTime} value={"09:00:00"} />
+        <Input
+          text={"Paper Start Time"}
+          required={true}
+          type={"time"}
+          onChange={handlePaperTime}
+          value={paperTime}
+        />
 
 
 
