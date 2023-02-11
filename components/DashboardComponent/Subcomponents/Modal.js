@@ -3,8 +3,6 @@ import { Dialog, Transition } from '@headlessui/react'
 import { IoIosPaper } from "react-icons/io";
 import { useRouter } from 'next/router';
 
-import axios from "axios"
-
 export default function Modal({ open, setOpen }) {
     const [examType, setExamType] = useState("I.E")
     const router = useRouter()
@@ -18,12 +16,7 @@ export default function Modal({ open, setOpen }) {
         } else {
             // Redirect to create exam page for objective
             //make api call to create a new paper using axios
-            const res = await axios.post("http://localhost:3000/api/faculty/paper_creation/new_paper", {
-                time: "1:00",
-                date: new Date("2021-08-01"),
-                duration: 3,
-                weightage: 10,
-            })
+            
             //then redirect to create exam page for objectiv
             router.push(`/faculty/create_exam/objective`)
         }
