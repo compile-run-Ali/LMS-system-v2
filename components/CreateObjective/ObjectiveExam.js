@@ -44,6 +44,12 @@ const MCQTable = () => {
     setCurrentMCQ({ ...currentMCQ, options: [...currentMCQ.options, ""] });
   };
 
+  const handleOptionDeletion = (index) => () => {
+    const newOptions = [...currentMCQ.options];
+    newOptions.splice(index, 1);
+    setCurrentMCQ({ ...currentMCQ, options: newOptions });
+  };
+
   const handleAddMCQ = () => {
     setMCQs([...mcqs, currentMCQ]);
     setCurrentMCQ({
@@ -160,6 +166,15 @@ const MCQTable = () => {
             >
               Add Option
             </button>
+
+            <button
+              onClick={handleOptionDeletion(currentMCQ.options.length - 1)}
+              className="bg-red-600 ml-5 text-white p-2 rounded hover:bg-red-700"
+            >
+              Delete Option
+            </button>
+
+
           </div>
           <div className="flex w-full gap-x-5">
             <div className="mb-4 w-1/2 mt-6">

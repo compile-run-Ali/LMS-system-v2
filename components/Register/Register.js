@@ -7,8 +7,8 @@ export default function Register() {
   const [inputs, setInputs] = useState(['']);
 
   const addInput = () => {
-    if (inputs.length<9)
-    setInputs([...inputs, '']);
+    if (inputs.length < 6)
+      setInputs([...inputs, '']);
   };
 
   const handleChange = (index, event) => {
@@ -144,7 +144,7 @@ export default function Register() {
             focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" id="Courses"
                 >
                   <option>
-Data
+                    Data
                   </option>
                 </select>
               </div>
@@ -216,36 +216,77 @@ Data
 
         <div className=" !font-poppins w-1/2 h-full rounded-tr-lg rounded-br-lg shadow-lg blue-div bg-blue-900">
           <div className="w-full h-full backdrop-blur-sm">
-          <div className='pt-16 px-5'>
+            <div className='pt-16 px-5'>
 
-            <label className="block mb-2 ml-2 text-sm font-medium text-white" for="file_input">Upload file</label>
-            <input className="block w-full text-sm text-gray-900 h-8 border border-gray-300 rounded-md cursor-pointer bg-gray-50  focus:outline-none" aria-describedby="file_input_help" id="file_input" type="file" />
-            <p className="mt-1 pl-2 text-sm text-gray-100 " id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
-          </div>
-          <div className='flex gap-x-2 items-end w-full font-poppins pr-5'>
-            <div className='w-full mt-5'>
-              {inputs.map((input, index) => (
-                <div className='ml-6  mt-3' key={index}>
-                  <select className=' focus:outline-none active:outline-none outline-blue-800 p-1.5 rounded-md w-full '
-                  onChange={event => handleChange(index, event)}>
-                <option className=''>
-                  Select one of the course
-                    </option>
-                    <option className=''>
-                  Staff College
-                    </option>
-                    <option className=''>
-                  Defense Economy 
-                    </option>
-                  </select>
-
-                </div>
-              ))}
-
-  
+              <label className="block mb-2 text-sm font-medium text-white" for="file_input">Upload Profile Pic</label>
+              <input className="block w-full text-sm text-gray-900 h-8 border border-gray-300 rounded-md cursor-pointer bg-gray-50  focus:outline-none" aria-describedby="file_input_help" id="file_input" type="file" />
+              <p className="mt-1 pl-2 text-sm text-gray-100 " id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
             </div>
-            <AiOutlinePlusCircle fontSize={38} className='text-white  hover mt-2 hover:text-[#FEC703] text-bold  cursor-pointer ' onClick={addInput}></AiOutlinePlusCircle> 
-          </div>
+            <div className='flex gap-x-2 items-end w-full font-poppins pr-5'>
+              <div className='w-full mt-5'>
+                <span className='px-5 block mb-2  text-sm font-medium text-white'>
+                  Previous Courses
+                </span>
+                {inputs.map((input, index) => (
+                  <div key={index} className='flex px-5  mt-3 gap-x-5'>
+
+                    <div className='w-full' >
+                      <label className='text-white text-sm font-medium'>Course</label>
+                      <select className=' focus:outline-none bg-white active:outline-none outline-blue-800 p-1.5 rounded-md w-full '
+                        onChange={event => handleChange(index, event)}>
+                        <option className=''>
+                          Select course
+                        </option>
+                        <option className=''>
+                          Staff College
+                        </option>
+                        <option className=''>
+                          Defense Economy
+                        </option>
+                      </select>
+
+                    </div>
+                    <div className='w-full'>
+                      <label className='text-white text-sm font-medium'>Grade</label>
+                      <select className=' focus:outline-none bg-white  active:outline-none outline-blue-800 p-1.5 rounded-md w-full '
+                        onChange={event => handleChange(index, event)}>
+                        <option className=''>
+                          D
+                        </option>
+                        <option className=''>
+                          A
+                        </option>
+                        <option className=''>
+                          B+
+                        </option>
+                        <option className=''>
+                          BH
+                        </option>
+                        <option className=''>
+                          BA
+                        </option>
+                        <option className=''>
+                          BL
+                        </option>
+                        <option className=''>
+                          B-
+                        </option>
+                        <option className=''>
+                          C
+                        </option>
+                        <option className=''>
+                          F
+                        </option>
+                      </select>
+
+                    </div>
+                  </div>
+                ))}
+
+
+              </div>
+              <AiOutlinePlusCircle fontSize={38} className='text-white  hover mt-2 hover:text-[#FEC703] text-bold  cursor-pointer ' onClick={addInput}></AiOutlinePlusCircle>
+            </div>
           </div>
         </div>
       </div>
