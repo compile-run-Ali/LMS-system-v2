@@ -7,7 +7,7 @@ export default function objective() {
   return (
     <BaseLayout title={"Create Objective Exam"}>
         <DashboardLayout>
-            <CreateExam />
+            <CreateExam paperType={"Objective"} />
         </DashboardLayout>
     </BaseLayout>
   )

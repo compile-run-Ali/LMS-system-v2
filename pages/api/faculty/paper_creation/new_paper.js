@@ -2,15 +2,18 @@ import { PrismaClient } from "@prisma/client"
 
 
 const handler = async (req, res) => {
+  console.log(req.body)
   const prisma = new PrismaClient()
   try {
     //Create Paper and connect to course code then connect course with paperid
     const paper = await prisma.paper.create({
       data: {
-        time: req.body.time,
+        paper_name: req.body.paper_name,
+        time: req.body.paper_time,
         date: req.body.date,
         duration: req.body.duration,
         weightage: req.body.weightage,
+        paper_type: req.body.paper_type,
       }
     })
     //connect course with paper Id

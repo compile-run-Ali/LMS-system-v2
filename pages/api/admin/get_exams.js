@@ -6,10 +6,8 @@ const handler = async (req, res) => {
     //get all papers
     const papers = await prisma.paper.findMany({
       include: {
-        weightage: true,
-        course: true,
-        time: true,
-        date: true,
+        course: false,
+        examofficer: false,
         subjective_questions: true,
         objective_questions: true,
       },

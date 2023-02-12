@@ -3,25 +3,7 @@ import DashboardLayout from '@/components/DasboardLayout/DashboardLayout'
 import Exam from '@/components/Exam/Exam'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-
-const exams = [
-  {
-    exam_id: 1,
-    exam_name: "Mid-term Exam",
-    exam_type: "Objective",
-    exam_duration: "1 hour",
-    exam_date: "2021-05-01",
-    exam_time: "10:00 AM",
-  },
-  {
-    exam_id: 2,
-    exam_name: "Final Exam",
-    exam_type: "Subjective/Objective",
-    exam_duration: "2 hours",
-    exam_date: "2021-05-01",
-    exam_time: "10:00 AM",
-  },
-]
+import axios from 'axios'
 
 export default function ExamPage() {
   const [exam, setExam] = useState();
@@ -29,12 +11,21 @@ export default function ExamPage() {
   const { exam_id } = router.query;
 
 
+  const fetchExam = async ()=>{
+    const res = await axios.post("/api/faculty/get_exam", {
+      paper_id: exam_id
+    })
+
+    console.log(res.data)
+    setExam(res.data);
+  }
+
+
   useEffect(() => {
-    if (exam_id) {
-      const exam = exams.find((exam) => exam.exam_id == exam_id);
-      setExam(exam);
+    if (exam_id && !exam) {
+      fetchExam();
     }
-  }, [exam_id]);
+  }, [exam_id, fetchExam]);
 
 
   return (

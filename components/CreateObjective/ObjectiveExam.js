@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md"
 import Input from "../Common/Form/Input";
+import MultiSelectDropdown from "./MultiSelect";
 
-const MCQTable = () => {
+const MCQTable = ({ paperId }) => {
+  const [multipleOptions, setMultipleOptions] = useState(false);
   const [mcqs, setMCQs] = useState([
     {
       question: "What is the capital of France?",
@@ -22,6 +24,11 @@ const MCQTable = () => {
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
 
+
+  const handleMultipleOptionsChange = (e) => {
+    setMultipleOptions(e.target.checked);
+  };
+
   const handleQuestionChange = (e) => {
     setCurrentMCQ({ ...currentMCQ, question: e.target.value });
   };
@@ -30,6 +37,10 @@ const MCQTable = () => {
     const newOptions = [...currentMCQ.options];
     newOptions[index] = e.target.value;
     setCurrentMCQ({ ...currentMCQ, options: newOptions });
+  };
+
+  const handleMultipleCorrectOptionChange = (val) => {
+    setCurrentMCQ({ ...currentMCQ, correctOption: val });
   };
 
   const handleCorrectOptionChange = (e) => {
@@ -141,8 +152,8 @@ const MCQTable = () => {
         <div className="w-full mt-6">
           <h2 className="text-xl font-bold mb-4">
             {editing ? "Edit" : "Add"} MCQ
-
           </h2>
+
           <div className="mb-4">
             <Input text={"Question"} required value={currentMCQ.question} onChange={handleQuestionChange} />
           </div>
@@ -176,19 +187,29 @@ const MCQTable = () => {
 
 
           </div>
+          <div className="flex items-center mt-10 mb-2 gap-x-3">
+            <label className="block">Allow Multiple Correct Options</label>
+            <input type="checkbox" className="accent-slate-100" onChange={handleMultipleOptionsChange} />
+          </div>
           <div className="flex w-full gap-x-5">
-            <div className="mb-4 w-1/2 mt-6">
+            <div className="mb-10 w-full mt-6">
               <label className="block mb-2">Correct Option</label>
-              <select
-                type="text"
-                value={currentMCQ.correctOption}
-                onChange={handleCorrectOptionChange}
-                className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]">
-                <option value="" disabled>Select Correct Option</option>
-                {currentMCQ.options.map((option, index) => (
-                  <option key={index} value={option}>{option}</option>
-                ))}
-              </select>
+              {
+                multipleOptions ?
+                  <MultiSelectDropdown options={currentMCQ.options} onChange={handleMultipleCorrectOptionChange} />
+                  :
+
+                  <select
+                    type="text"
+                    value={currentMCQ.correctOption}
+                    onChange={handleCorrectOptionChange}
+                    className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]">
+                    <option value="" disabled>Select Correct Option</option>
+                    {currentMCQ.options.map((option, index) => (
+                      <option key={index} value={option}>{option}</option>
+                    ))}
+                  </select>
+              }
             </div>
 
             <Input text={"Marks"} type={"number"} required value={currentMCQ.marks} onChange={handleMarksChange} />
