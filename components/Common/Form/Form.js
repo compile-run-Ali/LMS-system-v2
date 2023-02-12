@@ -1,17 +1,15 @@
 import React, { useState } from 'react'
 import Input from './Input'
 import axios from "axios"
-import { useRouter } from 'next/router';
 
-export default function Form({ setActive, setPaperId, examDetails }) {
-  const router = useRouter();
+export default function Form({ setActive, setPaperId, examDetails, paperType }) {
   const [edit, setEdit] = useState(examDetails ? true : false);
-  const [paperName, setPaperName] = useState(edit? examDetails.exam_name : "");
-  const [paperDuration, setPaperDuration] = useState(edit? Number(examDetails.exam_duration.charAt(0)) : 3);
-  const [dateOfExam, setDateOfExam] = useState(edit? examDetails.exam_date : "");
-  const [weightage, setWeightage] = useState("");
-  const [paperTime, setPaperTime] = useState(edit? examDetails.exam_time : "09:00:00");
-
+  const [paperName, setPaperName] = useState(edit? examDetails.paper_name : "");
+  const [paperDuration, setPaperDuration] = useState(edit? Number(examDetails.duration) : 3);
+  const [dateOfExam, setDateOfExam] = useState(edit? examDetails.date : "");
+  const [weightage, setWeightage] = useState(edit? examDetails.weightage :"");
+  const [paperTime, setPaperTime] = useState(edit? examDetails.time : "09:00:00");
+  
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
   }
@@ -38,13 +36,15 @@ export default function Form({ setActive, setPaperId, examDetails }) {
       alert("Please fill all the fields");
       return;
     }
+
     const res = await axios.post(`http://localhost:3000/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`, {
-      paper_id: examDetails ? examDetails.exam_id : null,
+      paper_id: examDetails ? examDetails.paper_id : null,
       paper_name: paperName,
-      time: paperTime,
-      date: new Date(dateOfExam),
+      paper_time: paperTime,
+      date: new Date(dateOfExam).toDateString(),
       duration: paperDuration,
-      weightage: weightage,
+      weightage: parseInt(weightage),
+      paper_type: paperType
     })
     
     setPaperId(res.data.paper_id);

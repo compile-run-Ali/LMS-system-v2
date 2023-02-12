@@ -93,11 +93,11 @@ model Paper {
   paper_name               String
   course                   Course?            @relation(fields: [course_code], references: [course_code])
   course_code              Int?               
-  
+  paper_type               String
   examofficer              PaperApproval?
 
   time                     String          
-  date                     DateTime          @db.Date()
+  date                     String          
   duration                 Int
   weightage                Int
 

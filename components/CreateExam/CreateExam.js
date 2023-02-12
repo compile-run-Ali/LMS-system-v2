@@ -4,8 +4,9 @@ import Wizard from '../Common/Wizard/Wizard'
 import Form from '../Common/Form/Form'
 import MCQTable from '../CreateObjective/ObjectiveExam'
 
-export default function CreateExam() {
+export default function CreateExam({paperType}) {
   const router = useRouter()
+  
   const [examDetails, setExamDetails] = useState(Object.keys(router.query).length !== 0 ? router.query :null)
   const [active, setActive] = useState("Exam Settings");
   const [paperId, setPaperId] = useState(0);
@@ -15,7 +16,7 @@ export default function CreateExam() {
       <Wizard active={active} />
       {
         active === "Exam Settings" &&
-        <Form setActive={setActive} setPaperId={setPaperId} examDetails={examDetails} />
+        <Form setActive={setActive} setPaperId={setPaperId} examDetails={examDetails} paperType={paperType} />
       }
       {
         active === "Exam Questions" && paperId !== 0 &&

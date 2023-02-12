@@ -4,7 +4,7 @@ import Image from 'next/image'
 import React, { useContext } from 'react'
 
 
-export default function Topbar({ }) {
+export default function Topbar({ admin }) {
 
   return (
     <div className='flex items-center justify-between mr-10 h-[110px]'>
@@ -26,7 +26,7 @@ export default function Topbar({ }) {
 
           <div className='user-name'>
             <span className='font-medium font-poppins'>
-              Random User
+            {admin ? 'Admin' : 'Random User'}
             </span>
           </div>
 
