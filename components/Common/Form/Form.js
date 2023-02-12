@@ -48,7 +48,7 @@ export default function Form({ setActive, setPaperId, examDetails, paperType }) 
     })
     
     setPaperId(res.data.paper_id);
-    setActive("Exam Questions");
+    setActive(2);
   }
 
   return (

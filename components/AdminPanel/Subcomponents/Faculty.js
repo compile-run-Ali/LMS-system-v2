@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import FacultyTable from '../Tables/FacultyTable'
 import DeleteModal from './DeleteModal'
 
-export default function Faculty() {
+export default function Faculty({faculty, setFaculty}) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
 
@@ -21,7 +21,7 @@ export default function Faculty() {
           Add Faculty
         </button>
       </div>
-      <FacultyTable setOpen={setOpen} />
+      <FacultyTable setOpen={setOpen} faculty={faculty} />
     </div>
   )
 }
