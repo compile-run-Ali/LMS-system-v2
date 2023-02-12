@@ -1,31 +1,38 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Accordion from './Accordion'
+import { MdEdit } from 'react-icons/md'
 
 export default function Exam({ exam }) {
     const router = useRouter()
     const [totalMarks, setTotalMarks] = useState(0)
     const [totalQuestions, setTotalQuestions] = useState(0);
-    
+
 
     const editExam = () => {
         router.push({
             pathname: '/faculty/create_exam/objective',
-            query: { 
+            query: {
                 ...exam
-             },
+            },
         })
     }
 
     return (
         <div className='pr-10 pl-7 font-poppins w-full '>
+
             <div className='bg-gray-100 bg-opacity-50 pt-10 rounded-md'>
+                <div className='w-full flex justify-end pr-5'>
+                    <div onClick={() => { editExam() }}
+                        className="bg-white text-[#f5c51a]  p-2 rounded hover:bg-[#f5c51a] hover:text-white"
+                    >
+                        <MdEdit />
+                    </div>
+                </div>
                 <div className='font-semibold text-center text-3xl mt-5 mb-10'>
                     Exam Details
                 </div>
-                <div onClick={() => {editExam()}}>
-                    Edit
-                </div>
+
 
                 <div className='grid grid-cols-3 gap-y-3'>
                     <div className='pl-20'>

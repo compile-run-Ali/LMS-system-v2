@@ -101,7 +101,7 @@ const MCQTable = ({ paperId }) => {
 
   return (
     <div className="flex font-poppins flex-col items-center p-6">
-      <h1 className="text-2xl font-bold">MCQ Table</h1>
+      <h1 className="text-2xl font-bold">MCQ Question</h1>
       <table className="w-full mt-6 text-left table-collapse">
         <thead>
           <tr>
