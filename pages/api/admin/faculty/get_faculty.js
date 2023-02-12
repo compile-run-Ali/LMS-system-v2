@@ -13,14 +13,7 @@ const handler = async (req, res) => {
         department: true,
         password: true,
         profile_picture: true,
-        courses: {
-          select: {
-            course_name: true,
-            course_code: true,
-            credit_hours: true,
-            department: true,
-          },
-        },
+        level: true,
       },
     })
     res.status(200).json(faculty)
