@@ -8,11 +8,20 @@ const handler = async (req, res) => {
     const paper = await prisma.paper.create({
       data: {
         paper_name: req.body.paper_name,
+<<<<<<< HEAD
         time: req.body.paper_time,
         date: req.body.date,
         duration: req.body.duration,
         weightage: req.body.weightage,
         paper_type: req.body.paper_type,
+=======
+        paper_type: req.body.paper_type,
+        time: req.body.time,
+        date: req.body.date,
+        duration: req.body.duration,
+        weightage: req.body.weightage,
+        freeflow: req.body.freeflow,
+>>>>>>> edb8e97 (add mcq api endpoints)
       }
     })
     //connect course with paper Id

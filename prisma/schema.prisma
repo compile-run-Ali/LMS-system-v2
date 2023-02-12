@@ -95,11 +95,11 @@ model Paper {
   course_code              String?               
   paper_type               String
   examofficer              PaperApproval?
-
+  freeflow                 Boolean?
   time                     String          
   date                     String          
   duration                 Int
-  weightage                Int
+  weightage                Int?
 
   subjective_questions     SubjectiveQuestion[]
   objective_questions      ObjectiveQuestion[]

@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md"
 import Input from "../Common/Form/Input";
@@ -62,8 +63,17 @@ const MCQTable = ({ paperId }) => {
     setCurrentMCQ({ ...currentMCQ, options: newOptions });
   };
 
-  const handleAddMCQ = () => {
-    setMCQs([...mcqs, currentMCQ]);
+  const handleAddMCQ = async () => {
+    const newMCQ = await axios.post("http://localhost:3000/api/faculty/paper_creation/add_objective", {
+      paper_id: paperId,
+      question: currentMCQ.question,
+      answers: currentMCQ.options.toString(),
+      correct_answer: currentMCQ.correctOption,
+      marks: currentMCQ.marks,
+    })
+    console.log(newMCQ.data);
+    newMCQ.data.options = newMCQ.data.answers.split(",");
+    setMCQs([...mcqs, newMCQ.data]);
     setCurrentMCQ({
       question: "",
       options: [],
