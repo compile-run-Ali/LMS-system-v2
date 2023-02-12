@@ -64,10 +64,10 @@
   dependencies:
     "prop-types" "^15.8.1"
 
-"@headlessui/react@^1.7.9":
-  "integrity" "sha512-Bobh/+mDciu8kEE2hvdukFYjbfaG4MEkK/6TjWOgqcODLKYpRhWPKPE+dCcCSz/YrwjFVrEAMOiWtfk6sW20/w=="
-  "resolved" "https://registry.npmjs.org/@headlessui/react/-/react-1.7.9.tgz"
-  "version" "1.7.9"
+"@headlessui/react@^1.7.10":
+  "integrity" "sha512-1m66h/5eayTEZVT2PI13/2PG3EVC7a9XalmUtVSC8X76pcyKYMuyX1XAL2RUtCr8WhoMa/KrDEyoeU5v+kSQOw=="
+  "resolved" "https://registry.npmjs.org/@headlessui/react/-/react-1.7.10.tgz"
+  "version" "1.7.10"
   dependencies:
     "client-only" "^0.0.1"
 

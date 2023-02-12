@@ -1,27 +1,27 @@
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
-import FacultyTable from '../Tables/FacultyTable'
+import CourseTable from '../Tables/CourseTable'
 import DeleteModal from './DeleteModal'
 
-export default function Faculty() {
+export default function Courses() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
 
-  const addFaculty = () => {
-    router.push('/admin/add_faculty')
+  const addCourses = () => {
+    router.push('/admin/add_course')
   }
   return (
     <div>
       <DeleteModal setIsOpen={setOpen} isOpen={open} />
       <div className='mt-10 flex justify-end'>
         <button
-          onClick={addFaculty}
+          onClick={addCourses}
           className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
         >
-          Add Faculty
+          Add Courses
         </button>
       </div>
-      <FacultyTable setOpen={setOpen} />
+      <CourseTable setOpen={setOpen} />
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import FacultyTable from './Subcomponents/Faculty';
+import Courses from './Subcomponents/Courses';
+import Faculty from './Subcomponents/Faculty';
 import Tabs from './Subcomponents/Tabs'
 
 export default function AdminPanel() {
@@ -11,13 +12,14 @@ export default function AdminPanel() {
         {
             active === "Faculty" &&
             <div>
-            <FacultyTable />
+            <Faculty />
             </div>
 
         }
         {
             active === "Courses" &&
             <div>
+            <Courses />
             </div>
         }
         {
