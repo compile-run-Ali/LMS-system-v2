@@ -10,7 +10,7 @@ const handler = async (req, res) => {
       },
       data: {
         course_name: req.body.course_name,
-        credit_hours: req.body.credit_hours,
+        credit_hours: Number(req.body.credit_hours),
         course_code: req.body.course_code,
         department: req.body.department,
       },
