@@ -22,19 +22,19 @@ export default handler = async (req, res) => {
       },
     })
     //Update Paper with new questions
-    await prisma.paper.update({
-      where: {
-        paper_id: req.body.paper_id,
-      },
-      data: {
-        subjectiveQuestions: {
-          connect: {
-            sq_id: newSQ.sq_id,
-          },
-        },
-      },
-    })
-    res.status(200).json({message: "Subjective Objective Question has been created"})
+    // await prisma.paper.update({
+    //   where: {
+    //     paper_id: req.body.paper_id,
+    //   },
+    //   data: {
+    //     subjectiveQuestions: {
+    //       connect: {
+    //         sq_id: newSQ.sq_id,
+    //       },
+    //     },
+    //   },
+    // })
+    res.status(200).json(newSQ)
   } catch (err) {
     throw new Error(err.message)
   }
