@@ -12,8 +12,16 @@ const handler = async (req, res) => {
         email: req.body.email,
         department: req.body.department,
         password: hash,
-        level: req.body.level,
+        level: Number(req.body.level),
         phone_number: req.body.phone_number,
+      },
+      select: {
+        faculty_id: true,
+        name: true,
+        email: true,
+        department: true,
+        level: true,
+        phone_number: true,
       },
     })
     res.status(200).json(faculty)

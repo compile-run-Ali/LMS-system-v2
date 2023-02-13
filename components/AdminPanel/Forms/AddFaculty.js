@@ -1,7 +1,8 @@
 import Input from '@/components/Common/Form/Input';
 import React, { useState } from 'react';
+import axios from 'axios';
 
-const AddFaculty = ({ onAddFaculty }) => {
+const AddFaculty = () => {
     const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [level, setLevel] = useState('');
@@ -9,15 +10,22 @@ const AddFaculty = ({ onAddFaculty }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        onAddFaculty({ name, phone_number: phoneNumber, level, department, email });
+        await addFaculty({ name, phone_number: phoneNumber, level, department, email, password });
         setName('');
         setPhoneNumber('');
         setLevel('');
         setDepartment('');
         setEmail('');
         setPassword('');
+    };
+
+    const addFaculty = async (faculty) => {
+        const new_faculty = await axios.post('http://localhost:3000/api/admin/faculty/add_faculty', {
+            ...faculty,
+        })
+        console.log(new_faculty);
     };
 
     return (

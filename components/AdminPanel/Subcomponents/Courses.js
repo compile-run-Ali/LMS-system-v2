@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import CourseTable from '../Tables/CourseTable'
 import DeleteModal from './DeleteModal'
 
-export default function Courses() {
+export default function Courses({courses, setCourses}) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
 
@@ -21,7 +21,7 @@ export default function Courses() {
           Add Courses
         </button>
       </div>
-      <CourseTable setOpen={setOpen} />
+      <CourseTable setOpen={setOpen} courses={courses} />
     </div>
   )
 }

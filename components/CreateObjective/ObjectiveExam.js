@@ -5,6 +5,7 @@ import MultiSelectDropdown from "./MultiSelect";
 
 const MCQTable = ({ paperId }) => {
   const [multipleOptions, setMultipleOptions] = useState(false);
+  const [index, setIndex] = useState(null);
   const [mcqs, setMCQs] = useState([
     {
       question: "What is the capital of France?",
@@ -48,7 +49,7 @@ const MCQTable = ({ paperId }) => {
   };
 
   const handleMarksChange = (e) => {
-    setCurrentMCQ({ ...currentMCQ, marks: e.target.value });
+    setCurrentMCQ({ ...currentMCQ, marks: parseInt(e.target.value) });
   }
 
   const handleOptionAddition = () => {
@@ -66,7 +67,7 @@ const MCQTable = ({ paperId }) => {
     setCurrentMCQ({
       question: "",
       options: [],
-      correctOption: "",
+      correctOption: "",  
       marks: 1,
     });
     setAdding(false);
@@ -74,6 +75,7 @@ const MCQTable = ({ paperId }) => {
 
   const handleEditMCQ = (index) => () => {
     setEditing(true);
+    setIndex(index);
     setCurrentMCQ(mcqs[index]);
   };
 
@@ -88,6 +90,7 @@ const MCQTable = ({ paperId }) => {
       marks: 1,
     });
     setEditing(false);
+    setIndex(null);
   };
 
   const handleDeleteMCQ = (index) => () => {
@@ -98,7 +101,7 @@ const MCQTable = ({ paperId }) => {
 
   return (
     <div className="flex font-poppins flex-col items-center p-6">
-      <h1 className="text-2xl font-bold">MCQ Table</h1>
+      <h1 className="text-2xl font-bold">MCQ Question</h1>
       <table className="w-full mt-6 text-left table-collapse">
         <thead>
           <tr>
@@ -216,7 +219,7 @@ const MCQTable = ({ paperId }) => {
           </div>
           {editing ? (
             <button
-              onClick={handleUpdateMCQ(mcqs.indexOf(currentMCQ))}
+              onClick={handleUpdateMCQ(index)}
               className="bg-blue-800 text-white p-2 rounded hover:bg-blue-700"
             >
               Update

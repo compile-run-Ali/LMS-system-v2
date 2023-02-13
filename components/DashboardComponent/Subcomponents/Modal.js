@@ -13,6 +13,7 @@ export default function Modal({ open, setOpen }) {
             // Redirect to create exam page for IE
         } else if (examType === "SO") {
             // Redirect to create exam page for subjective/objective
+            router.push(`/faculty/create_exam/subjective`)
         } else {
             // Redirect to create exam page for objective
             //make api call to create a new paper using axios

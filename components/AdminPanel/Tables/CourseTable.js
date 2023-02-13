@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
 
-const CourseTable = ({setOpen}) => {
-    const [courses, setCourses] = useState([
-        { name: 'Maths', code: 'CS101', credit_hours: '3', department: 'Computer Science' },
-        { name: 'Programming', code: 'CS102', credit_hours: '3', department: 'Computer Science' },
-    ]);
+const CourseTable = ({setOpen, courses}) => {
 
     const openModal = () => {
         setOpen(true);
@@ -35,10 +31,10 @@ const CourseTable = ({setOpen}) => {
             <tbody>
                 {courses.map((course, index) => (
                     <tr key={index} className="bg-white">
-                    <td className="border px-4 py-2">{course.name}</td>
-                    <td className="border px-4 py-2">{course.code}</td>
-            <td className="border px-4 py-2">{course.credit_hours}</td>
-            <td className="border px-4 py-2">{course.department}</td>
+                    <td className="border px-4 py-2">{course.course_name}</td>
+                    <td className="border px-4 py-2">{course.course_code}</td>
+                    <td className="border px-4 py-2">{course.credit_hours}</td>
+                    <td className="border px-4 py-2">{course.department}</td>
                         <td className="px-4 py-2">
                             <button
                                 onClick={handleEditMCQ(index)}

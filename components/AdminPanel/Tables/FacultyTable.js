@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
 
-const FacultyTable = ({setOpen}) => {
-    const [facultyMembers, setFacultyMembers] = useState([
-        { name: 'John Doe', phone_number: '1234567890', level: 'Professor', department: 'Computer Science', email: 'johndoe@gmail.com' },
-        { name: 'John Doe', phone_number: '1234567890', level: 'Professor', department: 'Computer Science', email: 'johndoe@gmail.com' },
-    ]);
+const FacultyTable = ({setOpen, faculty}) => {
 
     const openModal = () => {
         setOpen(true);
@@ -34,7 +30,7 @@ const FacultyTable = ({setOpen}) => {
                 </tr>
             </thead>
             <tbody>
-                {facultyMembers.map((facultyMember, index) => (
+                {faculty.map((facultyMember, index) => (
                     <tr key={index} className="bg-white">
                         <td className=" px-4 py-2">{facultyMember.name}</td>
                         <td className=" px-4 py-2">{facultyMember.phone_number}</td>

@@ -1,28 +1,15 @@
 import React from 'react'
 
-const items = [
-    {
-        id: 1,
-        title: "Exam Settings",
-    },
-    {
-        id: 2,
-        title: "Exam Questions",
-    },
-    {
-        id: 3,
-        title: "Exam Review",
-    }
-]
+
 
 export default function Wizard({ active, items }) {
     return (
-        <div className=' font-cabin flex justify-between items-center border-b border-primary-black border-opacity-20 w-full max-w-[550px] '>
+        <div className=' font-cabin flex justify-between items-center border-b border-primary-black border-opacity-20 w-full max-w-[850px] '>
             {items.map(item => (
 
-                <div key={item.id} className={`w-full flex py-6 mr-5 gap-x-2 ${active === item.title ? 'border-b-[3px]  border-[#FEC703]' : ''}`}>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${active === item.title ? 'bg-blue-800' : 'border border-primary-black border-opacity-30'}`}>
-                        <span className={`font-bold text-sm ${active === item.title ? "text-white" : "text-primary-black"}`}>
+                <div key={item.id} className={`w-full flex py-6 mr-5 gap-x-2 ${active === item.id ? 'border-b-[3px]  border-[#FEC703]' : ''}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${active === item.id ? 'bg-blue-800' : 'border border-primary-black border-opacity-30'}`}>
+                        <span className={`font-bold text-sm ${active === item.id ? "text-white" : "text-primary-black"}`}>
                             {item.id}
                         </span>
                     </div>
@@ -36,9 +23,4 @@ export default function Wizard({ active, items }) {
 
         </div>
     )
-}
-
-Wizard.defaultProps = {
-    items: items,
-    active: "Exam Settings"
 }

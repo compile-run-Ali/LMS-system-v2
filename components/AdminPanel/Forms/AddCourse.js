@@ -1,19 +1,28 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-const AddCourse = ({ addCourse }) => {
+const AddCourse = () => {
   const [name, setName] = useState('');
   const [creditHours, setCreditHours] = useState('');
   const [department, setDepartment] = useState('');
   const [courseCode, setCourseCode] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    addCourse({ name, credit_hours: creditHours, department, course_code: courseCode });
+    await addCourse({ name, credit_hours: creditHours, department, course_code: courseCode });
     setName('');
     setCreditHours('');
     setDepartment('');
     setCourseCode('');
   };
+
+  const addCourse = async (course) => {
+    console.log(course);
+    const new_course = await axios.post('http://localhost:3000/api/admin/course/add_courses', {
+      ...course
+    });
+    console.log(new_course);
+  }
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-xl">
