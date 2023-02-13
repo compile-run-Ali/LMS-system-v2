@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md"
 import Input from "../Common/Form/Input";
@@ -6,19 +7,12 @@ import MultiSelectDropdown from "./MultiSelect";
 const MCQTable = ({ paperId }) => {
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
-  const [mcqs, setMCQs] = useState([
-    {
-      question: "What is the capital of France?",
-      options: ["Paris", "London", "Berlin"],
-      correctOption: "Paris",
-      marks: 1,
-    },
-  ]);
+  const [mcqs, setMCQs] = useState([]);
 
   const [currentMCQ, setCurrentMCQ] = useState({
     question: "",
     options: [],
-    correctOption: "",
+    correct_answer: "",
     marks: 1,
   });
 
@@ -41,11 +35,11 @@ const MCQTable = ({ paperId }) => {
   };
 
   const handleMultipleCorrectOptionChange = (val) => {
-    setCurrentMCQ({ ...currentMCQ, correctOption: val });
+    setCurrentMCQ({ ...currentMCQ, correct_answer: val });
   };
 
   const handleCorrectOptionChange = (e) => {
-    setCurrentMCQ({ ...currentMCQ, correctOption: e.target.value });
+    setCurrentMCQ({ ...currentMCQ, correct_answer: e.target.value });
   };
 
   const handleMarksChange = (e) => {
@@ -62,12 +56,21 @@ const MCQTable = ({ paperId }) => {
     setCurrentMCQ({ ...currentMCQ, options: newOptions });
   };
 
-  const handleAddMCQ = () => {
-    setMCQs([...mcqs, currentMCQ]);
+  const handleAddMCQ = async () => {
+    const newMCQ = await axios.post("http://localhost:3000/api/faculty/paper_creation/add_objective", {
+      paper_id: paperId,
+      question: currentMCQ.question,
+      answers: currentMCQ.options.toString(),
+      correct_answer: currentMCQ.correct_answer,
+      marks: currentMCQ.marks,
+    })
+    console.log(newMCQ.data);
+    newMCQ.data.options = newMCQ.data.answers.split(",");
+    setMCQs([...mcqs, newMCQ.data]);
     setCurrentMCQ({
       question: "",
       options: [],
-      correctOption: "",  
+      correct_answer: "",  
       marks: 1,
     });
     setAdding(false);
@@ -86,7 +89,7 @@ const MCQTable = ({ paperId }) => {
     setCurrentMCQ({
       question: "",
       options: [],
-      correctOption: "",
+      correct_answer: "",
       marks: 1,
     });
     setEditing(false);
@@ -120,7 +123,7 @@ const MCQTable = ({ paperId }) => {
               <td className="px-4 py-2">{index + 1}</td>
               <td className="px-4 py-2">{mcq.question}</td>
               <td className="px-4 py-2">{mcq.options.join(", ")}</td>
-              <td className="px-4 py-2">{mcq.correctOption}</td>
+              <td className="px-4 py-2">{mcq.correct_answer}</td>
               <td className="px-4 py-2">{mcq.marks}</td>
               <td className="px-4 py-2">
                 <button
@@ -204,7 +207,7 @@ const MCQTable = ({ paperId }) => {
 
                   <select
                     type="text"
-                    value={currentMCQ.correctOption}
+                    value={currentMCQ.correct_answer}
                     onChange={handleCorrectOptionChange}
                     className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]">
                     <option value="" disabled>Select Correct Option</option>
