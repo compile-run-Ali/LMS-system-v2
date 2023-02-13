@@ -172,7 +172,7 @@ const MCQTable = ({ paperId }) => {
                     type="text"
                     value={option}
                     onChange={handleOptionChange(index)}
-                    className="bg-white border border-primary-black focus:outline-none border-opacity-[0.15] p-2 rounded-lg w-full"
+                    className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"
                   />
                 </div>
               ))}

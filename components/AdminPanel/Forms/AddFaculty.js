@@ -1,3 +1,4 @@
+import Input from '@/components/Common/Form/Input';
 import React, { useState } from 'react';
 import axios from 'axios';
 
@@ -28,14 +29,12 @@ const AddFaculty = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-gray-200 p-4">
-            <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="name">
-                    Name
-                </label>
-                <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="name"
+        <form onSubmit={handleSubmit} className="px-4">
+         <div className='p-4 grid grid-cols-2 gap-x-8 px-10'>
+            <div className="mb-4 ">
+               
+                <Input
+                    text= "Name"
                     type="text"
                     value={name}
                     onChange={(event) => setName(event.target.value)}
@@ -43,12 +42,10 @@ const AddFaculty = () => {
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="phone_number">
-                    Phone Number
-                </label>
-                <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="phone_number"
+               
+                   
+                <Input
+                   text="Phone Number"
                     type="text"
                     value={phoneNumber}
                     onChange={(event) => setPhoneNumber(event.target.value)}
@@ -56,12 +53,17 @@ const AddFaculty = () => {
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="password">
-                    Password
-                </label>
-                <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="password"
+            <Input
+                   text="Email"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    required
+                />
+            </div>
+            <div className="mb-4">
+            <Input
+                   text="Password"
                     type="password"
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
@@ -69,25 +71,8 @@ const AddFaculty = () => {
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="level">
-                    Level
-                </label>
-                <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="level"
-                    type="text"
-                    value={level}
-                    onChange={(event) => setLevel(event.target.value)}
-                    required
-                />
-            </div>
-            <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="department">
-                    Department
-                </label>
-                <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="department"
+            <Input
+                   text="Department"
                     type="text"
                     value={department}
                     onChange={(event) => setDepartment(event.target.value)}
@@ -95,24 +80,31 @@ const AddFaculty = () => {
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-gray-700 font-bold mb-2" htmlFor="email">
-                    Email
-                </label>
-                <input
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    id="email"
-                    type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+            <Input
+                   text="Level"
+                    type="text"
+                    value={level}
+                    onChange={(event) => setLevel(event.target.value)}
                     required
                 />
             </div>
+            
+            <div className='font-poppins mt-4'>
+
+<label className="block mb-2  text-primary-black" for="file_input">Upload Profile Pic</label>
+<input className="block w-full text-sm text-gray-900 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none" aria-describedby="file_input_help" id="file_input" type="file" />
+<p className="mt-1 pl-1 text-sm text-black-100 " id="file_input_help">SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+</div>
+            </div>
+            
+           <div className='flex justify-left ml-10 '>
             <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="bg-blue-800 hover:bg-blue-700 text-lg mt-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline " 
                 type="submit"
             >
                 Add Faculty
             </button>
+            </div>
         </form>
     );
 };

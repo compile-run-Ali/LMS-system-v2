@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import ExamTable from './ExamTable';
 import Modal from './Subcomponents/Modal'
+
 export default function DashboardComponent() {
   const [open, setOpen] = useState(false);
   const [exams, setExams] = useState([
