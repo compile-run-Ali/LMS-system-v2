@@ -10,7 +10,7 @@ export default function Input({ text, required, placeholder, type, value, onChan
                 }
             </label>
             <input type={type} placeholder={placeholder} defaultValue={value} onChange={onChange} min={min} max={max} required={required}
-                className='w-full bg-white border border-primary-black border-opacity-[0.15] rounded-md mt-2 px-3 py-2 focus:border-[#FEC703] focus:outline-none' />
+                className='w-full bg-white border  border-primary-black border-opacity-[0.15] rounded-md mt-2 px-3 py-2 focus:border-[#FEC703] focus:outline-none' />
         </div>
     )
 }
