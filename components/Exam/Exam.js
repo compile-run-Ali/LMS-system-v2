@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Accordion from './Accordion'
 import { MdEdit } from 'react-icons/md'
 
-export default function Exam({ exam }) {
+export default function Exam({ exam, mcqs }) {
     const router = useRouter()
     const [totalMarks, setTotalMarks] = useState(0)
     const [totalQuestions, setTotalQuestions] = useState(0);
@@ -97,7 +97,7 @@ export default function Exam({ exam }) {
                 </div>
 
                 <div className='bg-gray-100 py-5 mt-5 px-5'>
-                    <Accordion />
+                    <Accordion mcqs={mcqs} />
                 </div>
             </div>
         </div>

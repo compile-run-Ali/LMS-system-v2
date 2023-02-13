@@ -43,7 +43,7 @@ const wizardItemsSubjective = [
 ]
 
 
-export default function CreateExam({ paperType }) {
+export default function CreateExam({ paperType, mcqs }) {
   const router = useRouter()
 
   const [examDetails, setExamDetails] = useState(Object.keys(router.query).length !== 0 ? router.query : null)
@@ -75,7 +75,7 @@ export default function CreateExam({ paperType }) {
       {
         active === 2 && paperId !== 0 &&
         <div className='mt-10'>
-          <MCQTable paperId={paperId} />
+            <MCQTable paperId={paperId} mcqs_data={mcqs} />
         </div>
       }
       {
