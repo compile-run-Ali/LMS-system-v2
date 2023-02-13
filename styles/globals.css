@@ -101,7 +101,7 @@ a {
 }
 
 input::file-selector-button {
-  background-color:#1e3c72;
+  background-color:#1e40afff;
   height: 100%;
   color: white;
   border: none;

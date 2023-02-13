@@ -9,20 +9,20 @@ const confirmPasswordHash = (plainPassword, hashedPassword) => {
   })
 }
 
-export default handler = async (req, res) => {
+const handler = async (p_number, password) => {
   const prisma = new PrismaClient();
 
   try {
     const student = await prisma.student.findFirst({
       where: {
-          P_number: req.P_number
+          p_number: p_number
       }
   });
 
   if (student !== null)
     {
         //Compare the hash
-        const matched = await confirmPasswordHash(req.password, student.password);
+        const matched = await confirmPasswordHash(password, student.password);
         if (matched)
         {
           res.status(200).json(student)   
@@ -39,3 +39,5 @@ export default handler = async (req, res) => {
     throw new Error(err.message)
   }
 }
+
+export default handler

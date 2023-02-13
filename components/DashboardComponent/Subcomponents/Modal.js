@@ -8,14 +8,17 @@ export default function Modal({ open, setOpen }) {
     const router = useRouter()
     const cancelButtonRef = useRef(null)
 
-    const handleNext = () => {
+    const handleNext = async () => {
         if (examType === "I.E") {
             // Redirect to create exam page for IE
-        } else if (examType === "SO")  {
+        } else if (examType === "SO") {
             // Redirect to create exam page for subjective/objective
         } else {
             // Redirect to create exam page for objective
-            router.push('/faculty/create_exam/objective')
+            //make api call to create a new paper using axios
+            
+            //then redirect to create exam page for objectiv
+            router.push(`/faculty/create_exam/objective`)
         }
     }
 

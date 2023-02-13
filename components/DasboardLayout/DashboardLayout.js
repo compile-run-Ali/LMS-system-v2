@@ -5,7 +5,7 @@ import Topbar from '../Topbar/Topbar'
 
 import { SidebarContext } from '../../context/SidebarContext/GlobalProvider'
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ admin, children }) {
     const { showSidebar, setShowSidebar } = useContext(SidebarContext);
 
     const toggleSidebar = () => {
@@ -29,7 +29,7 @@ export default function DashboardLayout({ children }) {
 
             <div className={`w-full md:w-[calc(100%-270px)] md:ml-[270px] ease-in-out duration-300 ${showSidebar ? ' translate-x-0' : '-translate-x-[100px]'}`}>
          
-                <Topbar />
+                <Topbar admin />
                 {children}
             </div>
 
