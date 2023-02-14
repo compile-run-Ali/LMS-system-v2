@@ -1,23 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 
-const MCQTable = () => {
-    const [mcqs, setMCQs] = useState([
-        {
-            sr: 1,
-            question: "What is the capital of France?",
-            options: ["Paris", "London", "Berlin"],
-            correctOption: "Paris",
-            marks: 1,
-        },
-        {
-            sr: 2,
-            question: "What is the currency of Japan?",
-            options: ["Yen", "Dollar", "Euro"],
-            correctOption: "Yen",
-            marks: 1,
-        },
-    ]);
+const MCQTable = ({objective_questions}) => {
+    const [mcqs, setMCQs] = useState([]);
+
+    useEffect(() => {
+        setMCQs(objective_questions);
+    }, [objective_questions]);
 
     return (
         <div className="w-full font-poppins mt-10 rounded-lg">
@@ -39,10 +28,10 @@ const MCQTable = () => {
                 <tbody>
                     {mcqs.map((mcq, index) => (
                         <tr key={index} className="text-center">
-                            <td className=" px-4 py-2">{mcq.sr}</td>
+                            <td className=" px-4 py-2">{index + 1}</td>
                             <td className=" px-4 py-2">{mcq.question}</td>
-                            <td className=" px-4 py-2">{mcq.options}</td>
-                            <td className=" px-4 py-2">{mcq.correctOption}</td>
+                            <td className=" px-4 py-2">{mcq.answers}</td>
+                            <td className=" px-4 py-2">{mcq.correct_answer}</td>
                             <td className=" px-4 py-2">{mcq.marks}</td>
                         </tr>
                     ))}

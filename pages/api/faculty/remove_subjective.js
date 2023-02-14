@@ -4,10 +4,9 @@ const handler = async (req, res) => {
   const prisma = new PrismaClient()
   try {
     //Remove Faculty
-    const { id } = req.body
     await prisma.subjectiveQuestion.delete({
       where: {
-        sq_id: id,
+        sq_id: req.body.sq_id,
       }
     })
     await prisma.$disconnect()

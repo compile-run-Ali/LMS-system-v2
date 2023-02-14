@@ -1,13 +1,17 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md"
 import Input from "../Common/Form/Input";
 import MultiSelectDropdown from "./MultiSelect";
 
-const MCQTable = ({ paperId }) => {
+const MCQTable = ({ paperId, setActive, objective_questions, setObjectiveQuestions }) => {
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
-  const [mcqs, setMCQs] = useState([]);
+  const [mcqs, setMCQs] = useState(objective_questions.map((mcq) => {
+    mcq.options = mcq.answers.split(",");
+    return mcq;
+  }
+  ));
 
   const [currentMCQ, setCurrentMCQ] = useState({
     question: "",
@@ -64,9 +68,9 @@ const MCQTable = ({ paperId }) => {
       correct_answer: currentMCQ.correct_answer,
       marks: currentMCQ.marks,
     })
-    console.log(newMCQ.data);
     newMCQ.data.options = newMCQ.data.answers.split(",");
     setMCQs([...mcqs, newMCQ.data]);
+    setObjectiveQuestions([...mcqs, newMCQ.data]);
     setCurrentMCQ({
       question: "",
       options: [],
@@ -82,24 +86,41 @@ const MCQTable = ({ paperId }) => {
     setCurrentMCQ(mcqs[index]);
   };
 
-  const handleUpdateMCQ = (index) => () => {
-    const newMCQs = [...mcqs];
-    newMCQs[index] = currentMCQ;
-    setMCQs(newMCQs);
-    setCurrentMCQ({
-      question: "",
-      options: [],
-      correct_answer: "",
-      marks: 1,
-    });
-    setEditing(false);
-    setIndex(null);
+  const handleUpdateMCQ = async (index) => {
+    const newMCQ = await axios.post("http://localhost:3000/api/faculty/edit_objective", {
+      oq_id: mcqs[index].oq_id,
+      paper_id: paperId,
+      question: currentMCQ.question,
+      answers: currentMCQ.options.toString(),
+      correct_answer: currentMCQ.correct_answer,
+      marks: currentMCQ.marks,
+    })
+    if (newMCQ.status === 200) {
+      const newMCQs = [...mcqs];
+      newMCQs[index] = currentMCQ;
+      setMCQs(newMCQs);
+      setObjectiveQuestions(newMCQs);
+      setCurrentMCQ({
+        question: "",
+        options: [],
+        correct_answer: "",
+        marks: 1,
+      });
+      setEditing(false);
+      setIndex(null);
+    }
   };
 
-  const handleDeleteMCQ = (index) => () => {
-    const newMCQs = [...mcqs];
-    newMCQs.splice(index, 1);
-    setMCQs(newMCQs);
+  const handleDeleteMCQ = async (index) => {
+    const res = await axios.post("http://localhost:3000/api/faculty/remove_objective", {
+      oq_id: mcqs[index].oq_id,
+    });
+    if (res.status === 200) {
+      const newMCQs = [...mcqs];
+      newMCQs.splice(index, 1);
+      setMCQs(newMCQs);
+      setObjectiveQuestions(newMCQs);
+    }
   };
 
   return (
@@ -135,7 +156,7 @@ const MCQTable = ({ paperId }) => {
               </td>
               <td className="px-4 py-2">
                 <button
-                  onClick={handleDeleteMCQ(index)}
+                  onClick={() => { handleDeleteMCQ(index) }}
                   className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
                 >
                   <MdDelete />
@@ -222,7 +243,7 @@ const MCQTable = ({ paperId }) => {
           </div>
           {editing ? (
             <button
-              onClick={handleUpdateMCQ(index)}
+              onClick={() => { handleUpdateMCQ(index) }}
               className="bg-blue-800 text-white p-2 rounded hover:bg-blue-700"
             >
               Update
@@ -238,6 +259,16 @@ const MCQTable = ({ paperId }) => {
           )}
         </div>
       }
+       <div className='mt-10 w-full pr-10 flex justify-end gap-x-5'>
+        <button type='button' className='border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8'>
+          Cancel
+        </button>
+        <button type='submit' className='bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8'
+        onClick={() => setActive(3)}
+        >
+          Proceed
+        </button>
+      </div>
     </div>
   );
 };

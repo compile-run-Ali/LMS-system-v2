@@ -3,7 +3,7 @@ import { MdArrowDropDown } from "react-icons/md";
 import MCQTable from "./McqTable";
 
 
-const Accordion = () => {
+const Accordion = ({mcqs}) => {
     const [activeIndex, setActiveIndex] = useState(-1);
 
     const handleAccordionClick = (index) => {
@@ -21,7 +21,7 @@ const Accordion = () => {
                     <MdArrowDropDown fontSize={28} className="fill-blue-800" />
                 </div>
                 {activeIndex === 1 && (
-                    <MCQTable />
+                    <MCQTable objective_questions={ mcqs} />
                 )}
             </div>
         </div>
