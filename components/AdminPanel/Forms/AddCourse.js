@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 import Input from '@/components/Common/Form/Input';
 const AddCourse = () => {
-  const [name, setName] = useState('');
-  const [creditHours, setCreditHours] = useState('');
-  const [department, setDepartment] = useState('');
-  const [courseCode, setCourseCode] = useState('');
+  const router = useRouter();
+
+  const [edit, setEdit] = useState(router.query.course_code ? true : false);
+  const [name, setName] = useState(edit ? router.query.course_name : '');
+  const [creditHours, setCreditHours] = useState(edit ? router.query.credit_hours : '');
+  const [department, setDepartment] = useState(edit ? router.query.department : '');
+  const [courseCode, setCourseCode] = useState(edit ? router.query.course_code : '');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -17,10 +21,13 @@ const AddCourse = () => {
   };
 
   const addCourse = async (course) => {
-    console.log(course);
-    const new_course = await axios.post('http://localhost:3000/api/admin/course/add_courses', {
+    const new_course = await axios.post(`http://localhost:3000/api/admin/course/${edit ? "edit_course" : "add_courses"}`, {
+      course_code: edit ? router.query.course_code : null,
       ...course
     });
+    if (new_course.status === 200) {
+      router.push("/admin")
+    }
     console.log(new_course);
   }
 

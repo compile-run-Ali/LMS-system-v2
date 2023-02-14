@@ -8,7 +8,8 @@ export default function Form({ setActive, setPaperId, examDetails, paperType }) 
   const [paperDuration, setPaperDuration] = useState(edit? Number(examDetails.duration) : 3);
   const [dateOfExam, setDateOfExam] = useState(edit? examDetails.date : "");
   const [weightage, setWeightage] = useState(edit? examDetails.weightage :"");
-  const [paperTime, setPaperTime] = useState(edit? examDetails.time : "09:00:00");
+  const [paperTime, setPaperTime] = useState(edit ? examDetails.time : "09:00:00");
+  const [freeflow, setFreeflow] = useState(false);
   
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
@@ -29,6 +30,10 @@ export default function Form({ setActive, setPaperId, examDetails, paperType }) 
   const handlePaperTime = (e) => {
     setPaperTime(e.target.value);
   }
+  
+  const handleFreeflow = (e) => {
+    setFreeflow(e.target.checked);
+  }
 
   const submitForm = async (e) => {
     e.preventDefault();
@@ -37,14 +42,16 @@ export default function Form({ setActive, setPaperId, examDetails, paperType }) 
       return;
     }
 
+
     const res = await axios.post(`http://localhost:3000/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`, {
       paper_id: examDetails ? examDetails.paper_id : null,
       paper_name: paperName,
-      paper_time: paperTime,
+      time: paperTime,
       date: new Date(dateOfExam).toDateString(),
       duration: paperDuration,
       weightage: parseInt(weightage),
-      paper_type: paperType
+      paper_type: paperType,
+      freeflow: freeflow
     })
     
     setPaperId(res.data.paper_id);
@@ -97,7 +104,10 @@ export default function Form({ setActive, setPaperId, examDetails, paperType }) 
           value={paperTime}
         />
 
-
+        <div className="flex items-center gap-x-3 mt-14 ml-2">
+          <label className="block">Freeflow?</label>
+          <input type="checkbox" className="accent-slate-100" onChange={handleFreeflow} />
+        </div>
 
       </div>
       <div className='mt-10 w-full pr-10 flex justify-end gap-x-5'>

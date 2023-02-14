@@ -1,30 +1,27 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md"
 import Input from "../Common/Form/Input";
 import MultiSelectDropdown from "./MultiSelect";
 
-const MCQTable = ({ paperId }) => {
+const MCQTable = ({ paperId, mcqs_data }) => {
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
-  const [mcqs, setMCQs] = useState([
-    {
-      question: "What is the capital of France?",
-      options: ["Paris", "London", "Berlin"],
-      correctOption: "Paris",
-      marks: 1,
-    },
-  ]);
+  const [mcqs, setMCQs] = useState(mcqs_data.map(mcq => {
+    mcq.options = mcq.answers.split(",");
+    return mcq;
+  }
+  ));
 
   const [currentMCQ, setCurrentMCQ] = useState({
     question: "",
     options: [],
-    correctOption: "",
+    correct_answer: "",
     marks: 1,
   });
 
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
-
 
   const handleMultipleOptionsChange = (e) => {
     setMultipleOptions(e.target.checked);
@@ -41,11 +38,11 @@ const MCQTable = ({ paperId }) => {
   };
 
   const handleMultipleCorrectOptionChange = (val) => {
-    setCurrentMCQ({ ...currentMCQ, correctOption: val });
+    setCurrentMCQ({ ...currentMCQ, correct_answer: val });
   };
 
   const handleCorrectOptionChange = (e) => {
-    setCurrentMCQ({ ...currentMCQ, correctOption: e.target.value });
+    setCurrentMCQ({ ...currentMCQ, correct_answer: e.target.value });
   };
 
   const handleMarksChange = (e) => {
@@ -62,12 +59,22 @@ const MCQTable = ({ paperId }) => {
     setCurrentMCQ({ ...currentMCQ, options: newOptions });
   };
 
-  const handleAddMCQ = () => {
-    setMCQs([...mcqs, currentMCQ]);
+  const handleAddMCQ = async () => {
+    const newMCQ = await axios.post(`http://localhost:3000/api/faculty/${editing ? "edit_objective" : "paper_creation/add_objective"}`, {
+      paper_id: paperId,
+      oq_id: editing ? mcqs[index].oq_id : null,
+      question: currentMCQ.question,
+      answers: currentMCQ.options.toString(),
+      correct_answer: currentMCQ.correct_answer,
+      marks: currentMCQ.marks,
+    })
+    console.log(newMCQ.data);
+    newMCQ.data.options = newMCQ.data.answers.split(",");
+    setMCQs([...mcqs, newMCQ.data]);
     setCurrentMCQ({
       question: "",
       options: [],
-      correctOption: "",  
+      correct_answer: "",  
       marks: 1,
     });
     setAdding(false);
@@ -79,24 +86,39 @@ const MCQTable = ({ paperId }) => {
     setCurrentMCQ(mcqs[index]);
   };
 
-  const handleUpdateMCQ = (index) => () => {
+  const handleUpdateMCQ =async (index) => {
+    const newMCQ = await axios.post(`http://localhost:3000/api/faculty/edit_objective`, {
+      oq_id: mcqs[index].oq_id,
+      question: currentMCQ.question,
+      answers: currentMCQ.options.toString(),
+      correct_answer: currentMCQ.correct_answer,
+      marks: currentMCQ.marks,
+    })
+    if (newMCQ.status === 200) {
+      
+    }
     const newMCQs = [...mcqs];
     newMCQs[index] = currentMCQ;
     setMCQs(newMCQs);
     setCurrentMCQ({
       question: "",
       options: [],
-      correctOption: "",
+      correct_answer: "",
       marks: 1,
     });
     setEditing(false);
     setIndex(null);
   };
 
-  const handleDeleteMCQ = (index) => () => {
-    const newMCQs = [...mcqs];
-    newMCQs.splice(index, 1);
-    setMCQs(newMCQs);
+  const handleDeleteMCQ = async (index) => {
+    const deleteMcq = await axios.post(`http://localhost:3000/api/faculty/remove_objective`, {
+      oq_id: mcqs[index].oq_id,
+    });
+    if (deleteMcq.status === 200) {
+      const newMCQs = [...mcqs];
+      newMCQs.splice(index, 1);
+      setMCQs(newMCQs); 
+    }
   };
 
   return (
@@ -119,8 +141,8 @@ const MCQTable = ({ paperId }) => {
             <tr key={index} className="border-t">
               <td className="px-4 py-2">{index + 1}</td>
               <td className="px-4 py-2">{mcq.question}</td>
-              <td className="px-4 py-2">{mcq.options.join(", ")}</td>
-              <td className="px-4 py-2">{mcq.correctOption}</td>
+              <td className="px-4 py-2">{mcq.options.join(",")}</td>
+              <td className="px-4 py-2">{mcq.correct_answer}</td>
               <td className="px-4 py-2">{mcq.marks}</td>
               <td className="px-4 py-2">
                 <button
@@ -132,7 +154,7 @@ const MCQTable = ({ paperId }) => {
               </td>
               <td className="px-4 py-2">
                 <button
-                  onClick={handleDeleteMCQ(index)}
+                  onClick={() => { handleDeleteMCQ(index) }}
                   className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
                 >
                   <MdDelete />
@@ -204,7 +226,7 @@ const MCQTable = ({ paperId }) => {
 
                   <select
                     type="text"
-                    value={currentMCQ.correctOption}
+                    value={currentMCQ.correct_answer}
                     onChange={handleCorrectOptionChange}
                     className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]">
                     <option value="" disabled>Select Correct Option</option>
@@ -219,7 +241,7 @@ const MCQTable = ({ paperId }) => {
           </div>
           {editing ? (
             <button
-              onClick={handleUpdateMCQ(index)}
+              onClick={() => { handleUpdateMCQ(index) }}
               className="bg-blue-800 text-white p-2 rounded hover:bg-blue-700"
             >
               Update

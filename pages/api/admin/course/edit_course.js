@@ -4,17 +4,15 @@ const handler = async (req, res) => {
   const prisma = new PrismaClient()
   try {
     //Edit Faculty Details
-    const faculty = await prisma.faculty.update({
+    const faculty = await prisma.course.update({
       where: {
-        faculty_id: req.body.faculty_id,
+        course_code: req.body.course_code,
       },
       data: {
-        name: req.body.name,
-        email: req.body.email,
-        phone_number: req.body.phone_number,
+        course_name: req.body.course_name,
+        credit_hours: Number(req.body.credit_hours),
+        course_code: req.body.course_code,
         department: req.body.department,
-        profile_picture: req.body.profile_picture,
-        level: Number(req.body.level),
       },
     })
     res.status(200).json(faculty)

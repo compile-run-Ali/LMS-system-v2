@@ -4,13 +4,13 @@ const handler = async (req, res) => {
   const prisma = new PrismaClient()
   try {
     //Remove Faculty
-    await prisma.faculty.delete({
+    await prisma.subjectiveQuestion.delete({
       where: {
-        faculty_id: req.body.faculty_id,
+        sq_id: req.body.sq_id,
       }
     })
     await prisma.$disconnect()
-    res.status(200).json({message: "Faculty has been Deleted"})
+    res.status(200).json({message: "Subjective Question Deleted Successfully"})
   } catch (err) {
     throw new Error(err.message)
   }
