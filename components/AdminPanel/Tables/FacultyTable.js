@@ -1,19 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MdDelete, MdEdit } from 'react-icons/md';
+import { useRouter } from 'next/router';
+import axios from 'axios';
 
-const FacultyTable = ({setOpen, faculty}) => {
+const FacultyTable = ({faculty}) => {
+    const router = useRouter();
 
-    const openModal = () => {
-        setOpen(true);
-    };
+    const [facultyData, setFacultyData] = useState([]);
+
+    useEffect(() => {
+        setFacultyData(faculty);
+    }, [faculty]);
 
     const handleEditMCQ = (index) => () => {
         // Implement this
+        router.push({
+            pathname: '/admin/add_faculty',
+            query: {
+                faculty_id: facultyData[index].faculty_id,
+                name: facultyData[index].name,
+                phone_number: facultyData[index].phone_number,
+                level: facultyData[index].level,
+                department: facultyData[index].department,
+                email: facultyData[index].email,
+                profile_picture: facultyData[index].profile_picture,
+            },
+        })
     };
 
-    const handleDeleteMCQ = (index) => () => {
-        // Implement this
-        
+    const handleDeleteMCQ = async (index) => {
+        const deletedFaculty = await axios.post('/api/admin/faculty/remove_faculty', {
+            faculty_id: faculty[index].faculty_id,
+        });
+        if (deletedFaculty.status === 200) {
+            const newFaculty = [...facultyData];
+            newFaculty.splice(index, 1);
+            setFacultyData(newFaculty); 
+          }
     };
 
     return (
@@ -30,7 +53,7 @@ const FacultyTable = ({setOpen, faculty}) => {
                 </tr>
             </thead>
             <tbody>
-                {faculty.map((facultyMember, index) => (
+                {facultyData.map((facultyMember, index) => (
                     <tr key={index} className="bg-white">
                         <td className=" px-4 py-2">{facultyMember.name}</td>
                         <td className=" px-4 py-2">{facultyMember.phone_number}</td>
@@ -47,7 +70,7 @@ const FacultyTable = ({setOpen, faculty}) => {
                         </td>
                         <td className="px-4 py-2">
                             <button
-                                onClick={openModal}
+                                onClick={() => { handleDeleteMCQ(index) }}
                                 className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
                             >
                                 <MdDelete />
