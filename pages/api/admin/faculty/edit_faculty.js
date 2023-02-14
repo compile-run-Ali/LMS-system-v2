@@ -14,7 +14,7 @@ const handler = async (req, res) => {
         phone_number: req.body.phone_number,
         department: req.body.department,
         profile_picture: req.body.profile_picture,
-        level: req.body.level,
+        level: Number(req.body.level),
       },
     })
     res.status(200).json(faculty)

@@ -1,19 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { MdDelete, MdEdit } from 'react-icons/md';
+import { useRouter } from 'next/router';
 
 const CourseTable = ({setOpen, courses}) => {
+    const router = useRouter();
 
-    const openModal = () => {
-        setOpen(true);
-    };
+    const [coursesData, setCoursesData] = useState([])
+
+    useEffect(() => {
+        setCoursesData(courses);
+    }, [courses]);
 
     const handleEditMCQ = (index) => () => {
         // Implement this
+        router.push({
+            pathname: '/admin/add_course',
+            query: {
+                course_id: coursesData[index].course_id,
+                course_name: coursesData[index].course_name,
+                course_code: coursesData[index].course_code,
+                credit_hours: coursesData[index].credit_hours,
+                department: coursesData[index].department,
+            },
+        })
     };
 
-    const handleDeleteMCQ = (index) => () => {
+    const handleDeleteMCQ = async (index) => {
         // Implement this
-        
+        const deletedCourse = await axios.post('/api/admin/course/remove_course', {
+            course_code: courses[index].course_code,
+        });
+        if (deletedCourse.status === 200) {
+            const newCourses = [...coursesData];
+            newCourses.splice(index, 1);
+            setCoursesData(newCourses); 
+          }
     };
 
     return (
@@ -29,7 +51,7 @@ const CourseTable = ({setOpen, courses}) => {
                 </tr>
             </thead>
             <tbody>
-                {courses.map((course, index) => (
+                {coursesData.map((course, index) => (
                     <tr key={index} className="bg-white">
                     <td className="border px-4 py-2">{course.course_name}</td>
                     <td className="border px-4 py-2">{course.course_code}</td>
@@ -45,7 +67,7 @@ const CourseTable = ({setOpen, courses}) => {
                         </td>
                         <td className="px-4 py-2">
                             <button
-                                onClick={openModal}
+                                onClick={() => { handleDeleteMCQ(index) }}
                                 className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
                             >
                                 <MdDelete />
