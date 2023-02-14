@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import Input from '@/components/Common/Form/Input';
 const AddCourse = () => {
   const [name, setName] = useState('');
   const [creditHours, setCreditHours] = useState('');
@@ -25,13 +25,11 @@ const AddCourse = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-xl">
+  <div className='flex justify-center ' >
+    <form onSubmit={handleSubmit} className=" bg-white py-6 rounded-lg shadow-xl w-2/3 px-10 ">
       <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2" htmlFor="course-code">
-          Course Code
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        <Input
+        text="Course Code"
           id="course-code"
           type="text"
           value={courseCode}
@@ -40,11 +38,8 @@ const AddCourse = () => {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2" htmlFor="name">
-          Course Name
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      <Input
+        text="Course Name"
           id="name"
           type="text"
           value={name}
@@ -53,11 +48,8 @@ const AddCourse = () => {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2" htmlFor="credit-hours">
-          Credit Hours
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      <Input
+        text="Credit Hours"
           id="credit-hours"
           type="text"
           value={creditHours}
@@ -66,11 +58,8 @@ const AddCourse = () => {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-gray-700 font-bold mb-2" htmlFor="department">
-          Department
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      <Input
+        text="Department"
           id="department"
           type="text"
           value={department}
@@ -80,13 +69,15 @@ const AddCourse = () => {
       </div>
       <div className="flex items-center justify-between">
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className= " font-poppins mt-8 bg-blue-800 hover:bg-blue-700 text-white font-semibold py-2 px-8 rounded focus:outline-none focus:shadow-outline"
           type="submit"
         >
           Add Course
         </button>
       </div>
+     
     </form>
+    </div>
   );
 };
 
