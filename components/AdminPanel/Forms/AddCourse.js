@@ -28,7 +28,6 @@ const AddCourse = () => {
     if (new_course.status === 200) {
       router.push("/admin")
     }
-    console.log(new_course);
   }
 
   return (

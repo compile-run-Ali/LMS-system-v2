@@ -43,13 +43,15 @@ const wizardItemsSubjective = [
 ]
 
 
-export default function CreateExam({ paperType, mcqs }) {
+export default function CreateExam({ paperType }) {
   const router = useRouter()
 
   const [examDetails, setExamDetails] = useState(Object.keys(router.query).length !== 0 ? router.query : null)
   const [active, setActive] = useState(1);
-  const [paperId, setPaperId] = useState(0);
+  const [paperId, setPaperId] = useState(examDetails ? examDetails.paper_id : 0);
   const [exam, setExam] = useState();
+  const [mcqs, setMCQs] = useState([]);
+  const [subjectives, setSubjectives] = useState([]);
 
   const fetchExam = async () => {
     const res = await axios.post("/api/faculty/get_exam", {
@@ -58,11 +60,33 @@ export default function CreateExam({ paperType, mcqs }) {
     setExam(res.data);
   }
 
+  const fetchObjectives = async () => {
+    const res = await axios.post("/api/faculty/get_objective", {
+      paper_id: paperId
+    })
+    console.log(res.data)
+    setMCQs(res.data);
+  }
+
+  const fetchSubjectives = async () => {
+    const res = await axios.post("/api/faculty/get_subjective", {
+      paper_id: paperId
+    })
+    setSubjectives(res.data);
+  }
+
   useEffect(() => {
     if (paperId !== 0 && !exam) {
       fetchExam();
     }
-  }, [paperId]);
+    if (paperType === "Objective" && paperId !== 0) {
+      fetchObjectives();
+    }
+    if (paperType === "Subjective/Objective" && paperId !== 0) {
+      fetchObjectives();
+      fetchSubjectives();
+    }
+  }, [paperId, exam, paperType]);
 
 
   return (
@@ -75,19 +99,25 @@ export default function CreateExam({ paperType, mcqs }) {
       {
         active === 2 && paperId !== 0 &&
         <div className='mt-10'>
-            <MCQTable paperId={paperId} mcqs_data={mcqs} />
+            <MCQTable paperId={paperId} setActive={setActive} objective_questions={mcqs} setObjectiveQuestions={ setMCQs} />
         </div>
       }
       {
         active === 3 && paperId !== 0 && paperType === "Objective" &&
         <div className='mt-10'>
-          <Exam exam={exam} />
+            <Exam exam={exam} objectiveQuestions={mcqs} subjectiveQuestions={subjectives} />
         </div>
       }
       {
         active === 3 && paperId !== 0 && paperType === "Subjective/Objective" &&
         <div className='mt-10'>
-          <SubjectiveExam paperId={paperId} />
+            <SubjectiveExam paperId={paperId} setActive={setActive} subjective_questions={subjectives} setSubjectiveQuestions={setSubjectives} />
+        </div>
+      }
+      {
+        active === 4 && paperId !== 0 && paperType === "Subjective/Objective" &&
+        <div className='mt-10'>
+            <Exam exam={exam} objectiveQuestions={mcqs} subjectiveQuestions={subjectives} />
         </div>
       }
     </div>

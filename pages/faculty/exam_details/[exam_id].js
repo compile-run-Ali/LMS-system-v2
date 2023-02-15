@@ -1,54 +1,39 @@
 import BaseLayout from '@/components/BaseLayout/BaseLayout'
 import DashboardLayout from '@/components/DasboardLayout/DashboardLayout'
 import Exam from '@/components/Exam/Exam'
-import { useRouter } from 'next/router'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import axios from 'axios'
 
-export default function ExamPage({ exam_data, objective_data, subjective_data }) {
-  const [exam, setExam] = useState();
-  const [objective, setObjective] = useState();
-  const [subjective, setSubjective] = useState();
-
-  useEffect(() => {
-    if (exam_data !== undefined && exam_data !== null) {
-      setExam(exam_data)
-      setObjective(objective_data)
-      setSubjective(subjective_data)
-    }
-    console.log(exam_data)
-    console.log(objective_data)
-    console.log(subjective_data)
-  }, [exam_data, objective_data, subjective_data]);
-
-
+export default function ExamPage({ examDetails, objectiveQuestions, subjectiveQuestions}) {
   return (
     
-    <BaseLayout title={"Exam | " + exam_data?.paper_name}>
+    <BaseLayout title={"Exam | " + examDetails.paper_name}>
       <DashboardLayout>
-        {exam && <Exam exam={exam} mcqs={objective_data} />}
+      {examDetails && <Exam exam={examDetails} objectiveQuestions={objectiveQuestions} subjectiveQuestions={subjectiveQuestions} />}
       </DashboardLayout>
     </BaseLayout>
   )
 }
 
 export const getServerSideProps = async (context) => {
-  const { exam_id } = context.query;
-  const res = await axios.post("http://localhost:3000/api/faculty/get_exam", {
+  const exam_id = context.params.exam_id;
+  const examDetails = await axios.post("http://localhost:3000/api/faculty/get_exam", {
     paper_id: exam_id
   })
-  const objective_data = await axios.post("http://localhost:3000/api/faculty/get_objective", {
+
+  const objectiveQuestions = await axios.post("http://localhost:3000/api/faculty/get_objective", {
     paper_id: exam_id
   })
-  // const subjective_data = await axios.post("http://localhost:3000/api/faculty/get_subjective", {
+
+  // const subjectiveQuestions = await axios.post("http://localhost:3000/api/faculty/get_subjective", {
   //   paper_id: exam_id
   // })
 
   return {
     props: {
-      exam_data: res.data,
-      objective_data: objective_data.data,
-      subjective_data: []
+      examDetails: examDetails.data,
+      objectiveQuestions: objectiveQuestions.data,
+      subjectiveQuestions: []
     }
   }
 }

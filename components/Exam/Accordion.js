@@ -21,7 +21,7 @@ const Accordion = ({mcqs}) => {
                     <MdArrowDropDown fontSize={28} className="fill-blue-800" />
                 </div>
                 {activeIndex === 1 && (
-                    <MCQTable mcqs={mcqs}/>
+                    <MCQTable objective_questions={ mcqs} />
                 )}
             </div>
         </div>

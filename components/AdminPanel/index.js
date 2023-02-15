@@ -11,7 +11,6 @@ export default function AdminPanel({faculty_data, courses_data}) {
     const [active, setActive] = useState("Faculty");
 
     useEffect(() => {
-        console.log(courses_data)
         if (faculty_data !== undefined, faculty_data !== null) {
              setFaculty(faculty_data)
         }

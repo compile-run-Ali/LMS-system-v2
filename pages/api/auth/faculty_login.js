@@ -4,7 +4,6 @@ import bcrypt from "bcrypt"
 const confirmPasswordHash = (plainPassword, hashedPassword) => {
   return new Promise(resolve => {
     bcrypt.compare(plainPassword, hashedPassword, function (err, res) {
-        console.log(res)
           resolve(res);
       });
   })
