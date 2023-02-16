@@ -7,7 +7,7 @@ const handler = async (req, res) => {
     const { id } = req.body;
     await prisma.student.delete({
       where: {
-        student_id: id,
+        p_number: id,
       },
     });
     await prisma.$disconnect();

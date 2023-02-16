@@ -8,20 +8,21 @@ const handler = async (req, res) => {
     const hash = await bcrypt.hash(req.body.password, 0);
     const student = await prisma.student.create({
       data: {
+        p_number: Number(req.body.p_number),
         name: req.body.name,
         password: hash,
         phone_number: req.body.phone_number,
-        cgpa: req.body.cgpa,
+        cgpa: Number(req.body.cgpa),
         email: req.body.email,
-        dob: req.body.dob,
+        DOB: new Date(req.body.DOB),
       },
       select: {
-        student_id: true,
+        p_number: true,
         name: true,
         phone_number: true,
         cgpa: true,
         email: true,
-        dob: true,
+        DOB: true,
       },
     });
     res.status(200).json(student);

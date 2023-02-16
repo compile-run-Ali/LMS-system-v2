@@ -6,12 +6,12 @@ const handler = async (req, res) => {
     //  Find Student
     const student = await prisma.student.findMany({
       select: {
-        student_id: true,
+        p_number: true,
         name: true,
         email: true,
         phone_number: true,
         cgpa: true,
-        dob: true,
+        DOB: true,
       },
     });
     res.status(200).json(student);

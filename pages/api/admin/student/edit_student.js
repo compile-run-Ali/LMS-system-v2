@@ -6,7 +6,7 @@ const handler = async (req, res) => {
     // Edit Student Details
     const student = await prisma.student.update({
       where: {
-        student_id: req.body.student_id,
+        p_number: req.body.p_number,
       },
       data: {
         name: req.body.name,
