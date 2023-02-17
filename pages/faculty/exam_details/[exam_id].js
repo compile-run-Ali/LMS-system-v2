@@ -9,7 +9,7 @@ export default function ExamPage({ examDetails, objectiveQuestions, subjectiveQu
     
     <BaseLayout title={"Exam | " + examDetails.paper_name}>
       <DashboardLayout>
-      {examDetails && <Exam exam={examDetails} objectiveQuestions={objectiveQuestions} subjectiveQuestions={subjectiveQuestions} />}
+        {examDetails && <Exam exam={examDetails} objectiveQuestions={objectiveQuestions} subjectiveQuestions={subjectiveQuestions} isEdit={ false} />}
       </DashboardLayout>
     </BaseLayout>
   )
@@ -25,15 +25,20 @@ export const getServerSideProps = async (context) => {
     paper_id: exam_id
   })
 
-  // const subjectiveQuestions = await axios.post("http://localhost:3000/api/faculty/get_subjective", {
-  //   paper_id: exam_id
-  // })
+  let subjectiveQuestions = []
+
+  if (examDetails.data.paper_type === 'Subjective/Objective') {
+    const res = await axios.post("http://localhost:3000/api/faculty/get_subjective", {
+      paper_id: exam_id
+    })
+    subjectiveQuestions = res.data
+    }
 
   return {
     props: {
       examDetails: examDetails.data,
       objectiveQuestions: objectiveQuestions.data,
-      subjectiveQuestions: []
+      subjectiveQuestions: subjectiveQuestions
     }
   }
 }

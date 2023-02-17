@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Courses from './Subcomponents/Courses';
 import Faculty from './Subcomponents/Faculty';
 import Tabs from './Subcomponents/Tabs'
+import AssignedTable from './Tables/AssignedTable';
 
 export default function AdminPanel({faculty_data, courses_data}) {    
     const [faculty, setFaculty] = useState([]);
@@ -32,13 +33,14 @@ export default function AdminPanel({faculty_data, courses_data}) {
         {
             active === "Courses" &&
             <div>
-                <Courses courses={courses} setCourses={setCourses } />
+                <Courses courses={courses} setCourses={setCourses } faculty={faculty} />
             </div>
         }
         {
-            active === "Exams" &&
-            <div>
-            </div>
+            active === "Assigned" &&
+                <div>
+                    <AssignedTable course_data={courses}/>
+                </div>
         }
     </div>
   )

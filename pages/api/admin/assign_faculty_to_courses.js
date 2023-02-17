@@ -17,7 +17,22 @@ const handler = async (req, res) => {
           },
         },
       },
-    })
+      select: {
+        course: {
+          select: {
+            course_code: true,
+          },
+        },
+        faculty: {
+          select: {
+            faculty_id: true,
+            name: true,
+            department: true,
+          },
+      }
+      }
+    }
+    )
     res.status(200).json(ftc)
   } catch (err) {
     throw new Error(err.message)
