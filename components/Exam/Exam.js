@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Accordion from './Accordion'
 import { MdEdit } from 'react-icons/md'
+import axios from 'axios'
 
 export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, isEdit }) {
     const router = useRouter()
@@ -19,6 +20,14 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
         })
     }
 
+    const submitExam = async () => {
+        const submitExam = await axios.post("/api/faculty/submit_exam", {
+            paper_id: exam.paper_id
+        })
+        if (submitExam.status === 200) {
+            router.push("/faculty/exams")
+        }
+    }
     return (
         <div className='pr-10 pl-7 font-poppins w-full '>
 
@@ -114,12 +123,21 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
             </div>
             {
                 edit && (
-                    <div className='mt-10 w-full pr-10 flex justify-end gap-x-5 mb-10'>
-                        <button type='submit' className='bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8'
-                            onClick={() => {router.push('/faculty')}}
-                        >
-                        Confirm
-                        </button>
+                    <div>
+                        <div className='mt-10 w-full pr-10 flex justify-end gap-x-5 mb-10'>
+                            <button type='submit' className='bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8'
+                                onClick={() => {router.push('/faculty')}}
+                            >
+                            Save Draft
+                            </button>
+                        </div>
+                        <div className='mt-10 w-full pr-10 flex justify-end gap-x-5 mb-10'>
+                            <button type='submit' className='bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8'
+                                onClick={() => {submitExam()}}
+                            >
+                            Submit
+                            </button>
+                        </div>    
                     </div>
                 )
             }

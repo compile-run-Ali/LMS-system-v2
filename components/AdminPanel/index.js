@@ -1,11 +1,12 @@
 
 import React, { useEffect, useState } from 'react'
+import ExamTable from './Tables/ExamTable';
 import Courses from './Subcomponents/Courses';
 import Faculty from './Subcomponents/Faculty';
 import Tabs from './Subcomponents/Tabs'
 import AssignedTable from './Tables/AssignedTable';
 
-export default function AdminPanel({faculty_data, courses_data}) {    
+export default function AdminPanel({faculty_data, courses_data, exams_data}) {    
     const [faculty, setFaculty] = useState([]);
     const [courses, setCourses] = useState([]);
     const [exams, setExams] = useState([]);
@@ -18,7 +19,10 @@ export default function AdminPanel({faculty_data, courses_data}) {
         if (courses_data !== undefined, courses_data !== null) {
             setCourses(courses_data)
         }
-    }, [faculty_data, courses_data])
+        if (exams_data !== undefined, exams_data !== null) {
+            setExams(exams_data)
+        }
+    }, [faculty_data, courses_data, exams_data])
   return (
     <div className='w-full pr-10 mt-5 px-5'>
         <Tabs active={active} setActive={setActive} />
@@ -41,7 +45,13 @@ export default function AdminPanel({faculty_data, courses_data}) {
                 <div>
                     <AssignedTable course_data={courses}/>
                 </div>
-        }
+          }
+          {
+              active === "Exams" &&
+                <div>
+                      <ExamTable exams_data={exams}/>
+                </div>
+          }
     </div>
   )
 }
