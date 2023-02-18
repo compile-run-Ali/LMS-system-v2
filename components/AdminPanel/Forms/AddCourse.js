@@ -34,6 +34,7 @@ const AddCourse = () => {
   <div className='flex justify-center ' >
     <form onSubmit={handleSubmit} className=" bg-white py-6 rounded-lg shadow-xl w-2/3 px-10 ">
       <div className="mb-4">
+
         <Input
         text="Course Code"
           id="course-code"
@@ -54,6 +55,7 @@ const AddCourse = () => {
         />
       </div>
       <div className="mb-4">
+
       <Input
         text="Credit Hours"
           id="credit-hours"
@@ -64,6 +66,7 @@ const AddCourse = () => {
         />
       </div>
       <div className="mb-4">
+
       <Input
         text="Department"
           id="department"
