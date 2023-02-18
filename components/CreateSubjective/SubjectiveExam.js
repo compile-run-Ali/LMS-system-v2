@@ -1,49 +1,67 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md"
 import Input from "../Common/Form/Input";
+import axios from "axios";
 
-const SubjectiveExam = ({ paperId }) => {
-    const [multipleOptions, setMultipleOptions] = useState(false);
+const SubjectiveExam = ({ paperId, setActive, subjective_questions, setSubjectiveQuestions }) => {
     const [index, setIndex] = useState(null);
-    const [subjectives, setSubjectives] = useState([
-        {
-            question: "What is the capital of France?",
-            parentQuestion: "",
-            marks: 1,
-        },
-    ]);
+    const [subjectives, setSubjectives] = useState(subjective_questions);
+    const [longQuestion, setLongQuestion] = useState(false);
+
+    useEffect(() => {
+        console.log(subjectives);
+    }, [subjectives]);
 
     const [currentSubjective, setCurrentMCQ] = useState({
+        sq_id: "",
         question: "",
-        parentQuestion: "",
+        parent_question: "",
+        long_question: longQuestion,
         marks: 1,
     });
 
     const [editing, setEditing] = useState(false);
     const [adding, setAdding] = useState(false);
 
-
     const handleQuestionChange = (e) => {
         setCurrentMCQ({ ...currentSubjective, question: e.target.value });
     };
 
-    const handleParentQuestionChange = (e) => {
-        setCurrentMCQ({ ...currentSubjective, parentQuestion: e.target.value });
+    const handleParentQuestionChange = async (e) => {
+        const parent_question = subjectives.find((subjective) => subjective.question === e.target.value);
+        console.log(parent_question.sq_id)
+        setCurrentMCQ({ ...currentSubjective, parent_question: parent_question.sq_id });
     };
 
     const handleMarksChange = (e) => {
         setCurrentMCQ({ ...currentSubjective, marks: parseInt(e.target.value) });
     }
 
-    const handleAddMCQ = () => {
-        setSubjectives([...subjectives, currentSubjective]);
-        setCurrentMCQ({
-            question: "",
-            options: [],
-            parentQuestion: "",
-            marks: 1,
-        });
-        setAdding(false);
+    const handleLongQuestion = (e) => {
+        setLongQuestion(e.target.checked);
+    }
+
+    const handleAddMCQ = async () => {
+        console.log(currentSubjective)
+        const newSubjective = await axios.post("http://localhost:3000/api/faculty/paper_creation/add_subjective", {
+            paper_id: paperId,
+            question: currentSubjective.question,
+            parent_question: currentSubjective.parent_question,
+            long_question: currentSubjective.long_question,
+            marks: currentSubjective.marks,
+        })
+        if (newSubjective.status === 200) {
+            setSubjectives([...subjectives, newSubjective.data]);
+            setSubjectiveQuestions([...subjectives, newSubjective.data]);
+            setCurrentMCQ({
+                sq_id: "",
+                question: "",
+                parent_question: "",
+                marks: 1,
+                long_question: longQuestion
+            });
+            setAdding(false);
+        }
     };
 
     const handleEditMCQ = (index) => () => {
@@ -52,24 +70,42 @@ const SubjectiveExam = ({ paperId }) => {
         setCurrentMCQ(subjectives[index]);
     };
 
-    const handleUpdateMCQ = (index) => () => {
-        const newMCQs = [...subjectives];
-        newMCQs[index] = currentSubjective;
-        setSubjectives(newMCQs);
-        setCurrentMCQ({
-            question: "",
-            options: [],
-            parentQuestion: "",
-            marks: 1,
-        });
-        setEditing(false);
-        setIndex(null);
+    const handleUpdateMCQ = async (index) => {
+        const updatedSubjective = await axios.post("http://localhost:3000/api/faculty/edit_subjective", {
+            sq_id: subjectives[index].sq_id,
+            paper_id: paperId,
+            question: currentSubjective.question,
+            parent_question: currentSubjective.parent_question,
+            long_question: currentSubjective.long_question,
+            marks: currentSubjective.marks,
+        })
+        if (updatedSubjective.status === 200) {
+            const newMCQs = [...subjectives];
+            newMCQs[index] = updatedSubjective.data;
+            setSubjectives(newMCQs);
+            setSubjectiveQuestions(newMCQs);
+            setCurrentMCQ({
+                sq_id: "",
+                question: "",
+                parent_question: "",
+                marks: 1,
+                long_question: false
+            });
+            setEditing(false);
+            setIndex(null);
+        }
     };
 
-    const handleDeleteMCQ = (index) => () => {
-        const newMCQs = [...subjectives];
-        newMCQs.splice(index, 1);
-        setSubjectives(newMCQs);
+    const handleDeleteMCQ = async (index) => {
+        const deletedSubjective = await axios.post("http://localhost:3000/api/faculty/remove_subjective", {
+            sq_id: subjectives[index].sq_id
+        })
+        if (deletedSubjective.status === 200) {
+            const newMCQs = [...subjectives];
+            newMCQs.splice(index, 1);
+            setSubjectives(newMCQs);
+            setSubjectiveQuestions(newMCQs);
+        }
     };
 
     return (
@@ -91,7 +127,7 @@ const SubjectiveExam = ({ paperId }) => {
                         <tr key={index} className="border-t">
                             <td className="px-4 py-2">{index + 1}</td>
                             <td className="px-4 py-2">{subjective.question}</td>
-                            <td className="px-4 py-2">{subjective.parentQuestion}</td>
+                            <td className="px-4 py-2">{subjective.parent_question?.question}</td>
                             <td className="px-4 py-2">{subjective.marks}</td>
                             <td className="px-4 py-2">
                                 <button
@@ -103,7 +139,7 @@ const SubjectiveExam = ({ paperId }) => {
                             </td>
                             <td className="px-4 py-2">
                                 <button
-                                    onClick={handleDeleteMCQ(index)}
+                                    onClick={() => { handleDeleteMCQ(index) }}
                                     className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
                                 >
                                     <MdDelete />
@@ -140,7 +176,7 @@ const SubjectiveExam = ({ paperId }) => {
 
                             <select
                                 type="text"
-                                value={currentSubjective.parentQuestion}
+                                value={currentSubjective.parent_question}
                                 onChange={handleParentQuestionChange}
                                 className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]">
                                 <option value="" disabled>Select Correct Option</option>
@@ -152,10 +188,15 @@ const SubjectiveExam = ({ paperId }) => {
                         </div>
 
                         <Input text={"Marks"} type={"number"} required value={currentSubjective.marks} onChange={handleMarksChange} />
+
+                        <div className="flex items-center gap-x-3 mt-14 ml-2">
+                            <label className="block">Long Question?</label>
+                            <input type="checkbox" className="accent-slate-100" onChange={handleLongQuestion} />
+                        </div>
                     </div>
                     {editing ? (
                         <button
-                            onClick={handleUpdateMCQ(index)}
+                            onClick={() => { handleUpdateMCQ(index) }}
                             className="bg-blue-800 text-white p-2 rounded hover:bg-blue-700"
                         >
                             Update
@@ -171,6 +212,16 @@ const SubjectiveExam = ({ paperId }) => {
                     )}
                 </div>
             }
+            <div className='mt-10 w-full pr-10 flex justify-end gap-x-5'>
+                <button type='button' className='border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8'>
+                Cancel
+                </button>
+                <button type='submit' className='bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8'
+                onClick={() => setActive(4)}
+                >
+                Proceed
+                </button>
+            </div>
         </div>
     );
 };

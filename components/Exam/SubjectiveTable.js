@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 
-const MCQTable = ({objective_questions}) => {
-    const [mcqs, setMCQs] = useState([]);
+const SubjectiveTable = ({subjective_questions}) => {
+    const [subjectives, setSubjectives] = useState([]);
 
     useEffect(() => {
-        setMCQs(objective_questions);
-    }, [objective_questions]);
+        setSubjectives(subjective_questions);
+    }, [subjective_questions]);
 
     return (
         <div className="w-full font-poppins mt-10 rounded-lg">
@@ -15,19 +15,17 @@ const MCQTable = ({objective_questions}) => {
                     <tr className="text-blue-800">
                         <th className=" px-4 py-2">Sr. No.</th>
                         <th className=" px-4 py-2">Question</th>
-                        <th className=" px-4 py-2">Options</th>
-                        <th className=" px-4 py-2">Correct Option</th>
+                        <th className=" px-4 py-2">Parent Question</th>
                         <th className=" px-4 py-2">Marks</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {mcqs.map((mcq, index) => (
+                    {subjectives.map((question, index) => (
                         <tr key={index} className="text-center">
                             <td className=" px-4 py-2">{index + 1}</td>
-                            <td className=" px-4 py-2">{mcq.question}</td>
-                            <td className=" px-4 py-2">{mcq.answers}</td>
-                            <td className=" px-4 py-2">{mcq.correct_answer}</td>
-                            <td className=" px-4 py-2">{mcq.marks}</td>
+                            <td className=" px-4 py-2">{question.question}</td>
+                            <td className=" px-4 py-2">{question.parent_question?.question}</td>
+                            <td className=" px-4 py-2">{question.marks}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -36,4 +34,4 @@ const MCQTable = ({objective_questions}) => {
     );
 };
 
-export default MCQTable;
+export default SubjectiveTable;

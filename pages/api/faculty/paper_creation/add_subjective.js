@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 
-export default handler = async (req, res) => {
+const handler = async (req, res) => {
   const prisma = new PrismaClient()
   try {
     //Create New SQ and connect to paper
@@ -9,11 +9,6 @@ export default handler = async (req, res) => {
         question: req.body.question,
         marks: req.body.marks,
         long_question: req.body.long_question,
-        parent_question: req.body.parent_question ? {
-          connect: {
-            sq_id: req.body.parent_question,
-          },
-        } : null,
         paper: {
           connect: {
             paper_id: req.body.paper_id,
@@ -21,6 +16,30 @@ export default handler = async (req, res) => {
         },
       },
     })
+    if (req.body.parent_question !== "") {
+      const updatedSQ = await prisma.subjectiveQuestion.update({
+        where: {
+          sq_id: newSQ.sq_id,
+        },
+        data: {
+          parent_question: {
+            connect: {
+              sq_id: req.body.parent_question,
+            },
+          },
+        },
+        select: {
+          sq_id: true,
+          question: true,
+          marks: true,
+          long_question: true,
+          parent_question: true
+        }
+      })
+      res.status(200).json(updatedSQ)
+    }
+
+
     //Update Paper with new questions
     // await prisma.paper.update({
     //   where: {
@@ -39,3 +58,5 @@ export default handler = async (req, res) => {
     throw new Error(err.message)
   }
 }
+
+export default handler

@@ -4,8 +4,38 @@ const handler = async (req, res) => {
   const prisma = new PrismaClient()
   try {
     //get all courses
-    const courses = await prisma.course.findMany();
-    res.status(200).json(courses)
+    const courses = await prisma.course.findMany({
+      select: {
+        course_code: true,
+        course_name: true,
+        credit_hours: true,
+        department: true,
+        faculty: {
+          select: {
+            faculty: {
+              select: {
+                faculty_id: true,
+                name: true,
+                department: true
+              }
+            }
+          }
+        }
+      }
+    });
+    const formattedCourse = courses.map(course => {
+      const faculty = course.faculty.map(faculty => {
+        return faculty.faculty
+      })
+      return {
+        course_code: course.course_code,
+        course_name: course.course_name,
+        credit_hours: course.credit_hours,
+        department: course.department,
+        faculty: faculty
+      }
+    })
+    res.status(200).json(formattedCourse)
   } catch (err) {
     throw new Error(err.message)
   }

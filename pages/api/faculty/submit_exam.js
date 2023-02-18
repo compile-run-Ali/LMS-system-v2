@@ -3,14 +3,16 @@ import { PrismaClient } from "@prisma/client"
 const handler = async (req, res) => {
   const prisma = new PrismaClient()
   try {
-    //Remove Faculty
-    await prisma.subjectiveQuestion.delete({
+    //update paper submited field to true
+    await prisma.paper.update({
       where: {
-        sq_id: req.body.sq_id,
+        paper_id: req.body.paper_id,
+      },
+      data: {
+        submitted: true,
       }
     })
-    await prisma.$disconnect()
-    res.status(200).json({message: "Subjective Question Deleted Successfully"})
+    res.status(200).json({message: "Exam has been submitted for approval"})
   } catch (err) {
     throw new Error(err.message)
   }
