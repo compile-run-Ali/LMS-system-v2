@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { MdDelete, MdEdit } from 'react-icons/md';
+import {FaExchangeAlt} from "react-icons/fa"
 import { useRouter } from 'next/router';
 
-const CourseTable = ({setOpen, courses}) => {
+const CourseTable = ({setOpen, courses, setAssignFacultyOpen, setSelectedCourse}) => {
     const router = useRouter();
 
     const [coursesData, setCoursesData] = useState([])
@@ -48,6 +49,7 @@ const CourseTable = ({setOpen, courses}) => {
           <th className="px-4 py-2">Department</th>
                     <th className="px-4 py-2"></th>
                     <th className="px-4 py-2"></th>
+                    <th className='px-4 py-2'></th>
                 </tr>
             </thead>
             <tbody>
@@ -56,7 +58,18 @@ const CourseTable = ({setOpen, courses}) => {
                     <td className="border px-4 py-2">{course.course_name}</td>
                     <td className="border px-4 py-2">{course.course_code}</td>
                     <td className="border px-4 py-2">{course.credit_hours}</td>
-                    <td className="border px-4 py-2">{course.department}</td>
+                        <td className="border px-4 py-2">{course.department}</td>
+                        <td className="px-4 py-2">
+                            <button
+                                onClick={() => {
+                                    setSelectedCourse(course.course_code)
+                                    setAssignFacultyOpen(true)
+                                }}
+                                className="bg-white text-green-600 p-2 rounded hover:bg-green-600 hover:text-white"
+                            >
+                                <FaExchangeAlt />
+                            </button>
+                        </td>
                         <td className="px-4 py-2">
                             <button
                                 onClick={handleEditMCQ(index)}

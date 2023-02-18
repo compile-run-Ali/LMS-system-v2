@@ -105,7 +105,7 @@ export default function CreateExam({ paperType }) {
       {
         active === 3 && paperId !== 0 && paperType === "Objective" &&
         <div className='mt-10'>
-            <Exam exam={exam} objectiveQuestions={mcqs} subjectiveQuestions={subjectives} />
+            <Exam exam={exam} objectiveQuestions={mcqs} subjectiveQuestions={subjectives} isEdit={true}/>
         </div>
       }
       {
@@ -117,7 +117,7 @@ export default function CreateExam({ paperType }) {
       {
         active === 4 && paperId !== 0 && paperType === "Subjective/Objective" &&
         <div className='mt-10'>
-            <Exam exam={exam} objectiveQuestions={mcqs} subjectiveQuestions={subjectives} />
+            <Exam exam={exam} objectiveQuestions={mcqs} subjectiveQuestions={subjectives} isEdit={true}/>
         </div>
       }
     </div>

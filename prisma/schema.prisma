@@ -89,9 +89,9 @@ model PaperApproval {
 }
 
 model Paper {
-  paper_id                 String            @id @default(uuid())
+  paper_id                 String               @id @default(uuid())
   paper_name               String
-  course                   Course?            @relation(fields: [course_code], references: [course_code])
+  course                   Course?              @relation(fields: [course_code], references: [course_code])
   course_code              String?               
   paper_type               String
   examofficer              PaperApproval?
@@ -100,6 +100,8 @@ model Paper {
   date                     String          
   duration                 Int
   weightage                Int?
+  submitted                Boolean               @default(false)
+  remarks                  String?
 
   subjective_questions     SubjectiveQuestion[]
   objective_questions      ObjectiveQuestion[]
