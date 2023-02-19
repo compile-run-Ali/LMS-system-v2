@@ -1,8 +1,8 @@
-import { PrismaClient } from "@prisma/client"
-
+import { PrismaClient } from "@prisma/client";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient()
+  const prisma = new PrismaClient();
+  console.log(req.body);
   try {
     //Create Paper and connect to course code then connect course with paperid
     const paper = await prisma.paper.create({
@@ -14,27 +14,13 @@ const handler = async (req, res) => {
         duration: req.body.duration,
         weightage: req.body.weightage,
         freeflow: req.body.freeflow,
-      }
-    })
-    //connect course with paper Id
-    /*
-    await prisma.course.update({
-      where: {
-        course_code: req.body.course_code
       },
-      data: {
-        paper: {
-          connect: {
-            paper_id: paper.paper_id
-          }
-        }
-      }
-    })
-    */
-    res.status(200).json(paper)
+    });
+
+    res.status(200).json(paper);
   } catch (err) {
-    throw new Error(err.message)
+    throw new Error(err.message);
   }
-}
+};
 
 export default handler;

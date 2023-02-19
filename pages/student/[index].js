@@ -1,19 +1,24 @@
 import React from "react";
+import { useRouter } from "next/router";
 import BaseLayout from "@/components/BaseLayout/BaseLayout";
 import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
 import StudentDashboard from "@/components/StudentDashboard/StudentDashboard";
 
 export default function Dashboard() {
+  const router = useRouter();
+  const { index } = router.query;
+
   return (
     <BaseLayout title={"Dashboard"}>
       <DashboardLayout>
         <StudentDashboard />
+
         {/* 
 
             dashboard
-              previous exams
+              previous Papers
                 see details if allowed
-              live exams
+              live Papers
               
               
             objective type
@@ -25,7 +30,7 @@ export default function Dashboard() {
             
 
 
-            previous exam details ONLY IF ALLOWED
+            previous paper details ONLY IF ALLOWED
               subjective attempt
               objective attempt
 

@@ -68,7 +68,8 @@ const MCQTable = ({ paperId, setActive, objective_questions, setObjectiveQuestio
       correct_answer: currentMCQ.correct_answer,
       marks: currentMCQ.marks,
     })
-    newMCQ.data.options = newMCQ.data.answers.split(",");
+    console.log(newMCQ.data);
+    newMCQ.data.options = newMCQ.data.answers.split(", ");
     setMCQs([...mcqs, newMCQ.data]);
     setObjectiveQuestions([...mcqs, newMCQ.data]);
     setCurrentMCQ({
