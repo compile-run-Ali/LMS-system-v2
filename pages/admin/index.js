@@ -6,7 +6,7 @@ import axios from "axios";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
 
-export default function index({ faculty_data, courses_data,student_data }) {
+export default function index({ faculty_data, courses_data,student_data, exams_data }) {
   return (
     <BaseLayout title={"Admin Panel"}>
       <DashboardLayout admin>
@@ -34,7 +34,7 @@ export async function getServerSideProps() {
   );
 
   const exams = await axios.get('http://localhost:3000/api/admin/get_exams')
-
+    console.log(exams.data)
 return {
     props: {
       faculty_data: faculty.data,

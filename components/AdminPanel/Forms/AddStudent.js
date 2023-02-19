@@ -7,7 +7,7 @@ export default function AddStudent() {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [cgpa, setCgpa] = useState("");
-  const [DOB, setDob] = useState("");
+  const [DOB, setDob] = useState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

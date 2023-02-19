@@ -15,7 +15,7 @@ const MCQTable = ({ paperId, setActive, objective_questions, setObjectiveQuestio
 
   const [currentMCQ, setCurrentMCQ] = useState({
     question: "",
-    options: [],
+    options: ["", "", "", ""],
     correct_answer: "",
     marks: 1,
   });
