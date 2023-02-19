@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const handle = async (req, res) => {
-  let p_number = Number(req.query.id);
+  let p_number = Number(req.query.index);
 
   try {
     const student = await prisma.student.findUnique({

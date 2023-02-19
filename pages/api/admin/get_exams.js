@@ -12,7 +12,7 @@ const handler = async (req, res) => {
         objective_questions: true,
       },
     })
-    res.status(200).json(papers)
+    res.status(200).json(papers);
   } catch (err) {
     throw new Error(err.message)
   }

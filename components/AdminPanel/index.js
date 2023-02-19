@@ -6,7 +6,7 @@ import Faculty from './Subcomponents/Faculty';
 import Tabs from './Subcomponents/Tabs'
 import AssignedTable from './Tables/AssignedTable';
 
-export default function AdminPanel({faculty_data, courses_data, exams_data}) {    
+export default function AdminPanel({faculty_data, courses_data, exams_data, student_data}) {    
     const [faculty, setFaculty] = useState([]);
     const [courses, setCourses] = useState([]);
     const [students, setStudents] = useState([]);
@@ -23,7 +23,10 @@ export default function AdminPanel({faculty_data, courses_data, exams_data}) {
         if (exams_data !== undefined, exams_data !== null) {
             setExams(exams_data)
         }
-    }, [faculty_data, courses_data, exams_data])
+        if (student_data !== undefined, student_data !== null) {
+            setStudents(student_data)
+        }
+    }, [faculty_data, courses_data, exams_data, student_data])
 
   return (
     <div className="w-full pr-10 mt-5 px-5">
@@ -40,7 +43,7 @@ export default function AdminPanel({faculty_data, courses_data, exams_data}) {
           <Students students={students} setStudents={setStudents} />
         </div>
       )}
-        }
+        
         {
             active === "Courses" &&
             <div>

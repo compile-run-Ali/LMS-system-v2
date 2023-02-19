@@ -1,8 +1,10 @@
+import { useSession } from 'next-auth/react';
 import React, { useState, useEffect} from 'react'
 import ExamTable from './ExamTable';
 import Modal from './Subcomponents/Modal'
 
 export default function DashboardComponent({exams_data}) {
+  const user = useSession();
   const [open, setOpen] = useState(false);
   const [exams, setExams] = useState([]);
 
