@@ -11,23 +11,23 @@ export default function LoginAlternative({ facultyLogin }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const handleLogin = async () => {
-    const signin = await signIn("credentials", {
-      redirect: false,
-      username: email,
-      password: password,
-      role: facultyLogin ? "faculty" : "student",
-    })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    if (signin.status === 200) {
-      router.push("/faculty");
+    const handleLogin = async () => {
+        const signin = await signIn("credentials", {
+            redirect: false,
+            username: email,
+            password: password,
+            role: facultyLogin ? "faculty" : "student"
+        }
+        )
+        if (signin.status === 200) {
+            router.push({
+                pathname: facultyLogin ? "/faculty" : "/student",
+                query: {
+                    id: facultyLogin ? signin.user.faculty_id : signin.user.p_number
+                }
+            })
+        }
     }
-  };
 
   return (
     <div className={`w-full flex h-screen font-poppins ${Styles.main} pt-10`}>

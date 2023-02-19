@@ -1,14 +1,17 @@
 import Input from '@/components/Common/Form/Input';
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 
 const AddFaculty = () => {
-    const [name, setName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [level, setLevel] = useState('');
-    const [department, setDepartment] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const router = useRouter();
+    const [edit, setEdit] = useState(router.query.faculty_id ? true : false);
+    const [name, setName] = useState(edit ? router.query.name : '');
+    const [phoneNumber, setPhoneNumber] = useState(edit ? router.query.phone_number : '');
+    const [level, setLevel] = useState(edit ? router.query.level : '');
+    const [department, setDepartment] = useState(edit ? router.query.department : '');
+    const [email, setEmail] = useState(edit ? router.query.email : '');
+    const [password, setPassword] = useState("");
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -22,10 +25,13 @@ const AddFaculty = () => {
     };
 
     const addFaculty = async (faculty) => {
-        const new_faculty = await axios.post('http://localhost:3000/api/admin/faculty/add_faculty', {
+        const new_faculty = await axios.post(`http://localhost:3000/api/admin/faculty/${edit ? "edit_faculty" : "add_faculty"}`, {
+            faculty_id: edit ? router.query.faculty_id : null,
             ...faculty,
         })
-        console.log(new_faculty);
+        if (new_faculty.status === 200) {
+            router.push("/admin")
+        }
     };
 
     return (

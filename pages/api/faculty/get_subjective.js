@@ -16,7 +16,6 @@ const handler = async (req, res) => {
               marks: true,
               long_question: true,
               parent_question: true,
-              child_quetions: true,
             }
           },
         }

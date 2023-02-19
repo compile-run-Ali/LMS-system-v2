@@ -5,6 +5,7 @@ import React from "react";
 import axios from "axios";
 
 /** @param {import('next').InferGetServerSidePropsType<typeof getServerSideProps> } props */
+
 export default function index({ faculty_data, courses_data,student_data }) {
   return (
     <BaseLayout title={"Admin Panel"}>
@@ -13,11 +14,13 @@ export default function index({ faculty_data, courses_data,student_data }) {
           faculty_data={faculty_data}
           courses_data={courses_data}
           student_data={student_data}
+          exams_data={exams_data}
         />
       </DashboardLayout>
     </BaseLayout>
   );
 }
+
 
 export async function getServerSideProps() {
   const faculty = await axios.get(
@@ -29,11 +32,15 @@ export async function getServerSideProps() {
   const student = await axios.get(
     "http://localhost:3000/api/admin/student/get_student"
   );
-  return {
+
+  const exams = await axios.get('http://localhost:3000/api/admin/get_exams')
+
+return {
     props: {
       faculty_data: faculty.data,
       courses_data: courses.data,
       student_data: student.data,
-    },
-  };
+      exams_data: exams.data
+    }
+  }
 }

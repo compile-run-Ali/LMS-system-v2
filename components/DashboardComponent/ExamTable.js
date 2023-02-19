@@ -14,7 +14,6 @@ const ExamTable = () => {
 
   const fetchExams = async () => {
     const res = await axios.get("/api/admin/get_exams");
-    console.log(res.data);
     setExams(res.data);
   }
 

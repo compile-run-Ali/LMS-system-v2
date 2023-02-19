@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect} from 'react'
 import ExamTable from './ExamTable';
 import Modal from './Subcomponents/Modal'
 
-export default function DashboardComponent() {
+export default function DashboardComponent({exams_data}) {
   const [open, setOpen] = useState(false);
-  const [exams, setExams] = useState([
-    { exam_id: 1, exam_type: "Objective", exam_name: "Mid-term Exam", exam_duration: "1 Hour", exam_date: "05/10/2023", exam_time: 100 },
-    { exam_id: 2, exam_type: "Subjective/Objective", exam_name: "Final Exam", exam_duration: "2 Hours", exam_date: "10/12/2023", exam_time: 200 },
-  ]);
+  const [exams, setExams] = useState([]);
+
+  useEffect(() => {
+    if (exams_data !== undefined, exams_data !== null) {
+      setExams(exams_data)
+    }
+  }, [exams_data])
 
   const toggleModal = () => {
     setOpen(!open);
