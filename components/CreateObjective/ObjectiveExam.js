@@ -65,7 +65,7 @@ const MCQTable = ({ paperId }) => {
       marks: currentMCQ.marks,
     })
     console.log(newMCQ.data);
-    newMCQ.data.options = newMCQ.data.answers.split(",");
+    newMCQ.data.options = newMCQ.data.answers.split(", ");
     setMCQs([...mcqs, newMCQ.data]);
     setCurrentMCQ({
       question: "",

@@ -9,11 +9,10 @@ export default function Profile() {
   const router = useRouter();
   const { index } = router.query;
   const [student, setStudent] = useState(null);
-  console.log(index);
 
   const getStudent = async () => {
     await axios
-      .get(`/api/student/${index}`)
+      .get(`/api/student/details/${index}`)
       .then((res) => {
         console.log(
           "Student data fetched successfully from get_student.js",
