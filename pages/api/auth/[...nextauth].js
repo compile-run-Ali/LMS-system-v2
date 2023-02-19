@@ -79,6 +79,12 @@ const configuration = {
       }
 
     },
+    async jwt({ token, user, account, profile, isNewUser }) {
+      if (typeof user !== typeof undefined) {
+        token.user = user;
+      }
+      return token;
+    }
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {

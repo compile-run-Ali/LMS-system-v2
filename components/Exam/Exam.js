@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Accordion from './Accordion'
 import { MdEdit } from 'react-icons/md'
@@ -6,11 +6,31 @@ import axios from 'axios'
 import { useSession } from 'next-auth/react'
 
 export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, isEdit, setActive }) {
-    const user = useSession();
+    const session = useSession();
     const router = useRouter()
     const [totalMarks, setTotalMarks] = useState(0)
     const [totalQuestions, setTotalQuestions] = useState(0);
     const [edit, setEdit] = useState(isEdit)
+    const [comment, setComment] = useState("")
+    const [newComment, setNewComment] = useState({})
+    const [comments, setComments] = useState();
+
+
+    const getComments = async () => {
+        const res = await axios.get("/api/paper/get_comments", {
+            params: {
+                paper_id: exam.paper_id
+            }
+        })
+        console.log(res.data)
+        setComments(res.data)
+    }
+
+    useEffect(() => {
+        if (!comments) {
+            getComments()
+        }
+    }, [])
 
 
     const editExam = () => {
@@ -31,12 +51,23 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
         }
     }
 
-    const addComment = async (comment) => {
-        if (user.status === "authenticated") {
+    const addComment = async () => {
+        console.log(session)
+        if (session.status === "authenticated") {
+            let new_comment = {
+                pc_id: comments.length + 1,
+                comment: comment,
+                faculty_name: session.data.user.name,
+                paper_id: exam.paper_id,
+                time: new Date().toISOString(),
+            }
+            console.log(new_comment)
+            setNewComment(new_comment)
+            setComments([...comments, new_comment])
             const res = await axios.post("/api/faculty/add_comment", {
                 paper_id: exam.paper_id,
                 comment: comment,
-                faculty_id: user.user.faculty_id
+                faculty_name: session.data.user.name
             })
         }
     }
@@ -134,6 +165,35 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
                     )
                 }
             </div>
+            <div className='mt-10 font-poppins'>
+                <span className=' text-lg font-medium ml-5'>
+                    Comments
+                </span>
+                <div className='bg-gray-100 bg-opacity-50 px-10 py-5 '>
+                    {comments && comments.map((comment) => (
+                        <div key={comment.pc_id} className="flex justify-between mb-5 pb-4 border-b border-gray-600 border-opacity-20">
+                            <div className=' flex flex-col justify-center'>
+                                <span className='text-[#212121] font-medium'>
+                                    {comment.comment}
+                                </span>
+                                <span className='text-sm mt-2 text-[#828282]'>
+                                    By {comment.faculty_name}
+                                </span>
+                            </div>
+                            <div className='flex flex-col text-[#BDBDBD] text-right'>
+                                <span className='text-xs font-medium mt-1'>
+                                    {comment.time.split("T")[1].split(".")[0]}
+                                </span>
+                                <span className='text-xs font-medium mt-1'>
+
+                                    {comment.time.split("T")[0]}
+                                </span>
+
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
             {
                 edit && (
                     <div>
@@ -141,7 +201,8 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
                             <span className='text-lg pr-5 py-5 font-medium'>
                                 Add Comments
                             </span>
-                            <textarea className='p-5 bg-slate-100 border border-slate-300 rounded-md focus:outline-none active:outline-none' />
+                            <textarea className='p-5 bg-slate-100 border border-slate-300 rounded-md focus:outline-none active:outline-none'
+                                onChange={(e) => setComment(e.target.value)} />
                         </div>
                         <div className='flex justify-end mt-5'>
                             <button className='bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8'

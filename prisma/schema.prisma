@@ -62,7 +62,6 @@ model Faculty {
 
   courses       FTC[]
   paperapproval PaperApproval?
-  PaperComment  PaperComment[]
 }
 
 model FTC {
@@ -168,11 +167,10 @@ model SOA {
 }
 
 model PaperComment {
-  pc_id      String  @id @default(uuid())
-  paper      Paper   @relation(fields: [paper_id], references: [paper_id])
-  paper_id   String
-  faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id])
-  faculty_id String
-  comment    String
-  time       DateTime @default(now())
+  pc_id             String   @id @default(uuid())
+  paper             Paper    @relation(fields: [paper_id], references: [paper_id])
+  paper_id          String
+  faculty_name      String
+  comment           String
+  time              DateTime @default(now())
 }

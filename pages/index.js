@@ -12,15 +12,15 @@ import DashboardLayout from '@/components/DasboardLayout/DashboardLayout'
 export default function Home() {
   const router = useRouter();
   const [facultyLogin, setFacultyLogin] = useState(false)
-  const user = useSession();
-
+  const session = useSession();
+  console.log(session)
   useEffect(() => {
-    if (user) {
+    if (session.status === "authenticated") {
       router.push('/faculty')
     }
-  }, [user])
+  }, [session])
 
-  if (user) {
+  if (session.status === "authenticated") {
     return (
       <BaseLayout title={"Dashboard"}>
         <DashboardLayout>

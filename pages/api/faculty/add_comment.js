@@ -6,16 +6,13 @@ const handler = async (req, res) => {
         const addPaperComment = await prisma.paperComment.create({
             data: {
                 comment: req.body.comment,
+                faculty_name: req.body.faculty_name,
                 paper: {
                     connect: {
                         paper_id: req.body.paper_id,
                     },
                 },
-                faculty: {
-                    connect: {
-                        faculty_id: req.body.faculty_id,
-                    },
-                },
+                
                 
             },
         });
@@ -24,3 +21,5 @@ const handler = async (req, res) => {
         throw new Error(err.message);
     }
 };
+
+export default handler;
