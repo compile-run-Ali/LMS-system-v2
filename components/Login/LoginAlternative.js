@@ -19,12 +19,11 @@ export default function LoginAlternative({ facultyLogin }) {
             role: facultyLogin ? "faculty" : "student"
         }
         )
+
+        console.log(signin)
         if (signin.status === 200) {
             router.push({
                 pathname: facultyLogin ? "/faculty" : "/student",
-                query: {
-                    id: facultyLogin ? signin.user.faculty_id : signin.user.p_number
-                }
             })
         }
     }
