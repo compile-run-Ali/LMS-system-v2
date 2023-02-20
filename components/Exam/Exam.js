@@ -14,6 +14,8 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
     const [comment, setComment] = useState("")
     const [newComment, setNewComment] = useState({})
     const [comments, setComments] = useState();
+    const [faculty, setFaculty] = useState();
+    const [selectedFaculty, setSelectedFaculty] = useState();
 
 
     const getComments = async () => {
@@ -26,9 +28,17 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
         setComments(res.data)
     }
 
+    const getFaculty = async () => {
+        const res = await axios.get("/api/paper/get_faculty")
+        setFaculty(res.data.filter(faculty => faculty.faculty_id !== session.data.user.id))
+    }
+
     useEffect(() => {
         if (!comments) {
             getComments()
+        }
+        if (edit) {
+            getFaculty()
         }
     }, [])
 
@@ -43,33 +53,43 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
     }
 
     const submitExam = async () => {
+        console.log(selectedFaculty)
         const submitExam = await axios.post("/api/faculty/submit_exam", {
-            paper_id: exam.paper_id
+            paper_id: exam.paper_id,
+            faculty_id: selectedFaculty,
+            level: faculty.filter(faculty => faculty.faculty_id === selectedFaculty)[0].level
         })
         if (submitExam.status === 200) {
-            router.push("/faculty/exams")
+            router.push("/faculty")
         }
     }
 
     const addComment = async () => {
-        console.log(session)
         if (session.status === "authenticated") {
-            let new_comment = {
-                pc_id: comments.length + 1,
-                comment: comment,
-                faculty_name: session.data.user.name,
-                paper_id: exam.paper_id,
-                time: new Date().toISOString(),
-            }
-            console.log(new_comment)
-            setNewComment(new_comment)
-            setComments([...comments, new_comment])
             const res = await axios.post("/api/faculty/add_comment", {
                 paper_id: exam.paper_id,
                 comment: comment,
-                faculty_name: session.data.user.name
+                faculty_id: session.data.user.id
             })
+
+            if (res.status === 200) {
+                console.log(res.data)
+                setNewComment({
+                    comment: res.data.comment,
+                    faculty: res.data.faculty,
+                    time: res.data.time
+                })
+                setComment("")
+                setComments([...comments, newComment])
+                console.log(comments)
+            }
+            // setComments([...comments, new_comment])
+
         }
+    }
+
+    const handleSelectedFaculty = (e) => {
+        setSelectedFaculty(e.target.value)
     }
 
     return (
@@ -177,7 +197,7 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
                                     {comment.comment}
                                 </span>
                                 <span className='text-sm mt-2 text-[#828282]'>
-                                    By {comment.faculty_name}
+                                    By {comment.faculty.name}
                                 </span>
                             </div>
                             <div className='flex flex-col text-[#BDBDBD] text-right'>
@@ -212,11 +232,13 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
                         </div>
                         <div className='flex justify-end'>
                             <div className='mt-10 mb-10'>
-                                <select className='bg-gray-100 border-2 border-gray-300 rounded-lg py-4 px-8'>
+                                <select className='bg-gray-100 border-2 border-gray-300 rounded-lg py-4 px-8' onChange={handleSelectedFaculty}>
                                     <option value=''>Submit to</option>
-
-                                    <option value=''>Exam 1</option>
-                                    <option value=''>Exam 2</option>
+                                    {
+                                        faculty && faculty.map((faculty) => (
+                                            <option key={faculty.faculty_id} value={faculty.faculty_id}>{`${faculty.name} (${faculty.department})`}</option>
+                                        ))
+                                    }
                                 </select>
                             </div>
                         </div>

@@ -47,6 +47,7 @@ export default function Form({ setActive, setPaperId, examDetails, paperType }) 
 
     const res = await axios.post(`http://localhost:3000/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`, {
       paper_id: examDetails ? examDetails.paper_id : null,
+      course_code: router.query.course_code ? router.query.course_code : null,
       paper_name: paperName,
       time: paperTime,
       date: new Date(dateOfExam).toDateString(),

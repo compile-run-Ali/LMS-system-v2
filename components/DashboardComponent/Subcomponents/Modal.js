@@ -3,7 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { IoIosPaper } from "react-icons/io";
 import { useRouter } from 'next/router';
 
-export default function Modal({ open, setOpen }) {
+export default function Modal({ open, setOpen, courseCode }) {
     const [examType, setExamType] = useState("I.E")
     const router = useRouter()
     const cancelButtonRef = useRef(null)
@@ -13,13 +13,23 @@ export default function Modal({ open, setOpen }) {
             // Redirect to create exam page for IE
         } else if (examType === "SO") {
             // Redirect to create exam page for subjective/objective
-            router.push(`/faculty/create_exam/subjective`)
+            router.push({
+                pathname: `/faculty/create_exam/subjective`,
+                query: {
+                    course_code: courseCode
+                }
+            })
         } else {
             // Redirect to create exam page for objective
             //make api call to create a new paper using axios
             
             //then redirect to create exam page for objectiv
-            router.push(`/faculty/create_exam/objective`)
+            router.push({
+                pathname: `/faculty/create_exam/objective`,
+                query: {
+                    course_code: courseCode
+                }
+            })
         }
     }
 

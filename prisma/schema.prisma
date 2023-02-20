@@ -60,6 +60,8 @@ model Faculty {
   phone_number    String
   profile_picture String?
 
+  comments PaperComment[]
+
   courses       FTC[]
   paperapproval PaperApproval?
 }
@@ -78,7 +80,7 @@ model PaperApproval {
   paperapproval_id String @id @default(uuid())
 
   level    Int
-  approved Boolean
+  approved Boolean  @default(false)
 
   paper_id String @unique
   paper    Paper  @relation(fields: [paper_id], references: [paper_id])
@@ -99,7 +101,6 @@ model Paper {
   date        String
   duration    Int
   weightage   Int?
-  submitted   Boolean        @default(false)
   remarks     String?
 
   subjective_questions SubjectiveQuestion[]
@@ -170,7 +171,8 @@ model PaperComment {
   pc_id             String   @id @default(uuid())
   paper             Paper    @relation(fields: [paper_id], references: [paper_id])
   paper_id          String
-  faculty_name      String
+  faculty           Faculty @relation(fields: [faculty_id], references: [faculty_id])
+  faculty_id        String
   comment           String
   time              DateTime @default(now())
 }
