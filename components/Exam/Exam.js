@@ -11,18 +11,15 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
     const [totalMarks, setTotalMarks] = useState(0)
     const [totalQuestions, setTotalQuestions] = useState(0);
     const [edit, setEdit] = useState(isEdit)
-    const [comment, setComment] = useState("")
-    const [newComment, setNewComment] = useState({})
+    const [comment, setComment] = useState("");
     const [comments, setComments] = useState();
     const [faculty, setFaculty] = useState();
     const [selectedFaculty, setSelectedFaculty] = useState();
 
 
     const getComments = async () => {
-        const res = await axios.get("/api/paper/get_comments", {
-            params: {
-                paper_id: exam.paper_id
-            }
+        const res = await axios.post("/api/paper/get_comments", {
+            paper_id: exam.paper_id
         })
         console.log(res.data)
         setComments(res.data)
@@ -73,15 +70,8 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
             })
 
             if (res.status === 200) {
-                console.log(res.data)
-                setNewComment({
-                    comment: res.data.comment,
-                    faculty: res.data.faculty,
-                    time: res.data.time
-                })
+                setComments([...comments, res.data])
                 setComment("")
-                setComments([...comments, newComment])
-                console.log(comments)
             }
             // setComments([...comments, new_comment])
 
@@ -197,7 +187,7 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
                                     {comment.comment}
                                 </span>
                                 <span className='text-sm mt-2 text-[#828282]'>
-                                    By {comment.faculty.name}
+                                    By {comment.faculty?.name}
                                 </span>
                             </div>
                             <div className='flex flex-col text-[#BDBDBD] text-right'>
@@ -222,7 +212,9 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
                                 Add Comments
                             </span>
                             <textarea className='p-5 bg-slate-100 border border-slate-300 rounded-md focus:outline-none active:outline-none'
-                                onChange={(e) => setComment(e.target.value)} />
+                                onChange={(e) => setComment(e.target.value)}
+                                value={comment}    
+                            />
                         </div>
                         <div className='flex justify-end mt-5'>
                             <button className='bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8'
