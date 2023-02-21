@@ -1,10 +1,13 @@
 import BaseLayout from '@/components/BaseLayout/BaseLayout'
 import DashboardLayout from '@/components/DasboardLayout/DashboardLayout'
 import Exam from '@/components/Exam/Exam'
-import React from 'react'
+import React, { useEffect } from 'react'
 import axios from 'axios'
 
-export default function ExamPage({ examDetails, objectiveQuestions, subjectiveQuestions}) {
+export default function ExamPage({ examDetails, objectiveQuestions, subjectiveQuestions }) {
+  useEffect(() => {
+    console.log(examDetails)
+  }, [])
   return (
     
     <BaseLayout title={"Exam | " + examDetails.paper_name}>

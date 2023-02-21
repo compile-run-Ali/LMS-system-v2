@@ -9,13 +9,14 @@ export default function Dashboard() {
   const session = useSession();
   console.log(session)
   const [exams, setExams] = useState(null)
+  const [paperapproval, setPaperApproval] = useState(null)
 
   const fetchExams = async () => {
     const res = await axios.post('http://localhost:3000/api/faculty/get_exams', {
       faculty_id: session.data.user.id
     })
-    console.log(res.data.courses)
     setExams(res.data.courses)
+    setPaperApproval(res.data.paperapproval)
   }
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export default function Dashboard() {
   return (
     <BaseLayout title={"Dashboard"}>
         <DashboardLayout>
-        <DashboardComponent exams_data={exams}/>
+        <DashboardComponent exams_data={exams} paperapproval_data={paperapproval} />
         </DashboardLayout>
     </BaseLayout>
   )

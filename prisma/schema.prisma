@@ -24,6 +24,7 @@ model Student {
   courses            SRC[]
   subjective_answers SSA[]
   objective_answers  SOA[]
+  notifications      Notification[]
 }
 
 model SRC {
@@ -63,7 +64,8 @@ model Faculty {
   comments PaperComment[]
 
   courses       FTC[]
-  paperapproval PaperApproval?
+  paperapproval PaperApproval[]
+  notifications Notification[]
 }
 
 model FTC {
@@ -85,7 +87,7 @@ model PaperApproval {
   paper_id String @unique
   paper    Paper  @relation(fields: [paper_id], references: [paper_id])
 
-  faculty_id String  @unique
+  faculty_id String  
   faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id])
 }
 
@@ -101,7 +103,7 @@ model Paper {
   date        String
   duration    Int
   weightage   Int?
-  remarks     String?
+  status      String        @default("Pending")
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]
@@ -112,7 +114,7 @@ model Paper {
 model SubjectiveQuestion {
   sq_id String @id @default(uuid())
 
-  question      String
+  question      String 
   long_question Boolean
   marks         Int
 
@@ -175,4 +177,17 @@ model PaperComment {
   faculty_id        String
   comment           String
   time              DateTime @default(now())
+}
+
+model Notification {
+  notification_id String @id @default(uuid())
+  
+  notification    String
+
+  time            DateTime @default(now())
+  student         Student @relation(fields: [p_number], references: [p_number])
+  p_number        Int
+
+  faculty Faculty @relation(fields: [faculty_id], references: [faculty_id])
+  faculty_id String
 }

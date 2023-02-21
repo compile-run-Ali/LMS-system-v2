@@ -8,11 +8,27 @@ const handler = async (req, res) => {
         faculty_id: req.body.faculty_id,
       },
       select: {
+        paperapproval: {
+          select: {
+            paper: {
+              select: {
+                paper_id: true,
+                paper_name: true,
+                paper_type: true,
+                time: true,
+                date: true,
+                duration: true,
+                weightage: true,
+                freeflow: true,
+                status: true,
+              }
+            }
+          }
+        },
         courses: {
           select: {
             course: {
               select: {
-
                 course_code: true,
                 course_name: true,
                 credit_hours: true,
@@ -28,6 +44,7 @@ const handler = async (req, res) => {
                     weightage: true,
                     freeflow: true,
                     examofficer: true,
+                    status: true,
                   }
                 }
               }
@@ -36,6 +53,7 @@ const handler = async (req, res) => {
         }
         }
     })
+    console.log(exams)
     res.status(200).json(exams)
   } catch (err) {
     throw new Error(err.message)

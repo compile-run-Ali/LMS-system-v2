@@ -8,12 +8,22 @@ const handler = async (req, res) => {
             where: {
                 paper_id: req.body.paper_id,
             },
-            include: {
-                course: false,
-                examofficer: false,
-                subjective_questions: true,
-                objective_questions: true,
-            },
+            select: {
+                examofficer: {
+                    select: {
+                        faculty_id: true
+                    }
+                },
+                paper_name: true,
+                paper_type: true,
+                time: true,
+                date: true,
+                duration: true,
+                weightage: true,
+                freeflow: true,
+                status: true,
+                paper_id: true,
+            }
         })
         res.status(200).json(paper)
     } catch (err) {

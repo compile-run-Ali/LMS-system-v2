@@ -26,6 +26,7 @@ const ExamTable = ({exams_data}) => {
           <th className="px-4 py-2">Date</th>
           <th className="px-4 py-2">Time</th>
           <th className="px-4 py-2">Total Marks</th>
+          <th className="px-4 py-2">Status</th>
         </tr>
       </thead>
       <tbody>
@@ -40,6 +41,7 @@ const ExamTable = ({exams_data}) => {
               <td className="border px-4 py-2">{exam.date}</td>
               <td className="border px-4 py-2">{exam.time}</td>
               <td className="border px-4 py-2">{exam.weightage}</td>
+              <td className="border px-4 py-2">{exam.status}</td>
             </tr>
         ))}
       </tbody>

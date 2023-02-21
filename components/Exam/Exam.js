@@ -16,7 +16,19 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
     const [faculty, setFaculty] = useState();
     const [selectedFaculty, setSelectedFaculty] = useState();
 
+    const checkAccess = () => {
+        if (session.status === "authenticated") {
+            if (exam.status === "Pending Approval") {
+                return exam.examofficer.faculty_id === session.data.user.id ? true : false
+            } else if (exam.status === "Approved") {
+                return false
+            } else if (exam.status === "Draft") {
+                return true
+            }
+        }
+    }
 
+    const [access, setAccess] = useState(checkAccess())
     const getComments = async () => {
         const res = await axios.post("/api/paper/get_comments", {
             paper_id: exam.paper_id
@@ -51,6 +63,7 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
 
     const submitExam = async () => {
         console.log(selectedFaculty)
+        console.log(exam.paper_id)
         const submitExam = await axios.post("/api/faculty/submit_exam", {
             paper_id: exam.paper_id,
             faculty_id: selectedFaculty,
@@ -87,7 +100,8 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
 
             <div className='bg-gray-100 bg-opacity-50 pt-10 rounded-md'>
                 {
-                    !edit && (<div className='w-full flex justify-end pr-5'>
+                    !edit && access &&
+                    (<div className='w-full flex justify-end pr-5'>
                         <div onClick={() => { editExam() }}
                             className="bg-white text-[#f5c51a]  p-2 rounded hover:bg-[#f5c51a] hover:text-white"
                         >
@@ -205,7 +219,7 @@ export default function Exam({ exam, subjectiveQuestions, objectiveQuestions, is
                 </div>
             </div>
             {
-                edit && (
+                edit && access && (
                     <div>
                         <div className='flex flex-col mt-5'>
                             <span className='text-lg pr-5 py-5 font-medium'>
