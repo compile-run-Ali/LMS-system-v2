@@ -58,20 +58,13 @@ export default function OQContainer({
     }
   }, [question]);
 
-  console.log(
-    "selected answer ",
-    selectedAnswer,
-    "correct answer ",
-    correctAnswers
-  );
-
   return (
     <>
       {question ? (
         <>
           <div>
             <div key={question.oq_id}>
-              <p>{question.question}</p>
+              <p>{currentQuestion + 1 + ". " + question.question}</p>
               <div className="flex justify-between">
                 {question.answers.split(",").map((answer, index) => (
                   <div key={index}>
@@ -92,7 +85,7 @@ export default function OQContainer({
               <button
                 onClick={() => {
                   currentQuestion > 0 &&
-                    setCurrentQuestion(currentQuestion - 1);
+                    setCurrentQuestion(currentQuestion + 1);
                 }}
               >
                 Previous
@@ -101,8 +94,7 @@ export default function OQContainer({
             <button onClick={saveAnswer}>Save</button>
             <button
               onClick={() => {
-                currentQuestion < totalQuestions - 1 &&
-                  setCurrentQuestion(currentQuestion + 1);
+                currentQuestion < totalQuestions - 1 && setCurrentQuestion(c);
               }}
             >
               Next

@@ -14,6 +14,7 @@ export default function SQContainer({
   const [answer, setAnswer] = useState("");
 
   const saveAnswer = () => {
+    console.log(question);
     axios
       .post(`/api/student/paper/sq/add_answer`, {
         p_number: student,
@@ -40,8 +41,8 @@ export default function SQContainer({
             <div className="p-2">
               <label>Answer</label>
               <textarea
-                class="border border-gray-300 bg-white rounded-md p-2 w-full"
-                maxlength="50"
+                className="border border-gray-300 bg-white rounded-md p-2 w-full"
+                maxLength={question.long_question? 100000: 50}
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
               />
