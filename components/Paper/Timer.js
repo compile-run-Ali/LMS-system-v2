@@ -2,10 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 import {
-  compareDateTime,
   convertDateTimeToStrings,
   getPaperDateTime,
-  getPaperStatus,
   getRemainingTime,
 } from "@/lib/TimeCalculations";
 
@@ -47,13 +45,13 @@ export default function Timer({ paper }) {
   }, [paper]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col justify-center text-xl">
       <div>
         Start Time:
-        {startTime}
+        {" " + startTime}
       </div>
-      <div>End Time:{endTime}</div>
-      <div>Time Left:{timeLeft}</div>
+      <div>End Time:{" " +endTime}</div>
+      <div>Time Left:{" " +timeLeft}</div>
     </div>
   );
 }

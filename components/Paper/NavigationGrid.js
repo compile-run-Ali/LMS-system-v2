@@ -6,7 +6,7 @@ export default function NavigationGrid({
   setCurrentQuestion,
 }) {
   return (
-    <div className=" m-10 p-10 border-blue-800">
+    <div className="mt-6 border-blue-800 ">
       <h1 className="text-3xl mb-4 font-poppins">Navigate</h1>
       <div className="grid grid-cols-5 mx-auto ">
         {[...Array(totalQuestions)].map((_, index) => (

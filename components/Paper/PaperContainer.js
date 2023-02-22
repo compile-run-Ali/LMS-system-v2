@@ -40,7 +40,7 @@ export default function PaperContainer({}) {
     }
     return shuffledArray;
   };
-  
+
   // function to store the currentQuestion value in local storage on change
   const setCurrentAndLocal = (newValue) => {
     setCurrentQuestion(newValue);
@@ -143,8 +143,8 @@ export default function PaperContainer({}) {
 
   return (
     <div>
-      <div className="flex">
-        <div className="w-2/3 bg-blue-700 flex flex-col justify-between">
+      <div className="flex justify-center mx-auto w-fit font-poppins mt-28 space-x-20">
+        <div className="w-2/3">
           {paperDetails.paper_type === "Objective" ? (
             <OQContainer
               question={questions[currentQuestion]}
@@ -163,7 +163,7 @@ export default function PaperContainer({}) {
             />
           )}
         </div>
-        <div className="w-1/3">
+        <div className="w-1/3 shadow-lg h-fit border-2 border-zinc-100 rounded-md p-10">
           <Timer paper={paperDetails} />
           {paperDetails.freeflow && (
             <NavigationGrid
@@ -171,7 +171,7 @@ export default function PaperContainer({}) {
               currentQuestion={currentQuestion}
               setCurrentQuestion={setCurrentAndLocal}
             />
-          )}{" "}
+          )}
         </div>
       </div>
     </div>
