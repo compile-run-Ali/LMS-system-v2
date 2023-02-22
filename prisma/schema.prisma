@@ -85,10 +85,10 @@ model PaperApproval {
   approved Boolean  @default(false)
 
   paper_id String @unique
-  paper    Paper  @relation(fields: [paper_id], references: [paper_id])
+  paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
 
   faculty_id String  
-  faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id])
+  faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
 }
 
 model Paper {
@@ -103,7 +103,7 @@ model Paper {
   date        String
   duration    Int
   weightage   Int?
-  status      String        @default("Pending")
+  status      String        @default("Draft")
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]
