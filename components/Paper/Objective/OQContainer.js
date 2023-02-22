@@ -84,26 +84,31 @@ export default function OQContainer({
                   }}
                 >
                   <input
-                    className="w-6 h-6 ring-offset-gray-700 focus:ring-offset-gray-700 bg-gray-600 border-gray-500 pointer-events-none"
+                    className="w-6 h-6 ring-offset-gray-700 focus:ring-offset-gray-700 bg-gray-600 border-gray-500 pointer-events-none accent-white"
                     type={multipleAllowed ? "checkbox" : "radio"}
                     name={question.oq_id}
                     value={answer}
+                    readOnly={
+                      selectedAnswer.includes(answer) ? false : true
+                    }
+                    checked={selectedAnswer.includes(answer)}
                   />
                   <label
                     htmlFor="list-radio-license"
                     className="w-full py-3 ml-2 text-sm font-medium text-white cursor-pointer"
                   >
-                    {/* {answer} */}
-                    answer answer answer answer answer answer answer
+                    {answer}
                   </label>
                 </div>
               ))}
             </div>
           </div>
-          <div className={`
+          <div
+            className={`
             flex mt-6 text-white mx-auto justify-between
             ${freeFlow ? "w-full" : "w-1/2"}
-          `}>
+          `}
+          >
             {freeFlow && (
               <button
                 className={

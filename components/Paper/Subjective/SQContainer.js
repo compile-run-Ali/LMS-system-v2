@@ -40,15 +40,15 @@ export default function SQContainer({
       {question ? (
         <>
           <div>
-            <p className="text-2xl justify-center h-32 flex items-center">
-              {currentQuestion + 1 + ". " + question.question + " "}
-              <span className="font-bold"> ({question.marks})</span>
-            </p>
-            <div className="">
-              <label>
+            <div className="text-2xl mb-4">
+              <p>{currentQuestion + 1 + ". " + question.question}</p>
+              <p className="text-base font-bold"> ({question.marks} Marks)</p>
+            </div>
+            <div className="p-4 bg-blue-400 rounded-lg space-y-2">
+              <label className="text-white">
                 Answer
                 {!question.long_question && (
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-gray-200 text-sm">
                     {" "}
                     (Max 50 characters)
                   </span>
