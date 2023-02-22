@@ -142,37 +142,35 @@ export default function PaperContainer({}) {
   }, [paper]);
 
   return (
-    <div>
-      <div className="flex justify-center mx-auto w-fit font-poppins mt-28 space-x-20">
-        <div className="w-2/3">
-          {paperDetails.paper_type === "Objective" ? (
-            <OQContainer
-              question={questions[currentQuestion]}
-              totalQuestions={questions.length}
-              currentQuestion={currentQuestion}
-              setCurrentQuestion={setCurrentAndLocal}
-              freeFlow={paperDetails.freeflow}
-            />
-          ) : (
-            <SQContainer
-              question={questions[currentQuestion]}
-              totalQuestions={questions.length}
-              currentQuestion={currentQuestion}
-              setCurrentQuestion={setCurrentAndLocal}
-              freeFlow={paperDetails.freeflow}
-            />
-          )}
-        </div>
-        <div className="w-1/3 shadow-lg h-fit border-2 border-zinc-100 rounded-md p-10">
-          <Timer paper={paperDetails} />
-          {paperDetails.freeflow && (
-            <NavigationGrid
-              totalQuestions={questions.length}
-              currentQuestion={currentQuestion}
-              setCurrentQuestion={setCurrentAndLocal}
-            />
-          )}
-        </div>
+    <div className="flex justify-center mx-auto w-3/4 font-poppins mt-28 space-x-20">
+      <div className="w-2/3">
+        {paperDetails.paper_type === "Objective" ? (
+          <OQContainer
+            question={questions[currentQuestion]}
+            totalQuestions={questions.length}
+            currentQuestion={currentQuestion}
+            setCurrentQuestion={setCurrentAndLocal}
+            freeFlow={paperDetails.freeflow}
+          />
+        ) : (
+          <SQContainer
+            question={questions[currentQuestion]}
+            totalQuestions={questions.length}
+            currentQuestion={currentQuestion}
+            setCurrentQuestion={setCurrentAndLocal}
+            freeFlow={paperDetails.freeflow}
+          />
+        )}
+      </div>
+      <div className="w-1/3 shadow-lg h-fit border-2 border-zinc-100 rounded-md p-10">
+        <Timer paper={paperDetails} />
+        {paperDetails.freeflow && (
+          <NavigationGrid
+            totalQuestions={questions.length}
+            currentQuestion={currentQuestion}
+            setCurrentQuestion={setCurrentAndLocal}
+          />
+        )}
       </div>
     </div>
   );

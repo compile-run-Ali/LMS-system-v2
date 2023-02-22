@@ -52,9 +52,8 @@ export default function OQContainer({
     <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl">
       {question ? (
         <>
-          <div key={question.oq_id}>
-
-            <p className="text-2xl text-center h-32 flex items-center">
+          <div>
+            <p className="text-2xl justify-center h-32 flex items-center">
               {currentQuestion + 1 + ". " + question.question}
             </p>
             <div className="flex justify-between mt-6 flex-col">
@@ -95,13 +94,16 @@ export default function OQContainer({
                     className="w-full py-3 ml-2 text-sm font-medium text-white cursor-pointer"
                   >
                     {/* {answer} */}
-                    answer answer answer answer answer answer answer 
+                    answer answer answer answer answer answer answer
                   </label>
                 </div>
               ))}
             </div>
           </div>
-          <div className="flex justify-between mt-6 text-white">
+          <div className={`
+            flex mt-6 text-white mx-auto justify-between
+            ${freeFlow ? "w-full" : "w-1/2"}
+          `}>
             {freeFlow && (
               <button
                 className={

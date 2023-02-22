@@ -13,7 +13,7 @@ export default function NavigationGrid({
           <div
             onClick={() => setCurrentQuestion(index)}
             key={index}
-            className={`transition-colors cursor-pointer border border-blue-800 w-full aspect-square flex justify-center items-center
+            className={`min-w-[50px] transition-colors cursor-pointer border border-blue-800 w-full aspect-square flex justify-center items-center
           ${
             currentQuestion === index
               ? "bg-blue-800 text-white"

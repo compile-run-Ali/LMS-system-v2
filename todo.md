@@ -12,6 +12,8 @@
 - create a component of objective paper
 - create a component of objective question
 - upsert issue in SOA table
+- quiz submission handle
+- clear local storage
 
 ### Later
 - database re design

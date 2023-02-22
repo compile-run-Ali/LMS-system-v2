@@ -29,28 +29,48 @@ export default function SQContainer({
       });
   };
 
+  useEffect(() => {
+    if (question) {
+      setAnswer("");
+    }
+  }, [question]);
+
   return (
-    <>
+    <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl">
       {question ? (
-        <div>
+        <>
           <div>
+            <p className="text-2xl justify-center h-32 flex items-center">
+              {currentQuestion + 1 + ". " + question.question + " "}
+              <span className="font-bold"> ({question.marks})</span>
+            </p>
             <div className="">
-              {question.question}
-              <span className="w-10 font-bold"> ({question.marks})</span>
-            </div>
-            <div className="p-2">
-              <label>Answer</label>
+              <label>
+                Answer
+                {!question.long_question && (
+                  <span className="text-gray-500 text-sm">
+                    {" "}
+                    (Max 50 characters)
+                  </span>
+                )}
+              </label>
               <textarea
-                className="border border-gray-300 bg-white rounded-md p-2 w-full"
-                maxLength={question.long_question? 100000: 50}
+                className="border border-gray-300 bg-white rounded-md p-2 w-full "
+                maxLength={question.long_question ? 100000 : 50}
                 value={answer}
+                rows={question.long_question ? 10 : 2}
                 onChange={(e) => setAnswer(e.target.value)}
               />
             </div>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mt-6 text-white">
             {freeFlow && (
               <button
+                className={
+                  (currentQuestion > 0
+                    ? "bg-blue-700 hover:bg-blue-800"
+                    : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+                }
                 onClick={() => {
                   currentQuestion > 0 &&
                     setCurrentQuestion(currentQuestion - 1);
@@ -59,8 +79,18 @@ export default function SQContainer({
                 Previous
               </button>
             )}
-            <button onClick={saveAnswer}>Save</button>
             <button
+              className="bg-blue-700 hover:bg-blue-800 px-3 py-2 w-24 rounded-lg"
+              onClick={saveAnswer}
+            >
+              Save
+            </button>
+            <button
+              className={
+                (currentQuestion < totalQuestions - 1
+                  ? "bg-blue-700 hover:bg-blue-800"
+                  : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+              }
               onClick={() => {
                 currentQuestion < totalQuestions - 1 &&
                   setCurrentQuestion(currentQuestion + 1);
@@ -69,10 +99,12 @@ export default function SQContainer({
               Next
             </button>
           </div>
-        </div>
+        </>
       ) : (
-        <>loading</>
+        <div>
+          <h1>loading</h1>
+        </div>
       )}
-    </>
+    </div>
   );
 }
