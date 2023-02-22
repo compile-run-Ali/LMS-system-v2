@@ -16,38 +16,62 @@ export default function PapersList({ papers, isLive, p_number }) {
     setSortedPapers(newSortedPapers);
   }, [papers]);
 
-  const MapPapers = (paper) => {
+  const getRow = (paper) => {
     const { start, end } = getPaperDateTime(paper.date, paper.duration);
-    const status = isLive ? "live" : compareDateTime(start, end);
-    const time =
-      convertDateTimeToStrings(start) + " to " + convertDateTimeToStrings(end);
+    const startDate = convertDateTimeToStrings(start, true);
+    const startTime = convertDateTimeToStrings(start);
+    const endDate = convertDateTimeToStrings(end);
     return (
-      <div className="my-2 border-2 border-black flex justify-between">
-        <div className="w-1/12">{paper.paper_name}</div>
-        <div className="w-1/3">
-          paper is {status} and {paper.paper_type}
-        </div>
-        <div className="w-1/2">{time}</div>
-      </div>
+      // <div className="mb-4 flex justify-between bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white p-4 items-center hover:-translate-y-0.5 hover:to-blue-800 hover:from-blue-800 transition-all">
+      <>
+        <td className="px-4 py-2">{paper.paper_name}</td>
+        <td className="px-4 py-2">{paper.paper_type}</td>
+        <td className="px-4 py-2">{startDate}</td>
+        <td className="px-4 py-2">{startTime}</td>
+        <td className="px-4 py-2">{endDate}</td>
+        <td className="px-4 py-2">
+          {isLive ? (
+            <Link href={`/paper/attempt/${p_number}/${paper.paper_id}`}>
+              <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                Attempt
+              </button>
+            </Link>
+          ) : (
+            // <Link href={`/paper/${paper.paper_id}`}>
+              <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                View
+              </button>
+            // </Link>
+          )}
+        </td>
+      </>
+      // </div>
     );
   };
 
   return (
     <div>
-      {sortedPapers.map((paper) => {
-        return (
-          // add Link tag to live papers only
-          <div key={paper.paper_id}>
-            {isLive ? (
-              <Link href={`/paper/attempt/${p_number}/${paper.paper_id}`}>
-                {MapPapers(paper)}
-              </Link>
-            ) : (
-              MapPapers(paper)
-            )}
-          </div>
-        );
-      })}
+      <table className="table-auto rounded-md mt-2 mb-4 font-poppins w-full text-left">
+        <thead>
+          <tr className="bg-blue-800 rounded-md text-white">
+            <th className="px-4 py-2">Name</th>
+            <th className="px-4 py-2">Type</th>
+            <th className="px-4 py-2">Date</th>
+            <th className="px-4 py-2">Start Time</th>
+            <th className="px-4 py-2">End Time</th>
+            <th className="px-4 py-2"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {/* href={`/paper/attempt/${p_number}/${paper.paper_id}`} */}
+          {sortedPapers.map((paper) => {
+            return (
+              // add Link tag to live papers only
+              <tr key={paper.paper_id}>{getRow(paper)}</tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
