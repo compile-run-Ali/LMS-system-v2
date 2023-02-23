@@ -1,3 +1,4 @@
+// add answer of studednt to the question
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 

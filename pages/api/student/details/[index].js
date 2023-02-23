@@ -1,3 +1,4 @@
+// get student by p_number
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
