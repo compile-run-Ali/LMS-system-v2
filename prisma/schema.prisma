@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Student {
-  p_number Int @id
+  p_number String @id
 
   name            String
   password        String
@@ -31,7 +31,7 @@ model SRC {
   src_id String @id @default(uuid())
 
   student  Student @relation(fields: [p_number], references: [p_number])
-  p_number Int
+  p_number String
 
   course      Course @relation(fields: [course_code], references: [course_code])
   course_code String
@@ -136,7 +136,7 @@ model SSA {
   sq_id               String
   subjective_question SubjectiveQuestion @relation(fields: [sq_id], references: [sq_id])
 
-  p_number Int
+  p_number String
   student  Student @relation(fields: [p_number], references: [p_number])
 
   answer String
@@ -163,7 +163,7 @@ model SOA {
   oq_id              String
   objective_question ObjectiveQuestion @relation(fields: [oq_id], references: [oq_id])
 
-  p_number Int
+  p_number String
   student  Student @relation(fields: [p_number], references: [p_number])
 
   answer String
@@ -186,7 +186,7 @@ model Notification {
 
   time            DateTime @default(now())
   student         Student @relation(fields: [p_number], references: [p_number])
-  p_number        Int
+  p_number        String
 
   faculty Faculty @relation(fields: [faculty_id], references: [faculty_id])
   faculty_id String

@@ -132,7 +132,7 @@ export default function PaperContainer({}) {
             //     console.log("error ", err.message);
             //   });
           } else {
-            router.push(`/student/${student}`);
+            router.push(`/student`);
           }
         })
         .catch((err) => {

@@ -37,12 +37,18 @@ export default function Register() {
   };
 
   const registerStudent = async () => {
-
-    if(!paNumber || !fullName||
-      !email || !dob || !cgpa || !phoneNumber || !password || !cPassword){
-        return alert("Please fill all fields")
-      }
-
+    if (
+      !paNumber ||
+      !fullName ||
+      !email ||
+      !dob ||
+      !cgpa ||
+      !phoneNumber ||
+      !password ||
+      !cPassword
+    ) {
+      return alert("Please fill all fields");
+    }
 
     const student = {
       p_number: paNumber,
@@ -94,7 +100,7 @@ export default function Register() {
                   </label>
                   <input
                     value={paNumber}
-                    onChange={(e) => setPaNumber(Number(e.target.value))}
+                    onChange={(e) => setPaNumber(e.target.value)}
                     type="text"
                     className="form-control block
                   w-full px-3 py-1.5 text-sm font-normal text-gray-700

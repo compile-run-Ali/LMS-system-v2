@@ -118,6 +118,7 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
+      router.push("/faculty");
     }
   };
 
@@ -138,6 +139,7 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
+      router.push("/faculty");
     }
   };
 
