@@ -37,11 +37,11 @@ export default function PapersList({ papers, isLive, p_number }) {
               </button>
             </Link>
           ) : (
-            // <Link href={`/paper/${paper.paper_id}`}>
+            <Link href={`/paper/review/${p_number}/${paper.paper_id}`}>
               <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded">
                 View
               </button>
-            // </Link>
+            </Link>
           )}
         </td>
       </>

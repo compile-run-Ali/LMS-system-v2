@@ -6,6 +6,7 @@ import SQContainer from "./Subjective/SQContainer";
 import NavigationGrid from "./NavigationGrid";
 import { compareDateTime, getPaperDateTime } from "@/lib/TimeCalculations";
 import Timer from "./Timer";
+import Submitted from "./Submitted";
 
 export default function PaperContainer({}) {
   const router = useRouter();
@@ -144,7 +145,9 @@ export default function PaperContainer({}) {
   return (
     <div className="flex justify-center mx-auto w-3/4 font-poppins mt-28 space-x-20">
       <div className="w-2/3">
-        {paperDetails.paper_type === "Objective" ? (
+        {currentQuestion === questions.length ? (
+          <Submitted />
+        ) : paperDetails.paper_type === "Objective" ? (
           <OQContainer
             question={questions[currentQuestion]}
             totalQuestions={questions.length}
@@ -162,9 +165,9 @@ export default function PaperContainer({}) {
           />
         )}
       </div>
-      <div className="w-1/3 shadow-lg h-fit border-2 border-zinc-100 rounded-md p-10">
+      <div className="w-1/3 max-w-fit shadow-lg h-fit border-2 border-zinc-100 rounded-md p-10">
         <Timer paper={paperDetails} />
-        {paperDetails.freeflow && (
+        {paperDetails.freeflow && currentQuestion < questions.length && (
           <NavigationGrid
             totalQuestions={questions.length}
             currentQuestion={currentQuestion}

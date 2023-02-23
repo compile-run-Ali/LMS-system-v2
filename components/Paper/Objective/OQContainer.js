@@ -14,8 +14,15 @@ export default function OQContainer({
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [multipleAllowed, setMultipleAllowed] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   const saveAnswer = () => {
+    if (selectedAnswer.length === 0) {
+      alert(
+        "You have not selected any answer. Please select an answer to continue."
+      );
+      return;
+    }
     axios
       .post(`/api/student/paper/oq/add_answer`, {
         p_number: student,
@@ -28,6 +35,7 @@ export default function OQContainer({
       .catch((err) => {
         console.log("error ", err.message);
       });
+    setSaved(true);
   };
 
   useEffect(() => {
@@ -46,7 +54,12 @@ export default function OQContainer({
     }
   }, [question]);
 
-  console.log("selected answer is ", selectedAnswer);
+  useEffect(
+    () => () => {
+      setSaved(false);
+    },
+    [selectedAnswer]
+  );
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl">
@@ -88,9 +101,7 @@ export default function OQContainer({
                     type={multipleAllowed ? "checkbox" : "radio"}
                     name={question.oq_id}
                     value={answer}
-                    readOnly={
-                      selectedAnswer.includes(answer) ? false : true
-                    }
+                    readOnly={selectedAnswer.includes(answer) ? false : true}
                     checked={selectedAnswer.includes(answer)}
                   />
                   <label
@@ -117,15 +128,24 @@ export default function OQContainer({
                     : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
                 }
                 onClick={() => {
-                  currentQuestion > 0 &&
-                    setCurrentQuestion(currentQuestion - 1);
+                  if (selectedAnswer.length === 0 || saved) {
+                    currentQuestion > 0 &&
+                      setCurrentQuestion(currentQuestion - 1);
+                  } else {
+                    alert("Please save your answer before proceeding");
+                  }
                 }}
               >
                 Previous
               </button>
             )}
             <button
-              className="bg-blue-700 hover:bg-blue-800 px-3 py-2 w-24 rounded-lg"
+              className={` px-3 py-2 w-24 rounded-lg
+                ${
+                  saved
+                    ? "bg-gray-400 hover:bg-gray-600"
+                    : "bg-green-500 hover:bg-green-600"
+                }`}
               onClick={saveAnswer}
             >
               Save
@@ -134,14 +154,24 @@ export default function OQContainer({
               className={
                 (currentQuestion < totalQuestions - 1
                   ? "bg-blue-700 hover:bg-blue-800"
-                  : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+                  : "bg-green-600") + " px-3 py-2 w-24 rounded-lg"
               }
               onClick={() => {
-                currentQuestion < totalQuestions - 1 &&
-                  setCurrentQuestion(currentQuestion + 1);
+                // if opt not selected OR saved
+                if (selectedAnswer.length === 0 || saved) {
+                  currentQuestion < totalQuestions &&
+                    setCurrentQuestion(currentQuestion + 1);
+                } else {
+                  alert("Please save your answer before proceeding");
+                }
               }}
             >
-              Next
+              {
+                {
+                  0: "Next",
+                  1: "Submit",
+                }[currentQuestion === totalQuestions - 1 ? 1 : 0]
+              }
             </button>
           </div>
         </>
