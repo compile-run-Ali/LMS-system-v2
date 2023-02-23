@@ -7,6 +7,18 @@ const handler = async (req, res) => {
             where: {    
                 paper_id: req.body.paper_id,
             },
+            select: {
+                faculty: {
+                    select: {
+                        name: true,
+                        email: true,
+                        level: true,
+                        faculty_id: true,
+                    },
+                },
+                comment: true,
+                time: true,
+            },
         });
         res.status(200).json(paperComments);
     } catch (err) {

@@ -3,13 +3,28 @@ import { PrismaClient } from "@prisma/client"
 const handler = async (req, res) => {
   const prisma = new PrismaClient()
   try {
-    //update paper submited field to true
+    //create paper approval 
+    await prisma.paperApproval.create({
+      data: {
+        paper: {
+          connect: {
+            paper_id: req.body.paper_id
+          }
+        },
+        faculty: {
+          connect: {
+            faculty_id: req.body.faculty_id
+          }
+        },
+        level: req.body.level,
+      }
+    })
     await prisma.paper.update({
       where: {
-        paper_id: req.body.paper_id,
+        paper_id: req.body.paper_id
       },
       data: {
-        submitted: true,
+        status: "Pending Approval"
       }
     })
     res.status(200).json({message: "Exam has been submitted for approval"})

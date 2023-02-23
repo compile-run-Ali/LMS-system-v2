@@ -46,7 +46,7 @@ const wizardItemsSubjective = [
 export default function CreateExam({ paperType }) {
   const router = useRouter()
 
-  const [examDetails, setExamDetails] = useState(Object.keys(router.query).length !== 0 ? router.query : null)
+  const [examDetails, setExamDetails] = useState(Object.keys(router.query).length > 1 ? router.query : null)
   const [active, setActive] = useState(1);
   const [paperId, setPaperId] = useState(examDetails ? examDetails.paper_id : 0);
   const [exam, setExam] = useState();
