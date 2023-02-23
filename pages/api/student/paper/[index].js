@@ -3,7 +3,7 @@
 import { PrismaClient } from "@prisma/client";
 
 export default async function handler(req, res) {
-  const prisma =  PrismaClient();
+  const prisma = new  PrismaClient();
   const { index } = req.query;
   const p_number = Number(index);
   console.log("finding courses of ", p_number);
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     console.log('above find course',course_code);
     const papers = await prisma.paper.findMany({
       where: {
-        course_code: "2",
+        course_code: course_code,
       },
     });
     console.log('below find course');
