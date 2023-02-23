@@ -14,19 +14,6 @@ export default function OQContainer({
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [multipleAllowed, setMultipleAllowed] = useState(false);
-  const selectAnswer = (e) => {
-    if (multipleAllowed) {
-      if (selectedAnswer.includes(e.target.value)) {
-        const index = selectedAnswer.indexOf(e.target.value);
-        selectedAnswer.splice(index, 1);
-        setSelectedAnswer([...selectedAnswer]);
-      } else {
-        setSelectedAnswer([...selectedAnswer, e.target.value]);
-      }
-    } else {
-      setSelectedAnswer([e.target.value]);
-    }
-  };
 
   const saveAnswer = () => {
     axios
@@ -48,6 +35,7 @@ export default function OQContainer({
     // selectedanswer will be a string in form a1,a2
     // convert correctAnswer into an array
     if (question) {
+      setSelectedAnswer([]);
       const answers = question.correct_answer.split(", ");
       setCorrectAnswers(answers);
       if (answers.length > 1) {
@@ -58,38 +46,76 @@ export default function OQContainer({
     }
   }, [question]);
 
-  console.log(
-    "selected answer ",
-    selectedAnswer,
-    "correct answer ",
-    correctAnswers
-  );
+  console.log("selected answer is ", selectedAnswer);
 
   return (
-    <>
+    <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl">
       {question ? (
         <>
           <div>
-            <div key={question.oq_id}>
-              <p>{question.question}</p>
-              <div className="flex justify-between">
-                {question.answers.split(",").map((answer, index) => (
-                  <div key={index}>
-                    <input
-                      type={multipleAllowed ? "checkbox" : "radio"}
-                      name={question.oq_id}
-                      value={answer}
-                      onChange={selectAnswer}
-                    />
-                    <label>{answer}</label>
-                  </div>
-                ))}
-              </div>
+            <p className="text-2xl justify-center h-32 flex items-center">
+              {currentQuestion + 1 + ". " + question.question}
+            </p>
+            <div className="flex justify-between mt-6 flex-col">
+              {question.answers.split(",").map((answer, index) => (
+                <div
+                  key={index}
+                  className={`
+                  w-full flex  my-3 rounded-lg p-4 hover:bg-blue-700 transition-all cursor-pointer items-center shadow-xl shadow-blue-200
+                  ${
+                    selectedAnswer.includes(answer)
+                      ? "bg-blue-700"
+                      : "bg-blue-400"
+                  }
+                  `}
+                  onClick={() => {
+                    const input = document.querySelector(
+                      `input[value='${answer}']`
+                    );
+                    input.checked = !input.checked;
+                    input.dispatchEvent(new Event("change"));
+                    if (multipleAllowed) {
+                      setSelectedAnswer(
+                        selectedAnswer.includes(answer)
+                          ? selectedAnswer.filter((a) => a !== answer)
+                          : [...selectedAnswer, answer]
+                      );
+                    } else setSelectedAnswer([answer]);
+                  }}
+                >
+                  <input
+                    className="w-6 h-6 ring-offset-gray-700 focus:ring-offset-gray-700 bg-gray-600 border-gray-500 pointer-events-none accent-white"
+                    type={multipleAllowed ? "checkbox" : "radio"}
+                    name={question.oq_id}
+                    value={answer}
+                    readOnly={
+                      selectedAnswer.includes(answer) ? false : true
+                    }
+                    checked={selectedAnswer.includes(answer)}
+                  />
+                  <label
+                    htmlFor="list-radio-license"
+                    className="w-full py-3 ml-2 text-sm font-medium text-white cursor-pointer"
+                  >
+                    {answer}
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="flex justify-between">
+          <div
+            className={`
+            flex mt-6 text-white mx-auto justify-between
+            ${freeFlow ? "w-full" : "w-1/2"}
+          `}
+          >
             {freeFlow && (
               <button
+                className={
+                  (currentQuestion > 0
+                    ? "bg-blue-700 hover:bg-blue-800"
+                    : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+                }
                 onClick={() => {
                   currentQuestion > 0 &&
                     setCurrentQuestion(currentQuestion - 1);
@@ -98,8 +124,18 @@ export default function OQContainer({
                 Previous
               </button>
             )}
-            <button onClick={saveAnswer}>Save</button>
             <button
+              className="bg-blue-700 hover:bg-blue-800 px-3 py-2 w-24 rounded-lg"
+              onClick={saveAnswer}
+            >
+              Save
+            </button>
+            <button
+              className={
+                (currentQuestion < totalQuestions - 1
+                  ? "bg-blue-700 hover:bg-blue-800"
+                  : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+              }
               onClick={() => {
                 currentQuestion < totalQuestions - 1 &&
                   setCurrentQuestion(currentQuestion + 1);
@@ -114,6 +150,6 @@ export default function OQContainer({
           <h1>loading</h1>
         </div>
       )}
-    </>
+    </div>
   );
 }
