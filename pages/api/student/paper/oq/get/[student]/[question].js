@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
 
-  console.log("inside get answer", req.query);
   try {
     const existingSOA = await prisma.sOA.findUnique({
       where: {

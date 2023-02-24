@@ -27,7 +27,7 @@ export default function OQContainer({
       .post(`/api/student/paper/oq/add_answer`, {
         p_number: student,
         oq_id: question.oq_id,
-        answer: selectedAnswer.join(", "),
+        answer: selectedAnswer.join(","),
       })
       .then((res) => {
         console.log("answer added successfully ", res.data);
@@ -44,7 +44,7 @@ export default function OQContainer({
     // convert correctAnswer into an array
     if (question) {
       setSelectedAnswer([]);
-      const answers = question.correct_answer.split(", ");
+      const answers = question.correct_answer.split(",");
       setCorrectAnswers(answers);
       if (answers.length > 1) {
         setMultipleAllowed(true);
@@ -154,7 +154,7 @@ export default function OQContainer({
               className={
                 (currentQuestion < totalQuestions - 1
                   ? "bg-blue-700 hover:bg-blue-800"
-                  : "bg-green-600") + " px-3 py-2 w-24 rounded-lg"
+                  : "bg-green-500 hover:bg-green-600") + " px-3 py-2 w-24 rounded-lg"
               }
               onClick={() => {
                 // if opt not selected OR saved

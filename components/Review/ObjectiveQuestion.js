@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 
 export default function ObjectiveQuestion({ question, qNumber }) {
-  const correctArray = question.correct_answer.split(", ");
+  const correctArray = question.correct_answer.split(",");
   const answerArray = question.answers.split(",");
   const multipleAllowed = correctArray.length > 1;
 
   return (
-    <div className="w-3/4 mx-auto my-6 bg-zinc-200 rounded-lg py-5 px-10">
+    <div className="mx-auto my-6 bg-zinc-200 rounded-lg py-5 px-10">
       <div>
         <p className="text-xl">{qNumber + ". " + question.question}</p>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid gap-2">
           {answerArray.map((answer, index) => (
             <div
               key={index}
@@ -23,7 +23,7 @@ export default function ObjectiveQuestion({ question, qNumber }) {
                 type={multipleAllowed ? "checkbox" : "radio"}
                 // disabled
                 defaultChecked={question?.selected_answers
-                  ?.split(", ")
+                  ?.split(",")
                   .includes(answer)}
               />
               <label
