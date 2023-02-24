@@ -12,9 +12,15 @@ export default function SQContainer({
   const router = useRouter();
   const { student } = router.query;
   const [answer, setAnswer] = useState("");
+  const [saved, setSaved] = useState(false);
 
   const saveAnswer = () => {
-    console.log(question);
+    if (!answer) {
+      alert(
+        "Your answer is empty. Please type anything to continue."
+      );
+      return;
+    }
     axios
       .post(`/api/student/paper/sq/add_answer`, {
         p_number: student,
@@ -27,6 +33,7 @@ export default function SQContainer({
       .catch((err) => {
         console.log("error ", err.message);
       });
+    setSaved(true);
   };
 
   useEffect(() => {
@@ -80,7 +87,12 @@ export default function SQContainer({
               </button>
             )}
             <button
-              className="bg-blue-700 hover:bg-blue-800 px-3 py-2 w-24 rounded-lg"
+              className={` px-3 py-2 w-24 rounded-lg
+                ${
+                  saved
+                    ? "bg-gray-400 hover:bg-gray-600"
+                    : "bg-green-500 hover:bg-green-600"
+                }`}
               onClick={saveAnswer}
             >
               Save
@@ -89,14 +101,24 @@ export default function SQContainer({
               className={
                 (currentQuestion < totalQuestions - 1
                   ? "bg-blue-700 hover:bg-blue-800"
-                  : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+                  : "bg-green-500 hover:bg-green-600") + " px-3 py-2 w-24 rounded-lg"
               }
               onClick={() => {
-                currentQuestion < totalQuestions - 1 &&
-                  setCurrentQuestion(currentQuestion + 1);
+                // if opt not selected OR saved
+                if (!answer || saved) {
+                  currentQuestion < totalQuestions &&
+                    setCurrentQuestion(currentQuestion + 1);
+                } else {
+                  alert("Please save your answer before proceeding");
+                }
               }}
             >
-              Next
+              {
+                {
+                  0: "Next",
+                  1: "Submit",
+                }[currentQuestion === totalQuestions - 1 ? 1 : 0]
+              }
             </button>
           </div>
         </>

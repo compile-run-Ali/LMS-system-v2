@@ -22,6 +22,7 @@ export default function Timer({ paper }) {
         );
         if (timeLeft === "00:00:00") {
           router.push(`/student/${student}`);
+          localStorage.clear();
         }
       }, 1000);
       return () => clearInterval(interval);
