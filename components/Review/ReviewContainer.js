@@ -9,7 +9,7 @@ export default function ReviewContainer() {
   const router = useRouter();
   const { student, paper } = router.query;
   const [answers, setAnswers] = useState([]);
-  const [questions, setQuestions] = useState([]);
+  const [objectiveQuestions, setObjectiveQuestions] = useState([]);
   const [paperDetails, setPaperDetails] = useState({});
 
   useEffect(() => {
@@ -40,12 +40,12 @@ export default function ReviewContainer() {
             if (paperStatus === "past") {
               // paper is past
               const isObjective = requestedPaper.paper_type === "Objective";
-              // get all the questions of that paper
+              // get all the OBJECTIVE questions of that paper
               axios
-                .get(`/api/student/paper/${isObjective ? "oq" : "sq"}/${paper}`)
+                .get(`/api/student/paper/oq/${paper}`)
                 .then((res) => {
                   const receivedQuestions = res.data;
-                  setQuestions(receivedQuestions);
+                  setObjectiveQuestions(receivedQuestions);
                   // for each question, fetch an answer of the student
                   receivedQuestions.forEach((question) => {
                     axios
@@ -94,7 +94,7 @@ export default function ReviewContainer() {
         Paper Review
       </h1>
       <PaperDetails paper={paperDetails} />
-      <ObjectiveReview questions={questions} answers={answers} />
+      <ObjectiveReview questions={objectiveQuestions} answers={answers} />
     </div>
   );
 }
