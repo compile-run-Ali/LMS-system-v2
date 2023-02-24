@@ -3,6 +3,7 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { compareDateTime, getPaperDateTime } from "@/lib/TimeCalculations";
 import ObjectiveReview from "./ObjectiveReview";
+import PaperDetails from "./PaperDetails";
 
 export default function ReviewContainer() {
   const router = useRouter();
@@ -88,8 +89,11 @@ export default function ReviewContainer() {
   }, [paper]);
 
   return (
-    <div>
-      {JSON.stringify(paperDetails)}
+    <div className="w-3/4 mx-auto">
+      <h1 className=" font-bold text-3xl  mt-10 mb-4">
+        Paper Review
+      </h1>
+      <PaperDetails paper={paperDetails} />
       <ObjectiveReview questions={questions} answers={answers} />
     </div>
   );

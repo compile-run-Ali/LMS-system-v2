@@ -26,10 +26,10 @@ export default function ObjectiveReview({ questions, answers }) {
   };
 
   const markAnswer = (correct, answered, marks) => {
-    if (correct.split(", ").length > 1) {
+    if (correct.split(",").length > 1) {
       let score;
-      const correctAnswers = correct.split(", ");
-      const selectedAnswers = answered?.split(", ") || [];
+      const correctAnswers = correct.split(",");
+      const selectedAnswers = answered?.split(",") || [];
       if (correctAnswers.length >= selectedAnswers.length) {
         // count how many of the answers are correct
         let count = 0;
@@ -57,25 +57,14 @@ export default function ObjectiveReview({ questions, answers }) {
   return (
     <div className="w-full ">
       {questionWithAnswers(questions, answers).map((question, index) => (
-        <>
-          <ObjectiveQuestion
-            key={index}
-            qNumber={index + 1}
-            question={question}
-          />
-        </>
+        <ObjectiveQuestion
+          key={question.oq_id}
+          qNumber={index + 1}
+          question={question}
+        />
       ))}
       <div>
         <p className="text-xl font-bold">Total Marks: </p>
-        <p className="text-xl font-bold">
-            {questionWithAnswers(questions, answers)
-                .map((question) => question.obtained_marks)
-                .reduce((a, b) => a + b, 0)}{" "}
-            out of{" "}
-            {questionWithAnswers(questions, answers)
-                .map((question) => question.marks)
-                .reduce((a, b) => a + b, 0)}
-        </p>
       </div>
     </div>
   );
