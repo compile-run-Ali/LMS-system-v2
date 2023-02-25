@@ -15,6 +15,7 @@ export default function PaperContainer({}) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [paperDetails, setPaperDetails] = useState({});
   const [objectiveCount, setObjectiveCount] = useState(0);
+  const [flags, setFlags] = useState([]);
 
   useEffect(() => {
     if (localStorage.getItem("localCurrent")) {
@@ -91,6 +92,8 @@ export default function PaperContainer({}) {
                 `not the first time, stored questions are `,
                 storedQuestions
               );
+              setObjectiveCount(Number(localStorage.getItem("objectiveCount")));
+              setFlags(JSON.parse(localStorage.getItem("flags")));
             } else {
               // first time
               axios
@@ -115,6 +118,10 @@ export default function PaperContainer({}) {
                     axios.get(`/api/student/paper/oq/${paper}`).then((res) => {
                       const objectiveQuestions = res.data;
                       setObjectiveCount(objectiveQuestions.length);
+                      localStorage.setItem(
+                        "objectiveCount",
+                        objectiveQuestions.length
+                      );
                       const randomizedObjective =
                         shuffleArray(objectiveQuestions);
                       const randomizedSubjective =
@@ -149,8 +156,8 @@ export default function PaperContainer({}) {
         });
     }
   }, [paper]);
+  console.log("flags are", flags);
 
-  console.log("objectiveCount", objectiveCount);
 
   return (
     <div className="flex justify-center mx-auto w-3/4 font-poppins mt-28 space-x-20">
@@ -164,6 +171,8 @@ export default function PaperContainer({}) {
             currentQuestion={currentQuestion}
             setCurrentQuestion={setCurrentAndLocal}
             freeFlow={paperDetails.freeflow}
+            flags={flags}
+            setFlags={setFlags}
           />
         ) : (
           <>
@@ -174,6 +183,8 @@ export default function PaperContainer({}) {
                 currentQuestion={currentQuestion}
                 setCurrentQuestion={setCurrentAndLocal}
                 freeFlow={paperDetails.freeflow}
+                flags={flags}
+                setFlags={setFlags}
               />
             ) : (
               <SQContainer
@@ -182,6 +193,8 @@ export default function PaperContainer({}) {
                 currentQuestion={currentQuestion}
                 setCurrentQuestion={setCurrentAndLocal}
                 freeFlow={paperDetails.freeflow}
+                flags={flags}
+                setFlags={setFlags}
               />
             )}
           </>
@@ -194,6 +207,8 @@ export default function PaperContainer({}) {
             totalQuestions={questions.length}
             currentQuestion={currentQuestion}
             setCurrentQuestion={setCurrentAndLocal}
+            flags={flags}
+            setFlags={setFlags}
           />
         )}
       </div>

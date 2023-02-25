@@ -4,6 +4,8 @@ export default function NavigationGrid({
   totalQuestions,
   currentQuestion,
   setCurrentQuestion,
+  flags,
+  setFlags,
 }) {
   return (
     <div className="mt-6 border-blue-800 ">
@@ -17,6 +19,8 @@ export default function NavigationGrid({
           ${
             currentQuestion === index
               ? "bg-blue-800 text-white"
+              : flags.includes(String(index))
+              ? "bg-yellow-400 text-white"
               : "bg-white text-black hover:bg-blue-500 hover:text-white "
           }
             `}

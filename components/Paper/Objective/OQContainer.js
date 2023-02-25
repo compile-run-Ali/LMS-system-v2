@@ -8,6 +8,8 @@ export default function OQContainer({
   setCurrentQuestion,
   totalQuestions,
   freeFlow,
+  flags,
+  setFlags,
 }) {
   const router = useRouter();
   const { student } = router.query;
@@ -38,6 +40,16 @@ export default function OQContainer({
     setSaved(true);
   };
 
+  const flagQuestion = () => {
+    const current = String(currentQuestion);
+    let f = flags;
+    f.includes(current)
+      ? (f = f.filter((flags) => flags !== current))
+      : (f = [...flags, current]);
+    setFlags(f);
+    localStorage.setItem("flags", JSON.stringify(f));
+    console.log(localStorage.getItem("flags"));
+  };
   useEffect(() => {
     // correctanswer will be a string in form a1,a2
     // selectedanswer will be a string in form a1,a2
@@ -142,6 +154,17 @@ export default function OQContainer({
             <button
               className={` px-3 py-2 w-24 rounded-lg
                 ${
+                  flags.includes(String(currentQuestion))
+                    ? "bg-gray-400 hover:bg-gray-600"
+                    : "bg-yellow-400 hover:bg-yellow-500"
+                }`}
+              onClick={flagQuestion}
+            >
+              {flags.includes(String(currentQuestion)) ? "Unflag" : "Flag"}
+            </button>
+            <button
+              className={` px-3 py-2 w-24 rounded-lg
+                ${
                   saved
                     ? "bg-gray-400 hover:bg-gray-600"
                     : "bg-green-500 hover:bg-green-600"
@@ -154,7 +177,8 @@ export default function OQContainer({
               className={
                 (currentQuestion < totalQuestions - 1
                   ? "bg-blue-700 hover:bg-blue-800"
-                  : "bg-green-500 hover:bg-green-600") + " px-3 py-2 w-24 rounded-lg"
+                  : "bg-green-500 hover:bg-green-600") +
+                " px-3 py-2 w-24 rounded-lg"
               }
               onClick={() => {
                 // if opt not selected OR saved
