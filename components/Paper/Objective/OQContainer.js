@@ -88,9 +88,7 @@ export default function OQContainer({
                     type={multipleAllowed ? "checkbox" : "radio"}
                     name={question.oq_id}
                     value={answer}
-                    readOnly={
-                      selectedAnswer.includes(answer) ? false : true
-                    }
+                    readOnly={selectedAnswer.includes(answer) ? false : true}
                     checked={selectedAnswer.includes(answer)}
                   />
                   <label

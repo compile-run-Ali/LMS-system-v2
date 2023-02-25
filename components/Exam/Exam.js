@@ -378,6 +378,17 @@ export default function Exam({
           )}
         </div>
       )}
+
+      <div className="mt-10 pr-10 flex justify-start gap-x-5 mb-10">
+        <button
+          className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+          onClick={() => {
+            router.push("/faculty/mark_exam/" + exam.paper_id);
+          }}
+        >
+          Mark Exam
+        </button>
+      </div>
     </div>
   );
 }

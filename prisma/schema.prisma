@@ -114,6 +114,7 @@ model Paper {
 model SubjectiveQuestion {
   sq_id String @id @default(uuid())
 
+  questionnumber Int
   question      String 
   long_question Boolean
   marks         Int
@@ -131,7 +132,7 @@ model SubjectiveQuestion {
 
 //Student Subjective Question Attempt
 model SSA {
-  soa_id String @id @default(uuid())
+  ssa_id String @id @default(uuid())
 
   sq_id               String
   subjective_question SubjectiveQuestion @relation(fields: [sq_id], references: [sq_id])
@@ -140,6 +141,7 @@ model SSA {
   student  Student @relation(fields: [p_number], references: [p_number])
 
   answer String
+  marksobtained Int @default(0)
 }
 
 model ObjectiveQuestion {
@@ -167,6 +169,7 @@ model SOA {
   student  Student @relation(fields: [p_number], references: [p_number])
 
   answer String
+  marksobtained Int
 }
 
 model PaperComment {
