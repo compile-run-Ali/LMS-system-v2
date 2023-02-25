@@ -148,7 +148,7 @@ export default function PaperContainer({}) {
                 });
             }
           } else {
-            router.push(`/student/${student}`);
+            router.push(`/student`);
           }
         })
         .catch((err) => {

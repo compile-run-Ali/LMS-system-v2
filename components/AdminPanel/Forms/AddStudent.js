@@ -13,6 +13,15 @@ export default function AddStudent() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log({
+      p_number: pNumber,
+      name,
+      phone_number: phoneNumber,
+      cgpa,
+      DOB,
+      email,
+      password,
+    });
     await addStudent({
       p_number: pNumber,
       name,
@@ -33,12 +42,9 @@ export default function AddStudent() {
   };
 
   const addStudent = async (student) => {
-    const new_student = await axios.post(
-      "/api/admin/student/add_student",
-      {
-        ...student,
-      }
-    );
+    const new_student = await axios.post("/api/admin/student/add_student", {
+      ...student,
+    });
     console.log(new_student);
   };
 

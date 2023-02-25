@@ -2,26 +2,19 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const ExamTable = () => {
+const ExamTable = ({exams_data}) => {
   const router = useRouter();
-  const [exams, setExams] = useState([
-  ]);
+  const [exams, setExams] = useState([]);
+
+  useEffect(() => {
+    if (exams_data !== null) {
+      setExams(exams_data);
+    }
+  }, [exams_data]);
 
   const handleExamClick = (paper_id) => {
     router.push(`/faculty/exam_details/${paper_id}`);
   };
-
-
-  const fetchExams = async () => {
-    const res = await axios.get("/api/admin/get_exams");
-    setExams(res.data);
-  }
-
-
-  useEffect(() => {
-    // fetch exams from backend
-    fetchExams();
-  }, []);
 
   return (
     <table className="table-auto w-full mt-10 font-poppins text-left px-5">
@@ -33,6 +26,7 @@ const ExamTable = () => {
           <th className="px-4 py-2">Date</th>
           <th className="px-4 py-2">Time</th>
           <th className="px-4 py-2">Total Marks</th>
+          <th className="px-4 py-2">Status</th>
         </tr>
       </thead>
       <tbody>
@@ -47,6 +41,7 @@ const ExamTable = () => {
               <td className="border px-4 py-2">{exam.date}</td>
               <td className="border px-4 py-2">{exam.time}</td>
               <td className="border px-4 py-2">{exam.weightage}</td>
+              <td className="border px-4 py-2">{exam.status}</td>
             </tr>
         ))}
       </tbody>

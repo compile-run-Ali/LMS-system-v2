@@ -100,7 +100,7 @@ export default function Register() {
                   </label>
                   <input
                     value={paNumber}
-                    onChange={(e) => setPaNumber(Number(e.target.value))}
+                    onChange={(e) => setPaNumber(e.target.value)}
                     type="text"
                     className="form-control block
                   w-full px-3 py-1.5 text-sm font-normal text-gray-700

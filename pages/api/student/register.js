@@ -14,14 +14,14 @@ export default async function handler(req, res) {
     if (!course) return res.status(404).json("Course not found");
     const student = await prisma.student.findUnique({
       where: {
-        p_number: Number(req.body.p_number),
+        p_number: req.body.p_number,
       },
     });
     if (!student) return res.status(404).json("Student not found");
     const enrolled = await prisma.sRC.create({
       data: {
         course_code: req.body.course_code,
-        p_number: Number(req.body.p_number),
+        p_number: req.body.p_number,
       },
     });
     res.status(200).json(enrolled);

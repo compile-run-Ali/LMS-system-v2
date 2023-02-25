@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       const newSSA = await prisma.sSA.create({
         data: {
           soa_id: req.body.p_number + req.body.sq_id,
-          p_number: Number(req.body.p_number),
+          p_number: req.body.p_number,
           sq_id: req.body.sq_id,
           answer: req.body.answer,
         },

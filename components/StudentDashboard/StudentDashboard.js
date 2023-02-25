@@ -5,9 +5,8 @@ import Link from "next/link";
 import PapersList from "../Paper/PapersList";
 import { compareDateTime, getPaperDateTime } from "@/lib/TimeCalculations";
 
-export default function StudentDashboard() {
-  const router = useRouter();
-  const { index } = router.query;
+export default function StudentDashboard({ session }) {
+  const [index, setIndex] = useState(null);
   const [student, setStudent] = useState(null);
   const [pastPapers, setPastPapers] = useState([]);
   const [livePapers, setLivePapers] = useState([]);
@@ -34,62 +33,50 @@ export default function StudentDashboard() {
   // if the paper is clicked, and review is allowed, send to dynamic route of that paper
 
   const getStudentAndSetPapers = async () => {
-    await axios
-      .get(`/api/student/details/${index}`)
-      .then((res) => {
-        // use pnumber to fetch papers
-        setStudent(res.data);
-        axios
-          .get(`/api/student/paper/${res.data.p_number}`)
-          .then((res) => {
-            console.log("papers ", res.data);
+    const studentexams = await axios.get(`/api/student/paper/${index}`);
+    console.log("papers ", studentexams.data);
 
-            // categorize papers here
-            const past = [];
-            const live = [];
-            const upcoming = [];
+    // categorize papers here
+    const past = [];
+    const live = [];
+    const upcoming = [];
 
-            for (const paper of res.data) {
-              if (
-                compareDateTime(
-                  getPaperDateTime(paper.date, paper.duration).start,
-                  getPaperDateTime(paper.date, paper.duration).end
-                ) === "past"
-              ) {
-                past.push(paper);
-              } else if (
-                compareDateTime(
-                  getPaperDateTime(paper.date, paper.duration).start,
-                  getPaperDateTime(paper.date, paper.duration).end
-                ) === "live"
-              ) {
-                live.push(paper);
-              } else if (
-                compareDateTime(
-                  getPaperDateTime(paper.date, paper.duration).start,
-                  getPaperDateTime(paper.date, paper.duration).end
-                ) === "upcoming"
-              ) {
-                upcoming.push(paper);
-              }
-            }
-            setPastPapers(past);
-            setLivePapers(live);
-            setUpcomingPapers(upcoming);
-          })
-          .catch((err) => {
-            console.log("error in fetching papers", err.message);
-          });
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    for (const paper of studentexams.data) {
+      if (
+        compareDateTime(
+          getPaperDateTime(paper.date, paper.duration).start,
+          getPaperDateTime(paper.date, paper.duration).end
+        ) === "past"
+      ) {
+        past.push(paper);
+      } else if (
+        compareDateTime(
+          getPaperDateTime(paper.date, paper.duration).start,
+          getPaperDateTime(paper.date, paper.duration).end
+        ) === "live"
+      ) {
+        live.push(paper);
+      } else if (
+        compareDateTime(
+          getPaperDateTime(paper.date, paper.duration).start,
+          getPaperDateTime(paper.date, paper.duration).end
+        ) === "upcoming"
+      ) {
+        upcoming.push(paper);
+      }
+    }
+    setPastPapers(past);
+    setLivePapers(live);
+    setUpcomingPapers(upcoming);
   };
 
   useEffect(() => {
-    if (!router.isReady) return;
-    getStudentAndSetPapers();
-  }, [router.isReady]);
+    if (session.status === "authenticated") {
+      setIndex(session.data.user.id);
+      setStudent(session.data.user);
+      index !== null && getStudentAndSetPapers();
+    }
+  }, [session, index]);
 
   return (
     <div className="px-8 py-4">

@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Student {
-  p_number Int @id
+  p_number String @id
 
   name            String
   password        String
@@ -24,13 +24,14 @@ model Student {
   courses            SRC[]
   subjective_answers SSA[]
   objective_answers  SOA[]
+  notifications      Notification[]
 }
 
 model SRC {
   src_id String @id @default(uuid())
 
   student  Student @relation(fields: [p_number], references: [p_number])
-  p_number Int
+  p_number String
 
   course      Course @relation(fields: [course_code], references: [course_code])
   course_code String
@@ -60,8 +61,11 @@ model Faculty {
   phone_number    String
   profile_picture String?
 
+  comments PaperComment[]
+
   courses       FTC[]
-  paperapproval PaperApproval?
+  paperapproval PaperApproval[]
+  notifications Notification[]
 }
 
 model FTC {
@@ -78,13 +82,13 @@ model PaperApproval {
   paperapproval_id String @id @default(uuid())
 
   level    Int
-  approved Boolean
+  approved Boolean  @default(false)
 
   paper_id String @unique
-  paper    Paper  @relation(fields: [paper_id], references: [paper_id])
+  paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
 
-  faculty_id String  @unique
-  faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id])
+  faculty_id String  
+  faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
 }
 
 model Paper {
@@ -99,8 +103,7 @@ model Paper {
   date        String
   duration    Int
   weightage   Int?
-  submitted   Boolean        @default(false)
-  remarks     String?
+  status      String        @default("Draft")
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]
@@ -111,7 +114,8 @@ model Paper {
 model SubjectiveQuestion {
   sq_id String @id @default(uuid())
 
-  question      String
+  questionnumber Int
+  question      String 
   long_question Boolean
   marks         Int
 
@@ -128,15 +132,16 @@ model SubjectiveQuestion {
 
 //Student Subjective Question Attempt
 model SSA {
-  soa_id String @id @default(uuid())
+  ssa_id String @id @default(uuid())
 
   sq_id               String
   subjective_question SubjectiveQuestion @relation(fields: [sq_id], references: [sq_id])
 
-  p_number Int
+  p_number String
   student  Student @relation(fields: [p_number], references: [p_number])
 
   answer String
+  marksobtained Int @default(0)
 }
 
 model ObjectiveQuestion {
@@ -160,17 +165,32 @@ model SOA {
   oq_id              String
   objective_question ObjectiveQuestion @relation(fields: [oq_id], references: [oq_id])
 
-  p_number Int
+  p_number String
   student  Student @relation(fields: [p_number], references: [p_number])
 
   answer String
+  marksobtained Int
 }
 
 model PaperComment {
   pc_id             String   @id @default(uuid())
   paper             Paper    @relation(fields: [paper_id], references: [paper_id])
   paper_id          String
-  faculty_name      String
+  faculty           Faculty @relation(fields: [faculty_id], references: [faculty_id])
+  faculty_id        String
   comment           String
   time              DateTime @default(now())
+}
+
+model Notification {
+  notification_id String @id @default(uuid())
+  
+  notification    String
+
+  time            DateTime @default(now())
+  student         Student @relation(fields: [p_number], references: [p_number])
+  p_number        String
+
+  faculty Faculty @relation(fields: [faculty_id], references: [faculty_id])
+  faculty_id String
 }

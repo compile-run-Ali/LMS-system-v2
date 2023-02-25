@@ -1,17 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import BaseLayout from "@/components/BaseLayout/BaseLayout";
 import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
 import StudentDashboard from "@/components/StudentDashboard/StudentDashboard";
 
 export default function Dashboard() {
-  const router = useRouter();
-  const { index } = router.query;
+  const session = useSession();
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      console.log(session);
+    }
+  }, [session]);
 
   return (
     <BaseLayout title={"Dashboard"}>
       <DashboardLayout>
-        <StudentDashboard />
+        <StudentDashboard session={session} />
 
         {/* 
 
