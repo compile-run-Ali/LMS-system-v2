@@ -37,12 +37,18 @@ export default function Register() {
   };
 
   const registerStudent = async () => {
-
-    if(!paNumber || !fullName||
-      !email || !dob || !cgpa || !phoneNumber || !password || !cPassword){
-        return alert("Please fill all fields")
-      }
-
+    if (
+      !paNumber ||
+      !fullName ||
+      !email ||
+      !dob ||
+      !cgpa ||
+      !phoneNumber ||
+      !password ||
+      !cPassword
+    ) {
+      return alert("Please fill all fields");
+    }
 
     const student = {
       p_number: paNumber,
@@ -215,7 +221,10 @@ export default function Register() {
                   <input
                     value={cgpa}
                     onChange={(e) => setCgpa(Number(e.target.value))}
-                    type="text"
+                    type="number"
+                    min={0}
+                    max={4}
+                    step={0.01}
                     className="form-control block
             w-full
             px-3
