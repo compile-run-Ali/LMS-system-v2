@@ -117,9 +117,9 @@ export default function ReviewContainer() {
                 //   }
                 // )
               }
-            } else router.push(`/student/${student}`);
+            } else router.push(`/student`);
             // setRedirect404(true);
-          } else router.push(`/student/${student}`);
+          } else router.push(`/student`);
         })
         .catch((err) => {
           console.log("error in fetching paper ", err);

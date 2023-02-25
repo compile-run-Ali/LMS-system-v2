@@ -21,7 +21,7 @@ export default function Timer({ paper }) {
           getRemainingTime(getPaperDateTime(paper.date, paper.duration).end)
         );
         if (timeLeft === "00:00:00") {
-          router.push(`/student/${student}`);
+          router.push(`/student`);
           localStorage.clear();
         }
       }, 1000);

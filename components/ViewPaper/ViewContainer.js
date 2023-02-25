@@ -30,7 +30,7 @@ export default function ViewContainer() {
               paperDateTime.end
             );
             if (paperStatus !== "upcoming") {
-              router.push(`/student/${student}`);
+              router.push(`/student`);
             }
           }
         });

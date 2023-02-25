@@ -9,7 +9,7 @@ export default function Submitted() {
       <h1 className="text-4xl font-bold text-zinc-100">Paper Submitted</h1>
       <button
         className="bg-zinc-100 text-zinc-700 font-bold py-2 px-4 rounded mt-6"
-        onClick={() => router.push(`/student/${student}`)}
+        onClick={() => router.push(`/student`)}
       >
         Go Back
       </button>
