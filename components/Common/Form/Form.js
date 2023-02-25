@@ -119,6 +119,7 @@ export default function Form({
           text={"Weightage"}
           required={true}
           type={"number"}
+          min={0}
           placeholder={"Ex: 20%"}
           value={weightage}
           onChange={handleWeightage}
