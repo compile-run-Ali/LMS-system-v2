@@ -109,7 +109,7 @@ export default function StudentDashboard() {
               <div className="font-poppins">
                 <PapersList
                   papers={paper.papers}
-                  isLive={paper.title === "Live Papers"}
+                  status={paper.title}
                   p_number={student?.p_number}
                 />
               </div>

@@ -8,7 +8,8 @@ import PaperDetails from "./PaperDetails";
 export default function ReviewContainer() {
   const router = useRouter();
   const { student, paper } = router.query;
-  const [answers, setAnswers] = useState([]);
+  const [objectiveAnswers, setObjectiveAnswers] = useState([]);
+  const [subjectiveAnswers, setSubjectiveAnswers] = useState([]);
   const [objectiveQuestions, setObjectiveQuestions] = useState([]);
   const [paperDetails, setPaperDetails] = useState({});
 
@@ -50,9 +51,7 @@ export default function ReviewContainer() {
                   receivedQuestions.forEach((question) => {
                     axios
                       .get(
-                        `/api/student/paper/${
-                          isObjective ? "oq" : "sq"
-                        }/get/${student}/${question.oq_id}`,
+                        `/api/student/paper/oq/get/${student}/${question.oq_id}`,
                         {
                           params: {
                             p_number: student,
@@ -62,7 +61,7 @@ export default function ReviewContainer() {
                       )
                       .then((response) => {
                         if (response.data) {
-                          setAnswers((prev) => {
+                          setObjectiveAnswers((prev) => {
                             if (prev.indexOf(response.data) === -1) {
                               return [...prev, response.data];
                             }
@@ -78,6 +77,46 @@ export default function ReviewContainer() {
                 .catch((err) => {
                   console.log("error in fetching questions", err.message);
                 });
+
+              if (!isObjective) {
+                // get all the SUBJECTIVE questions of that paper
+                // axios.get(
+                //   `/api/student/paper/sq/${paper}`
+                // ).then(
+                //   (res) => {
+                //     const receivedQuestions = res.data;
+                //     setObjectiveQuestions(receivedQuestions);
+                //     // for each question, fetch an answer of the student
+                //     receivedQuestions.forEach((question) => {
+                //       axios
+                //         .get(
+                //           `/api/student/paper/${
+                //             isObjective ? "oq" : "sq"
+                //           }/get/${student}/${question.oq_id}`,
+                //           {
+                //             params: {
+                //               p_number: student,
+                //               oq_id: question.oq_id,
+                //             },
+                //           }
+                //         )
+                //         .then((response) => {
+                //           if (response.data) {
+                //             setObjectiveAnswers((prev) => {
+                //               if (prev.indexOf(response.data) === -1) {
+                //                 return [...prev, response.data];
+                //               }
+                //               return prev;
+                //             });
+                //           }
+                //         })
+                //         .catch((error) => {
+                //           console.log("error in fetching answer", error.message);
+                //         });
+                //     });
+                //   }
+                // )
+              }
             } else router.push(`/student/${student}`);
             // setRedirect404(true);
           } else router.push(`/student/${student}`);
@@ -90,11 +129,18 @@ export default function ReviewContainer() {
 
   return (
     <div className="w-3/4 mx-auto">
-      <h1 className=" font-bold text-3xl  mt-10 mb-4">
-        Paper Review
-      </h1>
+      <h1 className=" font-bold text-3xl  mt-10 mb-4">Paper Review</h1>
       <PaperDetails paper={paperDetails} />
-      <ObjectiveReview questions={objectiveQuestions} answers={answers} />
+      <ObjectiveReview
+        questions={objectiveQuestions}
+        answers={objectiveAnswers}
+      />{
+        !paper.paper_type==='Objective' &&(
+          <>
+          subjective review here
+          </>
+        )
+      }
     </div>
   );
 }
