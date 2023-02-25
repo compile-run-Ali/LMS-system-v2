@@ -124,11 +124,9 @@ export default function PaperContainer({}) {
                       );
                       const randomizedObjective =
                         shuffleArray(objectiveQuestions);
-                      const randomizedSubjective =
-                        shuffleArray(subjectiveQuestions);
                       const randomizedQuestions = [
                         ...randomizedObjective,
-                        ...randomizedSubjective,
+                        ...subjectiveQuestions,
                       ];
                       localStorage.setItem(
                         "paperQuestions",
@@ -171,7 +169,7 @@ export default function PaperContainer({}) {
             currentQuestion={currentQuestion}
             setCurrentQuestion={setCurrentAndLocal}
             freeFlow={paperDetails.freeflow}
-            flags={flags}
+            flags={flags || []}
             setFlags={setFlags}
           />
         ) : (
@@ -183,7 +181,7 @@ export default function PaperContainer({}) {
                 currentQuestion={currentQuestion}
                 setCurrentQuestion={setCurrentAndLocal}
                 freeFlow={paperDetails.freeflow}
-                flags={flags}
+                flags={flags || []}
                 setFlags={setFlags}
               />
             ) : (
@@ -193,7 +191,7 @@ export default function PaperContainer({}) {
                 currentQuestion={currentQuestion}
                 setCurrentQuestion={setCurrentAndLocal}
                 freeFlow={paperDetails.freeflow}
-                flags={flags}
+                flags={flags || []}
                 setFlags={setFlags}
               />
             )}
@@ -207,7 +205,7 @@ export default function PaperContainer({}) {
             totalQuestions={questions.length}
             currentQuestion={currentQuestion}
             setCurrentQuestion={setCurrentAndLocal}
-            flags={flags}
+            flags={flags || []}
             setFlags={setFlags}
           />
         )}
