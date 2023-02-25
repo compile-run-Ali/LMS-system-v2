@@ -20,11 +20,6 @@ export default function ObjectiveReview({ questions, answers }) {
       };
     });
 
-  const format = (num) => {
-    const decimalPlaces = num % 1 !== 0 ? 2 : 0; // check if number has decimals
-    return num.toFixed(decimalPlaces);
-  };
-
   const markAnswer = (correct, answered, marks) => {
     if (correct.split(",").length > 1) {
       let score;
@@ -48,7 +43,7 @@ export default function ObjectiveReview({ questions, answers }) {
         score = m >= 0 ? m : 0;
       }
       const final = score * marks;
-      return format(final);
+      return final;
     } else {
       return correct === answered ? 1 : 0;
     }

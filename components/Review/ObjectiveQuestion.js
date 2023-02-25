@@ -38,11 +38,11 @@ export default function ObjectiveQuestion({ question, qNumber }) {
         <div className="mt-2 space-y-1 bg-blue-700 w-full p-2 px-4 rounded-lg flex flex-col">
           <p className="text-sm text-white">
             <span className="font-bold">Correct Answer: </span>
-            {question.correct_answer}
+            { question.correct_answer}
           </p>
           <p className="text-sm text-white">
             <span className="font-bold"> Marks: </span>
-            {question.obtained_marks} out of {question.marks}
+            {question.obtained_marks.toFixed(2)} out of {question.marks.toFixed(2)}
           </p>
         </div>
       </div>
