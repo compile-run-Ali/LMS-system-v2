@@ -62,7 +62,7 @@ export default function SQContainer({
   );
 
   return (
-    <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl">
+    <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl text-white">
       {question ? (
         <>
           <div>
@@ -70,8 +70,8 @@ export default function SQContainer({
               <p>{currentQuestion + 1 + ". " + question.question}</p>
               <p className="text-base font-bold"> ({question.marks} Marks)</p>
             </div>
-            <div className="p-4 bg-blue-400 rounded-lg space-y-2">
-              <label className="text-white">
+            <div className="py-4 rounded-lg space-y-2">
+              <label className="">
                 Answer
                 {!question.long_question && (
                   <span className="text-gray-200 text-sm">
@@ -81,7 +81,7 @@ export default function SQContainer({
                 )}
               </label>
               <textarea
-                className="border border-gray-300 bg-white rounded-md p-2 w-full "
+                className="border bg-white rounded-md p-2 w-full text-black border-black focus:outline-yellow-500"
                 maxLength={question.long_question ? 100000 : 50}
                 value={answer}
                 rows={question.long_question ? 10 : 2}
@@ -89,13 +89,14 @@ export default function SQContainer({
               />
             </div>
           </div>
-          <div className="flex justify-between mt-6 text-white">
+          <div className="flex justify-between mt-20 text-black">
             {freeFlow && (
               <button
                 className={
                   (currentQuestion > 0
-                    ? "bg-blue-700 hover:bg-blue-800"
-                    : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+                    ? "bg-white hover:bg-zinc-300"
+                    : "bg-gray-400 cursor-not-allowed") +
+                  " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 }
                 onClick={() => {
                   currentQuestion > 0 &&
@@ -106,33 +107,33 @@ export default function SQContainer({
               </button>
             )}
             <button
-              className={` px-3 py-2 w-24 rounded-lg
+              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
                 ${
                   flags.includes(String(currentQuestion))
-                    ? "bg-gray-400 hover:bg-gray-600"
-                    : "bg-yellow-400 hover:bg-yellow-500"
+                    ? "bg-yellow-400 hover:bg-yellow-500"
+                    : "bg-white hover:bg-zinc-300"
                 }`}
               onClick={flagQuestion}
             >
               {flags.includes(String(currentQuestion)) ? "Unflag" : "Flag"}
             </button>
             <button
-              className={` px-3 py-2 w-24 rounded-lg
+              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
                 ${
                   saved
-                    ? "bg-gray-400 hover:bg-gray-600"
-                    : "bg-green-500 hover:bg-green-600"
+                    ? "bg-green-500"
+                    : "bg-white hover:bg-zinc-300"
                 }`}
               onClick={saveAnswer}
             >
-              Save
+              {saved ? "Saved" : "Save"}
             </button>
             <button
               className={
                 (currentQuestion < totalQuestions - 1
-                  ? "bg-blue-700 hover:bg-blue-800"
+                  ? "bg-white hover:bg-zinc-300 "
                   : "bg-green-500 hover:bg-green-600") +
-                " px-3 py-2 w-24 rounded-lg"
+                " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
               }
               onClick={() => {
                 // if opt not selected OR saved

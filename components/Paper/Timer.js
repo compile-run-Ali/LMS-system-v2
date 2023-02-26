@@ -46,7 +46,7 @@ export default function Timer({ paper }) {
   }, [paper]);
 
   return (
-    <div className="flex flex-col justify-center text-xl">
+    <div className="flex flex-col justify-center text-lg">
       <div>
         Start Time:
         {" " + startTime}

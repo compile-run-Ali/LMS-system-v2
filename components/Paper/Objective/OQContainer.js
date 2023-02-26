@@ -112,11 +112,11 @@ export default function OQContainer({
   );
 
   return (
-    <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl">
+    <div className="flex flex-col justify-between p-10 pt-0 w-full">
       {question ? (
         <>
           <div>
-            <p className="text-2xl justify-center h-32 flex items-center">
+            <p className="text-2xl justify-center h-32 flex items-center text-white">
               {currentQuestion + 1 + ". " + question.question}
             </p>
             <div className="flex justify-between mt-6 flex-col">
@@ -124,11 +124,11 @@ export default function OQContainer({
                 <div
                   key={index}
                   className={`
-                  w-full flex  my-3 rounded-lg p-4 hover:bg-blue-700 transition-all cursor-pointer items-center shadow-xl shadow-blue-200
+                  w-full flex my-3 rounded-lg p-4  text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200
                   ${
                     selectedAnswer.includes(answer)
-                      ? "bg-blue-700"
-                      : "bg-blue-400"
+                      ? "bg-zinc-300"
+                      : "bg-white hover:bg-zinc-200 "
                   }
                   `}
                   onClick={() => {
@@ -147,7 +147,7 @@ export default function OQContainer({
                   }}
                 >
                   <input
-                    className="w-6 h-6 ring-offset-gray-700 focus:ring-offset-gray-700 bg-gray-600 border-gray-500 pointer-events-none accent-white"
+                    className="w-6 h-6 ring-offset-gray-700 focus:ring-offset-gray-700 bg-gray-600 border-gray-500 pointer-events-none accent-blue-900"
                     type={multipleAllowed ? "checkbox" : "radio"}
                     name={question.oq_id}
                     value={answer}
@@ -156,7 +156,7 @@ export default function OQContainer({
                   />
                   <label
                     htmlFor="list-radio-license"
-                    className="w-full py-3 ml-2 text-sm font-medium text-white cursor-pointer"
+                    className="w-full py-3 ml-2 text-sm font-medium cursor-pointer"
                   >
                     {answer}
                   </label>
@@ -166,7 +166,7 @@ export default function OQContainer({
           </div>
           <div
             className={`
-            flex mt-6 text-white mx-auto justify-between
+            flex mt-16 text-black mx-auto justify-between
             ${freeFlow ? "w-full" : "w-1/2"}
           `}
           >
@@ -174,8 +174,9 @@ export default function OQContainer({
               <button
                 className={
                   (currentQuestion > 0
-                    ? "bg-blue-700 hover:bg-blue-800"
-                    : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+                    ? "bg-white hover:bg-zinc-300"
+                    : "bg-gray-400 cursor-not-allowed") +
+                  " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 }
                 onClick={() => {
                   if (selectedAnswer.length === 0 || saved) {
@@ -190,33 +191,29 @@ export default function OQContainer({
               </button>
             )}
             <button
-              className={` px-3 py-2 w-24 rounded-lg
+              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
                 ${
                   flags.includes(String(currentQuestion))
-                    ? "bg-gray-400 hover:bg-gray-600"
-                    : "bg-yellow-400 hover:bg-yellow-500"
+                    ? "bg-yellow-400 hover:bg-yellow-500"
+                    : "bg-white hover:bg-zinc-300"
                 }`}
               onClick={flagQuestion}
             >
               {flags.includes(String(currentQuestion)) ? "Unflag" : "Flag"}
             </button>
             <button
-              className={` px-3 py-2 w-24 rounded-lg
-                ${
-                  saved
-                    ? "bg-gray-400 hover:bg-gray-600"
-                    : "bg-green-500 hover:bg-green-600"
-                }`}
+              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
+                ${saved ? "bg-green-500" : "bg-white hover:bg-zinc-300"}`}
               onClick={saveAnswer}
             >
-              Save
+              {saved ? "Saved" : "Save"}
             </button>
             <button
               className={
                 (currentQuestion < totalQuestions - 1
-                  ? "bg-blue-700 hover:bg-blue-800"
+                  ? "bg-white hover:bg-zinc-300 "
                   : "bg-green-500 hover:bg-green-600") +
-                " px-3 py-2 w-24 rounded-lg"
+                " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
               }
               onClick={() => {
                 // if opt not selected OR saved

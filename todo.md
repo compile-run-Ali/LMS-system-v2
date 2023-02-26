@@ -5,26 +5,24 @@
 - flag questions
 - dont change subjective question order
 - check mcqs on submission
+- remove student routes
 
 ### aziz
 change marksobtained to float
 
 ### To Do
 
-- view paper page
+- view paper page ui set
+- objective review and subjective question ui
 - handle 2 paper attempts at once
-- remove student routes
-- review and subjective ui
+- confirm submit modal
 
 - parent question handle
     - child questions on same page, and order will be predifined in database
-
 - subjective review
-
-- confirm submit modal
-- serverSideProps in review container
-- date and time selector in create paper
 - single mcq timer in sequential
+
+- date and time selector in create paper
 
 ### Later
 - database re design

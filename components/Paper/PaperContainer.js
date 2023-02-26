@@ -167,8 +167,8 @@ export default function PaperContainer({}) {
   console.log("flags are", flags);
 
   return (
-    <div className="flex justify-center mx-auto w-3/4 font-poppins mt-28 space-x-20">
-      <div className="w-2/3">
+    <div className="flex justify-between shadow-lg max-w-6xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 bg-blue-900 rounded-2xl shadow-3xl shadow-black">
+      <div className="w-2/3  rounded-l-2xl">
         {currentQuestion === questions.length ? (
           <Submitted />
         ) : paperDetails.paper_type === "Objective" ? (
@@ -207,7 +207,7 @@ export default function PaperContainer({}) {
           </>
         )}
       </div>
-      <div className="w-1/3 max-w-fit shadow-lg h-fit border-2 border-zinc-100 rounded-md p-10">
+      <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
         <Timer paper={paperDetails} />
         {paperDetails.freeflow && currentQuestion < questions.length && (
           <NavigationGrid
