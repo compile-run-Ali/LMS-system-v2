@@ -4,17 +4,28 @@ import { useRouter } from "next/router";
 import { compareDateTime, getPaperDateTime } from "@/lib/TimeCalculations";
 import ObjectiveReview from "./ObjectiveReview";
 import PaperDetails from "./PaperDetails";
+import { useSession } from "next-auth/react";
 
 export default function ReviewContainer() {
   const router = useRouter();
-  const { student, paper } = router.query;
+  const { paper } = router.query;
+  const { data: session, status } = useSession();
+  const [student, setStudent] = useState(null);
   const [objectiveAnswers, setObjectiveAnswers] = useState([]);
   const [subjectiveAnswers, setSubjectiveAnswers] = useState([]);
   const [objectiveQuestions, setObjectiveQuestions] = useState([]);
   const [paperDetails, setPaperDetails] = useState({});
 
   useEffect(() => {
+    if (status === "authenticated") {
+      setStudent(session.user.id);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    console.log("student and paper are ", student, paper);
     if (student && paper) {
+      console.log("inside if");
       axios
         .get(`/api/student/paper/${student}`)
         .then((res) => {
@@ -125,22 +136,17 @@ export default function ReviewContainer() {
           console.log("error in fetching paper ", err);
         });
     }
-  }, [paper]);
+  }, [paper, student]);
 
   return (
     <div className="w-3/4 mx-auto">
       <h1 className=" font-bold text-3xl  mt-10 mb-4">Paper Review</h1>
       <PaperDetails paper={paperDetails} />
       <ObjectiveReview
-        questions={objectiveQuestions}
-        answers={objectiveAnswers}
-      />{
-        !paper.paper_type==='Objective' &&(
-          <>
-          subjective review here
-          </>
-        )
-      }
+        questions={objectiveQuestions || []}
+        answers={objectiveAnswers || []}
+      />
+      {!paper?.paper_type === "Objective" && <>subjective review here</>}
     </div>
   );
 }

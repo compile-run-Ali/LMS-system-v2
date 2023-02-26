@@ -3,15 +3,18 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import OQContainer from "./Objective/OQContainer";
 import SQContainer from "./Subjective/SQContainer";
+import { useSession } from "next-auth/react";
 import NavigationGrid from "./NavigationGrid";
 import { compareDateTime, getPaperDateTime } from "@/lib/TimeCalculations";
 import Timer from "./Timer";
 import Submitted from "./Submitted";
 
 export default function PaperContainer({}) {
+  const { data: session, status } = useSession();
   const router = useRouter();
-  const { student, paper } = router.query;
+  const { paper } = router.query;
   const [questions, setQuestions] = useState([]);
+  const [student, setStudent] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [paperDetails, setPaperDetails] = useState({});
   const [objectiveCount, setObjectiveCount] = useState(0);
@@ -23,6 +26,13 @@ export default function PaperContainer({}) {
       setCurrentQuestion(parseInt(localStorage.getItem("localCurrent")));
     }
   }, []);
+
+  useEffect(() => () => {
+    if (status === "authenticated") {
+      setStudent(session.user.id);
+    }
+  });
+  [session];
 
   const shuffleArray = (array) => {
     const shuffledArray = [...array];
@@ -153,9 +163,8 @@ export default function PaperContainer({}) {
           console.log("error ", err.message);
         });
     }
-  }, [paper]);
+  }, [paper, student]);
   console.log("flags are", flags);
-
 
   return (
     <div className="flex justify-center mx-auto w-3/4 font-poppins mt-28 space-x-20">
