@@ -2,52 +2,17 @@ import React from "react";
 import ObjectiveQuestion from "./ObjectiveQuestion";
 
 export default function ObjectiveReview({ questions, answers }) {
-  console.log(answers, questions);
 
   const questionWithAnswers = (questions, answers) =>
     questions.map((question) => {
       const answer = answers.find((answer) => answer.oq_id === question.oq_id);
 
-      const marks = markAnswer(
-        question.correct_answer,
-        answer?.answer || "",
-        question.marks
-      );
       return {
         ...question,
         selected_answers: answer ? answer.answer : null,
-        obtained_marks: marks,
+        marksobtained: answer ? answer.marksobtained : null,
       };
     });
-
-  const markAnswer = (correct, answered, marks) => {
-    if (correct.split(",").length > 1) {
-      let score;
-      const correctAnswers = correct.split(",");
-      const selectedAnswers = answered?.split(",") || [];
-      if (correctAnswers.length >= selectedAnswers.length) {
-        // count how many of the answers are correct
-        let count = 0;
-        correctAnswers.forEach(
-          (correctAnswer) => selectedAnswers.includes(correctAnswer) && count++
-        );
-        score = count / correctAnswers.length;
-      } else if (correctAnswers.length < selectedAnswers.length) {
-        // count wrong answers and subtract that from total answers
-        let wrongCount = 0;
-        selectedAnswers.forEach(
-          (selectedAnswer) =>
-            !correctAnswers.includes(selectedAnswer) && wrongCount++
-        );
-        const m = (correctAnswers.length - wrongCount) / selectedAnswers.length;
-        score = m >= 0 ? m : 0;
-      }
-      const final = score * marks;
-      return final;
-    } else {
-      return correct === answered ? 1 : 0;
-    }
-  };
 
   return (
     <div className="w-full ">

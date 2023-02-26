@@ -42,7 +42,7 @@ export default function ObjectiveQuestion({ question, qNumber }) {
           </p>
           <p className="text-sm text-white">
             <span className="font-bold"> Marks: </span>
-            {question.obtained_marks.toFixed(2)} out of {question.marks.toFixed(2)}
+            {question.marksobtained?.toFixed(2)} out of {question.marks.toFixed(2)}
           </p>
         </div>
       </div>

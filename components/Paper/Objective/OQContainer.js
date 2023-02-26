@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 export default function OQContainer({
   question,
@@ -11,8 +11,7 @@ export default function OQContainer({
   flags,
   setFlags,
 }) {
-  const router = useRouter();
-  const { student } = router.query;
+  const { data: session, status } = useSession();
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [multipleAllowed, setMultipleAllowed] = useState(false);
@@ -25,11 +24,21 @@ export default function OQContainer({
       );
       return;
     }
+    // remove this when type changed to float in db
+    const score = parseInt(
+      markAnswer(
+        question.correct_answer,
+        selectedAnswer.join(","),
+        question.marks
+      )
+    );
+    // mark answer right here
     axios
       .post(`/api/student/paper/oq/add_answer`, {
-        p_number: student,
+        p_number: session.user.id,
         oq_id: question.oq_id,
         answer: selectedAnswer.join(","),
+        marks: score,
       })
       .then((res) => {
         console.log("answer added successfully ", res.data);
@@ -38,6 +47,35 @@ export default function OQContainer({
         console.log("error ", err.message);
       });
     setSaved(true);
+  };
+
+  const markAnswer = (correct, answered, marks) => {
+    if (correct.split(",").length > 1) {
+      let score;
+      const correctAnswers = correct.split(",");
+      const selectedAnswers = answered?.split(",") || [];
+      if (correctAnswers.length >= selectedAnswers.length) {
+        // count how many of the answers are correct
+        let count = 0;
+        correctAnswers.forEach(
+          (correctAnswer) => selectedAnswers.includes(correctAnswer) && count++
+        );
+        score = count / correctAnswers.length;
+      } else if (correctAnswers.length < selectedAnswers.length) {
+        // count wrong answers and subtract that from total answers
+        let wrongCount = 0;
+        selectedAnswers.forEach(
+          (selectedAnswer) =>
+            !correctAnswers.includes(selectedAnswer) && wrongCount++
+        );
+        const m = (correctAnswers.length - wrongCount) / selectedAnswers.length;
+        score = m >= 0 ? m : 0;
+      }
+      const final = score * marks;
+      return final;
+    } else {
+      return correct === answered ? 1 : 0;
+    }
   };
 
   const flagQuestion = () => {
