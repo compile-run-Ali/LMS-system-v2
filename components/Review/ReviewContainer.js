@@ -139,7 +139,7 @@ export default function ReviewContainer() {
   }, [paper, student]);
 
   return (
-    <div className="w-3/4 mx-auto">
+    <div className="w-full mx-auto  max-w-6xl">
       <h1 className=" font-bold text-3xl  mt-10 mb-4">Paper Review</h1>
       <PaperDetails paper={paperDetails} />
       <ObjectiveReview
