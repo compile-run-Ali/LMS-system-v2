@@ -7,13 +7,16 @@
 - check mcqs on submission
 - remove student routes
 - objective review and subjective question ui
+- view paper page ui set
 
 ### aziz
-change marksobtained to float
+change marksobtained to float in questions tables
+minutes allowed field for each objective qs table
+remove time field and add endDateTime for paper table
+
 
 ### To Do
 
-- view paper page ui set
 - handle 2 paper attempts at once
 - confirm submit modal
 
