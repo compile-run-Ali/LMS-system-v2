@@ -6,6 +6,7 @@
 - dont change subjective question order
 - check mcqs on submission
 - remove student routes
+- objective review and subjective question ui
 
 ### aziz
 change marksobtained to float
@@ -13,7 +14,6 @@ change marksobtained to float
 ### To Do
 
 - view paper page ui set
-- objective review and subjective question ui
 - handle 2 paper attempts at once
 - confirm submit modal
 

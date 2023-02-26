@@ -54,8 +54,8 @@ export default function ViewContainer() {
   }, [student, paper]);
 
   return (
-    <div className="p-4 border rounded-md shadow-lg">
-      <h2 className="text-xl font-semibold mb-2">{paperDetails.paper_name}</h2>
+    <div className="p-4 border rounded-md shadow-lg m-10 text-lg">
+      <h2 className="text-2xl font-semibold mb-2">{paperDetails.paper_name}</h2>
       <p className="text-gray-600 mb-1">
         Course Code: {paperDetails.course_code}
       </p>
