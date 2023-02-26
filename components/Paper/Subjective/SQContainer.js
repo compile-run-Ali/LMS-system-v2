@@ -67,7 +67,7 @@ export default function SQContainer({
         <>
           <div>
             <div className="text-2xl mb-4">
-              <p>{currentQuestion + 1 + ". " + question.question}</p>
+              <p>{question.questionnumber + ". " + question.question}</p>
               <p className="text-base font-bold"> ({question.marks} Marks)</p>
             </div>
             <div className="py-4 rounded-lg space-y-2">
@@ -90,7 +90,7 @@ export default function SQContainer({
             </div>
           </div>
           <div className="flex justify-between mt-20 text-black">
-            {freeFlow && (
+            {(freeFlow || question.questionnumber !== 1) && (
               <button
                 className={
                   (currentQuestion > 0
@@ -119,11 +119,7 @@ export default function SQContainer({
             </button>
             <button
               className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
-                ${
-                  saved
-                    ? "bg-green-500"
-                    : "bg-white hover:bg-zinc-300"
-                }`}
+                ${saved ? "bg-green-500" : "bg-white hover:bg-zinc-300"}`}
               onClick={saveAnswer}
             >
               {saved ? "Saved" : "Save"}

@@ -209,15 +209,28 @@ export default function PaperContainer({}) {
       </div>
       <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
         <Timer paper={paperDetails} />
-        {paperDetails.freeflow && currentQuestion < questions.length && (
-          <NavigationGrid
-            totalQuestions={questions.length}
-            currentQuestion={currentQuestion}
-            setCurrentQuestion={setCurrentAndLocal}
-            flags={flags || []}
-            setFlags={setFlags}
-          />
-        )}
+        {(paperDetails.freeflow ||
+          (paperDetails.paper_type !== "Objective" &&
+            currentQuestion >= objectiveCount)) &&
+          currentQuestion < questions.length && (
+            <NavigationGrid
+              totalQuestions={
+                paperDetails.freeflow
+                  ? questions.length
+                  : questions.length - objectiveCount
+              }
+              currentQuestion={
+                paperDetails.freeflow
+                  ? currentQuestion
+                  : currentQuestion - objectiveCount
+              }
+              freeFlow={paperDetails.freeflow}
+              offset={objectiveCount}
+              setCurrentQuestion={setCurrentAndLocal}
+              flags={flags || []}
+              setFlags={setFlags}
+            />
+          )}
       </div>
     </div>
   );

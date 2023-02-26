@@ -5,7 +5,8 @@ export default function NavigationGrid({
   currentQuestion,
   setCurrentQuestion,
   flags,
-  setFlags,
+  freeFlow,
+  offset
 }) {
   return (
     <div className="mt-4 border-blue-800 ">
@@ -13,13 +14,15 @@ export default function NavigationGrid({
       <div className="grid grid-cols-5 max-w-[250px]">
         {[...Array(totalQuestions)].map((_, index) => (
           <div
-            onClick={() => setCurrentQuestion(index)}
+            onClick={() =>
+              setCurrentQuestion(freeFlow ? index : index + offset)
+            }
             key={index}
             className={`min-w-[20px] duration-300 max-w-[50px] transition-colors cursor-pointer border border-blue-800 w-full aspect-square flex justify-center items-center
           ${
             currentQuestion === index
               ? "bg-blue-800 text-white"
-              : flags.includes(String(index))
+              : flags.includes(String(freeFlow ? index : index + offset))
               ? "bg-yellow-400 text-black"
               : "bg-white text-black hover:bg-zinc-300  "
           }
