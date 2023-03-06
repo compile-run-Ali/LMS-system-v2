@@ -23,14 +23,10 @@ export default function OQContainer({
   const [remainingTime, setRemainingTime] = useState({});
 
   const saveAnswer = () => {
-
-    // remove this when type changed to float in db
-    const score = parseInt(
-      markAnswer(
-        question.correct_answer,
-        selectedAnswer.join(","),
-        question.marks
-      )
+    const score = markAnswer(
+      question.correct_answer,
+      selectedAnswer.join(","),
+      question.marks
     );
     // mark answer right here
     axios
