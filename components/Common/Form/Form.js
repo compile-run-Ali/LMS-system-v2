@@ -15,7 +15,7 @@ export default function Form({
     edit ? examDetails.paper_name : ""
   );
   const [paperDuration, setPaperDuration] = useState(
-    edit ? Number(examDetails.duration) : 3
+    edit ? Number(examDetails.duration) : 180
   );
   const [dateOfExam, setDateOfExam] = useState(edit ? examDetails.date : "");
   const [weightage, setWeightage] = useState(edit ? examDetails.weightage : "");
@@ -105,7 +105,7 @@ export default function Form({
           type={"number"}
           value={paperDuration}
           min={0}
-          max={3}
+          max={180}
           onChange={handleDuration}
         />
 

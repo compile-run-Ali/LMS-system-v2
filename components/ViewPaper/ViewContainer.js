@@ -72,7 +72,7 @@ export default function ViewContainer() {
         Time: {convertDateTimeToStrings(paperDetails.date, false)}
       </p>
       <p className="text-gray-600 mb-1">
-        Duration: {paperDetails.duration} hours
+        Duration: {paperDetails.duration} Minutes
       </p>
       <p className="text-gray-600 mb-1">Weightage: {paperDetails.weightage}%</p>
       <p className="text-gray-600 mb-1">

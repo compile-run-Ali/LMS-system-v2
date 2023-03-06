@@ -37,7 +37,7 @@ const ExamTable = ({exams_data}) => {
             >
               <td className="border px-4 py-2">{exam.paper_name}</td>
               <td className="border px-4 py-2">{exam.paper_type}</td>
-              <td className="border px-4 py-2">{exam.duration} hours</td>
+              <td className="border px-4 py-2">{exam.duration} Minutes</td>
               <td className="border px-4 py-2">{exam.date}</td>
               <td className="border px-4 py-2">{exam.time}</td>
               <td className="border px-4 py-2">{exam.weightage}</td>
