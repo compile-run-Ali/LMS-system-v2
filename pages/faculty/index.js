@@ -11,12 +11,9 @@ export default function Dashboard() {
   const [paperapproval, setPaperApproval] = useState(null);
 
   const fetchExams = async () => {
-    const res = await axios.post(
-      "http://localhost:3000/api/faculty/get_exams",
-      {
-        faculty_id: session.data.user.id,
-      }
-    );
+    const res = await axios.post("/api/faculty/get_exams", {
+      faculty_id: session.data.user.id,
+    });
     setExams(res.data.courses);
     setPaperApproval(res.data.paperapproval);
   };
