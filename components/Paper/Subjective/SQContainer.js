@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
+import SubmitModal from "../SubmitModal";
 
 export default function SQContainer({
   question,
@@ -15,6 +16,8 @@ export default function SQContainer({
   const { student } = router.query;
   const [answer, setAnswer] = useState({});
   const [saved, setSaved] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
 
   const saveAnswer = () => {
     if (!answer) {
@@ -154,31 +157,38 @@ export default function SQContainer({
             >
               {saved ? "Saved" : "Save"}
             </button>
-            <button
-              className={
-                (currentQuestion < totalQuestions - 1
-                  ? "bg-white hover:bg-zinc-300 "
-                  : "bg-green-500 hover:bg-green-600") +
-                " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
-              }
-              onClick={() => {
-                // if opt not selected OR saved
-                if (!answer || saved) {
-                  currentQuestion < totalQuestions &&
+            {currentQuestion < totalQuestions - 1 ? (
+              <button
+                className="bg-white hover:bg-zinc-300 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
+                onClick={() => {
+                  // if opt not selected OR saved
+                  if (selectedAnswer.length === 0 || saved) {
                     setCurrentQuestion(currentQuestion + 1);
-                } else {
-                  alert("Please save your answer before proceeding");
-                }
-              }}
-            >
-              {
-                {
-                  0: "Next",
-                  1: "Submit",
-                }[currentQuestion === totalQuestions - 1 ? 1 : 0]
-              }
-            </button>
+                  } else {
+                    alert("Please save your answer before proceeding");
+                  }
+                }}
+              >
+                Next
+              </button>
+            ) : (
+              <button
+                className="bg-green-500 hover:bg-green-600 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
+                onClick={() => {
+                  // open modal
+                  setShowModal(true);
+                }}
+              >
+                Submit
+              </button>
+            )}
           </div>
+          <SubmitModal
+            showModal={showModal}
+            setShowModal={setShowModal}
+            currentQuestion={currentQuestion}
+            setCurrentQuestion={setCurrentQuestion}
+          />
         </>
       ) : (
         <div>
