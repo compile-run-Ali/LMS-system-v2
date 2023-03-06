@@ -15,7 +15,7 @@ export default function Courses({courses, setCourses, faculty}) {
   }
 
   const handleAssignFaculty = async (faculty) => {
-    const assignedFaculty = await axios.post('/api/admin/assign_faculty_to_courses', {
+    const assignedFaculty = await axios.post('http://localhost:3000/api/admin/assign_faculty_to_courses', {
       course_code: selectedCourse,
       faculty_id: faculty
     });

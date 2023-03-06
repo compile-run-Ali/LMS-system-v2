@@ -29,7 +29,7 @@ const FacultyTable = ({faculty}) => {
     };
 
     const handleDeleteMCQ = async (index) => {
-        const deletedFaculty = await axios.post('/api/admin/faculty/remove_faculty', {
+        const deletedFaculty = await axios.post("http://localhost:3000/api/admin/faculty/remove_faculty", {
             faculty_id: faculty[index].faculty_id,
         });
         if (deletedFaculty.status === 200) {

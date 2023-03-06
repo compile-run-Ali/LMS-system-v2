@@ -30,18 +30,18 @@ export default function ExamPage({
 
 export const getServerSideProps = async (context) => {
   const exam_id = context.params.exam_id;
-  const examDetails = await axios.post("/api/faculty/get_exam", {
+  const examDetails = await axios.post("http://localhost:3000/api/faculty/get_exam", {
     paper_id: exam_id,
   });
 
-  const objectiveQuestions = await axios.post("/api/faculty/get_objective", {
+  const objectiveQuestions = await axios.post("http://localhost:3000/api/faculty/get_objective", {
     paper_id: exam_id,
   });
 
   let subjectiveQuestions = [];
 
   if (examDetails.data.paper_type === "Subjective/Objective") {
-    const res = await axios.post("/api/faculty/get_subjective", {
+    const res = await axios.post("http://localhost:3000/api/faculty/get_subjective", {
       paper_id: exam_id,
     });
     subjectiveQuestions = res.data;

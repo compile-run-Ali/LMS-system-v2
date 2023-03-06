@@ -17,7 +17,7 @@ const cabin = Cabin({
 
 export default function App({ Component, session, pageProps }) {
   return (
-    <SessionProvider session={session} basePath="/api/auth">
+    <SessionProvider session={session} basePath="http://localhost:3000/api/auth">
       <SidebarProvider>
         <style jsx global>
           {`

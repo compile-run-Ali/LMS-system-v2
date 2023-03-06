@@ -34,7 +34,7 @@ const CourseTable = ({
 
   const handleDeleteMCQ = async (index) => {
     // Implement this
-    const deletedCourse = await axios.post("/api/admin/course/remove_course", {
+    const deletedCourse = await axios.post("http://localhost:3000/api/admin/course/remove_course", {
       course_code: courses[index].course_code,
     });
     if (deletedCourse.status === 200) {

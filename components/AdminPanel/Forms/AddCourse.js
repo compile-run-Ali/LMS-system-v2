@@ -33,7 +33,7 @@ const AddCourse = () => {
 
   const addCourse = async (course) => {
     const new_course = await axios.post(
-      `/api/admin/course/${edit ? "edit_course" : "add_courses"}`,
+      `http://localhost:3000/api/admin/course/${edit ? "edit_course" : "add_courses"}`,
       {
         course_code: edit ? router.query.course_code : null,
         ...course,

@@ -70,13 +70,13 @@ export default function Form({
   const submitForm = async (e) => {
     e.preventDefault();
     console.log("formatted date is", formatDate(dateOfExam, paperTime));
-    if (paperName === "" || dateOfExam === "" || weightage === "") {
+    if (paperName === "" || dateOfExam === "") {
       alert("Please fill all the fields");
       return;
     }
 
     const res = await axios.post(
-      `/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
+      `http://localhost:3000/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
       {
         paper_id: examDetails ? examDetails.paper_id : null,
         course_code: router.query.course_code ? router.query.course_code : null,

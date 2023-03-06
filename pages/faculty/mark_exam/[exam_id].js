@@ -23,7 +23,7 @@ const MarkingPage = ({ students, exam_id }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const students = await axios.post("/api/paper/marking/get_students", {
+  const students = await axios.post("http://localhost:3000/api://localhost:3000/api/paper/marking/get_students", {
     paper_id: context.query.exam_id,
   });
 

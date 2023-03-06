@@ -60,7 +60,7 @@ const SubjectiveExam = ({
   const handleAddMCQ = async () => {
     console.log(currentSubjective);
     const newSubjective = await axios.post(
-      "/api/faculty/paper_creation/add_subjective",
+      "http://localhost:3000/api/faculty/paper_creation/add_subjective",
       {
         paper_id: paperId,
         question: currentSubjective.question,
@@ -91,7 +91,7 @@ const SubjectiveExam = ({
   };
 
   const handleUpdateMCQ = async (index) => {
-    const updatedSubjective = await axios.post("/api/faculty/edit_subjective", {
+    const updatedSubjective = await axios.post("http://localhost:3000/api/faculty/edit_subjective", {
       sq_id: subjectives[index].sq_id,
       paper_id: paperId,
       question: currentSubjective.question,
@@ -118,7 +118,7 @@ const SubjectiveExam = ({
 
   const handleDeleteMCQ = async (index) => {
     const deletedSubjective = await axios.post(
-      "/api/faculty/remove_subjective",
+      "http://localhost:3000/api/faculty/remove_subjective",
       {
         sq_id: subjectives[index].sq_id,
       }
