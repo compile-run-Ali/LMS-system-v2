@@ -18,7 +18,6 @@ export default function SQContainer({
   const [saved, setSaved] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
-
   const saveAnswer = () => {
     if (!answer) {
       alert("Your answer is empty. Please type anything to continue.");
@@ -148,7 +147,7 @@ export default function SQContainer({
                 }`}
               onClick={flagQuestion}
             >
-              {flags.includes(String(currentQuestion)) ? "Unflag" : "Flag"}
+              {flags.includes(String(currentQuestion)) ? "Remove" : "Review"}
             </button>
             <button
               className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500

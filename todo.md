@@ -13,26 +13,46 @@
 <!-- change marksobtained to float in questions tables -->
 <!-- add minutes allowed field for each objective qs table -->
 remove time field and add endDateTime for paper table
-add paper student table which contains a flag whether a student has submitted a paper
+<!-- add paper student table which contains a flag whether a student has submitted a paper -->
 
 
 ### To Do
-<!-- paper container -->
-- parent question handle
-    - child questions on same page, and order will be predifined in database
-<!-- oq,sq -->
-- confirm submit modal
+<!-- - child questions on same page, and order will be predifined in database -->
+<!-- - confirm submit modal -->
 <!-- new component -->
 - subjective review
+- subjective answer submission
 <!-- -->
-change flag name to review
-dont show paper to student if in drafts
-faculty cant delete mcqs
-paper approval 
+<!-- change flag name to review -->
+<!-- dont show paper to student if in drafts -->
+<!-- faculty cant delete mcqs -->
 <!-- - form -->
-- date and time selector in create paper
-- remove localhost from axios
+<!-- - date and time selector in create paper -->
+<!-- - remove localhost from axios -->
+
+AA 1 Timed MCQ setting on Exam setting page - should work when freeflow checkbox in unchecked
+2 Paper Review Option key on Exam setting page
+AA 3 Lock Out - "Attempt" key for Student after paper has been submitted
+4 Notifications
+5 Line for Exam in the table
+<!-- 6 Long Question word limit fix -->
+AA 7 Pending Questions Alert at Submittion
+8 No Comment alert when marking paper
+9 "Closed" Status for paper once paper end time and date have elapsed.
+10 Student Profile Picture Display Area
+
+### Ali Abdullah
+11 time allowed field in create exam
+<!-- 12 child question cannot be parent question in create exam -->
+<!-- 13 send question number on backend in create paper -->
+
+
 
 ### Later
 - database re design
 - some success ui on successful api call
+
+
+### tbd
+sq change flag button to Remove and Review
+oq show flag button if freeflow, show countdown if not freeflow

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  compareDateTime,
   getPaperDateTime,
   convertDateTimeToStrings,
 } from "@/lib/TimeCalculations";
 
-export default function PapersList({ papers, status, p_number }) {
+export default function PapersList({ papers, status }) {
   const [sortedPapers, setSortedPapers] = useState([]);
   const isLive = status === "Live Papers";
   const isPast = status === "Past Papers";

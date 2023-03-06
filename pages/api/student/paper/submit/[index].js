@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   try {
     // set submitted of the paper to true
     const paper_id = index;
-    const paper = await prisma.paper.update({
+    const paper = await prisma.studentPaperAttempt.update({
       where: {
         paper_id: paper_id,
       },

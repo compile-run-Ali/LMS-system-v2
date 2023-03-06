@@ -123,17 +123,14 @@ export default function OQContainer({
       {question ? (
         <>
           <div className="relative">
-            <div
-              className="  text-black absolute top-0 right-0"
-              id="timer"
-            >
-              {
+            <div className="  text-black absolute top-0 right-0" id="timer">
+              {!freeFlow && (
                 <CountdownTimer
                   timeAllowed={60}
                   currentQuestion={currentQuestion}
                   setCurrentQuestion={setCurrentQuestion}
                 />
-              }
+              )}
             </div>
             <p className="text-2xl justify-center h-32 flex items-center text-white">
               {currentQuestion + 1 + ". " + question.question}
@@ -209,17 +206,19 @@ export default function OQContainer({
                 Previous
               </button>
             )}
-            <button
-              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
+            {freeFlow && (
+              <button
+                className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
                 ${
                   flags.includes(String(currentQuestion))
                     ? "bg-yellow-400 hover:bg-yellow-500"
                     : "bg-white hover:bg-zinc-300"
                 }`}
-              onClick={() => flagQuestion(String(currentQuestion))}
-            >
-              {flags.includes(String(currentQuestion)) ? "Unflag" : "Flag"}
-            </button>
+                onClick={() => flagQuestion(String(currentQuestion))}
+              >
+                {flags.includes(String(currentQuestion)) ? "Remove" : "Review"}
+              </button>
+            )}
             <button
               className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
                 ${saved ? "bg-green-500" : "bg-white hover:bg-zinc-300"}`}
