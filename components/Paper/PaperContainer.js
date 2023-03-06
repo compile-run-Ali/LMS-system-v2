@@ -79,7 +79,9 @@ export default function PaperContainer({}) {
         setPaperDetails(papers[paper]);
       } else {
         // do below logic
-
+console.log(
+          "paper does not exist in local storage, getting from server" 
+)
         // get paper details
         axios
           .get(`/api/paper/${paper}`)

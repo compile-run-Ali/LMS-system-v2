@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import CountdownTimer from "../CountdownTimer";
+import { Dialog, Transition } from "@headlessui/react";
+import SubmitModal from "../SubmitModal";
 
 export default function OQContainer({
   question,
@@ -21,6 +23,9 @@ export default function OQContainer({
   const [multipleAllowed, setMultipleAllowed] = useState(false);
   const [saved, setSaved] = useState(false);
   const [remainingTime, setRemainingTime] = useState({});
+  const [showModal, setShowModal] = useState(false);
+
+  console.log(showModal);
 
   const saveAnswer = () => {
     const score = markAnswer(
@@ -119,7 +124,7 @@ export default function OQContainer({
         <>
           <div className="relative">
             <div
-              className=" bg-white text-black absolute top-0 right-0"
+              className="  text-black absolute top-0 right-0"
               id="timer"
             >
               {
@@ -222,31 +227,38 @@ export default function OQContainer({
             >
               {saved ? "Saved" : "Save"}
             </button>
-            <button
-              className={
-                (currentQuestion < totalQuestions - 1
-                  ? "bg-white hover:bg-zinc-300 "
-                  : "bg-green-500 hover:bg-green-600") +
-                " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
-              }
-              onClick={() => {
-                // if opt not selected OR saved
-                if (selectedAnswer.length === 0 || saved) {
-                  currentQuestion < totalQuestions &&
+            {currentQuestion < totalQuestions - 1 ? (
+              <button
+                className="bg-white hover:bg-zinc-300 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
+                onClick={() => {
+                  // if opt not selected OR saved
+                  if (selectedAnswer.length === 0 || saved) {
                     setCurrentQuestion(currentQuestion + 1);
-                } else {
-                  alert("Please save your answer before proceeding");
-                }
-              }}
-            >
-              {
-                {
-                  0: "Next",
-                  1: "Submit",
-                }[currentQuestion === totalQuestions - 1 ? 1 : 0]
-              }
-            </button>
+                  } else {
+                    alert("Please save your answer before proceeding");
+                  }
+                }}
+              >
+                Next
+              </button>
+            ) : (
+              <button
+                className="bg-green-500 hover:bg-green-600 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
+                onClick={() => {
+                  // open modal
+                  setShowModal(true);
+                }}
+              >
+                Submit
+              </button>
+            )}
           </div>
+          <SubmitModal
+            showModal={showModal}
+            setShowModal={setShowModal}
+            currentQuestion={currentQuestion}
+            setCurrentQuestion={setCurrentQuestion}
+          />
         </>
       ) : (
         <div>
