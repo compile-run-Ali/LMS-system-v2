@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import { useRouter } from "next/router";
 
 export default function Register() {
+  const router = useRouter();
   const [inputs, setInputs] = useState([""]);
   const [paNumber, setPaNumber] = useState("");
   const [fullName, setFullName] = useState("");
@@ -77,6 +79,8 @@ export default function Register() {
           .catch((err) => console.log(err));
       })
       .catch((err) => console.log(err));
+
+      router.push("/login");
   };
 
   return (

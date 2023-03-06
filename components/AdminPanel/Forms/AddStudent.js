@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Input from "@/components/Common/Form/Input";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 export default function AddStudent() {
   const [pNumber, setPNumber] = useState("");
@@ -10,6 +11,7 @@ export default function AddStudent() {
   const [DOB, setDob] = useState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -45,15 +47,15 @@ export default function AddStudent() {
     const new_student = await axios.post("http://localhost:3000/api/admin/student/add_student", {
       ...student,
     });
-    console.log(new_student);
+    router.push("/admin");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="px-4">
+    <form onSubmit={handleSubmit} className="px-4 font-poppins">
       <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
         <div className="mb-4">
           <Input
-            text="P Number"
+            text="PA Number"
             type="text"
             value={pNumber}
             onChange={(event) => setPNumber(event.target.value)}
@@ -136,7 +138,7 @@ export default function AddStudent() {
       <div className="flex justify-end">
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
         >
           Add Student
         </button>

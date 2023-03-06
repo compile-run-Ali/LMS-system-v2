@@ -42,6 +42,14 @@ export default function Exam({
       paper_id: exam.paper_id,
     });
     console.log(res.data);
+
+    // sort comment by date and time
+    res.data.sort((a, b) => {
+      const dateA = new Date(a.time);
+      const dateB = new Date(b.time);
+      return dateA - dateB;
+    });
+    
     setComments(res.data);
   };
 

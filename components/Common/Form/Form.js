@@ -126,7 +126,7 @@ export default function Form({
 
         <Input
           text={"Weightage"}
-          required={true}
+          required={false}
           type={"number"}
           min={0}
           placeholder={"Ex: 20%"}
