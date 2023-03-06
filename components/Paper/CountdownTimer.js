@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 function CountdownTimer(props) {
   const [timeLeft, setTimeLeft] = useState(props.timeAllowed);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(prevTime => prevTime - 1);
+      setTimeLeft((prevTime) => prevTime - 1);
     }, 1000);
 
     return () => {
@@ -23,7 +23,7 @@ function CountdownTimer(props) {
 
   useEffect(() => {
     if (timeLeft === 0) {
-      props.setCurrentQuestion(prevQuestion => prevQuestion + 1);
+      props.setCurrentQuestion((prevQuestion) => prevQuestion + 1);
       setTimeLeft(props.timeAllowed);
     }
   }, [timeLeft]);
@@ -32,8 +32,11 @@ function CountdownTimer(props) {
   const seconds = timeLeft % 60;
 
   return (
-    <div>
-      <h1>{`${minutes}:${seconds < 10 ? '0' : ''}${seconds}`}</h1>
+    <div className="text-white">
+      <h1>
+        <span className="text-sm pr-5">Time Remaining: </span>
+        {`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`}
+      </h1>
     </div>
   );
 }
