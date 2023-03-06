@@ -121,3 +121,8 @@ input::file-selector-button {
     color-scheme: dark;
   }
 }
+
+.dateSelectorColor::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
