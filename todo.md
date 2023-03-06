@@ -32,27 +32,27 @@ remove time field and add endDateTime for paper table
 <!-- AA 1 Timed MCQ setting on Exam setting page - should work when freeflow checkbox in unchecked -->
 <!-- AA 2 Paper Review Option key on Exam setting page -->
 - subjective review
-- subjective answer submission
 X 4 Notifications
 X 5 Line for Exam in the table
 <!-- 6 Long Question word limit fix -->
 9 "Closed" Status for paper once paper end time and date have elapsed.
 10 Student Profile Picture Display Area
-
 AA 3 Lock Out - "Attempt" key for Student after paper has been submitted, create api on submission that paper is submitted and check in papers list if it is submitted
+
 <!-- AA 7 Pending Questions Alert at Submittion -->
 X 8 No Comment alert when marking paper
+- subjective answer submission
 time allowed for mcqs api update in create exam
-parent question marks handle
+default value true for long question
 
-default vavlue true for long question
+parent question marks handle
 <!-- save flags in subjective -->
 exam table
 
 <!-- handle date time in exam tables -->
 
 ### Ali Abdullah
-11 time allowed field in create exam
+<!-- 11 time allowed field in create exam -->
 <!-- 12 child question cannot be parent question in create exam -->
 <!-- 13 send question number on backend in create paper -->
 
