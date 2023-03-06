@@ -21,13 +21,10 @@ const Index = ({ attempts }) => {
 export async function getServerSideProps(context) {
   const { exam_id, p_number } = context.params;
 
-  const attempts = await axios.post(
-    "http://localhost:3000/api/paper/marking/get_student_attempts",
-    {
-      paper_id: exam_id,
-      p_number: p_number,
-    }
-  );
+  const attempts = await axios.post("/api/paper/marking/get_student_attempts", {
+    paper_id: exam_id,
+    p_number: p_number,
+  });
   return {
     props: {
       paper: exam_id,
