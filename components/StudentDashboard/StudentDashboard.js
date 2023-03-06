@@ -34,14 +34,17 @@ export default function StudentDashboard({ session }) {
 
   const getStudentAndSetPapers = async () => {
     const studentexams = await axios.get(`/api/student/paper/${index}`);
-    console.log("papers ", studentexams.data);
+    console.log("papers are ", studentexams.data);
+    const approvedPapers = studentexams.data.filter(
+      (paper) => paper.status === "Approved"
+    );
 
     // categorize papers here
     const past = [];
     const live = [];
     const upcoming = [];
 
-    for (const paper of studentexams.data) {
+    for (const paper of approvedPapers) {
       if (
         compareDateTime(
           getPaperDateTime(paper.date, paper.duration).start,
@@ -86,7 +89,7 @@ export default function StudentDashboard({ session }) {
         </Link>
         <div className="text-lg">{student?.email}</div>
       </div>
-      {papers.map(
+      { papers.map(
         (paper) =>
           paper.papers.length > 0 && (
             <div key={paper.title}>
