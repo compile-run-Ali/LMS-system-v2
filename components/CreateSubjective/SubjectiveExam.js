@@ -12,6 +12,8 @@ const SubjectiveExam = ({
   const [index, setIndex] = useState(null);
   const [subjectives, setSubjectives] = useState(subjective_questions);
   const [longQuestion, setLongQuestion] = useState(false);
+  //len of subjectives
+  console.log(subjectives.length)
 
   useEffect(() => {
     console.log(subjectives);
@@ -23,6 +25,7 @@ const SubjectiveExam = ({
     parent_question: "",
     long_question: longQuestion,
     marks: 1,
+    questionnumber: 1,
   });
 
   const [editing, setEditing] = useState(false);
@@ -46,6 +49,9 @@ const SubjectiveExam = ({
   const handleMarksChange = (e) => {
     setCurrentMCQ({ ...currentSubjective, marks: parseInt(e.target.value) });
   };
+  const handleQuestionNumberChange = (e) => {
+    setCurrentMCQ({ ...currentSubjective, questionnumber: parseInt(e.target.value) });
+  };
 
   const handleLongQuestion = (e) => {
     setLongQuestion(e.target.checked);
@@ -61,6 +67,7 @@ const SubjectiveExam = ({
         parent_question: currentSubjective.parent_question,
         long_question: currentSubjective.long_question,
         marks: currentSubjective.marks,
+        questionnumber: currentSubjective.questionnumber,
       }
     );
     if (newSubjective.status === 200) {
@@ -191,7 +198,6 @@ const SubjectiveExam = ({
               onChange={handleQuestionChange}
             />
           </div>
-
           <div className="flex w-full gap-x-5">
             <div className="mb-10 w-full mt-6">
               <label className="block mb-2">Parent Question</label>
@@ -203,13 +209,15 @@ const SubjectiveExam = ({
                 className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]"
               >
                 <option value="" disabled>
-                  Select Correct Option
+                  Select Parent Question
                 </option>
-                {subjectives.map((subjective, index) => (
-                  <option key={index} value={subjective.question}>
-                    {subjective.question}
-                  </option>
-                ))}
+                {subjectives
+                  .filter((subjective) => !subjective.parent_question)
+                  .map((subjective, index) => (
+                    <option key={index} value={subjective.question}>
+                      {subjective.question}
+                    </option>
+                  ))}
               </select>
             </div>
 
@@ -217,8 +225,18 @@ const SubjectiveExam = ({
               text={"Marks"}
               type={"number"}
               required
+              min={1}
               value={currentSubjective.marks}
               onChange={handleMarksChange}
+            />
+            <Input
+            // if parent exists the question number will be called part number other wise, question number
+              text={currentSubjective.parent_question ? "Part Number" : "Question Number"}
+              type={"number"}
+              required
+              min={subjectives.length + 1}
+              value={currentSubjective.questionnumber}
+              onChange={handleQuestionNumberChange}
             />
 
             <div className="flex items-center gap-x-3 mt-14 ml-2">
