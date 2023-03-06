@@ -17,7 +17,6 @@ const handler = async (req, res) => {
         },
         paper_name: true,
         paper_type: true,
-        time: true,
         date: true,
         duration: true,
         weightage: true,
