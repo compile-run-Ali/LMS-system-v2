@@ -1,5 +1,6 @@
 // get paper by id
 import { PrismaClient } from "@prisma/client";
+import { getPaperDateTime, compareDateTime } from "@/lib/TimeCalculations";
 
 const handle = async (req, res) => {
   const prisma = new PrismaClient();
@@ -12,7 +13,18 @@ const handle = async (req, res) => {
       },
     });
     if (!paper) return res.status(404).json("Paper not found");
-    res.status(200).json(paper);
+
+    if (
+      compareDateTime(
+        paper.date,
+        getPaperDateTime(paper.date, paper.duration).end
+      ) === "live"
+    ) {
+      res.status(200).json(paper);
+    }
+    else{
+      res.status(401).json("Paper is not live.");
+    }
   } catch {
     res.status(500).json({ error: "Server Error" });
   }
