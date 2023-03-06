@@ -9,21 +9,26 @@ const MCQTable = ({
   setActive,
   objective_questions,
   setObjectiveQuestions,
+  freeFlow,
 }) => {
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
+  const [paper, setPaper] = useState({});
   const [mcqs, setMCQs] = useState(
     objective_questions.map((mcq) => {
       mcq.options = mcq.answers.split(",");
       return mcq;
     })
   );
+  //console log the paper from the id using a get request
+  console.log(freeFlow);
 
   const [currentMCQ, setCurrentMCQ] = useState({
     question: "",
     options: ["", "", "", ""],
     correct_answer: "",
     marks: 1,
+    time_allowed: null,
   });
 
   const [editing, setEditing] = useState(false);
@@ -65,6 +70,10 @@ const MCQTable = ({
     setCurrentMCQ({ ...currentMCQ, options: newOptions });
   };
 
+  const handleTimeAllowedChange = (e) => {
+    setCurrentMCQ({ ...currentMCQ, time_allowed: parseInt(e.target.value) });
+  };
+
   const handleAddMCQ = async () => {
     const newMCQ = await axios.post(
       "/api/faculty/paper_creation/add_objective",
@@ -74,6 +83,7 @@ const MCQTable = ({
         answers: currentMCQ.options.toString(),
         correct_answer: currentMCQ.correct_answer,
         marks: currentMCQ.marks,
+        time_allowed: currentMCQ.time_allowed,
       }
     );
     console.log(newMCQ.data);
@@ -85,6 +95,7 @@ const MCQTable = ({
       options: [],
       correct_answer: "",
       marks: 1,
+      time_allowed: null,
     });
     setAdding(false);
   };
@@ -103,6 +114,7 @@ const MCQTable = ({
       answers: currentMCQ.options.toString(),
       correct_answer: currentMCQ.correct_answer,
       marks: currentMCQ.marks,
+      time_allowed: currentMCQ.time_allowed,
     });
 
     console.log(newMCQ);
@@ -117,6 +129,7 @@ const MCQTable = ({
         options: [],
         correct_answer: "",
         marks: 1,
+        time_allowed: null,
       });
       setEditing(false);
       setIndex(null);
@@ -146,6 +159,7 @@ const MCQTable = ({
             <th className="px-4 py-2">Options</th>
             <th className="px-4 py-2">Correct Option</th>
             <th className="px-4 py-2">Marks</th>
+            {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
             <th className="px-4 py-2"></th>
             <th className="px-4 py-2"></th>
           </tr>
@@ -158,6 +172,9 @@ const MCQTable = ({
               <td className="px-4 py-2">{mcq.options.join(",")}</td>
               <td className="px-4 py-2">{mcq.correct_answer}</td>
               <td className="px-4 py-2">{mcq.marks}</td>
+              {freeFlow ? null : (
+                <td className="px-4 py-2">{mcq.time_allowed}</td>
+              )}
               <td className="px-4 py-2">
                 <button
                   onClick={handleEditMCQ(index)}
@@ -272,6 +289,16 @@ const MCQTable = ({
               value={currentMCQ.marks}
               onChange={handleMarksChange}
             />
+            {/* input for time allowed */}
+            {freeFlow ? null : (
+              <Input
+                text={"Time Allowed"}
+                type={"number"}
+                required
+                value={currentMCQ.time_allowed}
+                onChange={handleTimeAllowedChange}
+              />
+            )}
           </div>
           {editing ? (
             <button

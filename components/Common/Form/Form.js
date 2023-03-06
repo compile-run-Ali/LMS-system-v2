@@ -8,6 +8,7 @@ export default function Form({
   setPaperId,
   examDetails,
   paperType,
+  setFreeFlowGlobal,
 }) {
   const router = useRouter();
   const [edit, setEdit] = useState(examDetails ? true : false);
@@ -51,6 +52,7 @@ export default function Form({
 
   const handleFreeflow = (e) => {
     setFreeflow(e.target.checked);
+    setFreeFlowGlobal(e.target.checked)
   };
 
   const formatDate = (examDate, examTime) => {

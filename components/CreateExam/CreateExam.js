@@ -52,6 +52,7 @@ export default function CreateExam({ paperType }) {
   const [exam, setExam] = useState();
   const [mcqs, setMCQs] = useState([]);
   const [subjectives, setSubjectives] = useState([]);
+  const [freeFlowGlobal, setFreeFlowGlobal] = useState(false)
 
   const fetchExam = async () => {
     const res = await axios.post("/api/faculty/get_exam", {
@@ -94,12 +95,12 @@ export default function CreateExam({ paperType }) {
       <Wizard active={active} items={paperType === "Subjective/Objective" ? wizardItemsSubjective : wizardItemsObjective} />
       {
         active === 1 &&
-        <Form setActive={setActive} setPaperId={setPaperId} examDetails={examDetails} paperType={paperType} />
+        <Form setActive={setActive} setPaperId={setPaperId} examDetails={examDetails} paperType={paperType} setFreeFlowGlobal={setFreeFlowGlobal}/>
       }
       {
         active === 2 && paperId !== 0 &&
         <div className='mt-10'>
-            <MCQTable paperId={paperId} setActive={setActive} objective_questions={mcqs} setObjectiveQuestions={ setMCQs} />
+            <MCQTable paperId={paperId} setActive={setActive} objective_questions={mcqs} setObjectiveQuestions={ setMCQs} freeFlow={freeFlowGlobal}/>
         </div>
       }
       {
