@@ -75,7 +75,7 @@ export default function OQContainer({
       const final = score * marks;
       return final;
     } else {
-      return correct === answered ? 1 : 0;
+      return correct === answered ? marks : 0;
     }
   };
 
