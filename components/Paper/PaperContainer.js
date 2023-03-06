@@ -161,7 +161,7 @@ console.log(
   }, [paper, student]);
 
   return (
-    <div className="flex justify-between shadow-lg max-w-6xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 bg-blue-900 rounded-2xl shadow-3xl shadow-black">
+    <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">
         {currentQuestion === questions.length ? (
           <Submitted />

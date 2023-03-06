@@ -5,8 +5,8 @@ import { useRouter } from "next/router";
 import {
   compareDateTime,
   getPaperDateTime,
-  convertDateTimeToStrings,
 } from "@/lib/TimeCalculations";
+import { formatDate, formatDateAndTime, formatTime } from "@/utils/FormatDate";
 
 export default function ViewContainer() {
   const router = useRouter();
@@ -54,30 +54,46 @@ export default function ViewContainer() {
   }, [student, paper]);
 
   return (
-    <div className="p-4 border rounded-md shadow-lg m-10 text-lg">
-      <h2 className="text-2xl font-semibold mb-2">{paperDetails.paper_name}</h2>
-      <p className="text-gray-600 mb-1">
-        Course Code: {paperDetails.course_code}
-      </p>
-      <p className="text-gray-600 mb-1">
-        Paper Type: {paperDetails.paper_type}
-      </p>
-      <p className="text-gray-600 mb-1">
-        Freeflow: {paperDetails.freeflow ? "Yes" : "No"}
-      </p>
-      <p className="text-gray-600 mb-1">
-        Date: {convertDateTimeToStrings(paperDetails.date, true)}
-      </p>
-      <p className="text-gray-600 mb-1">
-        Time: {convertDateTimeToStrings(paperDetails.date, false)}
-      </p>
-      <p className="text-gray-600 mb-1">
-        Duration: {paperDetails.duration} Minutes
-      </p>
-      <p className="text-gray-600 mb-1">Weightage: {paperDetails.weightage}%</p>
-      <p className="text-gray-600 mb-1">
-        Remarks: {paperDetails.remarks || "N/A"}
-      </p>
+
+    <div className="pr-10   pl-7 font-poppins w-full ">
+      <div className="bg-gray-100 bg-opacity-50 py-10 rounded-md">
+        <div className="font-semibold text-center text-3xl mt-5 mb-10">
+          Exam Details
+        </div>
+
+        <div className="grid grid-cols-3 gap-y-3">
+          <div className="pl-20">
+            <span className=" font-medium">Exam Name:</span>
+            <span className="ml-2">{paperDetails.paper_name}</span>
+          </div>
+          <div className="pl-20">
+            <span className=" font-medium">Exam Type:</span>
+            <span className="ml-2">{paperDetails.paper_type}</span>
+          </div>
+          <div className="pl-20">
+            <span className=" font-medium">Exam Date:</span>
+            <span className="ml-2">{formatDate(paperDetails.date)}</span>
+          </div>
+          <div className="pl-20">
+            <span className=" font-medium">Exam Time:</span>
+            <span className="ml-2">{formatTime(paperDetails.date)}</span>
+          </div>
+
+          {/* <div className="pl-20">
+            <span className=" font-medium">Total Marks:</span>
+            <span className="ml-2">{totalMarks}</span>
+          </div>
+          <div className="pl-20">
+            <span className=" font-medium">Total Questions:</span>
+            <span className="ml-2">{totalQuestions}</span>
+          </div> */}
+          <div className="pl-20">
+            <span className=" font-medium">Exam Duration:</span>
+            <span className="ml-2">{paperDetails.duration}</span>
+          </div>
+        </div>
+      </div>
     </div>
+
   );
 }

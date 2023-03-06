@@ -4,6 +4,7 @@ import Accordion from "./Accordion";
 import { MdEdit } from "react-icons/md";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { formatDate, formatTime } from "@/utils/FormatDate";
 
 export default function Exam({
   exam,
@@ -14,8 +15,7 @@ export default function Exam({
 }) {
   const session = useSession();
   const router = useRouter();
-  const [totalMarks, setTotalMarks] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(0);
+
   const [edit, setEdit] = useState(isEdit);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
@@ -204,21 +204,14 @@ export default function Exam({
           </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Date:</span>
-            <span className="ml-2">{exam.date}</span>
+            <span className="ml-2">{formatDate(exam.date)}</span>
           </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Time:</span>
-            <span className="ml-2">{exam.time}</span>
+            <span className="ml-2">{formatTime(exam.date)}</span>
           </div>
 
-          <div className="pl-20">
-            <span className=" font-medium">Total Marks:</span>
-            <span className="ml-2">{totalMarks}</span>
-          </div>
-          <div className="pl-20">
-            <span className=" font-medium">Total Questions:</span>
-            <span className="ml-2">{totalQuestions}</span>
-          </div>
+
           <div className="pl-20">
             <span className=" font-medium">Exam Duration:</span>
             <span className="ml-2">{exam.duration}</span>

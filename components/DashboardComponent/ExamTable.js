@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { formatDate, formatTime } from "@/utils/FormatDate";
 
 const ExamTable = ({exams_data}) => {
   const router = useRouter();
@@ -38,8 +39,8 @@ const ExamTable = ({exams_data}) => {
               <td className="border px-4 py-2">{exam.paper_name}</td>
               <td className="border px-4 py-2">{exam.paper_type}</td>
               <td className="border px-4 py-2">{exam.duration} Minutes</td>
-              <td className="border px-4 py-2">{exam.date}</td>
-              <td className="border px-4 py-2">{exam.time}</td>
+              <td className="border px-4 py-2">{formatDate(exam.date)}</td>
+              <td className="border px-4 py-2">{formatTime(exam.date)}</td>
               <td className="border px-4 py-2">{exam.weightage}</td>
               <td className="border px-4 py-2">{exam.status}</td>
             </tr>

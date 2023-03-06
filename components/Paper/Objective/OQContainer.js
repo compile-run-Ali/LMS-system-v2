@@ -221,7 +221,7 @@ export default function OQContainer({
             )}
             <button
               className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
-                ${saved ? "bg-green-500" : "bg-white hover:bg-zinc-300"}`}
+                ${saved ? "bg-green-600" : "bg-white hover:bg-zinc-300"}`}
               onClick={saveAnswer}
             >
               {saved ? "Saved" : "Save"}
