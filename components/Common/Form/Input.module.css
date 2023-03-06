@@ -1,0 +1,8 @@
+.dateSelectorColor {
+  background-color: white;
+}
+.dateSelectorColor::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+/* change color of the icon in input type date and time */
