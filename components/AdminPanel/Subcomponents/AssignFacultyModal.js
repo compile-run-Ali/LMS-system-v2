@@ -56,7 +56,7 @@ export default function AssignFacultyModal({ isOpen, setIsOpen, faculty, handleA
                                 value={selectedFaculty}
                                 onChange={(e) => handleFacultyChange(e.target.value)}
                                 className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]">
-                                <option value="" disabled>Select Faculty Member</option>
+                                <option value="" >Select Faculty Member</option>
                                 {faculty.map((faculty, index) => (
                                     <option key={index} value={faculty.faculty_id}>{`${faculty.name} - ${faculty.department}`}</option>
                                 ))}
