@@ -20,7 +20,7 @@ export default function ExamPage({
             exam={examDetails}
             objectiveQuestions={objectiveQuestions}
             subjectiveQuestions={subjectiveQuestions}
-            isEdit={false}
+            isEdit={true}
           />
         )}
       </DashboardLayout>

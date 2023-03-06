@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Input from "./Input";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 export default function Form({
   setActive,
@@ -8,6 +9,7 @@ export default function Form({
   examDetails,
   paperType,
 }) {
+  const router = useRouter();
   const [edit, setEdit] = useState(examDetails ? true : false);
   const [paperName, setPaperName] = useState(
     edit ? examDetails.paper_name : ""
@@ -72,6 +74,8 @@ export default function Form({
       }`,
       {
         paper_id: examDetails ? examDetails.paper_id : null,
+        course_code: router.query.course_code ? router.query.course_code : null,
+
         paper_name: paperName,
         time: paperTime + ":00",
         date: formatDate(dateOfExam, paperTime),
@@ -79,6 +83,7 @@ export default function Form({
         weightage: parseInt(weightage),
         paper_type: paperType,
         freeflow: freeflow,
+
       }
     );
 
@@ -98,7 +103,7 @@ export default function Form({
           value={paperName}
         />
         <Input
-          text={"Paper Duration (in hours)"}
+          text={"Paper Duration (in minutes)"}
           required={true}
           type={"number"}
           value={paperDuration}

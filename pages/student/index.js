@@ -7,10 +7,14 @@ import StudentDashboard from "@/components/StudentDashboard/StudentDashboard";
 
 export default function Dashboard() {
   const session = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     if (session.status === "authenticated") {
       console.log(session);
+    }
+    else{
+      router.push("/");
     }
   }, [session]);
 

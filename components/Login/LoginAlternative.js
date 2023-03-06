@@ -26,6 +26,12 @@ export default function LoginAlternative({ facultyLogin }) {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   return (
     <div className={`w-full flex h-screen font-poppins ${Styles.main} pt-10`}>
       <div className="w-1/2 flex h-full justify-center items-center">
@@ -61,6 +67,7 @@ export default function LoginAlternative({ facultyLogin }) {
               className="w-full h-10 rounded-md bg-white px-4 mt-2 py-4 placeholder:text-[#BCBEC0] text-sm "
               placeholder="Password"
               value={password}
+              onKeyDown={handleKeyDown}
               onChange={(e) => {
                 setPassword(e.target.value);
               }}

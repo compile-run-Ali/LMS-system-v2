@@ -21,22 +21,22 @@ export default function Exam({
   const [comments, setComments] = useState();
   const [faculty, setFaculty] = useState();
   const [selectedFaculty, setSelectedFaculty] = useState();
+  const [access, setAccess] = useState(null);
 
-  const checkAccess = () => {
-    if (session.status === "authenticated") {
-      if (exam.status === "Pending Approval") {
-        return exam.examofficer.faculty_id === session.data.user.id
-          ? true
-          : false;
-      } else if (exam.status === "Approved") {
-        return false;
-      } else if (exam.status === "Draft") {
-        return true;
+  useEffect(() => {
+    setAccess(() => {
+      if (session.status === "authenticated") {
+        if (exam.status === "Pending Approval") {
+          return exam.examofficer.faculty_id === session.data.user.id;
+        } else if (exam.status === "Approved") {
+          return false;
+        } else if (exam.status === "Draft") {
+          return true;
+        }
       }
-    }
-  };
+    });
+  }, [session]);
 
-  const [access, setAccess] = useState(checkAccess());
   const getComments = async () => {
     const res = await axios.post("/api/paper/get_comments", {
       paper_id: exam.paper_id,
@@ -48,7 +48,9 @@ export default function Exam({
   const getFaculty = async () => {
     const res = await axios.get("/api/paper/get_faculty");
     setFaculty(
-      res.data.filter((faculty) => faculty.faculty_id !== session.data.user.id)
+      res.data.filter(
+        (faculty) => faculty.faculty_id !== session?.data?.user.id
+      )
     );
   };
 
@@ -276,6 +278,7 @@ export default function Exam({
               Add Comment
             </button>
           </div>
+
           {exam.examofficer?.faculty_id === session.data.user.id ? (
             <div>
               <div className="flex justify-end">
