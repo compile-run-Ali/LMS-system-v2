@@ -25,6 +25,7 @@ model Student {
   subjective_answers SSA[]
   objective_answers  SOA[]
   notifications      Notification[]
+  attempts           StudentPaperAttempt[]
 }
 
 model SRC {
@@ -99,7 +100,6 @@ model Paper {
   paper_type  String
   examofficer PaperApproval?
   freeflow    Boolean?
-  time        String
   date        String
   duration    Int
   weightage   Int?
@@ -109,6 +109,7 @@ model Paper {
   objective_questions  ObjectiveQuestion[]
 
   PaperComment PaperComment[]
+  attempts           StudentPaperAttempt[]
 }
 
 model SubjectiveQuestion {
@@ -141,7 +142,7 @@ model SSA {
   student  Student @relation(fields: [p_number], references: [p_number])
 
   answer String
-  marksobtained Int @default(0)
+  marksobtained Float @default(0)
 }
 
 model ObjectiveQuestion {
@@ -151,6 +152,7 @@ model ObjectiveQuestion {
   answers        String
   correct_answer String
   marks          Int
+  timeAllowed    Int    @default(0)
 
   paper    Paper  @relation(fields: [paper_id], references: [paper_id])
   paper_id String
@@ -169,7 +171,7 @@ model SOA {
   student  Student @relation(fields: [p_number], references: [p_number])
 
   answer String
-  marksobtained Int
+  marksobtained Float
 }
 
 model PaperComment {
@@ -193,4 +195,14 @@ model Notification {
 
   faculty Faculty @relation(fields: [faculty_id], references: [faculty_id])
   faculty_id String
+}
+
+model StudentPaperAttempt {
+  id              Int      @id @default(autoincrement())
+  studentId       String
+  paperId         String
+  status          String?
+
+  student         Student @relation(fields: [studentId], references: [p_number])
+  paper           Paper   @relation(fields: [paperId], references: [paper_id])
 }
