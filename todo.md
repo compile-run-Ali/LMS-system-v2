@@ -10,8 +10,8 @@
 - view paper page ui set
 
 ### aziz
-change marksobtained to float in questions tables
-add minutes allowed field for each objective qs table
+<!-- change marksobtained to float in questions tables -->
+<!-- add minutes allowed field for each objective qs table -->
 remove time field and add endDateTime for paper table
 add paper student table which contains a flag whether a student has submitted a paper
 
