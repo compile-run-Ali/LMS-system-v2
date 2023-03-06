@@ -253,6 +253,7 @@ export default function OQContainer({
             )}
           </div>
           <SubmitModal
+            flags={flags}
             showModal={showModal}
             setShowModal={setShowModal}
             currentQuestion={currentQuestion}

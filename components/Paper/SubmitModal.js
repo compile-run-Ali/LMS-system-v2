@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
-export default function SubmitModal({ showModal, setShowModal, currentQuestion, setCurrentQuestion}) {
+export default function SubmitModal({
+  showModal,
+  setShowModal,
+  currentQuestion,
+  setCurrentQuestion,
+  flags,
+}) {
   return (
     <Transition appear show={showModal} as={Fragment}>
       <Dialog
@@ -29,6 +35,16 @@ export default function SubmitModal({ showModal, setShowModal, currentQuestion, 
             <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
               <p className="text-lg font-bold mb-4">
                 Are you sure you want to submit?
+                {
+                  // if there are any flags, show which questions are flagged
+                  flags.length > 0 && (
+                    <span className="text-red-500">
+                      {" "}
+                      (You have flagged question number{" "}
+                      {flags.map((flag) => Number(flag) + 1) + ' '}
+                    </span>
+                  )
+                }
               </p>
               <div className="flex justify-end">
                 <button
