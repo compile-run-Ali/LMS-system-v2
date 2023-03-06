@@ -23,10 +23,15 @@ export default function Form({
     edit ? examDetails.time : "09:00:00"
   );
   const [freeflow, setFreeflow] = useState(false);
+  const [review,setReview] = useState(false)
 
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
   };
+
+  const handleReview =(e)=>{
+    setReview(e.target.checked)
+  }
 
   const handleDuration = (e) => {
     setPaperDuration(parseInt(e.target.value));
@@ -75,12 +80,12 @@ export default function Form({
         course_code: router.query.course_code ? router.query.course_code : null,
 
         paper_name: paperName,
-        time: paperTime + ":00",
         date: formatDate(dateOfExam, paperTime),
         duration: paperDuration,
         weightage: parseInt(weightage),
         paper_type: paperType,
         freeflow: freeflow,
+        review:review
       }
     );
 
@@ -141,6 +146,15 @@ export default function Form({
             type="checkbox"
             className="accent-slate-100"
             onChange={handleFreeflow}
+          />
+        </div>
+
+        <div className="flex items-center gap-x-3 mt-14 ml-2">
+          <label className="block">Allow review?</label>
+          <input
+            type="checkbox"
+            className="accent-slate-100"
+            onChange={handleReview}
           />
         </div>
       </div>

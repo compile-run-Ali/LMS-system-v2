@@ -100,10 +100,11 @@ model Paper {
   paper_type  String
   examofficer PaperApproval?
   freeflow    Boolean?
+  review     Boolean         @default(false)
   date        String
   duration    Int
   weightage   Int?
-  status      String        @default("Draft")
+  status      String         @default("Draft")
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]

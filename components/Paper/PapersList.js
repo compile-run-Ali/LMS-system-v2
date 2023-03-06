@@ -38,7 +38,11 @@ export default function PapersList({ papers, status }) {
               `/${paper.paper_id}`
             }
           >
-            <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded">
+            <button
+              className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
+              ${isPast && !paper.review && "hidden"}
+            `}
+            >
               {isLive ? "Attempt" : isPast ? "Review" : "View"}
             </button>
           </Link>

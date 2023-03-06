@@ -14,6 +14,7 @@ const handler = async (req, res) => {
         duration: req.body.duration,
         weightage: req.body.weightage,
         freeflow: req.body.freeflow,
+        review: req.body.review
       }
     })
     res.status(200).json(paper)
