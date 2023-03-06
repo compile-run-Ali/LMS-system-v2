@@ -1,3 +1,4 @@
+// add answer of studednt to the question
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
@@ -16,6 +17,7 @@ export default async function handler(req, res) {
         },
         data: {
           answer: req.body.answer,
+          marksobtained: req.body.marks,
         },
       });
 
@@ -27,6 +29,8 @@ export default async function handler(req, res) {
           p_number: req.body.p_number,
           oq_id: req.body.oq_id,
           answer: req.body.answer,
+          marksobtained: req.body.marks,
+
         },
       });
 

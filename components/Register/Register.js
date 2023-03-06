@@ -221,7 +221,10 @@ export default function Register() {
                   <input
                     value={cgpa}
                     onChange={(e) => setCgpa(Number(e.target.value))}
-                    type="text"
+                    type="number"
+                    min={0}
+                    max={4}
+                    step={0.01}
                     className="form-control block
             w-full
             px-3

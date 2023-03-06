@@ -21,7 +21,8 @@ export default function Timer({ paper }) {
           getRemainingTime(getPaperDateTime(paper.date, paper.duration).end)
         );
         if (timeLeft === "00:00:00") {
-          router.push(`/student/${student}`);
+          router.push(`/student`);
+          localStorage.clear();
         }
       }, 1000);
       return () => clearInterval(interval);
@@ -30,7 +31,6 @@ export default function Timer({ paper }) {
 
   useEffect(() => {
     if (paper.date) {
-      console.log("paper ", paper);
       setStartTime(
         convertDateTimeToStrings(
           getPaperDateTime(paper.date, paper.duration).start
@@ -45,7 +45,7 @@ export default function Timer({ paper }) {
   }, [paper]);
 
   return (
-    <div className="flex flex-col justify-center text-xl">
+    <div className="flex flex-col justify-center text-lg">
       <div>
         Start Time:
         {" " + startTime}

@@ -1,8 +1,9 @@
+// get student by p_number
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const handle = async (req, res) => {
-  let p_number = Number(req.query.index);
+  let p_number = req.query.index;
 
   try {
     const student = await prisma.student.findUnique({

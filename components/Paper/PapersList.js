@@ -6,8 +6,10 @@ import {
   convertDateTimeToStrings,
 } from "@/lib/TimeCalculations";
 
-export default function PapersList({ papers, isLive, p_number }) {
+export default function PapersList({ papers, status, p_number }) {
   const [sortedPapers, setSortedPapers] = useState([]);
+  const isLive = status === "Live Papers";
+  const isPast = status === "Past Papers";
 
   useEffect(() => {
     const newSortedPapers = papers.sort(
@@ -30,22 +32,19 @@ export default function PapersList({ papers, isLive, p_number }) {
         <td className="px-4 py-2">{startTime}</td>
         <td className="px-4 py-2">{endDate}</td>
         <td className="px-4 py-2">
-          {isLive ? (
-            <Link href={`/paper/attempt/${p_number}/${paper.paper_id}`}>
-              <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                Attempt
-              </button>
-            </Link>
-          ) : (
-            // <Link href={`/paper/${paper.paper_id}`}>
+          <Link
+            href={
+              `/paper/` +
+              `${isLive ? "attempt" : isPast ? "review" : "view"}` +
+              `/${paper.paper_id}`
+            }
+          >
             <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded">
-              View
+              {isLive ? "Attempt" : isPast ? "Review" : "View"}
             </button>
-            // </Link>
-          )}
+          </Link>
         </td>
       </>
-      // </div>
     );
   };
 

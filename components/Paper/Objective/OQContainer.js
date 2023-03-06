@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import CountdownTimer from "../CountdownTimer";
 
 export default function OQContainer({
   question,
@@ -8,19 +10,31 @@ export default function OQContainer({
   setCurrentQuestion,
   totalQuestions,
   freeFlow,
+  flags,
+  setFlags,
 }) {
   const router = useRouter();
-  const { student } = router.query;
+  const { paper } = router.query;
+  const { data: session, status } = useSession();
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [multipleAllowed, setMultipleAllowed] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [remainingTime, setRemainingTime] = useState({});
 
   const saveAnswer = () => {
+    const score = markAnswer(
+      question.correct_answer,
+      selectedAnswer.join(","),
+      question.marks
+    );
+    // mark answer right here
     axios
       .post(`/api/student/paper/oq/add_answer`, {
-        p_number: student,
+        p_number: session.user.id,
         oq_id: question.oq_id,
-        answer: selectedAnswer.join(", "),
+        answer: selectedAnswer.join(","),
+        marks: score,
       })
       .then((res) => {
         console.log("answer added successfully ", res.data);
@@ -28,15 +42,61 @@ export default function OQContainer({
       .catch((err) => {
         console.log("error ", err.message);
       });
+    setSaved(true);
   };
 
+  const markAnswer = (correct, answered, marks) => {
+    if (correct?.split(",").length > 1) {
+      let score;
+      const correctAnswers = correct?.split(",");
+      const selectedAnswers = answered?.split(",") || [];
+      if (correctAnswers.length >= selectedAnswers.length) {
+        // count how many of the answers are correct
+        let count = 0;
+        correctAnswers.forEach(
+          (correctAnswer) => selectedAnswers.includes(correctAnswer) && count++
+        );
+        score = count / correctAnswers.length;
+      } else if (correctAnswers.length < selectedAnswers.length) {
+        // count wrong answers and subtract that from total answers
+        let wrongCount = 0;
+        selectedAnswers.forEach(
+          (selectedAnswer) =>
+            !correctAnswers.includes(selectedAnswer) && wrongCount++
+        );
+        const m = (correctAnswers.length - wrongCount) / selectedAnswers.length;
+        score = m >= 0 ? m : 0;
+      }
+      const final = score * marks;
+      return final;
+    } else {
+      return correct === answered ? 1 : 0;
+    }
+  };
+
+  const flagQuestion = (current) => {
+    let f = flags;
+    console.log("flags", f);
+    f.includes(current)
+      ? (f = f.filter((flags) => flags !== current))
+      : (f = [...flags, current]);
+    setFlags(f);
+    const papers = JSON.parse(localStorage.getItem("papers"));
+    papers[paper].flags = f;
+    localStorage.setItem("papers", JSON.stringify(papers));
+    console.log(
+      "flagged",
+      JSON.parse(localStorage.getItem("papers"))[paper].flags
+    );
+  };
   useEffect(() => {
     // correctanswer will be a string in form a1,a2
     // selectedanswer will be a string in form a1,a2
     // convert correctAnswer into an array
     if (question) {
+      // set freeFlow to NOT
       setSelectedAnswer([]);
-      const answers = question.correct_answer.split(", ");
+      const answers = question.correct_answer?.split(",") || [];
       setCorrectAnswers(answers);
       if (answers.length > 1) {
         setMultipleAllowed(true);
@@ -46,26 +106,43 @@ export default function OQContainer({
     }
   }, [question]);
 
-  console.log("selected answer is ", selectedAnswer);
+  useEffect(
+    () => () => {
+      setSaved(false);
+    },
+    [selectedAnswer]
+  );
 
   return (
-    <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl">
+    <div className="flex flex-col justify-between p-10 pt-0 w-full">
       {question ? (
         <>
-          <div>
-            <p className="text-2xl justify-center h-32 flex items-center">
+          <div className="relative">
+            <div
+              className=" bg-white text-black absolute top-0 right-0"
+              id="timer"
+            >
+              {
+                <CountdownTimer
+                  timeAllowed={60}
+                  currentQuestion={currentQuestion}
+                  setCurrentQuestion={setCurrentQuestion}
+                />
+              }
+            </div>
+            <p className="text-2xl justify-center h-32 flex items-center text-white">
               {currentQuestion + 1 + ". " + question.question}
             </p>
             <div className="flex justify-between mt-6 flex-col">
-              {question.answers.split(",").map((answer, index) => (
+              {question.answers?.split(",").map((answer, index) => (
                 <div
                   key={index}
                   className={`
-                  w-full flex  my-3 rounded-lg p-4 hover:bg-blue-700 transition-all cursor-pointer items-center shadow-xl shadow-blue-200
+                  w-full flex my-3 rounded-lg p-4  text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200
                   ${
                     selectedAnswer.includes(answer)
-                      ? "bg-blue-700"
-                      : "bg-blue-400"
+                      ? "bg-zinc-300"
+                      : "bg-white hover:bg-zinc-200 "
                   }
                   `}
                   onClick={() => {
@@ -84,7 +161,7 @@ export default function OQContainer({
                   }}
                 >
                   <input
-                    className="w-6 h-6 ring-offset-gray-700 focus:ring-offset-gray-700 bg-gray-600 border-gray-500 pointer-events-none accent-white"
+                    className="w-6 h-6 ring-offset-gray-700 focus:ring-offset-gray-700 bg-gray-600 border-gray-500 pointer-events-none accent-blue-900"
                     type={multipleAllowed ? "checkbox" : "radio"}
                     name={question.oq_id}
                     value={answer}
@@ -93,7 +170,7 @@ export default function OQContainer({
                   />
                   <label
                     htmlFor="list-radio-license"
-                    className="w-full py-3 ml-2 text-sm font-medium text-white cursor-pointer"
+                    className="w-full py-3 ml-2 text-sm font-medium cursor-pointer"
                   >
                     {answer}
                   </label>
@@ -103,7 +180,7 @@ export default function OQContainer({
           </div>
           <div
             className={`
-            flex mt-6 text-white mx-auto justify-between
+            flex mt-16 text-black mx-auto justify-between
             ${freeFlow ? "w-full" : "w-1/2"}
           `}
           >
@@ -111,35 +188,63 @@ export default function OQContainer({
               <button
                 className={
                   (currentQuestion > 0
-                    ? "bg-blue-700 hover:bg-blue-800"
-                    : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+                    ? "bg-white hover:bg-zinc-300"
+                    : "bg-gray-400 cursor-not-allowed") +
+                  " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 }
                 onClick={() => {
-                  currentQuestion > 0 &&
-                    setCurrentQuestion(currentQuestion - 1);
+                  if (selectedAnswer.length === 0 || saved) {
+                    currentQuestion > 0 &&
+                      setCurrentQuestion(currentQuestion - 1);
+                  } else {
+                    alert("Please save your answer before proceeding");
+                  }
                 }}
               >
                 Previous
               </button>
             )}
             <button
-              className="bg-blue-700 hover:bg-blue-800 px-3 py-2 w-24 rounded-lg"
+              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
+                ${
+                  flags.includes(String(currentQuestion))
+                    ? "bg-yellow-400 hover:bg-yellow-500"
+                    : "bg-white hover:bg-zinc-300"
+                }`}
+              onClick={() => flagQuestion(String(currentQuestion))}
+            >
+              {flags.includes(String(currentQuestion)) ? "Unflag" : "Flag"}
+            </button>
+            <button
+              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
+                ${saved ? "bg-green-500" : "bg-white hover:bg-zinc-300"}`}
               onClick={saveAnswer}
             >
-              Save
+              {saved ? "Saved" : "Save"}
             </button>
             <button
               className={
                 (currentQuestion < totalQuestions - 1
-                  ? "bg-blue-700 hover:bg-blue-800"
-                  : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+                  ? "bg-white hover:bg-zinc-300 "
+                  : "bg-green-500 hover:bg-green-600") +
+                " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
               }
               onClick={() => {
-                currentQuestion < totalQuestions - 1 &&
-                  setCurrentQuestion(currentQuestion + 1);
+                // if opt not selected OR saved
+                if (selectedAnswer.length === 0 || saved) {
+                  currentQuestion < totalQuestions &&
+                    setCurrentQuestion(currentQuestion + 1);
+                } else {
+                  alert("Please save your answer before proceeding");
+                }
               }}
             >
-              Next
+              {
+                {
+                  0: "Next",
+                  1: "Submit",
+                }[currentQuestion === totalQuestions - 1 ? 1 : 0]
+              }
             </button>
           </div>
         </>

@@ -11,6 +11,9 @@ export default async function handler(req, res) {
       where: {
         paper_id: paper_id,
       },
+      orderBy: {
+        questionnumber: "asc",
+      },
     });
     if (!questions) {
       console.log("questions not found");

@@ -77,7 +77,7 @@ const MCQTable = ({
       }
     );
     console.log(newMCQ.data);
-    newMCQ.data.options = newMCQ.data.answers.split(", ");
+    newMCQ.data.options = newMCQ.data.answers.split(",");
     setMCQs([...mcqs, newMCQ.data]);
     setObjectiveQuestions([...mcqs, newMCQ.data]);
     setCurrentMCQ({
@@ -96,17 +96,21 @@ const MCQTable = ({
   };
 
   const handleUpdateMCQ = async (index) => {
-    const newMCQ = await axios.post(
-      "http://localhost:3000/api/faculty/edit_objective",
-      {
+    const newMCQ = await axios
+      .post("http://localhost:3000/api/faculty/edit_objective", {
         oq_id: mcqs[index].oq_id,
         paper_id: paperId,
         question: currentMCQ.question,
         answers: currentMCQ.options.toString(),
         correct_answer: currentMCQ.correct_answer,
         marks: currentMCQ.marks,
-      }
-    );
+      })
+
+      console.log(
+        newMCQ
+      );
+      
+
     if (newMCQ.status === 200) {
       const newMCQs = [...mcqs];
       newMCQs[index] = currentMCQ;
@@ -158,7 +162,7 @@ const MCQTable = ({
             <tr key={index} className="border-t">
               <td className="px-4 py-2">{index + 1}</td>
               <td className="px-4 py-2">{mcq.question}</td>
-              <td className="px-4 py-2">{mcq.options.join(", ")}</td>
+              <td className="px-4 py-2">{mcq.options.join(",")}</td>
               <td className="px-4 py-2">{mcq.correct_answer}</td>
               <td className="px-4 py-2">{mcq.marks}</td>
               <td className="px-4 py-2">

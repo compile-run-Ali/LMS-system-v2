@@ -8,13 +8,19 @@ export default function SQContainer({
   setCurrentQuestion,
   totalQuestions,
   freeFlow,
+  flags,
+  setFlags,
 }) {
   const router = useRouter();
   const { student } = router.query;
-  const [answer, setAnswer] = useState("");
+  const [answer, setAnswer] = useState({});
+  const [saved, setSaved] = useState(false);
 
   const saveAnswer = () => {
-    console.log(question);
+    if (!answer) {
+      alert("Your answer is empty. Please type anything to continue.");
+      return;
+    }
     axios
       .post(`/api/student/paper/sq/add_answer`, {
         p_number: student,
@@ -27,49 +33,100 @@ export default function SQContainer({
       .catch((err) => {
         console.log("error ", err.message);
       });
+    setSaved(true);
+  };
+
+  const flagQuestion = () => {
+    const current = String(currentQuestion);
+    let f = flags;
+    f.includes(current)
+      ? (f = f.filter((flags) => flags !== current))
+      : (f = [...flags, current]);
+    setFlags(f);
+    localStorage.setItem("flags", JSON.stringify(f));
+    console.log(localStorage.getItem("flags"));
   };
 
   useEffect(() => {
     if (question) {
       setAnswer("");
+      setSaved(false);
     }
   }, [question]);
 
+  useEffect(
+    () => () => {
+      setSaved(false);
+    },
+    [answer]
+  );
+
   return (
-    <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl">
+    <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl text-white">
       {question ? (
         <>
           <div>
             <div className="text-2xl mb-4">
-              <p>{currentQuestion + 1 + ". " + question.question}</p>
-              <p className="text-base font-bold"> ({question.marks} Marks)</p>
+              <div className="flex justify-between items-center">
+                <p>{question.questionnumber + ". " + question.question}</p>
+                <p className="text-base font-bold">({question.marks} Marks)</p>
+              </div>
             </div>
-            <div className="p-4 bg-blue-400 rounded-lg space-y-2">
-              <label className="text-white">
-                Answer
-                {!question.long_question && (
-                  <span className="text-gray-200 text-sm">
-                    {" "}
-                    (Max 50 characters)
-                  </span>
-                )}
-              </label>
-              <textarea
-                className="border border-gray-300 bg-white rounded-md p-2 w-full "
-                maxLength={question.long_question ? 100000 : 50}
-                value={answer}
-                rows={question.long_question ? 10 : 2}
-                onChange={(e) => setAnswer(e.target.value)}
-              />
+            <div className="py-4 rounded-lg space-y-2 ">
+              {question.children ? (
+                question.children.map((childQuestion, index) => (
+                  <div key={childQuestion.questionnumber}>
+                    <div className="text-xl">
+                      <div className="flex justify-between items-center ">
+                        <p>
+                          {childQuestion.questionnumber +
+                            ". " +
+                            childQuestion.question}
+                        </p>
+                        <p className="text-base">
+                          ({childQuestion.marks} Marks)
+                        </p>
+                      </div>
+                    </div>
+                    <div className="pb-4 rounded-lg space-y-2">
+                      <label className="">
+                        Answer
+                        {!childQuestion.long_question && (
+                          <span className="text-gray-200 text-sm">
+                            {" "}
+                            (Max 50 characters)
+                          </span>
+                        )}
+                      </label>
+                      <textarea
+                        className="border bg-white rounded-md p-2 w-full text-black border-black focus:outline-yellow-500"
+                        maxLength={childQuestion.long_question ? 100000 : 50}
+                        value={answer[childQuestion.questionnumber]}
+                        rows={childQuestion.long_question ? 10 : 2}
+                        onChange={(e) => {
+                          setAnswer({
+                            ...answer,
+                            [childQuestion.questionnumber]: e.target.value,
+                          });
+                          console.log("answer", answer);
+                        }}
+                      />
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <>textarea here for q with no parts</>
+              )}
             </div>
           </div>
-          <div className="flex justify-between mt-6 text-white">
-            {freeFlow && (
+          <div className="flex justify-between mt-20 text-black">
+            {(freeFlow || question.questionnumber !== 1) && (
               <button
                 className={
                   (currentQuestion > 0
-                    ? "bg-blue-700 hover:bg-blue-800"
-                    : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+                    ? "bg-white hover:bg-zinc-300"
+                    : "bg-gray-400 cursor-not-allowed") +
+                  " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 }
                 onClick={() => {
                   currentQuestion > 0 &&
@@ -80,23 +137,46 @@ export default function SQContainer({
               </button>
             )}
             <button
-              className="bg-blue-700 hover:bg-blue-800 px-3 py-2 w-24 rounded-lg"
+              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
+                ${
+                  flags.includes(String(currentQuestion))
+                    ? "bg-yellow-400 hover:bg-yellow-500"
+                    : "bg-white hover:bg-zinc-300"
+                }`}
+              onClick={flagQuestion}
+            >
+              {flags.includes(String(currentQuestion)) ? "Unflag" : "Flag"}
+            </button>
+            <button
+              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
+                ${saved ? "bg-green-500" : "bg-white hover:bg-zinc-300"}`}
               onClick={saveAnswer}
             >
-              Save
+              {saved ? "Saved" : "Save"}
             </button>
             <button
               className={
                 (currentQuestion < totalQuestions - 1
-                  ? "bg-blue-700 hover:bg-blue-800"
-                  : "bg-gray-400") + " px-3 py-2 w-24 rounded-lg"
+                  ? "bg-white hover:bg-zinc-300 "
+                  : "bg-green-500 hover:bg-green-600") +
+                " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
               }
               onClick={() => {
-                currentQuestion < totalQuestions - 1 &&
-                  setCurrentQuestion(currentQuestion + 1);
+                // if opt not selected OR saved
+                if (!answer || saved) {
+                  currentQuestion < totalQuestions &&
+                    setCurrentQuestion(currentQuestion + 1);
+                } else {
+                  alert("Please save your answer before proceeding");
+                }
               }}
             >
-              Next
+              {
+                {
+                  0: "Next",
+                  1: "Submit",
+                }[currentQuestion === totalQuestions - 1 ? 1 : 0]
+              }
             </button>
           </div>
         </>
