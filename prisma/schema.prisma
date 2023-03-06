@@ -24,7 +24,6 @@ model Student {
   courses            SRC[]
   subjective_answers SSA[]
   objective_answers  SOA[]
-  notifications      Notification[]
   attempts           StudentPaperAttempt[]
 }
 
@@ -191,9 +190,7 @@ model Notification {
   notification    String
 
   time            DateTime @default(now())
-  student         Student @relation(fields: [p_number], references: [p_number])
-  p_number        String
-
+  read           Boolean  @default(false)
   faculty Faculty @relation(fields: [faculty_id], references: [faculty_id])
   faculty_id String
 }

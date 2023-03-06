@@ -49,7 +49,7 @@ export default function Exam({
       const dateB = new Date(b.time);
       return dateA - dateB;
     });
-    
+
     setComments(res.data);
   };
 
@@ -73,9 +73,8 @@ export default function Exam({
 
   const editExam = () => {
     router.push({
-      pathname: `/faculty/create_exam/${
-        exam.paper_type === "Objective" ? "objective" : "subjective"
-      }`,
+      pathname: `/faculty/create_exam/${exam.paper_type === "Objective" ? "objective" : "subjective"
+        }`,
       query: {
         ...exam,
       },
@@ -92,13 +91,13 @@ export default function Exam({
     });
     if (submitExam.status === 200) {
       addComment({
-        comment: `Exam Submitted by ${session.data.user.name} to ${
-          faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
-            .name
-        }`,
+        comment: `Exam Submitted by ${session.data.user.name} to ${faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
+          .name
+          }`,
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
+      generateNotification();
       router.push("/faculty");
     }
   };
@@ -142,14 +141,27 @@ export default function Exam({
     });
     if (sendForward.status === 200) {
       addComment({
-        comment: `Exam Sent Forward by ${session.data.user.name} to ${
-          faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
-            .name
-        }`,
+        comment: `Exam Sent Forward by ${session.data.user.name} to ${faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
+          .name
+          }`,
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
+      console.log("Exam Sent Forward");
+      generateNotification();
       router.push("/faculty");
+    }
+
+  };
+
+
+  const generateNotification = async () => {
+    const res = await axios.post("http://localhost:3000/api/faculty/generate_notification", {
+      faculty_id: selectedFaculty,
+      notification: `You have a new exam to approve by ${session.data.user.name}`,
+    });
+    if (res.status === 200) {
+      console.log("Notification sent");
     }
   };
 

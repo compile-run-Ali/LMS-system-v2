@@ -92,7 +92,7 @@ const MCQTable = ({
     setObjectiveQuestions([...mcqs, newMCQ.data]);
     setCurrentMCQ({
       question: "",
-      options: [],
+      options: ["", "", "", ""],
       correct_answer: "",
       marks: 1,
       time_allowed: null,

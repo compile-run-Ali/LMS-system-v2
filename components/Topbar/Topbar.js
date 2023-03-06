@@ -2,10 +2,15 @@ import ArrowDownSVG from "@/svgs/arrow_down";
 import NotificationSVG from "@/svgs/notification";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import NotificationDropdown from "./NotificationDropdown";
+import axios from "axios";
+import ClickAwayListener from "react-click-away-listener";
 
 export default function Topbar({ admin }) {
+  const [showNotification, setShowNotification] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const session = useSession();
   const [dropdown, setDropdown] = useState(false);
   console.log(session);
@@ -13,6 +18,22 @@ export default function Topbar({ admin }) {
     signOut({
       callbackUrl: "/",
     });
+  };
+
+  useEffect(() => {
+    if (session.status === "authenticated") {
+      getNotifications();
+    }
+  }, []);
+
+
+  const getNotifications = async () => {
+    // get notifications from api for the logged in user
+    const res = await axios.post("http://localhost:3000/api/faculty/get_notifications", {
+      faculty_id: session.data.user.id,
+    });
+
+    setNotifications(res.data);
   };
 
   return (
@@ -25,10 +46,18 @@ export default function Topbar({ admin }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="notification-icon mr-5">
-            <NotificationSVG className="fill-blue-900" />
-          </div>
+          <ClickAwayListener onClickAway={()=>setShowNotification(false)}>
+            <div className="notification-icon mr-5" >
+              <NotificationSVG className="fill-blue-900" onClick={() => setShowNotification(!showNotification)} />
 
+              {showNotification &&
+                <div className="fixed right-[250px] max-h-[300px] w-80">
+                  <NotificationDropdown notifications={notifications} />
+                </div>
+              }
+            </div>
+
+          </ClickAwayListener>
           <div className="user-profile flex items-center gap-3">
             <div className="w-8 h-8 rounded-full border border-blue-900 relative">
               <Image
