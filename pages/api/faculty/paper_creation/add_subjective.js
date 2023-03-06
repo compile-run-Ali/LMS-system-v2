@@ -9,6 +9,7 @@ const handler = async (req, res) => {
         question: req.body.question,
         marks: req.body.marks,
         long_question: req.body.long_question,
+        questionnumber :req.body.questionnumber,
         paper: {
           connect: {
             paper_id: req.body.paper_id,
@@ -33,7 +34,8 @@ const handler = async (req, res) => {
           question: true,
           marks: true,
           long_question: true,
-          parent_question: true
+          parent_question: true,
+          questionnumber: true,
         }
       })
       res.status(200).json(updatedSQ)
