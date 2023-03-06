@@ -13,7 +13,7 @@ export default function SQContainer({
   setFlags,
 }) {
   const router = useRouter();
-  const { student } = router.query;
+  const { paper } = router.query;
   const [answer, setAnswer] = useState({});
   const [saved, setSaved] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -25,7 +25,7 @@ export default function SQContainer({
     }
     axios
       .post(`/api/student/paper/sq/add_answer`, {
-        p_number: student,
+        p_number: 1,
         sq_id: question.sq_id,
         answer,
       })
@@ -38,15 +38,20 @@ export default function SQContainer({
     setSaved(true);
   };
 
-  const flagQuestion = () => {
-    const current = String(currentQuestion);
+  const flagQuestion = (current) => {
     let f = flags;
+    console.log("flags", f);
     f.includes(current)
       ? (f = f.filter((flags) => flags !== current))
       : (f = [...flags, current]);
     setFlags(f);
-    localStorage.setItem("flags", JSON.stringify(f));
-    console.log(localStorage.getItem("flags"));
+    const papers = JSON.parse(localStorage.getItem("papers"));
+    papers[paper].flags = f;
+    localStorage.setItem("papers", JSON.stringify(papers));
+    console.log(
+      "flagged",
+      JSON.parse(localStorage.getItem("papers"))[paper].flags
+    );
   };
 
   useEffect(() => {
@@ -117,7 +122,30 @@ export default function SQContainer({
                   </div>
                 ))
               ) : (
-                <>textarea here for q with no parts</>
+                <div className="pb-4 rounded-lg space-y-2">
+                  <label className="">
+                    Answer
+                    {!question.long_question && (
+                      <span className="text-gray-200 text-sm">
+                        {" "}
+                        (Max 50 characters)
+                      </span>
+                    )}
+                  </label>
+                  <textarea
+                    className="border bg-white rounded-md p-2 w-full text-black border-black focus:outline-yellow-500"
+                    maxLength={question.long_question ? 100000 : 50}
+                    value={answer[question.questionnumber]}
+                    rows={question.long_question ? 10 : 2}
+                    onChange={(e) => {
+                      setAnswer({
+                        ...answer,
+                        [question.questionnumber]: e.target.value,
+                      });
+                      console.log("answer", answer);
+                    }}
+                  />
+                </div>
               )}
             </div>
           </div>
@@ -145,7 +173,7 @@ export default function SQContainer({
                     ? "bg-yellow-400 hover:bg-yellow-500"
                     : "bg-white hover:bg-zinc-300"
                 }`}
-              onClick={flagQuestion}
+              onClick={() => flagQuestion(String(currentQuestion))}
             >
               {flags.includes(String(currentQuestion)) ? "Remove" : "Review"}
             </button>
@@ -183,6 +211,7 @@ export default function SQContainer({
             )}
           </div>
           <SubmitModal
+            flags={flags}
             showModal={showModal}
             setShowModal={setShowModal}
             currentQuestion={currentQuestion}

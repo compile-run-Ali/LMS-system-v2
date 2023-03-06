@@ -39,10 +39,17 @@ X 5 Line for Exam in the table
 9 "Closed" Status for paper once paper end time and date have elapsed.
 10 Student Profile Picture Display Area
 
-AA 3 Lock Out - "Attempt" key for Student after paper has been submitted, create api on submission taht paper is submitted and check in papers list if it is submitted
-AA 7 Pending Questions Alert at Submittion
+AA 3 Lock Out - "Attempt" key for Student after paper has been submitted, create api on submission that paper is submitted and check in papers list if it is submitted
+<!-- AA 7 Pending Questions Alert at Submittion -->
 X 8 No Comment alert when marking paper
-time allowed for mcqs api update
+time allowed for mcqs api update in create exam
+parent question marks handle
+
+default vavlue true for long question
+<!-- save flags in subjective -->
+exam table
+
+<!-- handle date time in exam tables -->
 
 ### Ali Abdullah
 11 time allowed field in create exam
@@ -55,7 +62,7 @@ time allowed for mcqs api update
 - database re design
 - some success ui on successful api call
 
-
+****
 ### tbd
 sq change flag button to Remove and Review
 oq show flag button if freeflow, show countdown if not freeflow
