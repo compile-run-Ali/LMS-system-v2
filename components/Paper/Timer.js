@@ -31,7 +31,6 @@ export default function Timer({ paper }) {
 
   useEffect(() => {
     if (paper.date) {
-      console.log("paper ", paper);
       setStartTime(
         convertDateTimeToStrings(
           getPaperDateTime(paper.date, paper.duration).start

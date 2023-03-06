@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import CountdownTimer from "../CountdownTimer";
 
 export default function OQContainer({
   question,
@@ -11,19 +13,17 @@ export default function OQContainer({
   flags,
   setFlags,
 }) {
+  const router = useRouter();
+  const { paper } = router.query;
   const { data: session, status } = useSession();
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [multipleAllowed, setMultipleAllowed] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [remainingTime, setRemainingTime] = useState({});
 
   const saveAnswer = () => {
-    if (selectedAnswer.length === 0) {
-      alert(
-        "You have not selected any answer. Please select an answer to continue."
-      );
-      return;
-    }
+
     // remove this when type changed to float in db
     const score = parseInt(
       markAnswer(
@@ -50,9 +50,9 @@ export default function OQContainer({
   };
 
   const markAnswer = (correct, answered, marks) => {
-    if (correct.split(",").length > 1) {
+    if (correct?.split(",").length > 1) {
       let score;
-      const correctAnswers = correct.split(",");
+      const correctAnswers = correct?.split(",");
       const selectedAnswers = answered?.split(",") || [];
       if (correctAnswers.length >= selectedAnswers.length) {
         // count how many of the answers are correct
@@ -78,23 +78,29 @@ export default function OQContainer({
     }
   };
 
-  const flagQuestion = () => {
-    const current = String(currentQuestion);
+  const flagQuestion = (current) => {
     let f = flags;
+    console.log("flags", f);
     f.includes(current)
       ? (f = f.filter((flags) => flags !== current))
       : (f = [...flags, current]);
     setFlags(f);
-    localStorage.setItem("flags", JSON.stringify(f));
-    console.log(localStorage.getItem("flags"));
+    const papers = JSON.parse(localStorage.getItem("papers"));
+    papers[paper].flags = f;
+    localStorage.setItem("papers", JSON.stringify(papers));
+    console.log(
+      "flagged",
+      JSON.parse(localStorage.getItem("papers"))[paper].flags
+    );
   };
   useEffect(() => {
     // correctanswer will be a string in form a1,a2
     // selectedanswer will be a string in form a1,a2
     // convert correctAnswer into an array
     if (question) {
+      // set freeFlow to NOT
       setSelectedAnswer([]);
-      const answers = question.correct_answer.split(",");
+      const answers = question.correct_answer?.split(",") || [];
       setCorrectAnswers(answers);
       if (answers.length > 1) {
         setMultipleAllowed(true);
@@ -115,12 +121,24 @@ export default function OQContainer({
     <div className="flex flex-col justify-between p-10 pt-0 w-full">
       {question ? (
         <>
-          <div>
+          <div className="relative">
+            <div
+              className=" bg-white text-black absolute top-0 right-0"
+              id="timer"
+            >
+              {
+                <CountdownTimer
+                  timeAllowed={60}
+                  currentQuestion={currentQuestion}
+                  setCurrentQuestion={setCurrentQuestion}
+                />
+              }
+            </div>
             <p className="text-2xl justify-center h-32 flex items-center text-white">
               {currentQuestion + 1 + ". " + question.question}
             </p>
             <div className="flex justify-between mt-6 flex-col">
-              {question.answers.split(",").map((answer, index) => (
+              {question.answers?.split(",").map((answer, index) => (
                 <div
                   key={index}
                   className={`
@@ -197,7 +215,7 @@ export default function OQContainer({
                     ? "bg-yellow-400 hover:bg-yellow-500"
                     : "bg-white hover:bg-zinc-300"
                 }`}
-              onClick={flagQuestion}
+              onClick={() => flagQuestion(String(currentQuestion))}
             >
               {flags.includes(String(currentQuestion)) ? "Unflag" : "Flag"}
             </button>

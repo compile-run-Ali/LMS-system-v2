@@ -20,12 +20,17 @@ export default function PaperContainer({}) {
   const [objectiveCount, setObjectiveCount] = useState(0);
   const [flags, setFlags] = useState([]);
 
+ 
   useEffect(() => {
-    if (localStorage.getItem("localCurrent")) {
-      console.log(`local current is ${localStorage.getItem("localCurrent")}`);
-      setCurrentQuestion(parseInt(localStorage.getItem("localCurrent")));
+    if (paper) {
+      let papers = JSON.parse(localStorage.getItem("papers") || "{}");
+      if (papers[paper]?.current) {
+        console.log("setting current", papers[paper].current);
+        setCurrentQuestion(papers[paper].current);
+      }
+      
     }
-  }, []);
+  }, [paper]);
 
   useEffect(() => () => {
     if (status === "authenticated") {
@@ -47,124 +52,111 @@ export default function PaperContainer({}) {
   };
 
   const setCurrentAndLocal = (newValue) => {
+    let papers = JSON.parse(localStorage.getItem("papers") || "{}");
+
     setCurrentQuestion(newValue);
-    localStorage.setItem("localCurrent", newValue);
-    console.log(
-      `current question is ${newValue} and local current is ${localStorage.getItem(
-        "localCurrent"
-      )}`
-    );
+    papers[paper].current = newValue;
+    localStorage.setItem("papers", JSON.stringify(papers));
   };
-
-  /* 
-    first load
-    local storage is empty
-    get questions from api, shuffle them, and store them in local storage
-
-    not first load
-    local storage is not empty
-    get questions from local storage,
-
-    to check whether a random load is first or not
-    check if local storage is empty or not
-
-    if local storage is empty, then it is first load
-    if local storage is not empty, then it is not first load
-   */
 
   useEffect(() => {
     if (student && paper) {
       // get paper here and if paper is live, only then set questions
-      axios
-        .get(`/api/paper/${paper}`)
-        .then((res) => {
-          console.log(res.data);
-          // if (compareDateTime(res.data.date, res.data.duration) === "live") {
-          if (
-            compareDateTime(
-              res.data.date,
-              getPaperDateTime(res.data.date, res.data.duration).end
-            ) === "live"
-          ) {
-            setPaperDetails(res.data);
-            let isObjective;
-            res.data.paper_type === "Objective"
-              ? (isObjective = true)
-              : (isObjective = false);
+      let papers = JSON.parse(localStorage.getItem("papers") || "{}");
 
-            if (localStorage.getItem("paperQuestions")) {
-              // not first time
-              const storedQuestions = JSON.parse(
-                localStorage.getItem("paperQuestions")
-              );
-              setQuestions(storedQuestions);
-              console.log(
-                `not the first time, stored questions are `,
-                storedQuestions
-              );
-              setObjectiveCount(Number(localStorage.getItem("objectiveCount")));
-              setFlags(JSON.parse(localStorage.getItem("flags")));
-            } else {
-              // first time
+      if (papers[paper]) {
+        console.log(
+          "paper exists in local storage, getting from there",
+          papers[paper]
+        );
+        // paper exists
+        setQuestions([
+          ...(papers[paper].objectiveQuestions || []),
+          ...(papers[paper].subjectiveQuestions || []),
+        ]);
+        setObjectiveCount(papers[paper].objectiveCount || 0);
+        setFlags(papers[paper].flags || []);
+        setPaperDetails(papers[paper]);
+      } else {
+        // do below logic
+
+        // get paper details
+        axios
+          .get(`/api/paper/${paper}`)
+          .then((res) => {
+            // push the paper id in papers index array
+            const currentPaper = res.data;
+            // if paper is live get paper
+            if (currentPaper) {
+              papers[paper] = currentPaper;
+              localStorage.setItem("papers", JSON.stringify(papers));
+              setPaperDetails(res.data);
+
+              // get objective questions
               axios
-                .get(`/api/student/paper/${isObjective ? "oq" : "sq"}/${paper}`)
+                .get(`/api/student/paper/oq/${paper}`)
                 .then((res) => {
-                  if (isObjective) {
-                    console.log("questions are", res.data);
-                    const randomizedQuestions = shuffleArray(res.data);
-                    localStorage.setItem(
-                      "paperQuestions",
-                      JSON.stringify(randomizedQuestions)
-                    );
-                    localStorage.setItem("localCurrent", 0);
-                    setQuestions(randomizedQuestions);
-                    console.log(
-                      `first time, randomized questions are `,
-                      randomizedQuestions
-                    );
-                  } else {
-                    // make another api call to its objective questions
-                    const subjectiveQuestions = res.data;
-                    axios.get(`/api/student/paper/oq/${paper}`).then((res) => {
-                      const objectiveQuestions = res.data;
-                      setObjectiveCount(objectiveQuestions.length);
-                      localStorage.setItem(
-                        "objectiveCount",
-                        objectiveQuestions.length
-                      );
-                      const randomizedObjective =
-                        shuffleArray(objectiveQuestions);
-                      const randomizedQuestions = [
-                        ...randomizedObjective,
-                        ...subjectiveQuestions,
-                      ];
-                      localStorage.setItem(
-                        "paperQuestions",
-                        JSON.stringify(randomizedQuestions)
-                      );
-                      localStorage.setItem("localCurrent", 0);
-                      setQuestions(randomizedQuestions);
-                      console.log(
-                        `first time, randomized questions are `,
-                        randomizedQuestions
-                      );
-                    });
+                  const randomizedQuestions = shuffleArray(res.data);
+                  // set objective questions in array and local current, both in value of the paper_id key
+                  papers[paper].objectiveQuestions = randomizedQuestions;
+                  papers[paper].current = 0;
+                  papers[paper].objectiveCount = randomizedQuestions.length;
+                  localStorage.setItem("papers", JSON.stringify(papers));
+                  setObjectiveCount(randomizedQuestions.length);
+
+                  // if paper is not objective
+                  if (currentPaper.paper_type !== "Objective") {
+                    // get subjective questions
+                    axios
+                      .get(`/api/student/paper/sq/${paper}`)
+                      .then((res) => {
+                        const subjectiveQuestions = res.data;
+                        let subjectiveWithChild = [];
+                        subjectiveQuestions.forEach((question) => {
+                          if (question.parent_sq_id) {
+                            const parent = subjectiveQuestions.find(
+                              (q) => q.sq_id === question.parent_sq_id
+                            );
+                            let children = [];
+                            if (parent) {
+                              children = parent.children || [];
+                              children.push(question);
+                              parent.children = children;
+                            }
+                          } else {
+                            subjectiveWithChild.push(question);
+                          }
+                        });
+                        console.log("after sorting", subjectiveWithChild);
+                        papers[paper].subjectiveQuestions = subjectiveWithChild;
+                        localStorage.setItem("papers", JSON.stringify(papers));
+                        setQuestions(
+                          [
+                            ...papers[paper].objectiveQuestions,
+                            ...papers[paper].subjectiveQuestions,
+                          ] || []
+                        );
+                      })
+                      .catch((err) => {
+                        console.log("error ", err.message);
+                      });
                   }
                 })
                 .catch((err) => {
                   console.log("error ", err.message);
                 });
             }
-          } else {
-            router.push(`/student`);
-          }
-        })
-        .catch((err) => {
-          console.log("error ", err.message);
-        });
+            // if paper is not live, push back to papers list
+            else {
+              router.push(`/student`);
+            }
+          })
+          .catch((err) => {
+            console.log("error ", err.message);
+          });
+      }
     }
   }, [paper, student]);
-  console.log("flags are", flags);
 
   return (
     <div className="flex justify-between shadow-lg max-w-6xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 bg-blue-900 rounded-2xl shadow-3xl shadow-black">
