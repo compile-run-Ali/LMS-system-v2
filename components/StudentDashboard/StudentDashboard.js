@@ -81,7 +81,7 @@ export default function StudentDashboard({ session }) {
   return (
     <div className="px-8 py-4">
       <div className="flex justify-between mb-8 px-4 bg-blue-100 bg-opacity-40 text-black font-poppins py-4 items-center">
-        <Link key={index} href={`/student/profile/${index}`}>
+        <Link key={index} href={`/student/profile`}>
           <div className="text-2xl">{student?.name}</div>
         </Link>
         <div className="text-lg">{student?.email}</div>

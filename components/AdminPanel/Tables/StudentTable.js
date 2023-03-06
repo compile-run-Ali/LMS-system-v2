@@ -31,7 +31,7 @@ export default function StudentTable({ setOpen, students }) {
               <td className=" px-4 py-2">
                 <Link
                   key={student.p_number}
-                  href={`/student/profile/${student.p_number}`}
+                  href={`/student/profile`}
                 >
                   {student.p_number}
                 </Link>
