@@ -18,8 +18,14 @@ export default function DashboardComponent({exams_data, paperapproval_data}) {
       setPaperApproval(paperapproval_data.map(paper => paper.paper))
     }
   }, [exams_data, paperapproval_data])
+  console.log(selectedCourse)
 
   const toggleModal = () => {
+    //throw notification if no course is selected
+    if (selectedCourse === '') {
+      alert('Please select a course first')
+      return
+    }
     setOpen(!open);
   }
 
