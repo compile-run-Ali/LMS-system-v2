@@ -93,7 +93,6 @@ const AddFaculty = () => {
             type="text"
             value={department}
             onChange={(event) => setDepartment(event.target.value)}
-            required
           />
         </div>
         <div className="mb-4">

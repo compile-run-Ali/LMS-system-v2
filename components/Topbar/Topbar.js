@@ -14,7 +14,6 @@ export default function Topbar({ admin }) {
   const [notifications, setNotifications] = useState([]);
   const session = useSession();
   const [dropdown, setDropdown] = useState(false);
-  console.log(session);
   const logout = () => {
     signOut({
       callbackUrl: "/",
