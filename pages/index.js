@@ -36,7 +36,7 @@ export default function Home() {
         facultyLogin={facultyLogin}
         setFacultyLogin={setFacultyLogin}
       />
-      <LoginAlternative facultyLogin={facultyLogin} />
+      <Login facultyLogin={facultyLogin} setFacultyLogin={setFacultyLogin} />
     </BaseLayout>
   );
 }
