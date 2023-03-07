@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import axios from "axios";
 import SubmitModal from "../SubmitModal";
 
@@ -13,28 +14,35 @@ export default function SQContainer({
   setFlags,
 }) {
   const router = useRouter();
+  const session = useSession();
+
   const { paper } = router.query;
-  const [answer, setAnswer] = useState({});
+  const [answers, setAnswers] = useState({});
   const [saved, setSaved] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const saveAnswer = () => {
-    if (!answer) {
+    if (!answers) {
       alert("Your answer is empty. Please type anything to continue.");
       return;
     }
-    axios
-      .post(`/api/student/paper/sq/add_answer`, {
-        p_number: 1,
-        sq_id: question.sq_id,
-        answer,
-      })
-      .then((res) => {
-        console.log("answer added successfully ", res.data);
-      })
-      .catch((err) => {
-        console.log("error ", err.message);
-      });
+
+    for (let question_id in answers) {
+      console.log(`Key: ${question_id}, Value: ${answers[question_id]}`);
+      axios
+        .post(`/api/student/paper/sq/add_answer`, {
+          p_number: session?.data?.user?.id,
+          sq_id: question_id,
+          answer: answers[question_id],
+        })
+        .then((res) => {
+          console.log("answer added successfully ", res.data);
+        })
+        .catch((err) => {
+          console.log("error ", err.message);
+        });
+    }
+
     setSaved(true);
   };
 
@@ -56,7 +64,7 @@ export default function SQContainer({
 
   useEffect(() => {
     if (question) {
-      setAnswer("");
+      setAnswers("");
       setSaved(false);
     }
   }, [question]);
@@ -65,8 +73,10 @@ export default function SQContainer({
     () => () => {
       setSaved(false);
     },
-    [answer]
+    [answers]
   );
+
+  console.log("answer ", answers);
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl text-white">
@@ -108,14 +118,14 @@ export default function SQContainer({
                       <textarea
                         className="border bg-white rounded-md p-2 w-full text-black border-black focus:outline-yellow-500"
                         maxLength={childQuestion.long_question ? 100000 : 50}
-                        value={answer[childQuestion.questionnumber]}
+                        value={answers[childQuestion.questionnumber]}
                         rows={childQuestion.long_question ? 10 : 2}
                         onChange={(e) => {
-                          setAnswer({
-                            ...answer,
-                            [childQuestion.questionnumber]: e.target.value,
+                          setAnswers({
+                            ...answers,
+                            [childQuestion.sq_id]: e.target.value,
                           });
-                          console.log("answer", answer);
+                          console.log("answer", answers);
                         }}
                       />
                     </div>
@@ -127,7 +137,6 @@ export default function SQContainer({
                     Answer
                     {!question.long_question && (
                       <span className="text-gray-200 text-sm">
-                        {" "}
                         (Max 50 characters)
                       </span>
                     )}
@@ -135,14 +144,14 @@ export default function SQContainer({
                   <textarea
                     className="border bg-white rounded-md p-2 w-full text-black border-black focus:outline-yellow-500"
                     maxLength={question.long_question ? 100000 : 50}
-                    value={answer[question.questionnumber]}
+                    value={answers[question.questionnumber]}
                     rows={question.long_question ? 10 : 2}
                     onChange={(e) => {
-                      setAnswer({
-                        ...answer,
-                        [question.questionnumber]: e.target.value,
+                      setAnswers({
+                        ...answers,
+                        [question.sq_id]: e.target.value,
                       });
-                      console.log("answer", answer);
+                      console.log("answer", answers);
                     }}
                   />
                 </div>
@@ -159,8 +168,12 @@ export default function SQContainer({
                   " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 }
                 onClick={() => {
-                  currentQuestion > 0 &&
-                    setCurrentQuestion(currentQuestion - 1);
+                  if (!answers || saved) {
+                    currentQuestion > 0 &&
+                      setCurrentQuestion(currentQuestion - 1);
+                  } else {
+                    alert("Please save your answer before proceeding.");
+                  }
                 }}
               >
                 Previous
@@ -189,8 +202,9 @@ export default function SQContainer({
                 className="bg-white hover:bg-zinc-300 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 onClick={() => {
                   // if opt not selected OR saved
-                  if (selectedAnswer.length === 0 || saved) {
-                    setCurrentQuestion(currentQuestion + 1);
+                  if (!answers || saved) {
+                    currentQuestion < totalQuestions &&
+                      setCurrentQuestion(currentQuestion + 1);
                   } else {
                     alert("Please save your answer before proceeding");
                   }
