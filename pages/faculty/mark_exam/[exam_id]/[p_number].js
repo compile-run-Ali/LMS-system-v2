@@ -5,7 +5,6 @@ import axios from "axios";
 import React from "react";
 
 const Index = ({ attempts }) => {
-  console.log(attempts);
 
   return (
     <div>
@@ -19,11 +18,12 @@ const Index = ({ attempts }) => {
 };
 
 export async function getServerSideProps(context) {
-  const { exam_id, p_number } = context.params;
+  const { exam_id, p_number, ssa_id } = context.params;
 
   const attempts = await axios.post("http://localhost:3000/api/paper/marking/get_student_attempts", {
     paper_id: exam_id,
     p_number: p_number,
+    ssa_id: ssa_id,
   });
   return {
     props: {

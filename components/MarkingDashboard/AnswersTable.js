@@ -17,6 +17,7 @@ const AnswersTable = ({ attempts_data }) => {
             <AttempContainer
               question={attempt.subjective_question}
               answer={attempt.answer}
+              ssa_id={attempt.ssa_id}
               marksobtained={attempt.marksobtained}
             />
           </div>
