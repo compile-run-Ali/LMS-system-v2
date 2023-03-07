@@ -11,7 +11,6 @@ export default function Register() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
-  const [cgpa, setCgpa] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [cPassword, setCPassword] = useState("");
@@ -44,7 +43,6 @@ export default function Register() {
       !fullName ||
       !email ||
       !dob ||
-      !cgpa ||
       !phoneNumber ||
       !password ||
       !cPassword
@@ -56,7 +54,7 @@ export default function Register() {
       p_number: paNumber,
       name: fullName,
       phone_number: phoneNumber,
-      cgpa,
+      cgpa: 0,
       DOB: dob,
       email,
       password,
@@ -217,63 +215,35 @@ export default function Register() {
                     id="dob"
                   />
                 </div>
-                <div className="form-group mb-5">
+
+                <div className="form-group mb-6">
                   <label
-                    htmlFor="cgpa"
+                    htmlFor="Courses"
                     className="text-blue-900 font-medium text-sm"
                   >
-                    CGPA
+                    Courses
                   </label>
-                  <input
-                    value={cgpa}
-                    onChange={(e) => setCgpa(Number(e.target.value))}
-                    type="number"
-                    min={0}
-                    max={4}
-                    step={0.01}
-                    className="form-control block
-            w-full
-            px-3
-            py-1.5
-            text-sm
-            font-normal
-            text-gray-700
-            bg-white bg-clip-padding
-            border border-solid border-gray-300
-            rounded
-            transition
-            ease-in-out
-            m-0
-            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                    id="cgpa"
-                  />
-                </div>
-              </div>
 
-              <div className="form-group mb-6">
-                <label
-                  htmlFor="Courses"
-                  className="text-blue-900 font-medium text-sm"
-                >
-                  Courses
-                </label>
-
-                <select
-                  className="form-control block w-full px-3 py-1.5 my-2 text-sm font-normal text-gray-700 
+                  <select
+                    className="form-control block w-full px-3 py-1.5 text-sm font-normal text-gray-700 
                   bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
                   focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                  id="Courses"
-                  onChange={(e) => {
-                    setSelectedCourse(e.target.value);
-                  }}
-                >
-                  <option value={""}>Select a course</option>
-                  {courses?.map((course) => (
-                    <option key={course.course_code} value={course.course_code}>
-                      {course.course_name}
-                    </option>
-                  ))}
-                </select>
+                    id="Courses"
+                    onChange={(e) => {
+                      setSelectedCourse(e.target.value);
+                    }}
+                  >
+                    <option value={""}>Select a course</option>
+                    {courses?.map((course) => (
+                      <option
+                        key={course.course_code}
+                        value={course.course_code}
+                      >
+                        {course.course_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-5">
