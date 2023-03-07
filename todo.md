@@ -53,7 +53,7 @@ exam table
 
 ### Ali Abdullah
 marking dashboard ui set
-allow float in marks
+allow marks in float in mark exam 
 <!-- 11 time allowed field in create exam -->
 <!-- 12 child question cannot be parent question in create exam -->
 <!-- 13 send question number on backend in create paper -->
