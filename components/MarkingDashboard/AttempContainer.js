@@ -1,12 +1,16 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const AttempContainer = ({ question, answer, marksobtained }) => {
   const [givenmarks, setGivenmarks] = useState(marksobtained);
   const markQuestion = async () => {
-    const updatedExam = await axios.post("http://localhost:3000/api/paper/marking/mark_question", {
-      ssa_id: question.ssa_id,
-      marksobtained: givenmarks,
-    });
+    const updatedExam = await axios.post(
+      "http://localhost:3000/api/paper/marking/mark_question",
+      {
+        ssa_id: question.ssa_id,
+        marksobtained: givenmarks,
+      }
+    );
     if (updatedExam.status === 200) {
       console.log("Question marked successfully");
     }
@@ -48,9 +52,7 @@ const AttempContainer = ({ question, answer, marksobtained }) => {
               </span>
               <button
                 className="bg-green-800 hover:bg-green-700 text-white py-1 px-2 rounded"
-                onClick={() => {
-                  markQuestion;
-                }}
+                onClick={markQuestion}
               >
                 Mark
               </button>
