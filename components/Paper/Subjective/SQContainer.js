@@ -230,6 +230,7 @@ export default function SQContainer({
             setShowModal={setShowModal}
             currentQuestion={currentQuestion}
             setCurrentQuestion={setCurrentQuestion}
+            paper={paper}
           />
         </>
       ) : (

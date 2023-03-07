@@ -258,6 +258,8 @@ export default function OQContainer({
             setShowModal={setShowModal}
             currentQuestion={currentQuestion}
             setCurrentQuestion={setCurrentQuestion}
+            paper={paper}
+            
           />
         </>
       ) : (

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
 export default function SubmitModal({
   showModal,
@@ -8,7 +10,25 @@ export default function SubmitModal({
   currentQuestion,
   setCurrentQuestion,
   flags,
+  paper,
 }) {
+  //call api and create attempt on the paper
+  const { data: session, status } = useSession();
+
+  const createAttempt = () => {
+    axios
+      .post(`/api/student/paper/attempt_status`, {
+        studentId: session.user.id,
+        paperId: paper,
+        status: "submitted",
+      })
+      .then((res) => {
+        console.log("attempt created successfully ", res.data);
+      })
+      .catch((err) => {
+        console.log("error ", err.message);
+      });
+  }
   return (
     <Transition appear show={showModal} as={Fragment}>
       <Dialog
@@ -59,7 +79,9 @@ export default function SubmitModal({
                     // submit form
                     setShowModal(false);
                     console.log("submitted");
+                    // make a function that will call api to create an entry of submit attempt SPA
                     setCurrentQuestion(currentQuestion + 1);
+                    createAttempt();
                   }}
                 >
                   Submit
