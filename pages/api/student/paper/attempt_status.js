@@ -2,20 +2,17 @@ import { PrismaClient } from "@prisma/client";
 
 export default async function handler(req, res) {
   const prisma = new PrismaClient();
-  const { index } = req.query;
 
   try {
     // set submitted of the paper to true
-    const paper_id = index;
-    const paper = await prisma.studentPaperAttempt.update({
-      where: {
-        paper_id: paper_id,
-      },
+    const SPA = await prisma.sPA.create({
       data: {
-        submitted: true,
+        studentId: req.body.studentId,
+        paperId: req.body.paperId,
+        status: req.body.status,
       },
     });
-    res.status(200).json(paper);
+    res.status(200).json(SPA);
   } catch {
     res.status(500).json({ error: "Server Error" });
   }

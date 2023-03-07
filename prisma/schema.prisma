@@ -24,7 +24,7 @@ model Student {
   courses            SRC[]
   subjective_answers SSA[]
   objective_answers  SOA[]
-  attempts           StudentPaperAttempt[]
+  attempts           SPA[]
 }
 
 model SRC {
@@ -109,7 +109,7 @@ model Paper {
   objective_questions  ObjectiveQuestion[]
 
   PaperComment PaperComment[]
-  attempts           StudentPaperAttempt[]
+  attempts           SPA[]
 }
 
 model SubjectiveQuestion {
@@ -195,8 +195,8 @@ model Notification {
   faculty_id String
 }
 
-model StudentPaperAttempt {
-  id              Int      @id @default(autoincrement())
+model SPA {
+  spaId              String @id @default(uuid())
   studentId       String
   paperId         String
   status          String?
