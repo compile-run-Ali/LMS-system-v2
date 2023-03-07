@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import NotificationDropdown from "./NotificationDropdown";
 import axios from "axios";
 import ClickAwayListener from "react-click-away-listener";
+import { TbPoint } from "react-icons/tb";
 
 export default function Topbar({ admin }) {
   const [showNotification, setShowNotification] = useState(false);
@@ -26,13 +27,14 @@ export default function Topbar({ admin }) {
     }
   }, []);
 
-
   const getNotifications = async () => {
     // get notifications from api for the logged in user
-    const res = await axios.post("http://localhost:3000/api/faculty/get_notifications", {
-      faculty_id: session.data.user.id,
-    });
-
+    const res = await axios.post(
+      "http://localhost:3000/api/faculty/get_notifications",
+      {
+        faculty_id: session.data.user.id,
+      }
+    );
     setNotifications(res.data);
   };
 
@@ -46,24 +48,36 @@ export default function Topbar({ admin }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <ClickAwayListener onClickAway={()=>setShowNotification(false)}>
-            <div className="notification-icon mr-5" >
-              <NotificationSVG className="fill-blue-900" onClick={() => setShowNotification(!showNotification)} />
+          <ClickAwayListener onClickAway={() => setShowNotification(false)}>
+            <div className="notification-icon mr-5">
+              <div className="relative">
+                <NotificationSVG
+                  className="fill-blue-900 hover:cursor-pointer"
+                  onClick={() => setShowNotification(!showNotification)}
+                />
+                {notifications.length > 0 && (
+                  <span
+                    className="absolute bottom-2 left-3 text-red-500 text-7xl hover:cursor-pointer"
+                    onClick={() => setShowNotification(!showNotification)}
+                  >
+                    .
+                  </span>
+                )}
+              </div>
 
-              {showNotification &&
-                <div className="fixed right-[250px] max-h-[300px] w-80">
+              {showNotification && (
+                <div className="fixed right-[180px] max-h-[300px] w-80">
                   <NotificationDropdown notifications={notifications} />
                 </div>
-              }
+              )}
             </div>
-
           </ClickAwayListener>
           <div className="user-profile flex items-center gap-3">
             <div className="w-8 h-8 rounded-full border border-blue-900 relative">
               <Image
                 //src={session?.data?.user?.image}
                 src="/avatar.png"
-                layout='fill'
+                layout="fill"
                 objectFit="cover"
                 className="rounded-full object-cover object-center"
                 alt="user"
