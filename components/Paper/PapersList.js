@@ -4,15 +4,11 @@ import {
   getPaperDateTime,
   convertDateTimeToStrings,
 } from "@/lib/TimeCalculations";
-import { useSession } from "next-auth/react";
-import axios from "axios";
 
 export default function PapersList({ papers, status }) {
   const [sortedPapers, setSortedPapers] = useState([]);
-  const [attemptStatus, setAttemptStatus] = useState([]);
   const isLive = status === "Live Papers";
   const isPast = status === "Past Papers";
-  const { data: session } = useSession();
 
   useEffect(() => {
     const newSortedPapers = papers.sort(
@@ -21,32 +17,11 @@ export default function PapersList({ papers, status }) {
     setSortedPapers(newSortedPapers);
   }, [papers]);
 
-  useEffect(() => {
-    axios
-      .get(`/api/student/paper/get_attempt_status`, {
-        params: {
-          id: session.user.id,
-        },
-      })
-      .then(
-        (res) => {
-          setAttemptStatus(res.data);
-          console.log("attempt status is ", res.data);
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
-  }, [session]);
-
-  console.log("attempt status is ", attemptStatus);
-
   const getRow = (paper) => {
     const { start, end } = getPaperDateTime(paper.date, paper.duration);
     const startDate = convertDateTimeToStrings(start, true);
     const startTime = convertDateTimeToStrings(start);
     const endDate = convertDateTimeToStrings(end);
-
     return (
       // <div className="mb-4 flex justify-between bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white p-4 items-center hover:-translate-y-0.5 hover:to-blue-800 hover:from-blue-800 transition-all">
       <>
@@ -65,8 +40,8 @@ export default function PapersList({ papers, status }) {
           >
             <button
               className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
-                    ${isPast && !paper.review && "hidden"}
-                    `}
+              ${isPast && !paper.review && "hidden"}
+            `}
             >
               {isLive ? "Attempt" : isPast ? "Review" : "View"}
             </button>
@@ -93,7 +68,7 @@ export default function PapersList({ papers, status }) {
           {/* href={`/paper/attempt/${p_number}/${paper.paper_id}`} */}
           {sortedPapers.map((paper) => {
             return (
-              // add Link tag to live papers only and those with attempt status empty
+              // add Link tag to live papers only
               <tr key={paper.paper_id}>{getRow(paper)}</tr>
             );
           })}
