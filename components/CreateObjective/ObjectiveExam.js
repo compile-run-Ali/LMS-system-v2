@@ -20,15 +20,13 @@ const MCQTable = ({
       return mcq;
     })
   );
-  //console log the paper from the id using a get request
-  console.log(freeFlow);
 
   const [currentMCQ, setCurrentMCQ] = useState({
     question: "",
     options: ["", "", "", ""],
     correct_answer: "",
     marks: 1,
-    time_allowed: null,
+    time_allowed: 60,
   });
 
   const [editing, setEditing] = useState(false);
@@ -107,17 +105,18 @@ const MCQTable = ({
   };
 
   const handleUpdateMCQ = async (index) => {
-    const newMCQ = await axios.post("http://localhost:3000/api/faculty/edit_objective", {
-      oq_id: mcqs[index].oq_id,
-      paper_id: paperId,
-      question: currentMCQ.question,
-      answers: currentMCQ.options.toString(),
-      correct_answer: currentMCQ.correct_answer,
-      marks: currentMCQ.marks,
-      time_allowed: currentMCQ.time_allowed,
-    });
-
-    console.log(newMCQ);
+    const newMCQ = await axios.post(
+      "http://localhost:3000/api/faculty/edit_objective",
+      {
+        oq_id: mcqs[index].oq_id,
+        paper_id: paperId,
+        question: currentMCQ.question,
+        answers: currentMCQ.options.toString(),
+        correct_answer: currentMCQ.correct_answer,
+        marks: currentMCQ.marks,
+        time_allowed: currentMCQ.time_allowed,
+      }
+    );
 
     if (newMCQ.status === 200) {
       const newMCQs = [...mcqs];
@@ -129,7 +128,7 @@ const MCQTable = ({
         options: [],
         correct_answer: "",
         marks: 1,
-        time_allowed: null,
+        time_allowed: 60,
       });
       setEditing(false);
       setIndex(null);
@@ -137,9 +136,12 @@ const MCQTable = ({
   };
 
   const handleDeleteMCQ = async (index) => {
-    const res = await axios.post("http://localhost:3000/api/faculty/remove_objective", {
-      oq_id: mcqs[index].oq_id,
-    });
+    const res = await axios.post(
+      "http://localhost:3000/api/faculty/remove_objective",
+      {
+        oq_id: mcqs[index].oq_id,
+      }
+    );
     if (res.status === 200) {
       const newMCQs = [...mcqs];
       newMCQs.splice(index, 1);

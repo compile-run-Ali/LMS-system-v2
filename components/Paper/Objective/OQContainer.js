@@ -126,7 +126,7 @@ export default function OQContainer({
             <div className="  text-black absolute top-0 right-0" id="timer">
               {!freeFlow && (
                 <CountdownTimer
-                  timeAllowed={60}
+                  timeAllowed={question.timeAllowed || 60}
                   currentQuestion={currentQuestion}
                   setCurrentQuestion={setCurrentQuestion}
                 />
@@ -259,7 +259,6 @@ export default function OQContainer({
             currentQuestion={currentQuestion}
             setCurrentQuestion={setCurrentQuestion}
             paper={paper}
-            
           />
         </>
       ) : (

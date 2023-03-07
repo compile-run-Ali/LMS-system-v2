@@ -10,6 +10,7 @@ const handler = async (req, res) => {
         answers: req.body.answers,
         marks: req.body.marks,
         correct_answer: req.body.correct_answer,
+        timeAllowed: req.body.time_allowed,
         paper: {
           connect: {
             paper_id: req.body.paper_id
