@@ -31,6 +31,7 @@ export default function PapersList({ papers, status }) {
       .then(
         (res) => {
           setAttemptStatus(res.data);
+          console.log("attempt status is ", res.data);
         },
         (err) => {
           console.log(err);
@@ -55,37 +56,21 @@ export default function PapersList({ papers, status }) {
         <td className="px-4 py-2">{startTime}</td>
         <td className="px-4 py-2">{endDate}</td>
         <td className="px-4 py-2">
-          {attemptStatus.map((attempt) => {
-            if (!(attempt.paperId === paper.paper_id)) {
-              return (
-                <Link
-                  href={
-                    `/paper/` +
-                    `${isLive ? "attempt" : isPast ? "review" : "view"}` +
-                    `/${paper.paper_id}`
-                  }
-                >
-                  <button
-                    className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
-              ${isPast && !paper.review && "hidden"}
-            `}
-                  >
-                    {isLive ? "Attempt" : isPast ? "Review" : "View"}
-                  </button>
-                </Link>
-              );
-            } else {
-              return (
-                <button
-                  className={`bg-blue-800 text-white py-2 px-4 rounded cursor-not-allowed
-              ${isPast && !paper.review && "hidden"}
-            `}
-                >
-                  {attempt.status}
-                </button>
-              );
+          <Link
+            href={
+              `/paper/` +
+              `${isLive ? "attempt" : isPast ? "review" : "view"}` +
+              `/${paper.paper_id}`
             }
-          })}
+          >
+            <button
+              className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
+                    ${isPast && !paper.review && "hidden"}
+                    `}
+            >
+              {isLive ? "Attempt" : isPast ? "Review" : "View"}
+            </button>
+          </Link>
         </td>
       </>
     );
