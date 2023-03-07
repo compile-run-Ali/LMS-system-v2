@@ -76,11 +76,13 @@ export default function Register() {
           .then((res) => {
             console.log("course added successfully", res.data);
           })
-          .catch((err) => console.log(err));
+          .catch((err) =>
+            console.log("Error in registering student to course", err)
+          );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log("Error in registering student", err));
 
-      router.push("/login");
+    router.push("/");
   };
 
   return (
