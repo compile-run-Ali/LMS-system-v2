@@ -38,7 +38,7 @@ export default function Exam({
   }, [session]);
 
   const getComments = async () => {
-    const res = await axios.post("http://localhost:3000/api/paper/get_comments", {
+    const res = await axios.post("/api/paper/get_comments", {
       paper_id: exam.paper_id,
     });
     console.log(res.data);
@@ -54,7 +54,7 @@ export default function Exam({
   };
 
   const getFaculty = async () => {
-    const res = await axios.get("http://localhost:3000/api/paper/get_faculty");
+    const res = await axios.get("/api/paper/get_faculty");
     setFaculty(
       res.data.filter(
         (faculty) => faculty.faculty_id !== session?.data?.user.id
@@ -82,7 +82,7 @@ export default function Exam({
   };
 
   const submitExam = async () => {
-    const submitExam = await axios.post("http://localhost:3000/api/faculty/submit_exam", {
+    const submitExam = await axios.post("/api/faculty/submit_exam", {
       paper_id: exam.paper_id,
       faculty_id: selectedFaculty,
       level: faculty.filter(
@@ -103,7 +103,7 @@ export default function Exam({
   };
 
   const approve = async () => {
-    const approveExam = await axios.post("http://localhost:3000/api/faculty/approve_exam", {
+    const approveExam = await axios.post("/api/faculty/approve_exam", {
       paper_id: exam.paper_id,
     });
     if (approveExam.status === 200) {
@@ -117,7 +117,7 @@ export default function Exam({
   };
 
   const sendBack = async () => {
-    const sendBack = await axios.post("http://localhost:3000/api/faculty/edit_paperapproval", {
+    const sendBack = await axios.post("/api/faculty/edit_paperapproval", {
       paper_id: exam.paper_id,
       examofficer: null,
     });
@@ -132,7 +132,7 @@ export default function Exam({
   };
 
   const sendForward = async () => {
-    const sendForward = await axios.post("http://localhost:3000/api/faculty/edit_paperapproval", {
+    const sendForward = await axios.post("/api/faculty/edit_paperapproval", {
       paper_id: exam.paper_id,
       examofficer: selectedFaculty,
       level: faculty.filter(
@@ -156,7 +156,7 @@ export default function Exam({
 
 
   const generateNotification = async () => {
-    const res = await axios.post("http://localhost:3000/api/faculty/generate_notification", {
+    const res = await axios.post("/api/faculty/generate_notification", {
       faculty_id: selectedFaculty,
       notification: `You have a new exam to approve by ${session.data.user.name}`,
     });
@@ -167,7 +167,7 @@ export default function Exam({
 
   const addComment = async ({ comment }) => {
     if (session.status === "authenticated") {
-      const res = await axios.post("http://localhost:3000/api/faculty/add_comment", {
+      const res = await axios.post("/api/faculty/add_comment", {
         paper_id: exam.paper_id,
         comment: comment,
         faculty_id: session.data.user.id,

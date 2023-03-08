@@ -3,7 +3,7 @@ import React, { useState } from "react";
 const AttempContainer = ({ question, answer, marksobtained }) => {
   const [givenmarks, setGivenmarks] = useState(marksobtained);
   const markQuestion = async () => {
-    const updatedExam = await axios.post("http://localhost:3000/api/paper/marking/mark_question", {
+    const updatedExam = await axios.post("/api/paper/marking/mark_question", {
       ssa_id: question.ssa_id,
       marksobtained: givenmarks,
     });

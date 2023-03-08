@@ -2,11 +2,25 @@ import BaseLayout from "@/components/BaseLayout/BaseLayout";
 import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
 import AnswersTable from "@/components/MarkingDashboard/AnswersTable";
 import axios from "axios";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 
-const Index = ({ attempts }) => {
-  console.log(attempts);
+const Index = () => {
+  const router = useRouter();
+  const [attempts, setAttempts] = React.useState([]);
+  const { exam_id, p_number } = router.query;
 
+  const fetchAttempts = async () => {
+    const attempts = await axios.post("/api/paper/marking/get_student_attempts", {
+      paper_id: exam_id,
+      p_number: p_number,
+    });
+    setAttempts(attempts.data);
+  }
+
+  useEffect(() => {
+    fetchAttempts();
+  }, []);
   return (
     <div>
       <BaseLayout title={"Mark Exam"}>
@@ -17,21 +31,3 @@ const Index = ({ attempts }) => {
     </div>
   );
 };
-
-export async function getServerSideProps(context) {
-  const { exam_id, p_number } = context.params;
-
-  const attempts = await axios.post("http://localhost:3000/api/paper/marking/get_student_attempts", {
-    paper_id: exam_id,
-    p_number: p_number,
-  });
-  return {
-    props: {
-      paper: exam_id,
-      p_number: p_number,
-      attempts: attempts.data,
-    },
-  };
-}
-
-export default Index;

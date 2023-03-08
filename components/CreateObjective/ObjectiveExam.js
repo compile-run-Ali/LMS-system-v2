@@ -76,7 +76,7 @@ const MCQTable = ({
 
   const handleAddMCQ = async () => {
     const newMCQ = await axios.post(
-      "http://localhost:3000/api/faculty/paper_creation/add_objective",
+      "/api/faculty/paper_creation/add_objective",
       {
         paper_id: paperId,
         question: currentMCQ.question,
@@ -107,7 +107,7 @@ const MCQTable = ({
   };
 
   const handleUpdateMCQ = async (index) => {
-    const newMCQ = await axios.post("http://localhost:3000/api/faculty/edit_objective", {
+    const newMCQ = await axios.post("/api/faculty/edit_objective", {
       oq_id: mcqs[index].oq_id,
       paper_id: paperId,
       question: currentMCQ.question,
@@ -137,7 +137,7 @@ const MCQTable = ({
   };
 
   const handleDeleteMCQ = async (index) => {
-    const res = await axios.post("http://localhost:3000/api/faculty/remove_objective", {
+    const res = await axios.post("/api/faculty/remove_objective", {
       oq_id: mcqs[index].oq_id,
     });
     if (res.status === 200) {

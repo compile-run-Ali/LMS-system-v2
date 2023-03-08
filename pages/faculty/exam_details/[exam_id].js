@@ -3,12 +3,41 @@ import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
 import Exam from "@/components/Exam/Exam";
 import React, { useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
-export default function ExamPage({
-  examDetails,
-  objectiveQuestions,
-  subjectiveQuestions,
-}) {
+export default function ExamPage() {
+
+  const router = useRouter()
+  const {exam_id} = router.query;
+  const [examDetails, setExamDetails] = useState(null);
+  const [objectiveQuestions, setObjectiveQuestions] = useState(null);
+  const [subjectiveQuestions, setSubjectiveQuestions] = useState(null);
+
+  const fetchExam = async () => {
+    const examDetails = await axios.post("/api/faculty/get_exam", {
+      paper_id: exam_id,
+    });
+
+    setExamDetails(examDetails.data);
+  
+    const objectiveQuestions = await axios.post("/api/faculty/get_objective", {
+      paper_id: exam_id,
+    });
+
+    setObjectiveQuestions(objectiveQuestions.data);
+  
+    let subjectiveQuestions = [];
+  
+    if (examDetails.data.paper_type === "Subjective/Objective") {
+      const res = await axios.post("/api/faculty/get_subjective", {
+        paper_id: exam_id,
+      });
+      subjectiveQuestions = res.data;
+    }
+
+    setSubjectiveQuestions(subjectiveQuestions);
+  }
+
   useEffect(() => {
     console.log(examDetails);
   }, []);
@@ -27,31 +56,3 @@ export default function ExamPage({
     </BaseLayout>
   );
 }
-
-export const getServerSideProps = async (context) => {
-  const exam_id = context.params.exam_id;
-  const examDetails = await axios.post("http://localhost:3000/api/faculty/get_exam", {
-    paper_id: exam_id,
-  });
-
-  const objectiveQuestions = await axios.post("http://localhost:3000/api/faculty/get_objective", {
-    paper_id: exam_id,
-  });
-
-  let subjectiveQuestions = [];
-
-  if (examDetails.data.paper_type === "Subjective/Objective") {
-    const res = await axios.post("http://localhost:3000/api/faculty/get_subjective", {
-      paper_id: exam_id,
-    });
-    subjectiveQuestions = res.data;
-  }
-
-  return {
-    props: {
-      examDetails: examDetails.data,
-      objectiveQuestions: objectiveQuestions.data,
-      subjectiveQuestions: subjectiveQuestions,
-    },
-  };
-};

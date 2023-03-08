@@ -37,7 +37,7 @@ const AddFaculty = () => {
 
   const addFaculty = async (faculty) => {
     const new_faculty = await axios.post(
-      `http://localhost:3000/api/admin/faculty/${edit ? "edit_faculty" : "add_faculty"}`,
+      `/api/admin/faculty/${edit ? "edit_faculty" : "add_faculty"}`,
       {
         faculty_id: edit ? router.query.faculty_id : null,
         ...faculty,

@@ -44,7 +44,7 @@ export default function AddStudent() {
   };
 
   const addStudent = async (student) => {
-    const new_student = await axios.post("http://localhost:3000/api/admin/student/add_student", {
+    const new_student = await axios.post("/api/admin/student/add_student", {
       ...student,
     });
     router.push("/admin");
