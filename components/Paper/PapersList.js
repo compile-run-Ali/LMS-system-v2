@@ -14,6 +14,22 @@ export default function PapersList({ papers, status }) {
   const isPast = status === "Past Papers";
   const { data: session } = useSession();
 
+  function paperExists(paperId, attempt) {
+    for (let i = 0; i < attempt.length; i++) {
+      if (attempt[i].paperId === paperId) {
+        console.log(
+          "paper exists with id ",
+          paperId,
+        );
+        return true;
+      }
+    }
+    console.log(
+      "paper does not exist with id ",
+    );
+    return false;
+  }
+
   useEffect(() => {
     const newSortedPapers = papers.sort(
       (a, b) => Date.parse(a.date) - Date.parse(b.date)
@@ -55,40 +71,33 @@ export default function PapersList({ papers, status }) {
         <td className="px-4 py-2">{startTime}</td>
         <td className="px-4 py-2">{endDate}</td>
         <td className="px-4 py-2">
-          {attemptStatus.map((attempt) => {
-            if (!(attempt.paperId === paper.paper_id)) {
-              return (
-                <div key={paper.paper_id}>
-                  <Link
-                    href={
-                      `/paper/` +
-                      `${isLive ? "attempt" : isPast ? "review" : "view"}` +
-                      `/${paper.paper_id}`
-                    }
-                  >
-                    <button
-                      className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
-                    ${isPast && !paper.review && "hidden"}
-                    `}
-                    >
-                      {isLive ? "Attempt" : isPast ? "Review" : "View"}
-                    </button>
-                  </Link>
-                </div>
-              );
-            } else {
-              return (
+          {!paperExists(paper.paper_id, attemptStatus) ? (
+            <div key={paper.paper_id}>
+              <Link
+                href={
+                  `/paper/` +
+                  `${isLive ? "attempt" : isPast ? "review" : "view"}` +
+                  `/${paper.paper_id}`
+                }
+              >
                 <button
-                  key={paper.paper_id}
-                  className={`bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed
+                  className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
+                    ${isPast && !paper.review && "hidden"}`}
+                >
+                  {isLive ? "Attempt" : isPast ? "Review" : "View"}
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <button
+              key={paper.paper_id}
+              className={`bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed
               ${isPast && !paper.review && "hidden"}
             `}
-                >
-                  Submitted
-                </button>
-              );
-            }
-          })}
+            >
+              Submitted
+            </button>
+          )}
         </td>
       </>
     );
