@@ -34,7 +34,7 @@ function CountdownTimer(props) {
   return (
     <div className="text-white">
       <h1>
-        <span className="text-sm pr-5">Time Remaining: </span>
+        <span className="text-sm">Time Remaining: </span>
         {`${minutes}:${seconds < 10 ? "0" : ""}${seconds}`}
       </h1>
     </div>

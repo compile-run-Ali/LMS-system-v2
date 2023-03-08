@@ -20,15 +20,13 @@ const MCQTable = ({
       return mcq;
     })
   );
-  //console log the paper from the id using a get request
-  console.log(freeFlow);
 
   const [currentMCQ, setCurrentMCQ] = useState({
     question: "",
     options: ["", "", "", ""],
     correct_answer: "",
     marks: 1,
-    time_allowed: null,
+    time_allowed: 60,
   });
 
   const [editing, setEditing] = useState(false);
@@ -129,7 +127,7 @@ const MCQTable = ({
         options: [],
         correct_answer: "",
         marks: 1,
-        time_allowed: null,
+        time_allowed: 60,
       });
       setEditing(false);
       setIndex(null);

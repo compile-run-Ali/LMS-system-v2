@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import axios from "axios";
 
-const AttempContainer = ({ question, answer, marksobtained }) => {
+const AttempContainer = ({ question, answer, marksobtained, ssa_id }) => {
+
   const [givenmarks, setGivenmarks] = useState(marksobtained);
   const markQuestion = async () => {
     const updatedExam = await axios.post("/api/paper/marking/mark_question", {
@@ -36,7 +38,7 @@ const AttempContainer = ({ question, answer, marksobtained }) => {
           <div className="w-full flex justify-end">
             <div>
               <input
-                className="h-6 w-12 mr-3 rounded-md bg-white accent-blue-600 mt-1 ring-0 focus:outline-none p-2 border text-xs border-gray-300 appearance-none"
+                className="h-6 w-18 mr-3 rounded-md bg-white accent-blue-600 mt-1 ring-0 focus:outline-none p-2 border text-xs border-gray-300 appearance-none"
                 type="number"
                 value={givenmarks}
                 onChange={(e) => setGivenmarks(Number(e.target.value))}
@@ -48,9 +50,7 @@ const AttempContainer = ({ question, answer, marksobtained }) => {
               </span>
               <button
                 className="bg-green-800 hover:bg-green-700 text-white py-1 px-2 rounded"
-                onClick={() => {
-                  markQuestion;
-                }}
+                onClick={markQuestion}
               >
                 Mark
               </button>

@@ -13,7 +13,7 @@ const StudentsTable = ({ students_data, exam_id }) => {
   }, [students_data]);
 
   return (
-    <table className="table-auto w-full mt-10 font-poppins text-left px-5">
+    <table className="table-auto w-full mt-10 font-poppins text-left">
       <thead>
         <tr className="bg-blue-800 text-white font-medium ">
           <th className="px-4 py-2">P Number</th>
@@ -29,9 +29,9 @@ const StudentsTable = ({ students_data, exam_id }) => {
           >
             <td className="border px-4 py-2">{student.p_number}</td>
             <td className="border px-4 py-2">{student.name}</td>
-            <td className="border px-4 py-2">
+            <td className="border px-4 py-2 text-right">
               <Link href={`/faculty/mark_exam/${exam_id}/${student.p_number}`}>
-                <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded ">
                   Check Answers
                 </button>
               </Link>
