@@ -6,15 +6,15 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 const MarkingPage = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [students_data, setStudentsData] = useState([]);
-  const {exam_id} = router.query;
+  const { exam_id } = router.query;
 
   const fetchStudents = async () => {
     const students = await axios.post("/api/paper/marking/get_students", {
-      paper_id: context.query.exam_id,
+      paper_id: router.query.exam_id,
     });
-  
+
     let students_data = [];
     if (students.data.course && students.data.course.students.length > 0) {
       students_data = students.data.course.students.map(
@@ -22,13 +22,13 @@ const MarkingPage = () => {
       );
     }
     setStudentsData(students_data);
-  }
-
+  };
 
   useEffect(() => {
-    if (students !== undefined && students.length > 0 && students !== null) {
+    if (exam_id) {
+      fetchStudents();
     }
-  }, [students]);
+  }, [exam_id]);
 
   return (
     <BaseLayout title={"Mark Exam"}>

@@ -106,7 +106,7 @@ const AddFaculty = () => {
         </div>
 
         <div className="font-poppins mt-4">
-          <label className="block mb-2  text-primary-black" for="file_input">
+          <label className="block mb-2  text-primary-black" htmlFor="file_input">
             Upload Profile Pic
           </label>
           <input
