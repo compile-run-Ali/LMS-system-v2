@@ -73,6 +73,17 @@ const MCQTable = ({
   };
 
   const handleAddMCQ = async () => {
+    if (
+      currentMCQ.question === "" ||
+      currentMCQ.options.includes("") ||
+      currentMCQ.correct_answer === "" ||
+      currentMCQ.marks === "" ||
+      (!freeFlow && currentMCQ.time_allowed === "")
+    ) {
+      alert("Please fill all the fields");
+      return;
+    }
+
     const newMCQ = await axios.post(
       "http://localhost:3000/api/faculty/paper_creation/add_objective",
       {
@@ -81,7 +92,7 @@ const MCQTable = ({
         answers: currentMCQ.options.toString(),
         correct_answer: currentMCQ.correct_answer,
         marks: currentMCQ.marks,
-        time_allowed: currentMCQ.time_allowed,
+        time_allowed: currentMCQ.time_allowed || 0,
       }
     );
     console.log(newMCQ.data);
@@ -105,6 +116,16 @@ const MCQTable = ({
   };
 
   const handleUpdateMCQ = async (index) => {
+    if (
+      currentMCQ.question === "" ||
+      currentMCQ.options.includes("") ||
+      currentMCQ.correct_answer === "" ||
+      currentMCQ.marks === "" ||
+      (!freeFlow && currentMCQ.time_allowed === "")
+    ) {
+      alert("Please fill all the fields");
+      return;
+    }
     const newMCQ = await axios.post(
       "http://localhost:3000/api/faculty/edit_objective",
       {
@@ -114,7 +135,7 @@ const MCQTable = ({
         answers: currentMCQ.options.toString(),
         correct_answer: currentMCQ.correct_answer,
         marks: currentMCQ.marks,
-        time_allowed: currentMCQ.time_allowed,
+        time_allowed: currentMCQ.time_allowed || 0,
       }
     );
 
