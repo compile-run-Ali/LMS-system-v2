@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const AttempContainer = ({ question, answer, marksobtained, ssa_id }) => {
-
   const [givenmarks, setGivenmarks] = useState(marksobtained);
   const markQuestion = async () => {
+    console.log("Marking question: " + ssa_id + " with marks: " + givenmarks);
     const updatedExam = await axios.post("/api/paper/marking/mark_question", {
-      ssa_id: question.ssa_id,
+      ssa_id: ssa_id,
       marksobtained: givenmarks,
     });
     if (updatedExam.status === 200) {
@@ -38,7 +38,7 @@ const AttempContainer = ({ question, answer, marksobtained, ssa_id }) => {
           <div className="w-full flex justify-end">
             <div>
               <input
-                className="h-6 w-18 mr-3 rounded-md bg-white accent-blue-600 mt-1 ring-0 focus:outline-none p-2 border text-xs border-gray-300 appearance-none"
+                className="h-6 w-16 mr-3 rounded-md bg-white accent-blue-600 mt-1 ring-0 focus:outline-none p-2 border text-xs border-gray-300 appearance-none"
                 type="number"
                 value={givenmarks}
                 onChange={(e) => setGivenmarks(Number(e.target.value))}

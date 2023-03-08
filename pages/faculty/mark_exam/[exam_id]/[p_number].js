@@ -11,18 +11,21 @@ const Index = () => {
   const { exam_id, p_number } = router.query;
 
   const fetchAttempts = async () => {
-    const attempts = await axios.post("/api/paper/marking/get_student_attempts", {
-      paper_id: exam_id,
-      p_number: p_number,
-    });
+    const attempts = await axios.post(
+      "/api/paper/marking/get_student_attempts",
+      {
+        paper_id: exam_id,
+        p_number: p_number,
+      }
+    );
     setAttempts(attempts.data);
-  }
+  };
 
   useEffect(() => {
-    if(exam_id && p_number){
+    if (exam_id && p_number) {
       fetchAttempts();
     }
-  }, []);
+  }, [exam_id, p_number]);
   return (
     <div>
       <BaseLayout title={"Mark Exam"}>
