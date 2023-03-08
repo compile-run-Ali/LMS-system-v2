@@ -19,7 +19,9 @@ const Index = () => {
   }
 
   useEffect(() => {
-    fetchAttempts();
+    if(exam_id && p_number){
+      fetchAttempts();
+    }
   }, []);
   return (
     <div>
