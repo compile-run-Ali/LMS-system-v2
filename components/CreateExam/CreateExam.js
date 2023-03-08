@@ -55,14 +55,14 @@ export default function CreateExam({ paperType }) {
   const [freeFlowGlobal, setFreeFlowGlobal] = useState(false)
 
   const fetchExam = async () => {
-    const res = await axios.post("http://localhost:3000/api/faculty/get_exam", {
+    const res = await axios.post("/api/faculty/get_exam", {
       paper_id: paperId
     })
     setExam(res.data);
   }
 
   const fetchObjectives = async () => {
-    const res = await axios.post("http://localhost:3000/api/faculty/get_objective", {
+    const res = await axios.post("/api/faculty/get_objective", {
       paper_id: paperId
     })
     console.log(res.data)
@@ -70,7 +70,7 @@ export default function CreateExam({ paperType }) {
   }
 
   const fetchSubjectives = async () => {
-    const res = await axios.post("http://localhost:3000/api/faculty/get_subjective", {
+    const res = await axios.post("/api/faculty/get_subjective", {
       paper_id: paperId
     })
     setSubjectives(res.data);

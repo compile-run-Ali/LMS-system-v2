@@ -20,7 +20,7 @@ export default function Register() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/admin/course/get_courses")
+      .get("/api/admin/course/get_courses")
       .then((res) => {
         setCourses(res.data);
       })

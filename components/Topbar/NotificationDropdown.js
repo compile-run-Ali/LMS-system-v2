@@ -6,7 +6,7 @@ export default function NotificationDropdown({notifications}) {
     console.log(notifications, "notifications")
 
     const markAsRead = async (id) => {
-        const res = await axios.post("http://localhost:3000/api/faculty/markNotificationRead", {
+        const res = await axios.post("/api/faculty/markNotificationRead", {
             notification_id: id,
         });
 

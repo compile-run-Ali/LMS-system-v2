@@ -5,13 +5,10 @@ const AttempContainer = ({ question, answer, marksobtained, ssa_id }) => {
 
   const [givenmarks, setGivenmarks] = useState(marksobtained);
   const markQuestion = async () => {
-    const updatedExam = await axios.post(
-      "http://localhost:3000/api/paper/marking/mark_question",
-      {
-        ssa_id: ssa_id,
-        marksobtained: givenmarks,
-      }
-    );
+    const updatedExam = await axios.post("/api/paper/marking/mark_question", {
+      ssa_id: question.ssa_id,
+      marksobtained: givenmarks,
+    });
     if (updatedExam.status === 200) {
       console.log("Question marked successfully");
     }

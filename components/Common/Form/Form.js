@@ -76,7 +76,7 @@ export default function Form({
     }
 
     const res = await axios.post(
-      `http://localhost:3000/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
+      `/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
       {
         paper_id: examDetails ? examDetails.paper_id : null,
         course_code: router.query.course_code ? router.query.course_code : null,
