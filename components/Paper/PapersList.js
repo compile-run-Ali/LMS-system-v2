@@ -58,25 +58,28 @@ export default function PapersList({ papers, status }) {
           {attemptStatus.map((attempt) => {
             if (!(attempt.paperId === paper.paper_id)) {
               return (
-                <Link
-                  href={
-                    `/paper/` +
-                    `${isLive ? "attempt" : isPast ? "review" : "view"}` +
-                    `/${paper.paper_id}`
-                  }
-                >
-                  <button
-                    className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
-              ${isPast && !paper.review && "hidden"}
-            `}
+                <div key={paper.paper_id}>
+                  <Link
+                    href={
+                      `/paper/` +
+                      `${isLive ? "attempt" : isPast ? "review" : "view"}` +
+                      `/${paper.paper_id}`
+                    }
                   >
-                    {isLive ? "Attempt" : isPast ? "Review" : "View"}
-                  </button>
-                </Link>
+                    <button
+                      className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
+                    ${isPast && !paper.review && "hidden"}
+                    `}
+                    >
+                      {isLive ? "Attempt" : isPast ? "Review" : "View"}
+                    </button>
+                  </Link>
+                </div>
               );
             } else {
               return (
                 <button
+                  key={paper.paper_id}
                   className={`bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed
               ${isPast && !paper.review && "hidden"}
             `}
