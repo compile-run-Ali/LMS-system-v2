@@ -98,6 +98,7 @@ export default function StudentDashboard({ session }) {
               </div>
               <div className="font-poppins">
                 <PapersList
+                  key={paper.id}
                   papers={paper.papers}
                   status={paper.title}
                   p_number={student?.p_number}
