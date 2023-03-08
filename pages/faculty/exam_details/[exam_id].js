@@ -38,9 +38,12 @@ export default function ExamPage() {
   };
 
   useEffect(() => {
-    fetchExam();
-    console.log("exam details are", examDetails);
-  }, []);
+    if(exam_id) {
+
+      fetchExam();
+      console.log("exam details are", examDetails);
+    }
+  }, [exam_id]);
   return (
     <BaseLayout title={"Exam | " + examDetails?.paper_title}>
       <DashboardLayout>
