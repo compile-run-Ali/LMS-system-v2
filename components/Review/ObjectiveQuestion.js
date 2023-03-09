@@ -6,7 +6,7 @@ export default function ObjectiveQuestion({ question, qNumber }) {
   const multipleAllowed = correctArray.length > 1;
 
   return (
-    <div className="mx-auto my-10 pt-2 border-t border-blue-900 text-black">
+    <div className="mx-auto my-10 pt-2 text-black bg-zinc-200 p-10 shadow-black shadow-md">
       <div>
         <p className="text-xl">{qNumber + ". " + question.question}</p>
         <div className="grid gap-y-3">
