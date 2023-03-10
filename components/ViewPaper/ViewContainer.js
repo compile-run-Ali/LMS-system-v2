@@ -78,15 +78,6 @@ export default function ViewContainer() {
             <span className=" font-medium">Exam Time:</span>
             <span className="ml-2">{formatTime(paperDetails.date)}</span>
           </div>
-
-          {/* <div className="pl-20">
-            <span className=" font-medium">Total Marks:</span>
-            <span className="ml-2">{totalMarks}</span>
-          </div>
-          <div className="pl-20">
-            <span className=" font-medium">Total Questions:</span>
-            <span className="ml-2">{totalQuestions}</span>
-          </div> */}
           <div className="pl-20">
             <span className=" font-medium">Exam Duration:</span>
             <span className="ml-2">{paperDetails.duration}</span>

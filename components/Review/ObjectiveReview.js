@@ -23,9 +23,6 @@ export default function ObjectiveReview({ questions, answers }) {
           question={question}
         />
       ))}
-      <div>
-        <p className="text-xl font-bold">Total Marks: </p>
-      </div>
     </div>
   );
 }

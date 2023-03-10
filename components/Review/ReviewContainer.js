@@ -29,12 +29,6 @@ export default function ReviewContainer() {
       axios
         .get(`/api/student/paper/${student}`)
         .then((res) => {
-          // received all papers of that student
-          // check if paper is in the papers
-          // if yes, check if paper is past           if no, tell him he is not enrolled
-          // if yes, check if paper is attempted      if no, tell him it is an invalid paper
-          // if yes, show review                      if no, tell him he did not attempt
-
           const requestedPaper = res.data.find(
             (paperObj) => paperObj.paper_id === paper
           );
@@ -143,8 +137,8 @@ export default function ReviewContainer() {
       <h1 className=" font-bold text-3xl  mt-10 mb-4">Paper Review</h1>
       <PaperDetails paper={paperDetails} />
       <ObjectiveReview
-        questions={objectiveQuestions || []}
-        answers={objectiveAnswers || []}
+        questions={objectiveQuestions}
+        answers={objectiveAnswers}
       />
       {!paper?.paper_type === "Objective" && <>subjective review here</>}
     </div>

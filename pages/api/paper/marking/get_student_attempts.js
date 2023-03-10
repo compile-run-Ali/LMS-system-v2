@@ -2,37 +2,19 @@ import { PrismaClient } from "@prisma/client";
 
 const handler = async (req, res) => {
   const prisma = new PrismaClient();
+  console.log("req is ", req.query.p_number + req.query.sq_id);
   try {
-    const attempts = await prisma.sSA.findMany({
+    const existingSSA = await prisma.sSA.findUnique({
       where: {
-        p_number: req.body.p_number,
-      },
-      select: {
-        subjective_question: {
-          select: {
-            question: true,
-            long_question: true,
-            parent_sq_id: true,
-            sq_id: true,
-            paper_id: true,
-            marks: true,
-            questionnumber: true,
-          },
-        },
-        answer: true,
-        marksobtained: true,
-        ssa_id: true,
+        ssa_id: req.query.p_number + req.query.sq_id,
       },
     });
 
-    let paper_attempts = [];
-
-    if (attempts.length > 0) {
-      paper_attempts = attempts.filter((attempt) => {
-        return attempt.subjective_question.paper_id === req.body.paper_id;
-      });
+    if (existingSSA) {
+      res.status(200).json(existingSSA);
+    } else {
+      res.status(200).json(null);
     }
-    res.status(200).json(paper_attempts);
   } catch (err) {
     throw new Error(err.message);
   }
