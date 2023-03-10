@@ -7,21 +7,16 @@ const ExamTable = ({ exams_data }) => {
   const router = useRouter();
   const [exams, setExams] = useState([]);
 
-  useEffect(() => {
-    if (exams_data !== null) {
-      setExams(exams_data);
-    }
-  }, [exams_data]);
 
   useEffect(() => {
     const currentDate = new Date();
-    const updatedExams = exams
+    const updatedExams = exams_data
       .map((exam) => {
         const examDate = new Date(exam.date);
         if (examDate < currentDate && exam.status !== "Closed") {
           axios
             .put(`/api/faculty/update_exam_status`, {
-              paper_id: exam.id,
+              paper_id: exam.paper_id,
               status: "Closed",
             })
             .then((response) => {

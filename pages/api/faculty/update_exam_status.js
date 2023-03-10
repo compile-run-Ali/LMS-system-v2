@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const handler = async (req, res) => {
   const prisma = new PrismaClient();
+  console.log(req.body);
   try {
     const paper = await prisma.paper.update({
       where: {
@@ -12,11 +13,6 @@ const handler = async (req, res) => {
       },
     });
 
-    await prisma.paperApproval.delete({
-      where: {
-        paper_id: req.body.paper_id,
-      },
-    });
 
     res.status(200).json(paper);
   } catch (err) {
