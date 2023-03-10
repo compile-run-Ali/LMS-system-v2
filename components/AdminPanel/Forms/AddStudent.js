@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Input from "@/components/Common/Form/Input";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -11,7 +11,18 @@ export default function AddStudent() {
   const [DOB, setDob] = useState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [courses, setCourses] = useState([]);
   const router = useRouter();
+
+  useEffect(() => {
+    axios
+      .get("/api/admin/course/get_courses")
+      .then((res) => {
+        setCourses(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -44,10 +55,24 @@ export default function AddStudent() {
   };
 
   const addStudent = async (student) => {
-    const new_student = await axios.post("/api/admin/student/add_student", {
-      ...student,
-    });
-    router.push("/admin");
+    axios
+      .post(`/api/admin/student/add_student`, { ...student })
+      .then((res) => {
+        console.log("student added successfully", res.data);
+        // add course and student to SRC table
+        axios
+          .post(`/api/student/register`, {
+            p_number: pNumber,
+            course_code: selectedCourse,
+          })
+          .then((res) => {
+            console.log("course added successfully", res.data);
+          })
+          .catch((err) =>
+            console.log("Error in registering student to course", err)
+          );
+      })
+      .catch((err) => console.log("Error in registering student", err));
   };
 
   return (
@@ -97,6 +122,30 @@ export default function AddStudent() {
             onChange={(event) => setDob(event.target.value)}
             required
           />
+        </div>
+        <div className="mt-6 form-group">
+          <label
+            htmlFor="Courses"
+          >
+            Courses
+          </label>
+
+          <select
+            className="form-control block w-full mt-2 px-3 py-2.5 text-sm font-normal text-gray-700 
+                  bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
+                  focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+            id="Courses"
+            onChange={(e) => {
+              setSelectedCourse(e.target.value);
+            }}
+          >
+            <option value={""}>Select a course</option>
+            {courses?.map((course) => (
+              <option key={course.course_code} value={course.course_code}>
+                {course.course_name}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
           <Input
