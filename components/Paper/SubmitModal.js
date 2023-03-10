@@ -28,7 +28,18 @@ export default function SubmitModal({
       .catch((err) => {
         console.log("error ", err.message);
       });
-  }
+  };
+
+  const clearPaperFromLocal = () => {
+    const papers = JSON.parse(localStorage.getItem("papers")) || {};
+    delete papers[paper];
+    localStorage.setItem("papers", JSON.stringify(papers));
+    console.log(
+      "papers after deleting",
+      JSON.parse(localStorage.getItem("papers"))
+    );
+  };
+
   return (
     <Transition appear show={showModal} as={Fragment}>
       <Dialog
@@ -61,7 +72,7 @@ export default function SubmitModal({
                     <span className="text-red-500">
                       {" "}
                       (You have flagged question number{" "}
-                      {flags.map((flag) => Number(flag) + 1) + ' '}
+                      {flags.map((flag) => Number(flag) + 1) + " "}
                     </span>
                   )
                 }
@@ -82,7 +93,7 @@ export default function SubmitModal({
                     // make a function that will call api to create an entry of submit attempt SPA
                     setCurrentQuestion(currentQuestion + 1);
                     createAttempt();
-                    localStorage.clear();
+                    clearPaperFromLocal();
                   }}
                 >
                   Submit

@@ -14,6 +14,16 @@ export default function Timer({ paper }) {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
+  const clearPaperFromLocal = () => {
+    const papers = JSON.parse(localStorage.getItem("papers")) || {};
+    delete papers[paper];
+    localStorage.setItem("papers", JSON.stringify(papers));
+    console.log(
+      "papers after deleting",
+      JSON.parse(localStorage.getItem("papers"))
+    );
+  };
+
   useEffect(() => {
     if (paper.date) {
       const interval = setInterval(() => {
@@ -21,8 +31,9 @@ export default function Timer({ paper }) {
           getRemainingTime(getPaperDateTime(paper.date, paper.duration).end)
         );
         if (timeLeft === "00:00:00") {
+          clearPaperFromLocal();
+          // set status to time ended
           router.push(`/student`);
-          localStorage.clear();
         }
       }, 1000);
       return () => clearInterval(interval);
@@ -50,8 +61,8 @@ export default function Timer({ paper }) {
         Start Time:
         {" " + startTime}
       </div>
-      <div>End Time:{" " +endTime}</div>
-      <div>Time Left:{" " +timeLeft}</div>
+      <div>End Time:{" " + endTime}</div>
+      <div>Time Left:{" " + timeLeft}</div>
     </div>
   );
 }
