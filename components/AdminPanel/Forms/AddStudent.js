@@ -106,15 +106,7 @@ export default function AddStudent() {
             required
           />
         </div>
-        <div className="mb-4">
-          <Input
-            text="CGPA"
-            type="text"
-            value={cgpa}
-            onChange={(event) => setCgpa(event.target.value)}
-            required
-          />
-        </div>
+
         <div className="mb-4">
           <Input
             text="Date of Birth"
