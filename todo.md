@@ -17,6 +17,7 @@ in objective question attempt, allow to select only correct number of option e.g
 While creating a child question, the max marks should be less then parent question's remaining marks
 default value should be true for long question checkbox while making subjective question in exam
 <!-- 9 "Closed" Status for paper once paper end time and date have elapsed. -->
+when time reaches 00:00:00 of an exam, the SPA status should be set to something like incomplete or time ended
 # Bug fixes
 <!-- when paper submitted, clear that paper from local storage -->
 <!-- cgpa input field should be a number and can only accept nums 0 to 4 with step 0.01 in making student by admin -->

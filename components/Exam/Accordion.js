@@ -11,29 +11,32 @@ const Accordion = ({ questions, paperType }) => {
   };
 
   return (
-    <div>
-      <div className="bg-transparent rounded-lg  p-4 mb-4 ">
-        <div className="flex flex-col">
-          <div
-            className="flex flex-row cursor-pointer w-fit"
-            onClick={() => handleAccordionClick(1)}
-          >
-            <h2 className="text-xl font-bold mr-4">
-              {paperType === "Objective"
-                ? "Objective Questions"
-                : "Subjective Questions"}
-            </h2>
-            <MdArrowDropDown fontSize={28} className={`fill-blue-800  duration-300 transition-all ${activeIndex===1?"rotate-0":"-rotate-90"}`} />
-          </div>
-          {activeIndex === 1 && paperType === "Objective" ? (
-            <MCQTable objective_questions={questions} />
-          ) : (
-            activeIndex === 1 &&
-            paperType === "Subjective/Objective" && (
-              <SubjectiveTable subjective_questions={questions} />
-            )
-          )}
+    <div className="bg-transparent rounded-lg  p-4 mb-4 ">
+      <div className="flex flex-col">
+        <div
+          className="flex flex-row cursor-pointer w-fit"
+          onClick={() => handleAccordionClick(1)}
+        >
+          <h2 className="text-xl font-bold mr-4">
+            {paperType === "Objective"
+              ? "Objective Questions"
+              : "Subjective Questions"}
+          </h2>
+          <MdArrowDropDown
+            fontSize={28}
+            className={`fill-blue-800  duration-300 transition-all ${
+              activeIndex === 1 ? "rotate-0" : "-rotate-90"
+            }`}
+          />
         </div>
+        {activeIndex === 1 && paperType === "Objective" ? (
+          <MCQTable objective_questions={questions} />
+        ) : (
+          activeIndex === 1 &&
+          paperType === "Subjective/Objective" && (
+            <SubjectiveTable subjective_questions={questions} />
+          )
+        )}
       </div>
     </div>
   );

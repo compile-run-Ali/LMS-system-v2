@@ -21,7 +21,7 @@ const ExamTable = ({ exams_data }) => {
       <tbody>
         {exams.map((exam, index) => (
           <tr key={index} className="bg-white ">
-            <td className=" px-4 py-3">{`${exam.paper_name} (${exam.course.course_code} (${exam.course.course_name})`}</td>
+            <td className=" px-4 py-3">{`${exam.paper_name} -  ${exam.course.course_name} (${exam.course.course_code})`}</td>
             {exam.paperapproval ? (
               <td className=" px-4 py-2">{exam.paperapproval.faculty.name}</td>
             ) : (

@@ -13,7 +13,7 @@ const SubjectiveExam = ({
   const [subjectives, setSubjectives] = useState(subjective_questions);
   const [longQuestion, setLongQuestion] = useState(false);
   //len of subjectives
-  console.log(subjectives.length)
+  console.log(subjectives.length);
 
   useEffect(() => {
     console.log(subjectives);
@@ -39,23 +39,25 @@ const SubjectiveExam = ({
     const parent_question = subjectives.find(
       (subjective) => subjective.question === e.target.value
     );
-    if(!parent_question){
+    if (!parent_question) {
       setCurrentMCQ({ ...currentSubjective, parent_question: "" });
       return;
+    } else {
+      setCurrentMCQ({
+        ...currentSubjective,
+        parent_question: parent_question.sq_id,
+      });
     }
-    else{
-    setCurrentMCQ({
-      ...currentSubjective,
-      parent_question: parent_question.sq_id,
-    });
-  }
   };
 
   const handleMarksChange = (e) => {
     setCurrentMCQ({ ...currentSubjective, marks: parseInt(e.target.value) });
   };
   const handleQuestionNumberChange = (e) => {
-    setCurrentMCQ({ ...currentSubjective, questionnumber: parseInt(e.target.value) });
+    setCurrentMCQ({
+      ...currentSubjective,
+      questionnumber: parseInt(e.target.value),
+    });
   };
 
   const handleLongQuestion = (e) => {
@@ -213,9 +215,7 @@ const SubjectiveExam = ({
                 onChange={handleParentQuestionChange}
                 className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]"
               >
-                <option value="" >
-                  Select Parent Question
-                </option>
+                <option value="">Select Parent Question</option>
                 {subjectives
                   .filter((subjective) => !subjective.parent_question)
                   .map((subjective, index) => (
@@ -235,23 +235,30 @@ const SubjectiveExam = ({
               onChange={handleMarksChange}
             />
             <Input
-            // if parent exists the question number will be called part number other wise, question number
-              text={currentSubjective.parent_question ? "Part Number" : "Question Number"}
+              // if parent exists the question number will be called part number other wise, question number
+              text={
+                currentSubjective.parent_question
+                  ? "Part Number"
+                  : "Question Number"
+              }
               type={"number"}
               required
               min={subjectives.length + 1}
               value={currentSubjective.questionnumber}
               onChange={handleQuestionNumberChange}
             />
-
-            <div className="flex items-center gap-x-3 mt-14 ml-2">
-              <label className="block">Long Question?</label>
-              <input
-                type="checkbox"
-                className="accent-slate-100"
-                onChange={handleLongQuestion}
-              />
-            </div>
+          </div>
+          <div className="flex items-center gap-x-3 ml-2">
+            <label className="block">Long Question?</label>
+            <input
+              type="checkbox"
+              className="accent-slate-100"
+              onChange={handleLongQuestion}
+            />
+          </div>
+          <div className="text-sm ml-2 mb-10">
+            {" "}
+            (If not checked, max 50 characters will be allowed)
           </div>
           {editing ? (
             <button
@@ -272,7 +279,7 @@ const SubjectiveExam = ({
           )}
         </div>
       )}
-      <div className="mt-10 w-full pr-10 flex justify-end gap-x-5">
+      <div className=" w-full pr-10 flex justify-end gap-x-5">
         <button
           type="button"
           className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"

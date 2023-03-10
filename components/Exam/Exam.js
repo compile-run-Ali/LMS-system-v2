@@ -73,8 +73,9 @@ export default function Exam({
 
   const editExam = () => {
     router.push({
-      pathname: `/faculty/create_exam/${exam.paper_type === "Objective" ? "objective" : "subjective"
-        }`,
+      pathname: `/faculty/create_exam/${
+        exam.paper_type === "Objective" ? "objective" : "subjective"
+      }`,
       query: {
         ...exam,
       },
@@ -82,6 +83,11 @@ export default function Exam({
   };
 
   const submitExam = async () => {
+    if (!selectedFaculty) {
+      alert("Please select a faculty to submit to");
+      return;
+    }
+
     const submitExam = await axios.post("/api/faculty/submit_exam", {
       paper_id: exam.paper_id,
       faculty_id: selectedFaculty,
@@ -91,9 +97,10 @@ export default function Exam({
     });
     if (submitExam.status === 200) {
       addComment({
-        comment: `Exam Submitted by ${session.data.user.name} to ${faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
-          .name
-          }`,
+        comment: `Exam Submitted by ${session.data.user.name} to ${
+          faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
+            .name
+        }`,
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
@@ -142,9 +149,10 @@ export default function Exam({
     });
     if (sendForward.status === 200) {
       addComment({
-        comment: `Exam Sent Forward by ${session.data.user.name} to ${faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
-          .name
-          }`,
+        comment: `Exam Sent Forward by ${session.data.user.name} to ${
+          faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
+            .name
+        }`,
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
@@ -152,9 +160,7 @@ export default function Exam({
       generateNotification();
       router.push("/faculty");
     }
-
   };
-
 
   const generateNotification = async () => {
     const res = await axios.post("/api/faculty/generate_notification", {
@@ -224,7 +230,6 @@ export default function Exam({
             <span className="ml-2">{formatTime(exam.date)}</span>
           </div>
 
-
           <div className="pl-20">
             <span className=" font-medium">Exam Duration:</span>
             <span className="ml-2">{exam.duration}</span>
@@ -286,6 +291,10 @@ export default function Exam({
             <button
               className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
               onClick={() => {
+                if (!comment) {
+                  alert("Please enter a comment");
+                  return;
+                }
                 addComment({ comment });
               }}
             >
