@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AttempContainer from "./AttempContainer";
 
-const AnswersTable = ({ questions, answers }) => {
+const AnswersTable = ({ questions, answers, isStudent }) => {
   const questionWithAnswers = (questions, answers) =>
     questions.map((question) => {
       const answer = answers.find((answer) => answer?.sq_id === question.sq_id);
@@ -41,7 +41,11 @@ const AnswersTable = ({ questions, answers }) => {
   return (
     <div className="flex flex-col space-y-10">
       {questionsWithChild(questions, answers).map((question, index) => (
-        <AttempContainer key={question.sq_id} question={question} />
+        <AttempContainer
+          key={question.sq_id}
+          question={question}
+          isStudent={isStudent}
+        />
       ))}
     </div>
   );

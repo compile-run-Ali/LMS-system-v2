@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 
-const AttempContainer = ({ question }) => {
+const AttempContainer = ({ question, isStudent }) => {
   const router = useRouter();
   const { p_number } = router.query;
   const [givenmarks, setGivenmarks] = useState(question.marksobtained);
@@ -52,23 +52,30 @@ const AttempContainer = ({ question }) => {
                   }}
                   max={question.marks}
                   min={0}
+                  disabled={isStudent}
                 />
                 <span className="font-bold text-sm mr-2">
                   / <span>{question.marks}</span>
                 </span>
-                <button
-                  className="bg-green-800 hover:bg-green-700 text-white py-1 px-2 rounded"
-                  onClick={markQuestion}
-                >
-                  Mark
-                </button>
+                {!isStudent && (
+                  <button
+                    className="bg-green-800 hover:bg-green-700 text-white py-1 px-2 rounded"
+                    onClick={markQuestion}
+                  >
+                    Mark
+                  </button>
+                )}
               </div>
             </div>
           </div>
         ) : (
           <div className="bg-blue-400 rounded-lg p-4">
             {question.children.map((child) => (
-              <AttempContainer key={child.sq_id} question={child} />
+              <AttempContainer
+                key={child.sq_id}
+                question={child}
+                isStudent={isStudent}
+              />
             ))}
           </div>
         )}

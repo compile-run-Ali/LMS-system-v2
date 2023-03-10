@@ -5,6 +5,7 @@ import { compareDateTime, getPaperDateTime } from "@/lib/TimeCalculations";
 import ObjectiveReview from "./ObjectiveReview";
 import PaperDetails from "./PaperDetails";
 import { useSession } from "next-auth/react";
+import AnswersTable from "../MarkingDashboard/AnswersTable";
 
 export default function ReviewContainer() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function ReviewContainer() {
   const [objectiveAnswers, setObjectiveAnswers] = useState([]);
   const [subjectiveAnswers, setSubjectiveAnswers] = useState([]);
   const [objectiveQuestions, setObjectiveQuestions] = useState([]);
+  const [subjectiveQuestions, setSubjectiveQuestions] = useState([]);
   const [paperDetails, setPaperDetails] = useState({});
 
   useEffect(() => {
@@ -85,42 +87,36 @@ export default function ReviewContainer() {
 
               if (!isObjective) {
                 // get all the SUBJECTIVE questions of that paper
-                // axios.get(
-                //   `/api/student/paper/sq/${paper}`
-                // ).then(
-                //   (res) => {
-                //     const receivedQuestions = res.data;
-                //     setObjectiveQuestions(receivedQuestions);
-                //     // for each question, fetch an answer of the student
-                //     receivedQuestions.forEach((question) => {
-                //       axios
-                //         .get(
-                //           `/api/student/paper/${
-                //             isObjective ? "oq" : "sq"
-                //           }/get/${student}/${question.oq_id}`,
-                //           {
-                //             params: {
-                //               p_number: student,
-                //               oq_id: question.oq_id,
-                //             },
-                //           }
-                //         )
-                //         .then((response) => {
-                //           if (response.data) {
-                //             setObjectiveAnswers((prev) => {
-                //               if (prev.indexOf(response.data) === -1) {
-                //                 return [...prev, response.data];
-                //               }
-                //               return prev;
-                //             });
-                //           }
-                //         })
-                //         .catch((error) => {
-                //           console.log("error in fetching answer", error.message);
-                //         });
-                //     });
-                //   }
-                // )
+                axios.get(`/api/student/paper/sq/${paper}`).then((res) => {
+                  const receivedQuestions = res.data;
+                  setSubjectiveQuestions(receivedQuestions);
+                  // for each question, fetch an answer of the student
+                  receivedQuestions.forEach((question) => {
+                    axios
+                      .get("/api/paper/marking/get_student_attempts", {
+                        params: {
+                          sq_id: question.sq_id,
+                          p_number: student,
+                        },
+                      })
+                      .then((res) => {
+                        if (res) {
+                          setSubjectiveAnswers((prev) => {
+                            if (prev.indexOf(res.data) === -1) {
+                              return [...prev, res.data];
+                            }
+                            return prev;
+                          });
+                        }
+                      })
+                      .catch((err) => {
+                        console.log(
+                          "error in fetching subjective attempts",
+                          err.message
+                        );
+                      });
+                  });
+                });
               }
             } else router.push(`/student`);
             // setRedirect404(true);
@@ -132,6 +128,9 @@ export default function ReviewContainer() {
     }
   }, [paper, student]);
 
+  console.log("subjective answer are", subjectiveAnswers);
+  console.log("subjective qs are", subjectiveQuestions);
+
   return (
     <div className="w-full mx-auto  max-w-6xl">
       <h1 className=" font-bold text-3xl  mt-10 mb-4">Paper Review</h1>
@@ -140,7 +139,14 @@ export default function ReviewContainer() {
         questions={objectiveQuestions}
         answers={objectiveAnswers}
       />
-      {!paper?.paper_type === "Objective" && <>subjective review here</>}
+
+      {paper.paper_type !== "Objective" && (
+        <AnswersTable
+          questions={subjectiveQuestions}
+          answers={subjectiveAnswers}
+          isStudent={true}
+        />
+      )}
     </div>
   );
 }

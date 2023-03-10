@@ -1,7 +1,6 @@
 # Full Features
-- protect routes of everyone
 - exam review:
-  -  subjective exam review
+  <!-- -  subjective exam review -->
   -  objective review ui
   -  total marks at the end of paper
 - paper chechking:
@@ -32,5 +31,7 @@ functionality of assign in exam table of admin
 10 Student Profile Picture Display Area
 
 ### Later if needed
+- protect routes of everyone
+- clear all console logs
 - some success ui on successful api call, using react toastify, or any self made component
 - some loader component while loading tables and data

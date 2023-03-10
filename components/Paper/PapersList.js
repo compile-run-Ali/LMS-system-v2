@@ -71,7 +71,7 @@ export default function PapersList({ papers, status }) {
         <td className="px-4 py-2">{startTime}</td>
         <td className="px-4 py-2">{endDate}</td>
         <td className="px-4 py-2">
-          {!paperExists(paper.paper_id, attemptStatus) ? (
+          {!paperExists(paper.paper_id, attemptStatus && isLive) ? (
             <div key={paper.paper_id}>
               <Link
                 href={
