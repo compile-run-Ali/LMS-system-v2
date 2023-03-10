@@ -49,10 +49,10 @@ const Index = () => {
     <div>
       <BaseLayout title={"Mark Exam"}>
         <DashboardLayout>
-          <PaperDetails paper={paperDetails} isFaculty={true} />
-          <pre>{JSON.stringify(paperDetails, null, 2)}</pre>
-          show
-          <AnswersTable attempts_data={attempts} />
+          <div className="px-20">
+            <PaperDetails paper={paperDetails} isFaculty={true} />
+            <AnswersTable attempts_data={attempts} />
+          </div>
         </DashboardLayout>
       </BaseLayout>
     </div>

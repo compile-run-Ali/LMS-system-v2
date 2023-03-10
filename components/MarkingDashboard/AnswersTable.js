@@ -10,7 +10,7 @@ const AnswersTable = ({ attempts_data }) => {
     }
   }, [attempts_data]);
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col space-y-10">
       {attempts.length > 0 ? (
         attempts.map((attempt, index) => (
           <div key={attempt.ssa_id}>

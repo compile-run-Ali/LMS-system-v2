@@ -14,7 +14,7 @@ const AttempContainer = ({ question, answer, marksobtained, ssa_id }) => {
     }
   };
   return (
-    <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl">
+    <div className="flex flex-col justify-between pt-0">
       <div>
         <div className="text-2xl mb-4">
           <p>{question.questionnumber + ". " + question.question}</p>
