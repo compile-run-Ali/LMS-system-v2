@@ -13,20 +13,14 @@ export default function PapersList({ papers, status }) {
   const isLive = status === "Live Papers";
   const isPast = status === "Past Papers";
   const { data: session } = useSession();
-
   function paperExists(paperId, attempt) {
     for (let i = 0; i < attempt.length; i++) {
       if (attempt[i].paperId === paperId) {
-        console.log(
-          "paper exists with id ",
-          paperId,
-        );
+        console.log("paper exists with id ", paperId);
         return true;
       }
     }
-    console.log(
-      "paper does not exist with id ",
-    );
+    console.log("paper does not exist with id ");
     return false;
   }
 
@@ -62,6 +56,8 @@ export default function PapersList({ papers, status }) {
     const startTime = convertDateTimeToStrings(start);
     const endDate = convertDateTimeToStrings(end);
 
+    const isPastPaper = Date.parse(end) < Date.now();
+
     return (
       // <div className="mb-4 flex justify-between bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white p-4 items-center hover:-translate-y-0.5 hover:to-blue-800 hover:from-blue-800 transition-all">
       <>
@@ -73,27 +69,37 @@ export default function PapersList({ papers, status }) {
         <td className="px-4 py-2">
           {!paperExists(paper.paper_id, attemptStatus) ? (
             <div key={paper.paper_id}>
-              <Link
-                href={
-                  `/paper/` +
-                  `${isLive ? "attempt" : isPast ? "review" : "view"}` +
-                  `/${paper.paper_id}`
-                }
-              >
+              {isPastPaper ? (
                 <button
-                  className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
-                    ${isPast && !paper.review && "hidden"}`}
+                  className={`bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed`}
+                  disabled={true}
                 >
-                  {isLive ? "Attempt" : isPast ? "Review" : "View"}
+                  Closed
                 </button>
-              </Link>
+              ) : (
+                <Link
+                  href={
+                    `/paper/` +
+                    `${isLive ? "attempt" : isPast ? "review" : "view"}` +
+                    `/${paper.paper_id}`
+                  }
+                >
+                  <button
+                    className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
+                      ${isPast && !paper.review && "hidden"}`}
+                  >
+                    {isLive ? "Attempt" : isPast ? "Review" : "View"}
+                  </button>
+                </Link>
+              )}
             </div>
           ) : (
             <button
               key={paper.paper_id}
               className={`bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed
-              ${isPast && !paper.review && "hidden"}
-            `}
+                ${isPast && !paper.review && "hidden"}
+              `}
+              disabled={true}
             >
               Submitted
             </button>

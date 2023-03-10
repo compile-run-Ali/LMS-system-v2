@@ -16,9 +16,9 @@ in objective question attempt, allow to select only correct number of option e.g
 <!--done while registering a student admin should also be able to enroll student in a course  -->
 While creating a child question, the max marks should be less then parent question's remaining marks
 default value should be true for long question checkbox while making subjective question in exam
-9 "Closed" Status for paper once paper end time and date have elapsed.
+<!-- 9 "Closed" Status for paper once paper end time and date have elapsed. -->
 # Bug fixes
-when paper submitted, clear that paper from local storage
+<!-- when paper submitted, clear that paper from local storage -->
 faculty must select correct answer for subjective while making an exam
 parent question not being selected for child question in select tag
 when top level faculty edits an exam, original date and time of the exam is not received
