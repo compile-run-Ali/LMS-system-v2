@@ -82,12 +82,12 @@ model PaperApproval {
   paperapproval_id String @id @default(uuid())
 
   level    Int
-  approved Boolean  @default(false)
+  approved Boolean @default(false)
 
   paper_id String @unique
   paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
 
-  faculty_id String  
+  faculty_id String
   faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
 }
 
@@ -99,7 +99,7 @@ model Paper {
   paper_type  String
   examofficer PaperApproval?
   freeflow    Boolean?
-  review     Boolean         @default(false)
+  review      Boolean        @default(false)
   date        String
   duration    Int
   weightage   Int?
@@ -109,16 +109,16 @@ model Paper {
   objective_questions  ObjectiveQuestion[]
 
   PaperComment PaperComment[]
-  attempts           SPA[]
+  attempts     SPA[]
 }
 
 model SubjectiveQuestion {
   sq_id String @id @default(uuid())
 
   questionnumber Int
-  question      String 
-  long_question Boolean
-  marks         Int
+  question       String
+  long_question  Boolean
+  marks          Int
 
   paper    Paper  @relation(fields: [paper_id], references: [paper_id])
   paper_id String
@@ -141,8 +141,8 @@ model SSA {
   p_number String
   student  Student @relation(fields: [p_number], references: [p_number])
 
-  answer String
-  marksobtained Float @default(0)
+  answer        String
+  marksobtained Float  @default(0)
 }
 
 model ObjectiveQuestion {
@@ -170,40 +170,38 @@ model SOA {
   p_number String
   student  Student @relation(fields: [p_number], references: [p_number])
 
-  answer String
+  answer        String
   marksobtained Float
 }
 
 model PaperComment {
-  pc_id             String   @id @default(uuid())
-  paper             Paper    @relation(fields: [paper_id], references: [paper_id])
-  paper_id          String
-  faculty           Faculty @relation(fields: [faculty_id], references: [faculty_id])
-  faculty_id        String
-  comment           String
-  time              DateTime @default(now())
+  pc_id      String   @id @default(uuid())
+  paper      Paper    @relation(fields: [paper_id], references: [paper_id])
+  paper_id   String
+  faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id])
+  faculty_id String
+  comment    String
+  time       DateTime @default(now())
 }
 
 model Notification {
   notification_id String @id @default(uuid())
-  
-  notification    String
 
-  time            DateTime @default(now())
-  read           Boolean  @default(false)
-  faculty Faculty @relation(fields: [faculty_id], references: [faculty_id])
+  notification String
+
+  time       DateTime @default(now())
+  read       Boolean  @default(false)
+  faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id])
   faculty_id String
 }
 
 model SPA {
-  spaId              String @id @default(uuid())
-  studentId       String
-  paperId         String
-  status          String?
-  obtainedMarks   Int @default(0)
+  spaId         String  @id @default(uuid())
+  studentId     String
+  paperId       String
+  status        String? @default("Not Attempted")
+  obtainedMarks Int     @default(0)
 
-  
-
-  student         Student @relation(fields: [studentId], references: [p_number])
-  paper           Paper   @relation(fields: [paperId], references: [paper_id])
+  student Student @relation(fields: [studentId], references: [p_number])
+  paper   Paper   @relation(fields: [paperId], references: [paper_id])
 }
