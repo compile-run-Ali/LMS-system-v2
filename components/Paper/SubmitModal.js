@@ -82,6 +82,7 @@ export default function SubmitModal({
                     // make a function that will call api to create an entry of submit attempt SPA
                     setCurrentQuestion(currentQuestion + 1);
                     createAttempt();
+                    localStorage.clear();
                   }}
                 >
                   Submit

@@ -73,6 +73,7 @@ export default function AddStudent() {
           );
       })
       .catch((err) => console.log("Error in registering student", err));
+      router.push("/admin");
   };
 
   return (
