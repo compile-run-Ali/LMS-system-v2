@@ -103,8 +103,9 @@ export default function Exam({
   };
 
   const approve = async () => {
-    const approveExam = await axios.post("/api/faculty/approve_exam", {
+    const approveExam = await axios.post("/api/faculty/update_exam_status", {
       paper_id: exam.paper_id,
+      status: "Approved",
     });
     if (approveExam.status === 200) {
       addComment({

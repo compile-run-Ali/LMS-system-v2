@@ -8,7 +8,7 @@ const handler = async (req, res) => {
         paper_id: req.body.paper_id,
       },
       data: {
-        status: "Approved",
+        status: req.body.status,
       },
     });
 
