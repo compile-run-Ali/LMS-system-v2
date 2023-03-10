@@ -39,11 +39,16 @@ const SubjectiveExam = ({
     const parent_question = subjectives.find(
       (subjective) => subjective.question === e.target.value
     );
-    console.log(parent_question.sq_id);
+    if(!parent_question){
+      setCurrentMCQ({ ...currentSubjective, parent_question: "" });
+      return;
+    }
+    else{
     setCurrentMCQ({
       ...currentSubjective,
       parent_question: parent_question.sq_id,
     });
+  }
   };
 
   const handleMarksChange = (e) => {
@@ -204,11 +209,11 @@ const SubjectiveExam = ({
 
               <select
                 type="text"
-                value={currentSubjective.parent_question}
+                value={currentSubjective.parent_question?.sq_id}
                 onChange={handleParentQuestionChange}
                 className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]"
               >
-                <option value="" disabled>
+                <option value="" >
                   Select Parent Question
                 </option>
                 {subjectives

@@ -47,7 +47,7 @@ const ExamTable = ({ exams_data }) => {
         return aTime - bTime;
       })
     setExams(updatedExams);
-  }, [exams]);
+  }, [exams_data]);
 
   const handleExamClick = (paper_id) => {
     router.push(`/faculty/exam_details/${paper_id}`);
