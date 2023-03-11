@@ -1,12 +1,12 @@
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { formatDate, formatTime } from "@/utils/FormatDate";
+import { useRouter } from "next/router";
+import { formatDate } from "@/utils/FormatDate";
+import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 
 const ExamTable = ({ exams_data }) => {
   const router = useRouter();
   const [exams, setExams] = useState([]);
-
 
   useEffect(() => {
     const currentDate = new Date();
@@ -40,13 +40,15 @@ const ExamTable = ({ exams_data }) => {
         const aTime = new Date(a.date).getTime();
         const bTime = new Date(b.date).getTime();
         return aTime - bTime;
-      })
+      });
     setExams(updatedExams);
   }, [exams_data]);
 
   const handleExamClick = (paper_id) => {
     router.push(`/faculty/exam_details/${paper_id}`);
   };
+
+  console.log(exams);
 
   return (
     <table className="table-auto w-full mt-10 font-poppins text-left px-5">
@@ -72,7 +74,9 @@ const ExamTable = ({ exams_data }) => {
             <td className="border px-4 py-2">{exam.paper_type}</td>
             <td className="border px-4 py-2">{exam.duration} Minutes</td>
             <td className="border px-4 py-2">{formatDate(exam.date)}</td>
-            <td className="border px-4 py-2">{formatTime(exam.date)}</td>
+            <td className="border px-4 py-2">
+              {convertDateTimeToStrings(exam.date)}
+            </td>
             <td className="border px-4 py-2">{exam.weightage}</td>
             <td className="border px-4 py-2">{exam.status}</td>
           </tr>

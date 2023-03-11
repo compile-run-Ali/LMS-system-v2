@@ -5,6 +5,7 @@ import { MdEdit } from "react-icons/md";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { formatDate, formatTime } from "@/utils/FormatDate";
+import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 
 export default function Exam({
   exam,
@@ -227,7 +228,7 @@ export default function Exam({
           </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Time:</span>
-            <span className="ml-2">{formatTime(exam.date)}</span>
+            <span className="ml-2">{convertDateTimeToStrings(exam.date)}</span>
           </div>
 
           <div className="pl-20">
