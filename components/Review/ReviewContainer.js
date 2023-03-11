@@ -130,10 +130,21 @@ export default function ReviewContainer() {
 
   console.log("subjective answer are", subjectiveAnswers);
   console.log("subjective qs are", subjectiveQuestions);
-
+  console.log("objective answer are", objectiveAnswers);
+  console.log("objective qs are", objectiveQuestions);
+  const calculateTotalMarks = () => {
+    let total = 0;
+    objectiveQuestions.forEach((question) => {
+      total += question.marks;
+    });
+    subjectiveQuestions.forEach((question) => {
+      total += question.marks;
+    });
+    return total;
+  };
   return (
-    <div className="w-full mx-auto  max-w-5xl font-poppins">
-      <h1 className=" font-bold text-3xl  mt-10 mb-4">Paper Review</h1>
+    <div className="w-full mx-auto max-w-5xl font-poppins">
+      <h1 className="font-bold text-3xl mt-10 mb-4">Paper Review</h1>
       <PaperDetails paper={paperDetails} />
       <ObjectiveReview
         questions={objectiveQuestions}
@@ -147,6 +158,15 @@ export default function ReviewContainer() {
           isStudent={true}
         />
       )}
+
+      <div className="flex justify-end mt-4">
+        <div className="flex items-center">
+          <h1 className="font-bold text-xl mr-4">Total Marks:</h1>
+          <div className="bg-gray-200 rounded-lg p-2">
+            <span className="font-bold text-xl">{calculateTotalMarks()}</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

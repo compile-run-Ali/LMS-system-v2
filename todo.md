@@ -1,8 +1,8 @@
 # Full Features
 - exam review:
   <!-- -  subjective exam review -->
-  -  objective review ui
-  -  total marks at the end of paper
+  <!-- -  objective review ui -->
+  <!-- -  total marks at the end of paper -->
 - paper chechking:
   <!-- - Objective questions should be shown first -->
   <!-- - Then subjective questions should be shown with correct order, as they are shown in paper attempt, here faculty also marks the attempts -->
