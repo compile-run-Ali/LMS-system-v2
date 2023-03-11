@@ -132,7 +132,7 @@ export default function ReviewContainer() {
   console.log("subjective qs are", subjectiveQuestions);
 
   return (
-    <div className="w-full mx-auto  max-w-6xl">
+    <div className="w-full mx-auto  max-w-5xl font-poppins">
       <h1 className=" font-bold text-3xl  mt-10 mb-4">Paper Review</h1>
       <PaperDetails paper={paperDetails} />
       <ObjectiveReview

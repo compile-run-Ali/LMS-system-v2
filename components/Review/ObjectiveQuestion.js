@@ -6,43 +6,52 @@ export default function ObjectiveQuestion({ question, qNumber }) {
   const multipleAllowed = correctArray.length > 1;
 
   return (
-    <div className="mx-auto my-10 pt-2 text-black bg-zinc-200 p-10 shadow-black shadow-md">
-      <div>
-        <p className="text-xl">{qNumber + ". " + question.question}</p>
-        <div className="grid gap-y-3">
-          {answerArray.map((answer, index) => (
-            <div
-              key={index}
-              className="w-full flex rounded-lg px-2 transition-all items-center shadow-md shadow-gray-500"
-            >
-              <input
-                // ${correctArray.includes(answer) ? "accent-green-500" : "accent-red-500"}
-                className={`w-3 h-3 pointer-events-none 
-                accent-blue-900
-                `}
-                type={multipleAllowed ? "checkbox" : "radio"}
-                // disabled
-                defaultChecked={question?.selected_answers
-                  ?.split(",")
-                  .includes(answer)}
-              />
-              <label
-                htmlFor="list-radio-license"
-                className="w-full py-3 ml-2 text-sm font-medium"
-              >
-                {answer}
-              </label>
-            </div>
-          ))}
+    <div className="mx-auto my-10 bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="p-8">
+        <p className="text-lg font-medium text-gray-800">
+          {qNumber + ". " + question.question}
+        </p>
+        <div className="mt-6 space-y-4">
+          {answerArray.map((answer, index) => {
+            const isSelected = question?.selected_answers
+              ?.split(",")
+              .includes(answer);
+            return (
+              <div key={index} className="flex items-center">
+                <div
+                  className={`relative flex items-center justify-center w-6 h-6 mr-4 border ${
+                    isSelected ? "border-blue-500" : "border-gray-300"
+                  } rounded-full`}
+                >
+                  <input
+                    type={multipleAllowed ? "checkbox" : "radio"}
+                    className="sr-only"
+                    defaultChecked={isSelected}
+                  />
+                  <span
+                    className={`absolute w-3 h-3 rounded-full ${
+                      isSelected ? "bg-blue-500" : ""
+                    }`}
+                  ></span>
+                </div>
+                <p className="text-base text-gray-700">{answer}</p>
+              </div>
+            );
+          })}
         </div>
-        <div className="mt-4 space-y-1 bg-blue-900 w-full p-2 px-4 rounded-lg flex flex-col">
-          <p className="text-sm text-white">
-            <span className="font-bold">Correct Answer: </span>
-            { question.correct_answer}
+      </div>
+      <div className="bg-blue-900 px-4 py-3">
+        <div className="flex justify-between items-center text-sm text-white">
+          <p>
+            Correct Answer:{" "}
+            <span className="font-medium">{question.correct_answer}</span>
           </p>
-          <p className="text-sm text-white">
-            <span className="font-bold"> Marks: </span>
-            {question.marksobtained?.toFixed(2) || '0.00'} out of {question.marks.toFixed(2)}
+          <p>
+            Marks:{" "}
+            <span className="font-medium">
+              {question.marksobtained?.toFixed(2) || "0.00"} out of{" "}
+              {question.marks.toFixed(2)}
+            </span>
           </p>
         </div>
       </div>
