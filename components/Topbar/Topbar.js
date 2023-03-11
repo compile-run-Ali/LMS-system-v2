@@ -70,16 +70,18 @@ export default function Topbar({ admin }) {
             </div>
           </ClickAwayListener>
           <div className="user-profile flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full border border-blue-900 relative">
-              <Image
-                src={session?.data?.user?.image}
-                // src="/avatar.png"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-full object-cover object-center"
-                alt="user"
-              />
-            </div>
+            {session?.data?.user?.image && (
+              <div className="w-8 h-8 rounded-full border border-blue-900 relative">
+                <Image
+                  src={session?.data?.user?.image}
+                  // src="/avatar.png"
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-full object-cover object-center"
+                  alt="user"
+                />
+              </div>
+            )}
 
             <div className="user-name">
               <span className="font-medium font-poppins">

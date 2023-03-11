@@ -18,7 +18,7 @@ While creating a child question, the max marks should be less then parent questi
 default value should be true for long question checkbox while making subjective question in exam
 <!-- 9 "Closed" Status for paper once paper end time and date have elapsed. -->
 
-In the SPA table: 
+In the SPA table:
    - if a student paper record does not exist, then the status of exam should be shown as "not attempted" in mark exam list
    - when a paper attempt starts the spa status should be updated to "attempted"
    - if time ends it should update to "time ended"
