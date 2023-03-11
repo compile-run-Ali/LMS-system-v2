@@ -128,10 +128,6 @@ export default function ReviewContainer() {
     }
   }, [paper, student]);
 
-  console.log("subjective answer are", subjectiveAnswers);
-  console.log("subjective qs are", subjectiveQuestions);
-  console.log("objective answer are", objectiveAnswers);
-  console.log("objective qs are", objectiveQuestions);
   const calculateTotalMarks = () => {
     let total = 0;
     objectiveQuestions.forEach((question) => {
@@ -139,6 +135,16 @@ export default function ReviewContainer() {
     });
     subjectiveQuestions.forEach((question) => {
       total += question.marks;
+    });
+    return total;
+  };
+  const calculateObtainedMarks = () => {
+    let total = 0;
+    objectiveAnswers.forEach((answer) => {
+      total += answer?.marksobtained;
+    });
+    subjectiveAnswers.forEach((answer) => {
+      total += answer?.marksobtained;
     });
     return total;
   };
