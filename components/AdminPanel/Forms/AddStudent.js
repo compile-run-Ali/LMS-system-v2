@@ -159,7 +159,7 @@ export default function AddStudent() {
           />
         </div>
         <div className="font-poppins mt-[22px]">
-          <label className="block mb-2  text-primary-black" for="file_input">
+          <label className="block mb-2  text-primary-black" htmlFor="file_input">
             Upload Profile Pic{" "}
             <span
               className="mt-1 pl-1 text-xs text-black-100 "
