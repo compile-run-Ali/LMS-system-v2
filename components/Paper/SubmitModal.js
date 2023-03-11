@@ -15,12 +15,12 @@ export default function SubmitModal({
   //call api and create attempt on the paper
   const { data: session, status } = useSession();
 
-  const createAttempt = () => {
+  const updateAttempt = () => {
     axios
-      .post(`/api/student/paper/attempt_status`, {
+      .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.user.id,
         paperId: paper,
-        status: "submitted",
+        status: "Submitted",
       })
       .then((res) => {
         console.log("attempt created successfully ", res.data);
@@ -87,13 +87,11 @@ export default function SubmitModal({
                 <button
                   className="bg-green-500 hover:bg-green-600 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                   onClick={() => {
-                    // submit form
-                    setShowModal(false);
+                    updateAttempt();
                     console.log("submitted");
-                    // make a function that will call api to create an entry of submit attempt SPA
                     setCurrentQuestion(currentQuestion + 1);
-                    createAttempt();
                     clearPaperFromLocal();
+                    setShowModal(false);
                   }}
                 >
                   Submit

@@ -20,7 +20,6 @@ export default function PaperContainer({}) {
   const [objectiveCount, setObjectiveCount] = useState(0);
   const [flags, setFlags] = useState([]);
 
- 
   useEffect(() => {
     if (paper) {
       let papers = JSON.parse(localStorage.getItem("papers") || "{}");
@@ -28,7 +27,6 @@ export default function PaperContainer({}) {
         console.log("setting current", papers[paper].current);
         setCurrentQuestion(papers[paper].current);
       }
-      
     }
   }, [paper]);
 
@@ -79,9 +77,23 @@ export default function PaperContainer({}) {
         setPaperDetails(papers[paper]);
       } else {
         // do below logic
-console.log(
-          "paper does not exist in local storage, getting from server" 
-)
+        console.log(
+          "paper does not exist in local storage, getting from server"
+        );
+        //update spa status to Attempted
+        axios
+          .post(`/api/student/paper/update_attempt_status`, {
+            studentId: session.user.id,
+            paperId: paper,
+            status: "Attempted",
+          })
+          .then((res) => {
+            console.log("updated attempt status ", res.data);
+          })
+          .catch((err) => {
+            console.log("error updating attempt status", err);
+          });
+
         // get paper details
         axios
           .get(`/api/paper/${paper}`)

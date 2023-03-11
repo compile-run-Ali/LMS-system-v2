@@ -14,22 +14,14 @@ export default function PapersList({ papers, status }) {
   const isPast = status === "Past Papers";
   const { data: session } = useSession();
 
-  function paperExists(paperId, attempt) {
-    for (let i = 0; i < attempt.length; i++) {
-      if (attempt[i].paperId === paperId) {
-        console.log(
-          "paper exists with id ",
-          paperId,
-        );
-        return true;
-      }
+  const getPaperStatus = (paper_id) => {
+    const paper = attemptStatus.find((paper) => paper.paperId === paper_id);
+    if (paper) {
+      return paper.status;
+    } else {
+      return "Not Attempted";
     }
-    console.log(
-      "paper does not exist with id ",
-    );
-    return false;
-  }
-
+  };
   useEffect(() => {
     const newSortedPapers = papers.sort(
       (a, b) => Date.parse(a.date) - Date.parse(b.date)
@@ -38,23 +30,18 @@ export default function PapersList({ papers, status }) {
   }, [papers]);
 
   useEffect(() => {
-    axios
-      .get(`/api/student/paper/get_attempt_status`, {
+    const getAttemptStatus = async () => {
+      const res = await axios.get(`/api/student/paper/get_attempt_status`, {
         params: {
-          id: session.user.id,
+          studentId: session.user.id,
         },
-      })
-      .then(
-        (res) => {
-          setAttemptStatus(res.data);
-        },
-        (err) => {
-          console.log(err);
-        }
-      );
+      });
+      setAttemptStatus(res.data);
+    };
+    getAttemptStatus();
   }, [session]);
 
-  console.log("attempt status is ", attemptStatus);
+  console.log("attemptStatus", attemptStatus);
 
   const getRow = (paper) => {
     const { start, end } = getPaperDateTime(paper.date, paper.duration);
@@ -63,7 +50,6 @@ export default function PapersList({ papers, status }) {
     const endDate = convertDateTimeToStrings(end);
 
     return (
-      // <div className="mb-4 flex justify-between bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white p-4 items-center hover:-translate-y-0.5 hover:to-blue-800 hover:from-blue-800 transition-all">
       <>
         <td className="px-4 py-2">{paper.paper_name}</td>
         <td className="px-4 py-2">{paper.paper_type}</td>
@@ -71,32 +57,42 @@ export default function PapersList({ papers, status }) {
         <td className="px-4 py-2">{startTime}</td>
         <td className="px-4 py-2">{endDate}</td>
         <td className="px-4 py-2">
-          {!paperExists(paper.paper_id, attemptStatus || isLive) ? (
-            <div key={paper.paper_id}>
+          {/* if paper is live and is submitted, show submitted button, else show attempt button */}
+          {/* if paper is past and review is allowed, show review button, else show review not allowed button */}
+          {/* else show view button */}
+          {isLive ? (
+            getPaperStatus(paper.paper_id) === "Submitted" ? (
+              <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
+                Submitted
+              </button>
+            ) : (
               <Link
-                href={
-                  `/paper/` +
-                  `${isLive ? "attempt" : isPast ? "review" : "view"}` +
-                  `/${paper.paper_id}`
-                }
+                href={`/paper/attempt/${paper.paper_id}`}
+                className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
               >
-                <button
-                  className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded
-                    ${isPast && !paper.review && "hidden"}`}
-                >
-                  {isLive ? "Attempt" : isPast ? "Review" : "View"}
-                </button>
+                Attempt
               </Link>
-            </div>
+            )
+          ) : isPast ? (
+            paper.review ? (
+              <Link
+                href={`/paper/review/${paper.paper_id}`}
+                className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              >
+                Review
+              </Link>
+            ) : (
+              <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
+                Review Not Allowed
+              </button>
+            )
           ) : (
-            <button
-              key={paper.paper_id}
-              className={`bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed
-              ${isPast && !paper.review && "hidden"}
-            `}
+            <Link
+              href={`/paper/view/${paper.paper_id}`}
+              className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
             >
-              Submitted
-            </button>
+              View
+            </Link>
           )}
         </td>
       </>
@@ -117,7 +113,6 @@ export default function PapersList({ papers, status }) {
           </tr>
         </thead>
         <tbody>
-          {/* href={`/paper/attempt/${p_number}/${paper.paper_id}`} */}
           {sortedPapers.map((paper) => {
             return (
               // add Link tag to live papers only and those with attempt status empty

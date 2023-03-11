@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 
 import {
   convertDateTimeToStrings,
@@ -8,8 +10,8 @@ import {
 } from "@/lib/TimeCalculations";
 
 export default function Timer({ paper }) {
+  const { data: session } = useSession();
   const router = useRouter();
-  const { student } = router.query;
   const [timeLeft, setTimeLeft] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
@@ -24,6 +26,21 @@ export default function Timer({ paper }) {
     );
   };
 
+  const updateStatus = () => {
+    axios
+      .post(`/api/student/paper/update_attempt_status`, {
+        studentId: session.user.id,
+        paperId: paper.paper_id,
+        status: "Incomplete Submission",
+      })
+      .then((res) => {
+        console.log("updated attempt status ", res.data);
+      })
+      .catch((err) => {
+        console.log("error updating attempt status", err);
+      });
+  };
+
   useEffect(() => {
     if (paper.date) {
       const interval = setInterval(() => {
@@ -32,6 +49,7 @@ export default function Timer({ paper }) {
         );
         if (timeLeft === "00:00:00") {
           clearPaperFromLocal();
+          updateStatus();
           // set status to time ended
           router.push(`/student`);
         }

@@ -20,9 +20,9 @@ default value should be true for long question checkbox while making subjective 
 
 In the SPA table:
    - if a student paper record does not exist, then the status of exam should be shown as "not attempted" in mark exam list
-   - when a paper attempt starts the spa status should be updated to "attempted"
-   - if time ends it should update to "time ended"
-   - if submitted on time, it should update to "submitted"
+   <!-- - when a paper attempt starts the spa status should be updated to "attempted" -->
+   <!-- - if time ends it should update to "time ended" -->
+   <!-- - if submitted on time, it should update to "submitted" -->
    - when teacher marks the exam it should be "marked"
    - if the status is marked, student should be able to see his marks in papersList
 # Bug fixes
@@ -31,6 +31,7 @@ In the SPA table:
 <!-- faculty must select correct answer for subjective while making an exam -->
 <!-- parent question not being selected for child question in select tag -->
 <!-- when editing an exam, original date and time of the exam is not received -->
+time not being shown correctly in viewing screen of future paper
 # To be asked
 functionality of assign in exam table of admin
 5 Line for Exam in the table
