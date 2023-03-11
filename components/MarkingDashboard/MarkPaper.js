@@ -57,7 +57,6 @@ const MarkPaper = ({
       return answer ? total + answer.marksobtained : total;
     }, 0);
     marks += objectiveMarks;
-    console.log("objective", objectiveMarks);
 
     const subjectiveMarks = await Promise.all(
       subjectiveAnswers.map(async (answer, index) => {
@@ -72,7 +71,6 @@ const MarkPaper = ({
                 },
               }
             );
-            console.log(index, " subjective ", res.data.marksobtained);
             return res.data.marksobtained;
           } catch (err) {
             console.log("error in fetching marks", err.message);
@@ -87,25 +85,21 @@ const MarkPaper = ({
       return total + mark;
     }, 0);
     marks += totalSubjectiveMarks;
-    console.log("at the end ", marks);
     setObtainedMarks(marks);
   };
 
   return (
     <div className="flex justify-between items-center my-10">
       <div>
-        {obtainedMarks ? (
-          <h1 className="text-2xl ">
-            <span className="font-bold">Marks: </span>
-            {obtainedMarks.toFixed(2)} / {totalMarks.toFixed(0)}
-          </h1>
-        ) : null}
+        <h1 className="text-2xl ">
+          <span className="font-bold">Marks: </span>
+          {obtainedMarks.toFixed(2)} / {totalMarks.toFixed(2)}
+        </h1>
       </div>
       <div>
         <button
           className="p-2 bg-blue-900 text-white rounded-lg"
           onClick={() => {
-            console.log("obtained are", obtainedMarks);
 
             updateStatus();
           }}

@@ -102,7 +102,11 @@ const Index = () => {
       <BaseLayout title={"Mark Exam"}>
         <DashboardLayout>
           <div className="px-20">
-            <PaperDetails paper={paperDetails} isFaculty={true} />
+            <PaperDetails
+              paper={paperDetails}
+              isFaculty={true}
+              studentId={p_number}
+            />
             <ObjectiveReview
               questions={objectiveQuestions}
               answers={objectiveAnswers}
