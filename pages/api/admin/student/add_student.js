@@ -15,6 +15,7 @@ const handler = async (req, res) => {
         cgpa: Number(req.body.cgpa),
         email: req.body.email,
         DOB: new Date(req.body.DOB),
+        profile_picture: req.body.profile_picture,
       },
       select: {
         p_number: true,
@@ -23,6 +24,7 @@ const handler = async (req, res) => {
         cgpa: true,
         email: true,
         DOB: true,
+        profile_picture: true,
       },
     });
     res.status(200).json(student);

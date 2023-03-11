@@ -72,8 +72,8 @@ export default function Topbar({ admin }) {
           <div className="user-profile flex items-center gap-3">
             <div className="w-8 h-8 rounded-full border border-blue-900 relative">
               <Image
-                //src={session?.data?.user?.image}
-                src="/avatar.png"
+                src={session?.data?.user?.image}
+                // src="/avatar.png"
                 layout="fill"
                 objectFit="cover"
                 className="rounded-full object-cover object-center"

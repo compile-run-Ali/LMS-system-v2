@@ -13,6 +13,7 @@ export default function AddStudent() {
   const [password, setPassword] = useState("");
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
+  const [profilePicture, setProfilePicture] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function AddStudent() {
       DOB,
       email,
       password,
+      profile_picture: profilePicture,
     });
     await addStudent({
       p_number: pNumber,
@@ -43,6 +45,7 @@ export default function AddStudent() {
       DOB,
       email,
       password,
+      profile_picture: profilePicture,
     });
     console.log(DOB, typeof DOB);
     setPNumber("");
@@ -52,6 +55,7 @@ export default function AddStudent() {
     setDob("");
     setEmail("");
     setPassword("");
+    setProfilePicture(null);
   };
 
   const addStudent = async (student) => {
@@ -73,7 +77,7 @@ export default function AddStudent() {
           );
       })
       .catch((err) => console.log("Error in registering student", err));
-      router.push("/admin");
+    router.push("/admin");
   };
 
   return (
@@ -117,11 +121,7 @@ export default function AddStudent() {
           />
         </div>
         <div className="mt-6 form-group">
-          <label
-            htmlFor="Courses"
-          >
-            Courses
-          </label>
+          <label htmlFor="Courses">Courses</label>
 
           <select
             className="form-control block w-full mt-2 px-3 py-2.5 text-sm font-normal text-gray-700 
@@ -174,6 +174,16 @@ export default function AddStudent() {
             id="file_input"
             type="file"
             accept="image/png, image/gif, image/jpeg"
+            onChange={(e) => {
+              //create url and set that as the image
+              const file = e.target.files[0];
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onloadend = () => {
+                const url = reader.result;
+                setProfilePicture(url);
+              };
+            }}
           />
         </div>
       </div>

@@ -17,6 +17,7 @@ export default function Register() {
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null);
 
   useEffect(() => {
     axios
@@ -58,6 +59,7 @@ export default function Register() {
       DOB: dob,
       email,
       password,
+      profile_picture: profilePicture,
     };
 
     // add student to student table
@@ -349,6 +351,16 @@ export default function Register() {
                 aria-describedby="file_input_help"
                 id="file_input"
                 type="file"
+                onChange={(e) => {
+                  //create url and set that as the image
+                  const file = e.target.files[0];
+                  const reader = new FileReader();
+                  reader.readAsDataURL(file);
+                  reader.onloadend = () => {
+                    const url = reader.result;
+                    setProfilePicture(url);
+                  };
+                }}
               />
               <p
                 className="mt-1 pl-2 text-sm text-gray-100 "
