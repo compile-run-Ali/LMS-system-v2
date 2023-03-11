@@ -6,6 +6,7 @@ import axios from "axios";
 import ObjectiveReview from "@/components/Review/ObjectiveReview";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import MarkPaper from "@/components/MarkingDashboard/MarkPaper";
 
 const Index = () => {
   const router = useRouter();
@@ -19,11 +20,6 @@ const Index = () => {
   const { exam_id, p_number } = router.query;
 
   const fetchObjectiveAttempts = () => {
-    // console.log(
-    //   "fetching objective attempts for paper id and p_number",
-    //   objectiveQuestions
-    // );
-
     objectiveQuestions.forEach((question) => {
       axios
         .get(`/api/student/paper/oq/get/${p_number}/${question.oq_id}`, {
@@ -50,7 +46,6 @@ const Index = () => {
 
   const fetchSubjectiveAttempts = () => {
     subjectiveQuestions.forEach((question) => {
-      console.log("finding attempt of ", question.sq_id);
       axios
         .get("/api/paper/marking/get_student_attempts", {
           params: {
@@ -74,8 +69,8 @@ const Index = () => {
     });
   };
 
-  const fetchPaperDetails = () => {
-    axios
+  const fetchPaperDetails = async () => {
+    await axios
       .get("/api/paper/get_paper", {
         params: {
           paper_id: exam_id,
@@ -85,14 +80,11 @@ const Index = () => {
         setPaperDetails(res.data[0]);
         setObjectiveQuestions(res.data[0].objective_questions);
         setSubjectiveQuestions(res.data[0].subjective_questions);
-        // console.log("paper details fetched successfully", res.data[0]);
       })
       .catch((err) => {
         console.log("error in fetching paper details", err.message);
       });
   };
-
-  console.log("sub is ", subjectiveAnswers);
 
   useEffect(() => {
     if (exam_id && p_number) {
@@ -118,6 +110,12 @@ const Index = () => {
             <AnswersTable
               questions={subjectiveQuestions}
               answers={subjectiveAnswers}
+            />
+            <MarkPaper
+              objectiveAnswers={objectiveAnswers}
+              subjectiveAnswers={subjectiveAnswers}
+              objectiveQuestions={objectiveQuestions}
+              subjectiveQuestions={subjectiveQuestions}
             />
           </div>
         </DashboardLayout>

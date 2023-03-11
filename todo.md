@@ -6,7 +6,7 @@
 - paper chechking:
   <!-- - Objective questions should be shown first -->
   <!-- - Then subjective questions should be shown with correct order, as they are shown in paper attempt, here faculty also marks the attempts -->
-  - Then faculty should proceed, here a summary of student's attempt should be shown, such as marks obtained 
+  <!-- - Then faculty should proceed, here a summary of student's attempt should be shown, such as marks obtained -->
   - Then faculty go back to a table where they can see a table of every student's attempt of a specific quiz, and also see who did not attempt that quiz
   - When all student's exam has been marked, the status of that exam should be "marked", and faculty should still be able to see the above tables
   - all faculties assigned to that course should be able to see the above tables
@@ -23,7 +23,7 @@ In the SPA table:
    <!-- - when a paper attempt starts the spa status should be updated to "attempted" -->
    <!-- - if time ends it should update to "time ended" -->
    <!-- - if submitted on time, it should update to "submitted" -->
-   - when teacher marks the exam it should be "marked"
+   <!-- - when teacher marks the exam it should be "marked" -->
    - if the status is marked, student should be able to see his marks in papersList
 # Bug fixes
 <!-- when paper submitted, clear that paper from local storage -->
