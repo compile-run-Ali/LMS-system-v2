@@ -23,7 +23,7 @@ when time reaches 00:00:00 of an exam, the SPA status should be set to something
 <!-- cgpa input field should be a number and can only accept nums 0 to 4 with step 0.01 in making student by admin -->
 <!-- faculty must select correct answer for subjective while making an exam -->
 <!-- parent question not being selected for child question in select tag -->
-when editing an exam, original date and time of the exam is not received
+<!-- when editing an exam, original date and time of the exam is not received -->
 # To be asked
 functionality of assign in exam table of admin
 5 Line for Exam in the table
