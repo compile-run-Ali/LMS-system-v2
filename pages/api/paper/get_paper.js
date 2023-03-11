@@ -15,6 +15,7 @@ const handler = async (req, res) => {
         paper_name: true,
         paper_type: true,
         duration: true,
+        date: true,
         status: true,
         objective_questions: {
           select: {
