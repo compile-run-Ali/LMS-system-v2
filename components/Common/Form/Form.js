@@ -18,13 +18,20 @@ export default function Form({
   const [paperDuration, setPaperDuration] = useState(
     edit ? Number(examDetails.duration) : 180
   );
-  const [dateOfExam, setDateOfExam] = useState(edit ? examDetails.date : "");
   const [weightage, setWeightage] = useState(edit ? examDetails.weightage : "");
-  const [paperTime, setPaperTime] = useState(
-    edit ? examDetails.time : "09:00:00"
+
+  const [dateOfExam, setDateOfExam] = useState(
+    edit ? new Date(examDetails.date).toISOString().substr(0, 10) : ""
   );
+  const [paperTime, setPaperTime] = useState(
+    edit ? new Date(examDetails.date).toISOString().substr(11, 5) : "09:00"
+  );
+  console.log("paper time is", paperTime);
+  
   const [freeflow, setFreeflow] = useState(false);
   const [review,setReview] = useState(false)
+
+  console.log("exam details", examDetails)
 
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
@@ -48,6 +55,7 @@ export default function Form({
 
   const handlePaperTime = (e) => {
     setPaperTime(e.target.value);
+
   };
 
   const handleFreeflow = (e) => {
