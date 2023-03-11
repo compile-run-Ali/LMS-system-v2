@@ -7,7 +7,7 @@ import {
   getPaperDateTime,
   compareDateTime,
 } from "@/lib/TimeCalculations";
-import { formatDate, formatTime } from "@/utils/FormatDate";
+import { formatDate } from "@/utils/FormatDate";
 
 export default function ViewContainer() {
   const router = useRouter();
