@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 
@@ -8,14 +8,23 @@ const AttempContainer = ({ question, isStudent }) => {
   const [givenmarks, setGivenmarks] = useState(question.marksobtained);
   const [changed, setChanged] = useState(false);
   const markQuestion = async () => {
-    const updatedExam = await axios.post("/api/paper/marking/mark_question", {
-      ssa_id: p_number + question.sq_id,
-      marksobtained: givenmarks,
-    });
-    if (updatedExam.status === 200) {
-      console.log("Question marked successfully");
-    }
+    await axios
+      .post("/api/paper/marking/mark_question", {
+        ssa_id: p_number + question.sq_id,
+        marksobtained: givenmarks,
+      })
+      .then((res) => {
+        console.log("marked");
+      })
+      .catch((err) => {
+        console.log("error in marking", err.message);
+      });
   };
+
+  useEffect(() => {
+    setGivenmarks(question.marksobtained);
+  }, [question]);
+
   return (
     <div className="flex flex-col justify-between pt-0">
       <div>
@@ -60,7 +69,9 @@ const AttempContainer = ({ question, isStudent }) => {
                 {!isStudent && (
                   <button
                     className="bg-green-800 hover:bg-green-700 text-white py-1 px-2 rounded"
-                    onClick={markQuestion}
+                    onClick={() => {
+                      markQuestion();
+                    }}
                   >
                     Mark
                   </button>
