@@ -31,13 +31,10 @@ const AnswersTable = ({ questions, answers, isStudent }) => {
       } else {
         subjectiveWithChild.push(question);
       }
-      console.log("question", question);
     });
-    console.log("after sorting", subjectiveWithChild);
     return subjectiveWithChild;
   };
 
-  console.log("question with answers", questionWithAnswers(questions, answers));
   return (
     <div className="flex flex-col space-y-10">
       {questionsWithChild(questions, answers).map((question, index) => (

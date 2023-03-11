@@ -141,7 +141,6 @@ export default function PaperContainer({}) {
                             subjectiveWithChild.push(question);
                           }
                         });
-                        console.log("after sorting", subjectiveWithChild);
                         papers[paper].subjectiveQuestions = subjectiveWithChild;
                         localStorage.setItem("papers", JSON.stringify(papers));
                         setQuestions(
