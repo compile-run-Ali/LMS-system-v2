@@ -7,7 +7,7 @@
   <!-- - Objective questions should be shown first -->
   <!-- - Then subjective questions should be shown with correct order, as they are shown in paper attempt, here faculty also marks the attempts -->
   <!-- - Then faculty should proceed, here a summary of student's attempt should be shown, such as marks obtained -->
-  - Then faculty go back to a table where they can see a table of every student's attempt of a specific quiz, and also see who did not attempt that quiz
+  <!-- - Then faculty go back to a table where they can see a table of every student's attempt of a specific quiz, and also see who did not attempt that quiz -->
   - When all student's exam has been marked, the status of that exam should be "marked", and faculty should still be able to see the above tables
   - all faculties assigned to that course should be able to see the above tables
 # Incomplete features
@@ -31,7 +31,11 @@ In the SPA table:
 <!-- faculty must select correct answer for subjective while making an exam -->
 <!-- parent question not being selected for child question in select tag -->
 <!-- when editing an exam, original date and time of the exam is not received -->
-time not being shown correctly in viewing screen of future paper
+<!-- time not being shown correctly in viewing screen of future paper -->
+marks not updated if an individual question is marked
+marks being doubled in mark exam on initial load
+total marks are shown more than actual marks, because a parent question's marks are also counted
+
 # To be asked
 functionality of assign in exam table of admin
 5 Line for Exam in the table

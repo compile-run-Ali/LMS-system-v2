@@ -25,7 +25,6 @@ export default function PaperDetails({
         },
       })
       .then((res) => {
-        console.log("attempt status", res.data);
         if (
           res.data.filter((attempt) => attempt.paperId === paper.paper_id)
             .length > 0
@@ -38,7 +37,6 @@ export default function PaperDetails({
       });
   };
 
-  console.log("student stats", studentStatus);
 
   useEffect(() => {
     if (studentId) {

@@ -46,6 +46,7 @@ const MarkPaper = ({
       total += question.marks;
     });
     subjectiveQuestions.forEach((question) => {
+      // handle child question marks here
       total += question.marks;
     });
     setTotalMarks(total);
@@ -100,7 +101,6 @@ const MarkPaper = ({
         <button
           className="p-2 bg-blue-900 text-white rounded-lg"
           onClick={() => {
-
             updateStatus();
           }}
         >
