@@ -11,9 +11,50 @@ const MarkingPage = () => {
   const { exam_id } = router.query;
 
   const fetchStudents = async () => {
-    const students = await axios.post("/api/paper/marking/get_students", {
+    // first fetch students
+    const studentsPromise = axios.post("/api/paper/marking/get_students", {
       paper_id: router.query.exam_id,
     });
+    const promises = [studentsPromise];
+    const [students] = await Promise.all(promises);
+
+    // now fetch spa and join it with students
+    const studentSpaPromise = axios.post(
+      "/api/student/paper/get_attempt_by_paper",
+      {
+        paperId: exam_id,
+      }
+    );
+    const promises2 = [studentSpaPromise];
+    const [studentSpa] = await Promise.all(promises2);
+
+    // now join the two
+    students.data.course.students.forEach((student) => {
+      if (
+        studentSpa.data.find(
+          (spa) => spa.studentId === student.student.p_number
+        )
+      ) {
+        student.student = {
+          ...student.student,
+          ...studentSpa.data.find(
+            (spa) => spa.studentId === student.student.p_number
+          ),
+        };
+      }
+      else{
+        student.student = {
+          ...student.student,
+          status: "Not Attempted",
+          obtainedMarks: 0,
+        };
+      }
+    });
+
+    console.log(
+      "students data after joining with spa",
+      students.data.course.students
+    );
 
     let students_data = [];
     if (students.data.course && students.data.course.students.length > 0) {

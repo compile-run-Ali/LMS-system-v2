@@ -18,6 +18,8 @@ const StudentsTable = ({ students_data, exam_id }) => {
         <tr className="bg-blue-800 text-white font-medium ">
           <th className="px-4 py-2">P Number</th>
           <th className="px-4 py-2">Student Name</th>
+          <th className="px-4 py-2">Status</th>
+          <th className="px-4 py-2">Marks</th>
           <th className="px-4 py-2"></th>
         </tr>
       </thead>
@@ -29,6 +31,8 @@ const StudentsTable = ({ students_data, exam_id }) => {
           >
             <td className="border px-4 py-2">{student.p_number}</td>
             <td className="border px-4 py-2">{student.name}</td>
+            <td className="border px-4 py-2">{student.status}</td>
+            <td className="border px-4 py-2">{student.obtainedMarks}</td>
             <td className="border px-4 py-2 text-right">
               <Link href={`/faculty/mark_exam/${exam_id}/${student.p_number}`}>
                 <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded ">
