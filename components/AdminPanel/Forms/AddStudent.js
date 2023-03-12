@@ -27,27 +27,21 @@ export default function AddStudent() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({
-      p_number: pNumber,
-      name,
-      phone_number: phoneNumber,
-      cgpa,
-      DOB,
-      email,
-      password,
-      profile_picture: profilePicture,
-    });
-    await addStudent({
-      p_number: pNumber,
-      name,
-      phone_number: phoneNumber,
-      cgpa,
-      DOB,
-      email,
-      password,
-      profile_picture: profilePicture,
-    });
-    console.log(DOB, typeof DOB);
+  
+    const formData = new FormData();
+    formData.append("p_number", pNumber);
+    formData.append("name", name);
+    formData.append("phone_number", phoneNumber);
+    formData.append("cgpa", cgpa);
+    formData.append("DOB", DOB);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("course_code", selectedCourse);
+    formData.append("profile_picture", profilePicture);
+    console.log(profilePicture)
+    addStudent(formData);
+
+  
     setPNumber("");
     setName("");
     setPhoneNumber("");
@@ -57,28 +51,33 @@ export default function AddStudent() {
     setPassword("");
     setProfilePicture(null);
   };
+    
 
-  const addStudent = async (student) => {
-    axios
-      .post(`/api/admin/student/add_student`, { ...student })
-      .then((res) => {
-        console.log("student added successfully", res.data);
-        // add course and student to SRC table
-        axios
-          .post(`/api/student/register`, {
-            p_number: pNumber,
-            course_code: selectedCourse,
-          })
-          .then((res) => {
-            console.log("course added successfully", res.data);
-          })
-          .catch((err) =>
-            console.log("Error in registering student to course", err)
-          );
-      })
-      .catch((err) => console.log("Error in registering student", err));
-    router.push("/admin");
-  };
+const addStudent = async (student) => {
+  axios
+    .post(`/api/admin/student/add_student`, student, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => {
+      console.log("student added successfully", res.data);
+      // add course and student to SRC table
+      axios
+        .post(`/api/student/register`, {
+          p_number: pNumber,
+          course_code: selectedCourse,
+        })
+        .then((res) => {
+          console.log("course added successfully", res.data);
+        })
+        .catch((err) =>
+          console.log("Error in registering student to course", err)
+        );
+    })
+    .catch((err) => console.log("Error in registering student", err));
+  // router.push("/admin");
+};
 
   return (
     <form onSubmit={handleSubmit} className="px-4 font-poppins">
@@ -175,14 +174,7 @@ export default function AddStudent() {
             type="file"
             accept="image/png, image/gif, image/jpeg"
             onChange={(e) => {
-              //create url and set that as the image
-              const file = e.target.files[0];
-              const reader = new FileReader();
-              reader.readAsDataURL(file);
-              reader.onloadend = () => {
-                const url = reader.result;
-                setProfilePicture(url);
-              };
+              setProfilePicture(e.target.files[0]);
             }}
           />
         </div>
