@@ -24,6 +24,7 @@ export default function OQContainer({
   const [saved, setSaved] = useState(false);
   const [remainingTime, setRemainingTime] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [numSelected, setNumSelected] = useState(0);
 
   console.log(showModal);
 
@@ -117,6 +118,7 @@ export default function OQContainer({
     },
     [selectedAnswer]
   );
+  const maxNumSelected = correctAnswers.length;
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 w-full">
@@ -139,43 +141,40 @@ export default function OQContainer({
               {question.answers?.split(",").map((answer, index) => (
                 <div
                   key={index}
-                  className={`
-                  w-full flex my-3 rounded-lg p-4  text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200
-                  ${
+                  className={`w-full flex my-3 rounded-lg p-4 text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 ${
                     selectedAnswer.includes(answer)
                       ? "bg-zinc-300"
                       : "bg-white hover:bg-zinc-200 "
-                  }
-                  `}
+                  }`}
                   onClick={() => {
                     const input = document.querySelector(
                       `input[value='${answer}']`
                     );
-                    input.checked = !input.checked;
-                    input.dispatchEvent(new Event("change"));
-                    if (multipleAllowed) {
+                    if (selectedAnswer.includes(answer)) {
                       setSelectedAnswer(
-                        selectedAnswer.includes(answer)
-                          ? selectedAnswer.filter((a) => a !== answer)
-                          : [...selectedAnswer, answer]
+                        selectedAnswer.filter((a) => a !== answer)
                       );
-                    } else setSelectedAnswer([answer]);
+                      setNumSelected(numSelected - 1);
+                      input.checked = false; // uncheck the checkbox
+                    } else if (
+                      numSelected < correctAnswers.length &&
+                      numSelected < maxNumSelected
+                    ) {
+                      setSelectedAnswer([...selectedAnswer, answer]);
+                      setNumSelected(numSelected + 1);
+                      input.checked = true; // check the checkbox
+                    }
                   }}
                 >
                   <input
-                    className="w-6 h-6 ring-offset-gray-700 focus:ring-offset-gray-700 bg-gray-600 border-gray-500 pointer-events-none accent-blue-900"
                     type={multipleAllowed ? "checkbox" : "radio"}
-                    name={question.oq_id}
+                    name="answer"
                     value={answer}
-                    readOnly={selectedAnswer.includes(answer) ? false : true}
-                    checked={selectedAnswer.includes(answer)}
+                    className="mr-4"
+                    checked={selectedAnswer.includes(answer)} // set the checked attribute
+                    readOnly // disable user input on this element
                   />
-                  <label
-                    htmlFor="list-radio-license"
-                    className="w-full py-3 ml-2 text-sm font-medium cursor-pointer"
-                  >
-                    {answer}
-                  </label>
+                  <span>{answer}</span>
                 </div>
               ))}
             </div>
