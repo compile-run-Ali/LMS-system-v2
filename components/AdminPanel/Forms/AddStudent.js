@@ -16,6 +16,12 @@ export default function AddStudent() {
   const [profilePicture, setProfilePicture] = useState(null);
   const router = useRouter();
 
+
+  const handleFileChange = (event) => {
+    setProfilePicture(event.target.files[0]);
+    console.log(event.target.files[0])
+  };
+
   useEffect(() => {
     axios
       .get("/api/admin/course/get_courses")
@@ -42,14 +48,14 @@ export default function AddStudent() {
     addStudent(formData);
 
   
-    setPNumber("");
-    setName("");
-    setPhoneNumber("");
-    setCgpa("");
-    setDob("");
-    setEmail("");
-    setPassword("");
-    setProfilePicture(null);
+    // setPNumber("");
+    // setName("");
+    // setPhoneNumber("");
+    // setCgpa("");
+    // setDob("");
+    // setEmail("");
+    // setPassword("");
+    // setProfilePicture(null);
   };
     
 
@@ -173,9 +179,7 @@ const addStudent = async (student) => {
             id="file_input"
             type="file"
             accept="image/png, image/gif, image/jpeg"
-            onChange={(e) => {
-              setProfilePicture(e.target.files[0]);
-            }}
+            onChange={handleFileChange}
           />
         </div>
       </div>

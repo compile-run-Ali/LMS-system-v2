@@ -73,7 +73,7 @@ export default function Topbar({ admin }) {
             {session?.data?.user?.image && (
               <div className="w-8 h-8 rounded-full border border-blue-900 relative">
                 <Image
-                  src={session?.data?.user?.image}
+                  src={`/uploads/${session?.data?.user?.image}`}
                   // src="/avatar.png"
                   layout="fill"
                   objectFit="cover"
