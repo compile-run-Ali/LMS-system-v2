@@ -82,7 +82,7 @@ const addStudent = async (student) => {
         );
     })
     .catch((err) => console.log("Error in registering student", err));
-  // router.push("/admin");
+  router.push("/admin");
 };
 
   return (
