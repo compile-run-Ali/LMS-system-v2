@@ -19,7 +19,11 @@ const MarkPaper = ({
   }, [objectiveQuestions, subjectiveQuestions]);
 
   useEffect(() => {
-    markExam();
+    if (obtainedMarks === 0) {
+      markExam();
+    } else {
+      console.log("not 0");
+    }
   }, [subjectiveAnswers, objectiveAnswers]);
 
   const updateStatus = () => {
@@ -59,6 +63,9 @@ const MarkPaper = ({
     }, 0);
     marks += objectiveMarks;
 
+    console.log("objectiveMarks", objectiveMarks);
+    console.log("after marking OBJECTIVE", marks);
+
     const subjectiveMarks = await Promise.all(
       subjectiveAnswers.map(async (answer, index) => {
         if (answer) {
@@ -86,6 +93,10 @@ const MarkPaper = ({
       return total + mark;
     }, 0);
     marks += totalSubjectiveMarks;
+    console.log("subjectiveMarks", totalSubjectiveMarks);
+
+    console.log("after marking SUBJECTIVE", marks);
+
     setObtainedMarks(marks);
   };
 

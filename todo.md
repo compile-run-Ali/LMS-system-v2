@@ -10,6 +10,7 @@
   <!-- - Then faculty go back to a table where they can see a table of every student's attempt of a specific quiz, and also see who did not attempt that quiz -->
   - When all student's exam has been marked, the status of that exam should be "marked", and faculty should still be able to see the above tables
   - all faculties assigned to that course should be able to see the above tables
+  - add exam status in exam details
 # Incomplete features
 <!-- send notification to faculty when exam time ends -->
 <!-- in objective question attempt, allow to select only correct number of option e.g if there are 2 correct options, then student can select only 2 options -->
@@ -36,6 +37,8 @@ In the SPA table:
 marks not updated if an individual question is marked
 marks being doubled in mark exam on initial load
 total marks are shown more than actual marks, because a parent question's marks are also counted
+
+while creating subjective question, question number can not be changed to 1 if it has a parent question 
 
 # To be asked
 functionality of assign in exam table of admin

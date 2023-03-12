@@ -200,7 +200,7 @@ model SPA {
   studentId     String
   paperId       String
   status        String? @default("Not Attempted")
-  obtainedMarks Float     @default(0)
+  obtainedMarks Float   @default(0)
 
   student Student @relation(fields: [studentId], references: [p_number])
   paper   Paper   @relation(fields: [paperId], references: [paper_id])
