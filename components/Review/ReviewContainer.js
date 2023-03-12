@@ -157,7 +157,7 @@ export default function ReviewContainer() {
         answers={objectiveAnswers}
       />
 
-      {paper.paper_type !== "Objective" && (
+      {paperDetails.paper_type !== "Objective" && (
         <AnswersTable
           questions={subjectiveQuestions}
           answers={subjectiveAnswers}
