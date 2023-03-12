@@ -19,7 +19,7 @@ model Student {
   cgpa            Float
   email           String
   DOB             DateTime
-  profile_picture Bytes?
+  profile_picture String?
 
   courses            SRC[]
   subjective_answers SSA[]

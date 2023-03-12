@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { IncomingForm } from "formidable";
-import { promises as fs } from "fs";
 import mv from "mv";
 
 const prisma = new PrismaClient();
@@ -16,12 +15,13 @@ export default async function handler(req, res) {
   const data = await new Promise((resolve, reject) => {
     const form = new IncomingForm({ multiples: true });
 
+    
+
     form.parse(req, async (err, fields, files) => {
       if (err) {
         console.error(err);
         return reject(err);
       }
-
       try {
         const hash = await bcrypt.hash(fields.password, 0);
         const studentData = {
@@ -33,15 +33,14 @@ export default async function handler(req, res) {
           email: fields.email,
           DOB: new Date(fields.DOB),
         };
+
+
         console.log("files", files.profile_picture);
 
         if (files.profile_picture) {
-          studentData.profile_picture = {
-            create: {
-              filename: files.profile_picture.originalFilename,
-              url: `./public/uploads/${files.profile_picture.originalFilename}`,
-            },
-          };
+          studentData.profile_picture = files.profile_picture.originalFilename;
+
+
 
           // Move the uploaded file to the specified directory
           const oldPath = files.profile_picture.filepath;

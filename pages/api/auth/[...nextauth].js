@@ -67,7 +67,7 @@ const configuration = {
   callbacks: {
     async session({ session, token }) {
       session.user.name = token.name;
-      session.user.image = "/avatar.png";
+      session.user.image = token.user.profile_picture;
       session.user.role = token.user.role;
       session.user.level = token.user.level;
       session.user.id = token.user.faculty_id
