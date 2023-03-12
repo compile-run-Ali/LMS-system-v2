@@ -11,7 +11,7 @@ const SubjectiveExam = ({
 }) => {
   const [index, setIndex] = useState(null);
   const [subjectives, setSubjectives] = useState(subjective_questions);
-  const [longQuestion, setLongQuestion] = useState(false);
+  const [longQuestion, setLongQuestion] = useState(true);
   //len of subjectives
   console.log(subjectives.length);
 
@@ -66,6 +66,36 @@ const SubjectiveExam = ({
 
   const handleAddMCQ = async () => {
     console.log(currentSubjective);
+  
+    // Check if the new question is a child and validate its marks
+    if (currentSubjective.parent_question) {
+      const parent = subjectives.find(
+        (subjective) => subjective.sq_id === currentSubjective.parent_question
+      );
+      const children = subjectives.filter(
+        (subjective) =>
+          subjective.parent_question === currentSubjective.parent_question &&
+          subjective.sq_id !== currentSubjective.sq_id // exclude the current question being added/edited
+      );
+      const totalMarks = children.reduce((acc, cur) => acc + cur.marks, 0);
+  
+      if (!parent || totalMarks + currentSubjective.marks > parent.marks) {
+        alert("Invalid marks for child question");
+        return;
+      }
+    } else { // Check if the new question is a parent and validate its marks
+      const children = subjectives.filter(
+        (subjective) =>
+          subjective.parent_question === currentSubjective.sq_id // include only its immediate children
+      );
+      const totalMarks = children.reduce((acc, cur) => acc + cur.marks, 0);
+  
+      if (totalMarks > currentSubjective.marks) {
+        alert("Invalid marks for parent question");
+        return;
+      }
+    }
+  
     const newSubjective = await axios.post(
       "/api/faculty/paper_creation/add_subjective",
       {
@@ -90,6 +120,7 @@ const SubjectiveExam = ({
       setAdding(false);
     }
   };
+  
 
   const handleEditMCQ = (index) => () => {
     setEditing(true);
@@ -254,6 +285,7 @@ const SubjectiveExam = ({
               type="checkbox"
               className="accent-slate-100"
               onChange={handleLongQuestion}
+              checked={longQuestion}
             />
           </div>
           <div className="text-sm ml-2 mb-10">
