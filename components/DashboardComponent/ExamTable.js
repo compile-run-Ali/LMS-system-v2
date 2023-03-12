@@ -3,46 +3,62 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { formatDate } from "@/utils/FormatDate";
 import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
+import { useSession } from "next-auth/react";
 
 const ExamTable = ({ exams_data }) => {
   const router = useRouter();
   const [exams, setExams] = useState([]);
+  const { data: session, status } = useSession();
 
   useEffect(() => {
     const currentDate = new Date();
-    const updatedExams = exams_data
-      .map((exam) => {
-        const examDate = new Date(exam.date);
-        if (examDate < currentDate && exam.status !== "Closed") {
-          axios
-            .put(`/api/faculty/update_exam_status`, {
-              paper_id: exam.paper_id,
-              status: "Closed",
-            })
-            .then((response) => {
-              setExams((prevExams) =>
-                prevExams.map((prevExam) => {
-                  if (prevExam.paper_id === response.data.paper_id) {
-                    return response.data;
-                  }
-                  return prevExam;
-                })
-              );
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          return { ...exam, status: "Closed" };
-        }
-        return exam;
-      })
-      .sort((a, b) => {
+    const updatedExams = exams_data.map((exam) => {
+      const examDate = new Date(exam.date);
+      if (examDate < currentDate && exam.status !== "Closed") {
+        return axios
+          .put(`/api/faculty/update_exam_status`, {
+            paper_id: exam.paper_id,
+            status: "Closed",
+          })
+          .then((response) => {
+            return { ...exam, status: "Closed" };
+          })
+          .catch((error) => {
+            console.log(error);
+            return exam;
+          });
+      }
+      return exam;
+    });
+  
+    Promise.all(updatedExams).then((updatedExams) => {
+      const sortedExams = updatedExams.sort((a, b) => {
         const aTime = new Date(a.date).getTime();
         const bTime = new Date(b.date).getTime();
         return aTime - bTime;
       });
-    setExams(updatedExams);
+  
+      setExams(sortedExams);
+  
+      const closedExam = updatedExams.find((exam) => exam.status === "Closed");
+  
+      if (closedExam) {
+        console.log("closed exam: ", closedExam);
+        axios
+          .post(`/api/faculty/generate_notification`, {
+            notification: closedExam.paper_name + " has been closed",
+            faculty_id: session.user.id,
+          })
+          .then((response) => {
+            console.log("Notification sent successfully");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    });
   }, [exams_data]);
+  
 
   const handleExamClick = (paper_id) => {
     router.push(`/faculty/exam_details/${paper_id}`);
