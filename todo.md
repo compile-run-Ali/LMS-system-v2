@@ -14,7 +14,8 @@
 <!-- send notification to faculty when exam time ends -->
 <!-- in objective question attempt, allow to select only correct number of option e.g if there are 2 correct options, then student can select only 2 options -->
 <!--done while registering a student admin should also be able to enroll student in a course  -->
-While creating a child question, the max marks should be less then parent question's remaining marks
+<!-- While creating a child question, the max marks should be less then parent question's remaining marks-->
+child marks cant be more than parent but issue cuz if another child then it doesn't consider children before it
 <!-- default value should be true for long question checkbox while making subjective question in exam -->
 <!-- 9 "Closed" Status for paper once paper end time and date have elapsed. -->
 
