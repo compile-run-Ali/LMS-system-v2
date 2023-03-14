@@ -58,7 +58,7 @@ export default function ReviewContainer() {
                   receivedQuestions.forEach((question) => {
                     axios
                       .get(
-                        `/api/student/paper/oq/get/${student}/${question.oq_id}`,
+                        `/api/student/paper/oq/get_questions`,
                         {
                           params: {
                             p_number: student,
