@@ -33,7 +33,7 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
   };
 
   return (
-    <div className="w-full h-screen font-poppins flex flex-col justify-center items-center  ">
+    <div className="w-full h-screen font-poppins flex flex-col justify-center items-center mt-10 ">
       <div className="w-2/3 lg:w-2/3 h-[90%] flex flex-col bg-blue-900 border border-slate-300 shadow-xl">
         <div className="flex justify-center">
           <Image src="/logo.png" width={300} height={300} alt="logo" />
