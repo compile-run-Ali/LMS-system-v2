@@ -18,6 +18,11 @@ const CourseTable = ({
     setCoursesData(courses);
   }, [courses]);
 
+  const openModal = (index) => {
+    setOpen(true);
+    setSelectedCourse(coursesData[index].course_code);
+  };
+
   const handleEditMCQ = (index) => () => {
     // Implement this
     router.push({
@@ -86,7 +91,7 @@ const CourseTable = ({
             <td className="px-4 py-2">
               <button
                 onClick={() => {
-                  handleDeleteMCQ(index);
+                  openModal(index);
                 }}
                 className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
               >

@@ -2,9 +2,14 @@ import React from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import Link from "next/link";
 
-export default function StudentTable({ setOpen, students }) {
-  const openModal = () => {
+export default function StudentTable({
+  setOpen,
+  students,
+  setSelectedStudent,
+}) {
+  const openModal = (index) => {
     setOpen(true);
+    setSelectedStudent(students[index].p_number);
   };
   const editStudent = () => {
     console.log("Edit Student");
@@ -29,10 +34,7 @@ export default function StudentTable({ setOpen, students }) {
           {students.map((student, index) => (
             <tr key={index} className="bg-white">
               <td className=" px-4 py-2">
-                <Link
-                  key={student.p_number}
-                  href={`/student/profile`}
-                >
+                <Link key={student.p_number} href={`/student/profile`}>
                   {student.p_number}
                 </Link>
               </td>
@@ -53,7 +55,9 @@ export default function StudentTable({ setOpen, students }) {
               </td>
               <td className="px-4 py-2">
                 <button
-                  onClick={openModal}
+                  onClick={() => {
+                    openModal(index);
+                  }}
                   className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
                 >
                   <MdDelete />

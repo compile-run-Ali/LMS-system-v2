@@ -3,7 +3,7 @@ import { MdDelete, MdEdit } from 'react-icons/md';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 
-const FacultyTable = ({faculty}) => {
+const FacultyTable = ({faculty, setSelectedFaculty, setOpen}) => {
     const router = useRouter();
 
     const [facultyData, setFacultyData] = useState([]);
@@ -11,6 +11,11 @@ const FacultyTable = ({faculty}) => {
     useEffect(() => {
         setFacultyData(faculty);
     }, [faculty]);
+    
+    const openModal = (index) => {
+        setOpen(true);
+        setSelectedFaculty(facultyData[index].faculty_id);
+    };
 
     const handleEditMCQ = (index) => () => {
         // Implement this
@@ -70,7 +75,7 @@ const FacultyTable = ({faculty}) => {
                         </td>
                         <td className="px-4 py-2">
                             <button
-                                onClick={() => { handleDeleteMCQ(index) }}
+                                onClick={() => { openModal(index)}}
                                 className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
                             >
                                 <MdDelete />
