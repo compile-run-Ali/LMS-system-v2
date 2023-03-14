@@ -3,11 +3,11 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-
   try {
-    const existingSOA = await prisma.sOA.findUnique({
+    const existingSOA = await prisma.sOA.findMany({
       where: {
-        soa_id: req.body.student + req.body.question,
+        p_number: req.body.student,
+        oq_id: {in: req.body.question},
       },
     });
 

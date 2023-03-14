@@ -12,6 +12,8 @@ const MarkPaper = ({
   const router = useRouter();
   const { p_number, exam_id } = router.query;
   const [obtainedMarks, setObtainedMarks] = useState(0);
+  const [objectiveMarks, setObjectiveMarks] = useState(null);
+  const [subjectiveMarks, setSubjectiveMarks] = useState(null);
   const [totalMarks, setTotalMarks] = useState(0);
 
 
@@ -24,17 +26,26 @@ const MarkPaper = ({
   }, [totalMarks]);
 
 
+
+  useEffect(() => {
+    if (objectiveMarks && subjectiveMarks) {
+      setObtainedMarks(objectiveMarks + subjectiveMarks);
+    }
+  }, [objectiveMarks, subjectiveMarks]);
+
+
   useEffect(() => {
     getTotalMarks();
   }, [objectiveQuestions, subjectiveQuestions]);
 
   useEffect(() => {
-    if (obtainedMarks === 0) {
-      markExam();
-    } else {
-      console.log("not 0");
-    }
-  }, [subjectiveAnswers, objectiveAnswers]);
+    getObjectiveMarks();
+  }, [objectiveAnswers]);
+
+
+  useEffect(() => {
+    getSubjectiveMarks();
+  }, [subjectiveAnswers]);
 
   const updateStatus = () => {
     axios
@@ -66,49 +77,34 @@ const MarkPaper = ({
     setTotalMarks(total);
   };
 
-  const markExam = async () => {
-    let marks = 0;
-    const objectiveMarks = objectiveAnswers.reduce((total, answer) => {
+
+  const getObjectiveMarks = () => {
+    if (!objectiveAnswers) {
+      return;
+    }
+    let marks = objectiveAnswers.reduce((total, answer) => {
       return answer ? total + answer.marksobtained : total;
     }, 0);
-    marks += objectiveMarks;
 
-    console.log("objectiveMarks", objectiveMarks);
-    console.log("after marking OBJECTIVE", marks);
+    console.log("objectiveMarks", marks);
+    setObjectiveMarks(marks);
+  }
 
-    const subjectiveMarks = await Promise.all(
-      subjectiveAnswers.map(async (answer, index) => {
-        if (answer) {
-          try {
-            const res = await axios.get(
-              "/api/paper/marking/get_student_attempts",
-              {
-                params: {
-                  sq_id: answer.sq_id,
-                  p_number: p_number,
-                },
-              }
-            );
-            return res.data.marksobtained;
-          } catch (err) {
-            console.log("error in fetching marks", err.message);
-            return 0;
-          }
-        } else {
-          return 0;
-        }
-      })
-    );
-    const totalSubjectiveMarks = subjectiveMarks.reduce((total, mark) => {
-      return total + mark;
-    }, 0);
-    marks += totalSubjectiveMarks;
-    console.log("subjectiveMarks", totalSubjectiveMarks);
 
-    console.log("after marking SUBJECTIVE", marks);
+  const getSubjectiveMarks = async () => {
+    if (!subjectiveAnswers) {
+      return;
+    }
 
-    setObtainedMarks(marks);
+    console.log("subjectiveAnswers", subjectiveAnswers);
+    let marks = 0;
+    for (let answer of subjectiveAnswers) {
+      marks+=answer.marksobtained;
+    }
+
+    setSubjectiveMarks(marks);
   };
+
 
   return (
     <div className="flex justify-between items-center my-10">

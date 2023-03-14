@@ -19,54 +19,28 @@ const Index = () => {
 
   const { exam_id, p_number } = router.query;
 
-  const fetchObjectiveAttempts = () => {
-    objectiveQuestions.forEach((question) => {
-      axios
-        .get(`/api/student/paper/oq/get/${p_number}/${question.oq_id}`, {
-          params: {
-            p_number: p_number,
-            oq_id: question.oq_id,
-          },
-        })
-        .then((response) => {
-          if (response.data) {
-            setObjectiveAnswers((prev) => {
-              if (prev.indexOf(response.data) === -1) {
-                return [...prev, response.data];
-              }
-              return prev;
-            });
-          }
-        })
-        .catch((error) => {
-          console.log("error in fetching answer", error.message);
-        });
-    });
+  const fetchObjectiveAttempts = async () => {
+    let question = objectiveQuestions.map((question) => question.oq_id);
+    console.log(question);
+    const res = await axios
+      .post(`/api/student/paper/oq/get_questions`, {
+        p_number: p_number,
+        question: question,
+      })
+
+    setObjectiveAnswers(res.data);
+
   };
 
-  const fetchSubjectiveAttempts = () => {
-    subjectiveQuestions.forEach((question) => {
-      axios
-        .get("/api/paper/marking/get_student_attempts", {
-          params: {
-            sq_id: question.sq_id,
+  const fetchSubjectiveAttempts = async () => {
+    let question = subjectiveQuestions.map((question) => question.sq_id);
+     const res = await axios
+        .post("/api/paper/marking/get_student_attempts", {
+            question: question,
             p_number: p_number,
-          },
         })
-        .then((res) => {
-          if (res) {
-            setSubjectiveAnswers((prev) => {
-              if (prev.indexOf(res.data) === -1) {
-                return [...prev, res.data];
-              }
-              return prev;
-            });
-          }
-        })
-        .catch((err) => {
-          console.log("error in fetching subjective attempts", err.message);
-        });
-    });
+    
+    setSubjectiveAnswers(res.data);
   };
 
   const fetchPaperDetails = async () => {
@@ -115,12 +89,14 @@ const Index = () => {
               questions={subjectiveQuestions}
               answers={subjectiveAnswers}
             />
+
             <MarkPaper
               objectiveAnswers={objectiveAnswers}
               subjectiveAnswers={subjectiveAnswers}
               objectiveQuestions={objectiveQuestions}
               subjectiveQuestions={subjectiveQuestions}
             />
+
           </div>
         </DashboardLayout>
       </BaseLayout>

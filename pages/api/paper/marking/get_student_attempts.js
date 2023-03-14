@@ -3,9 +3,11 @@ import { PrismaClient } from "@prisma/client";
 const handler = async (req, res) => {
   const prisma = new PrismaClient();
   try {
-    const existingSSA = await prisma.sSA.findUnique({
+    const existingSSA = await prisma.sSA.findMany({
       where: {
-        ssa_id: req.body.p_number + req.body.sq_id,
+        p_number: req.body.p_number,
+        
+        sq_id: {in:req.body.question},
       },
     });
 
