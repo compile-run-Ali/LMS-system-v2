@@ -7,39 +7,36 @@ import ObjectiveReview from "@/components/Review/ObjectiveReview";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MarkPaper from "@/components/MarkingDashboard/MarkPaper";
+import Loader from "@/components/Loader";
 
 const Index = () => {
   const router = useRouter();
   const [subjectiveQuestions, setSubjectiveQuestions] = useState([]);
   const [subjectiveAnswers, setSubjectiveAnswers] = useState([]);
-
   const [paperDetails, setPaperDetails] = useState({});
   const [objectiveQuestions, setObjectiveQuestions] = useState([]);
   const [objectiveAnswers, setObjectiveAnswers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const { exam_id, p_number } = router.query;
 
   const fetchObjectiveAttempts = async () => {
     let question = objectiveQuestions.map((question) => question.oq_id);
-    console.log(question);
-    const res = await axios
-      .post(`/api/student/paper/oq/get_questions`, {
-        p_number: p_number,
-        question: question,
-      })
+    const res = await axios.post(`/api/student/paper/oq/get_questions`, {
+      p_number: p_number,
+      question: question,
+    });
 
     setObjectiveAnswers(res.data);
-
   };
 
   const fetchSubjectiveAttempts = async () => {
     let question = subjectiveQuestions.map((question) => question.sq_id);
-     const res = await axios
-        .post("/api/paper/marking/get_student_attempts", {
-            question: question,
-            p_number: p_number,
-        })
-    
+    const res = await axios.post("/api/paper/marking/get_student_attempts", {
+      question: question,
+      p_number: p_number,
+    });
+
     setSubjectiveAnswers(res.data);
   };
 
@@ -51,9 +48,15 @@ const Index = () => {
         },
       })
       .then((res) => {
-        setPaperDetails(res.data[0]);
-        setObjectiveQuestions(res.data[0].objective_questions);
-        setSubjectiveQuestions(res.data[0].subjective_questions);
+        console.log("paper details fetched successfully", res.data);
+        setLoading(false);
+
+        setPaperDetails(res.data);
+        setObjectiveQuestions(res.data.objective_questions);
+        if (paperDetails.paper_type !== "Objective") {
+          setSubjectiveQuestions(res.data.subjective_questions);
+        }
+        console.log("paper details fetched successfully", res.data);
       })
       .catch((err) => {
         console.log("error in fetching paper details", err.message);
@@ -75,29 +78,34 @@ const Index = () => {
     <div>
       <BaseLayout title={"Mark Exam"}>
         <DashboardLayout>
-          <div className="px-20">
-            <PaperDetails
-              paper={paperDetails}
-              isFaculty={true}
-              studentId={p_number}
-            />
-            <ObjectiveReview
-              questions={objectiveQuestions}
-              answers={objectiveAnswers}
-            />
-            <AnswersTable
-              questions={subjectiveQuestions}
-              answers={subjectiveAnswers}
-            />
+          {loading ? (
+            <Loader />
+          ) : (
+            <div className="px-20">
+              <PaperDetails
+                paper={paperDetails}
+                isFaculty={true}
+                studentId={p_number}
+              />
+              <ObjectiveReview
+                questions={objectiveQuestions}
+                answers={objectiveAnswers}
+              />
+              {paperDetails.paper_type !== "Objective" && (
+                <AnswersTable
+                  questions={subjectiveQuestions}
+                  answers={subjectiveAnswers}
+                />
+              )}
 
-            <MarkPaper
-              objectiveAnswers={objectiveAnswers}
-              subjectiveAnswers={subjectiveAnswers}
-              objectiveQuestions={objectiveQuestions}
-              subjectiveQuestions={subjectiveQuestions}
-            />
-
-          </div>
+              <MarkPaper
+                objectiveAnswers={objectiveAnswers}
+                subjectiveAnswers={subjectiveAnswers}
+                objectiveQuestions={objectiveQuestions}
+                subjectiveQuestions={subjectiveQuestions}
+              />
+            </div>
+          )}
         </DashboardLayout>
       </BaseLayout>
     </div>

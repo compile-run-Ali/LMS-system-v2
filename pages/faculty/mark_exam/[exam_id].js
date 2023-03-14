@@ -4,10 +4,12 @@ import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
 import MarkingDashboard from "@/components/MarkingDashboard/MarkingDashboard";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Loader from "@/components/Loader";
 
 const MarkingPage = () => {
   const router = useRouter();
-  const [students_data, setStudentsData] = useState([]);
+  const [studentsData, setStudentsData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { exam_id } = router.query;
 
   const fetchStudents = async () => {
@@ -29,10 +31,7 @@ const MarkingPage = () => {
 
     const promises2 = [studentSpaPromise];
     const [studentSpa] = await Promise.all(promises2);
-    console.log(
-      "students data before joining with spa",
-      studentSpa.data
-    )
+    console.log("students data before joining with spa", studentSpa.data);
 
     // now join the two
     students.data.course.students.forEach((student) => {
@@ -47,8 +46,7 @@ const MarkingPage = () => {
             (spa) => spa.studentId === student.student.p_number
           ),
         };
-      }
-      else {
+      } else {
         student.student = {
           ...student.student,
           status: "Not Attempted",
@@ -69,7 +67,9 @@ const MarkingPage = () => {
       );
     }
     setStudentsData(students_data);
+    setLoading(false);
   };
+  console.log("students data in marking page", studentsData);
 
   useEffect(() => {
     if (exam_id) {
@@ -80,7 +80,11 @@ const MarkingPage = () => {
   return (
     <BaseLayout title={"Mark Exam"}>
       <DashboardLayout>
-        <MarkingDashboard students_data={students_data} exam_id={exam_id} />
+        {loading ? (
+          <Loader />
+        ) : (
+          <MarkingDashboard students_data={studentsData} exam_id={exam_id} />
+        )}
       </DashboardLayout>
     </BaseLayout>
   );
