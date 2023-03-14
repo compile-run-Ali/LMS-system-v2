@@ -233,6 +233,7 @@ export default function OQContainer({
                   // if opt not selected OR saved
                   if (selectedAnswer.length === 0 || saved) {
                     setCurrentQuestion(currentQuestion + 1);
+                    setNumSelected(0);
                   } else {
                     alert("Please save your answer before proceeding");
                   }
