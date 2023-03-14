@@ -92,7 +92,7 @@ export default function SQContainer({
             <div className="py-4 rounded-lg space-y-2 ">
               {question.children ? (
                 question.children.map((childQuestion, index) => (
-                  <div key={childQuestion.questionnumber}>
+                  <div key={childQuestion.sq_id}>
                     <div className="text-xl">
                       <div className="flex justify-between items-center ">
                         <p>

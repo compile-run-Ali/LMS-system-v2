@@ -14,6 +14,7 @@ export default function SubmitModal({
 }) {
   //call api and create attempt on the paper
   const { data: session, status } = useSession();
+  const paperDetails = JSON.parse(localStorage.getItem("papers"))[paper];
 
   const updateAttempt = () => {
     axios
@@ -29,6 +30,8 @@ export default function SubmitModal({
         console.log("error ", err.message);
       });
   };
+
+  console.log("papers before deleting", paperDetails);
 
   const clearPaperFromLocal = () => {
     const papers = JSON.parse(localStorage.getItem("papers")) || {};
@@ -69,10 +72,15 @@ export default function SubmitModal({
                 {
                   // if there are any flags, show which questions are flagged
                   flags.length > 0 && (
-                    <span className="text-red-500">
+                    <span className="text-red-500 text-sm block">
                       {" "}
                       (You have flagged question number{" "}
-                      {flags.map((flag) => Number(flag) + 1) + " "}
+                      {flags.map((flag) => {
+                        return paperDetails.freeflow
+                          ? Number(flag) + 1
+                          : Number(flag) + 1 - paperDetails.objectiveCount;
+                      }) + " "}
+                      )
                     </span>
                   )
                 }

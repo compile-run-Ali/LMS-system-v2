@@ -3,7 +3,6 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import CountdownTimer from "../CountdownTimer";
-import { Dialog, Transition } from "@headlessui/react";
 import SubmitModal from "../SubmitModal";
 
 export default function OQContainer({
@@ -22,7 +21,6 @@ export default function OQContainer({
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [multipleAllowed, setMultipleAllowed] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [remainingTime, setRemainingTime] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [numSelected, setNumSelected] = useState(0);
 

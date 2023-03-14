@@ -5,7 +5,7 @@ import OQContainer from "./Objective/OQContainer";
 import SQContainer from "./Subjective/SQContainer";
 import { useSession } from "next-auth/react";
 import NavigationGrid from "./NavigationGrid";
-import { compareDateTime, getPaperDateTime } from "@/lib/TimeCalculations";
+import Loader from "../Loader";
 import Timer from "./Timer";
 import Submitted from "./Submitted";
 
@@ -19,6 +19,7 @@ export default function PaperContainer({}) {
   const [paperDetails, setPaperDetails] = useState({});
   const [objectiveCount, setObjectiveCount] = useState(0);
   const [flags, setFlags] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (paper) {
@@ -72,6 +73,7 @@ export default function PaperContainer({}) {
           ...(papers[paper].objectiveQuestions || []),
           ...(papers[paper].subjectiveQuestions || []),
         ]);
+        setLoading(false);
         setObjectiveCount(papers[paper].objectiveCount || 0);
         setFlags(papers[paper].flags || []);
         setPaperDetails(papers[paper]);
@@ -154,6 +156,7 @@ export default function PaperContainer({}) {
                         console.log("error ", err.message);
                       });
                   }
+                  setLoading(false);
                 })
                 .catch((err) => {
                   console.log("error ", err.message);
@@ -170,6 +173,10 @@ export default function PaperContainer({}) {
       }
     }
   }, [paper, student]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
