@@ -8,6 +8,7 @@ const MarkPaper = ({
   subjectiveAnswers,
   objectiveQuestions,
   subjectiveQuestions,
+  isStudent = false,
 }) => {
   const router = useRouter();
   const { p_number, exam_id } = router.query;
@@ -16,23 +17,11 @@ const MarkPaper = ({
   const [subjectiveMarks, setSubjectiveMarks] = useState(null);
   const [totalMarks, setTotalMarks] = useState(0);
 
-
-  useEffect(() => {
-    console.log("obtainedMarks", obtainedMarks);
-  }, [obtainedMarks]);
-
-  useEffect(() => {
-    console.log("totalMarks", totalMarks);
-  }, [totalMarks]);
-
-
-
   useEffect(() => {
     if (objectiveMarks && subjectiveMarks) {
       setObtainedMarks(objectiveMarks + subjectiveMarks);
     }
   }, [objectiveMarks, subjectiveMarks]);
-
 
   useEffect(() => {
     getTotalMarks();
@@ -41,7 +30,6 @@ const MarkPaper = ({
   useEffect(() => {
     getObjectiveMarks();
   }, [objectiveAnswers]);
-
 
   useEffect(() => {
     getSubjectiveMarks();
@@ -70,13 +58,14 @@ const MarkPaper = ({
     objectiveQuestions.forEach((question) => {
       total += question.marks;
     });
+
     subjectiveQuestions.forEach((question) => {
-      // handle child question marks here
-      total += question.marks;
+      if (!question.parent_sq_id) {
+        total += question.marks;
+      }
     });
     setTotalMarks(total);
   };
-
 
   const getObjectiveMarks = () => {
     if (!objectiveAnswers) {
@@ -86,25 +75,21 @@ const MarkPaper = ({
       return answer ? total + answer.marksobtained : total;
     }, 0);
 
-    console.log("objectiveMarks", marks);
     setObjectiveMarks(marks);
-  }
-
+  };
 
   const getSubjectiveMarks = async () => {
     if (!subjectiveAnswers) {
       return;
     }
 
-    console.log("subjectiveAnswers", subjectiveAnswers);
     let marks = 0;
     for (let answer of subjectiveAnswers) {
-      marks+=answer.marksobtained;
+      marks += answer.marksobtained;
     }
 
     setSubjectiveMarks(marks);
   };
-
 
   return (
     <div className="flex justify-between items-center my-10">
@@ -114,24 +99,26 @@ const MarkPaper = ({
           {obtainedMarks.toFixed(2)} / {totalMarks.toFixed(2)}
         </h1>
       </div>
-      <div>
-        <button
-          className="p-2 bg-blue-900 text-white rounded-lg"
-          onClick={() => {
-            updateStatus();
-          }}
-        >
-          Save Marks
-        </button>
-        <Link
-          href="/faculty/mark_exam/[exam_id]"
-          as={`/faculty/mark_exam/${exam_id}`}
-        >
-          <button className="p-2 bg-yellow-500 text-white rounded-lg ml-4">
-            Back to Results
+      {!isStudent && (
+        <div>
+          <button
+            className="p-2 bg-blue-900 text-white rounded-lg"
+            onClick={() => {
+              updateStatus();
+            }}
+          >
+            Save Marks
           </button>
-        </Link>
-      </div>
+          <Link
+            href="/faculty/mark_exam/[exam_id]"
+            as={`/faculty/mark_exam/${exam_id}`}
+          >
+            <button className="p-2 bg-yellow-500 text-white rounded-lg ml-4">
+              Back to Results
+            </button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
