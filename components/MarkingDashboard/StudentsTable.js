@@ -27,18 +27,24 @@ const StudentsTable = ({ students_data, exam_id }) => {
         {students.map((student, index) => (
           <tr
             key={student.p_number}
-            className={`cursor-pointer bg-gray-${index % 2 === 0 ? 100 : 200}`}
+            className={`cursor-pointer h-12 bg-gray-${
+              index % 2 === 0 ? 100 : 200
+            }`}
           >
             <td className="border px-4 py-2">{student.p_number}</td>
             <td className="border px-4 py-2">{student.name}</td>
             <td className="border px-4 py-2">{student.status}</td>
             <td className="border px-4 py-2">{student.obtainedMarks}</td>
-            <td className="border px-4 py-2 text-right">
-              <Link href={`/faculty/mark_exam/${exam_id}/${student.p_number}`}>
-                <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded ">
-                  Check Answers
-                </button>
-              </Link>
+            <td className="border px-4 py-2 text-center">
+              {student.status !== "Not Attempted" && (
+                <Link
+                  href={`/faculty/mark_exam/${exam_id}/${student.p_number}`}
+                >
+                  <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded ">
+                    Check Answers
+                  </button>
+                </Link>
+              )}
             </td>
           </tr>
         ))}
