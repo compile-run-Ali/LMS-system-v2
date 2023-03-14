@@ -54,6 +54,9 @@ same notif multiple times issue
 admin should be able to edit exam details
 correct bold in exam mark
 marked button
+incorrect time in notifications
+save marks in subjective marking takes previous marks, not currently changed marks
+
 
 # To be asked
 functionality of assign in exam table of admin

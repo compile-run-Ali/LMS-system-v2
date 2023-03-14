@@ -6,7 +6,8 @@ import ObjectiveReview from "./ObjectiveReview";
 import PaperDetails from "./PaperDetails";
 import { useSession } from "next-auth/react";
 import AnswersTable from "../MarkingDashboard/AnswersTable";
-
+import MarkPaper from "../MarkingDashboard/MarkPaper";
+import Loader from "../Loader";
 export default function ReviewContainer() {
   const router = useRouter();
   const { paper } = router.query;
@@ -17,6 +18,7 @@ export default function ReviewContainer() {
   const [objectiveQuestions, setObjectiveQuestions] = useState([]);
   const [subjectiveQuestions, setSubjectiveQuestions] = useState([]);
   const [paperDetails, setPaperDetails] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -24,130 +26,63 @@ export default function ReviewContainer() {
     }
   }, [session]);
 
-  useEffect(() => {
-    console.log("student and paper are ", student, paper);
-    if (student && paper) {
-      console.log("inside if");
-      axios
-        .get(`/api/student/paper/${student}`)
-        .then((res) => {
-          const requestedPaper = res.data.find(
-            (paperObj) => paperObj.paper_id === paper
-          );
-          setPaperDetails(requestedPaper);
-          if (requestedPaper) {
-            // paper exists
-            const paperDateTime = getPaperDateTime(
-              requestedPaper.date,
-              requestedPaper.duration
-            );
-            const paperStatus = compareDateTime(
-              paperDateTime.start,
-              paperDateTime.end
-            );
-            if (paperStatus === "past") {
-              // paper is past
-              const isObjective = requestedPaper.paper_type === "Objective";
-              // get all the OBJECTIVE questions of that paper
-              axios
-                .get(`/api/student/paper/oq/${paper}`)
-                .then((res) => {
-                  const receivedQuestions = res.data;
-                  setObjectiveQuestions(receivedQuestions);
-                  // for each question, fetch an answer of the student
-                  receivedQuestions.forEach((question) => {
-                    axios
-                      .get(
-                        `/api/student/paper/oq/get_questions`,
-                        {
-                          params: {
-                            p_number: student,
-                            oq_id: question.oq_id,
-                          },
-                        }
-                      )
-                      .then((response) => {
-                        if (response.data) {
-                          setObjectiveAnswers((prev) => {
-                            if (prev.indexOf(response.data) === -1) {
-                              return [...prev, response.data];
-                            }
-                            return prev;
-                          });
-                        }
-                      })
-                      .catch((error) => {
-                        console.log("error in fetching answer", error.message);
-                      });
-                  });
-                })
-                .catch((err) => {
-                  console.log("error in fetching questions", err.message);
-                });
+  const fetchObjectiveAttempts = async () => {
+    let question = objectiveQuestions.map((question) => question.oq_id);
+    const res = await axios.post(`/api/student/paper/oq/get_questions`, {
+      p_number: student,
+      question: question,
+    });
 
-              if (!isObjective) {
-                // get all the SUBJECTIVE questions of that paper
-                axios.get(`/api/student/paper/sq/${paper}`).then((res) => {
-                  const receivedQuestions = res.data;
-                  setSubjectiveQuestions(receivedQuestions);
-                  // for each question, fetch an answer of the student
-                  receivedQuestions.forEach((question) => {
-                    axios
-                      .get("/api/paper/marking/get_student_attempts", {
-                        params: {
-                          sq_id: question.sq_id,
-                          p_number: student,
-                        },
-                      })
-                      .then((res) => {
-                        if (res) {
-                          setSubjectiveAnswers((prev) => {
-                            if (prev.indexOf(res.data) === -1) {
-                              return [...prev, res.data];
-                            }
-                            return prev;
-                          });
-                        }
-                      })
-                      .catch((err) => {
-                        console.log(
-                          "error in fetching subjective attempts",
-                          err.message
-                        );
-                      });
-                  });
-                });
-              }
-            } else router.push(`/student`);
-            // setRedirect404(true);
-          } else router.push(`/student`);
-        })
-        .catch((err) => {
-          console.log("error in fetching paper ", err);
-        });
+    setObjectiveAnswers(res.data);
+  };
+
+  const fetchSubjectiveAttempts = async () => {
+    let question = subjectiveQuestions.map((question) => question.sq_id);
+    const res = await axios.post("/api/paper/marking/get_student_attempts", {
+      question: question,
+      p_number: student,
+    });
+
+    setSubjectiveAnswers(res.data);
+  };
+
+  const fetchPaperDetails = async () => {
+    await axios
+      .get("/api/paper/get_paper", {
+        params: {
+          paper_id: paper,
+        },
+      })
+      .then((res) => {
+        console.log("paper details fetched successfully", res.data);
+
+        setLoading(false);
+
+        setPaperDetails(res.data);
+        setObjectiveQuestions(res.data.objective_questions);
+        if (paperDetails.paper_type !== "Objective") {
+          setSubjectiveQuestions(res.data.subjective_questions);
+        }
+        console.log("paper details fetched successfully", res.data);
+      })
+      .catch((err) => {
+        console.log("error in fetching paper details", err.message);
+      });
+  };
+
+  useEffect(() => {
+    if (paper && student) {
+      fetchPaperDetails();
     }
   }, [paper, student]);
 
-  const calculateTotalMarks = () => {
-    let total = 0;
-    objectiveQuestions.forEach((question) => {
-      total += question.marks;
-    });
-    subjectiveQuestions.forEach((question) => {
-      total += question.marks;
-    });
-    return total;
-  };
-  const calculateObtainedMarks = () => {
-    let total = 0;
-    objectiveAnswers.forEach((answer) => {
-      total += answer?.marksobtained;
-    });
-    subjectiveAnswers.forEach((answer) => {
-      total += answer?.marksobtained;
-    });
-    return total;
-  };
+  useEffect(() => {
+    fetchObjectiveAttempts();
+    fetchSubjectiveAttempts();
+  }, [objectiveQuestions, subjectiveQuestions]);
+
+  if (loading) return <Loader />;
+
   return (
     <div className="w-full mx-auto max-w-5xl font-poppins">
       <h1 className="font-bold text-3xl mt-10 mb-4">Paper Review</h1>
@@ -164,15 +99,13 @@ export default function ReviewContainer() {
           isStudent={true}
         />
       )}
-
-      <div className="flex justify-end mt-4">
-        <div className="flex items-center">
-          <h1 className="font-bold text-xl mr-4">Total Marks:</h1>
-          <div className="bg-gray-200 rounded-lg p-2">
-            <span className="font-bold text-xl">{calculateTotalMarks()}</span>
-          </div>
-        </div>
-      </div>
+      <MarkPaper
+        objectiveAnswers={objectiveAnswers}
+        subjectiveAnswers={subjectiveAnswers}
+        objectiveQuestions={objectiveQuestions}
+        subjectiveQuestions={subjectiveQuestions}
+        isStudent={true}
+      />
     </div>
   );
 }

@@ -3,11 +3,12 @@
 import { PrismaClient } from "@prisma/client";
 
 const handler = async (req, res) => {
+  console.log("body", req.body, "query", req.query);
   const prisma = new PrismaClient();
   try {
-    const paper = await prisma.paper.findMany({
-      where: {  
-        paper_id: req.body.paper_id,
+    const paper = await prisma.paper.findUnique({
+      where: {
+        paper_id: req.query.paper_id,
       },
       select: {
         course_code: true,
