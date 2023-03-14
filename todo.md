@@ -40,6 +40,21 @@ total marks are shown more than actual marks, because a parent question's marks 
 
 while creating subjective question, question number can not be changed to 1 if it has a parent question 
 
+#14/3/23
+padding in login
+add image in register
+time allowed when mcq create
+checkboxes in edit draft
+loading states
+data retaining issue when allow multiple edit
+delete notification (mark as read)
+can select max 2
+numbering issue when flag
+same notif multiple times issue
+admin should be able to edit exam details
+correct bold in exam mark
+marked button
+
 # To be asked
 functionality of assign in exam table of admin
 5 Line for Exam in the table
