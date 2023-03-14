@@ -6,8 +6,8 @@ const handler = async (req, res) => {
   const prisma = new PrismaClient();
   try {
     const paper = await prisma.paper.findMany({
-      where: {
-        paper_id: req.query.paper_id,
+      where: {  
+        paper_id: req.body.paper_id,
       },
       select: {
         course_code: true,

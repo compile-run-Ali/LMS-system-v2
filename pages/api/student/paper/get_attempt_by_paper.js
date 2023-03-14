@@ -7,7 +7,7 @@ const handler = async (req, res) => {
   try {
     const SPA = await prisma.sPA.findMany({
       where: {
-        paperId: req.query.paperId,
+        paperId: req.body.paperId,
       },
       select: {
         studentId: true,
@@ -15,6 +15,8 @@ const handler = async (req, res) => {
         obtainedMarks: true,
       },
     });
+
+    console.log("SPA", SPA);
     res.status(200).json(SPA);
   } catch (err) {
     res.status(500).json({ error: "Server Error" });

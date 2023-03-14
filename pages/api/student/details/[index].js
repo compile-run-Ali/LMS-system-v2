@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const handle = async (req, res) => {
-  let p_number = req.query.index;
+  let p_number = req.body.index;
 
   try {
     const student = await prisma.student.findUnique({

@@ -7,7 +7,7 @@ export default async function handler(req, res) {
   try {
     const existingSOA = await prisma.sOA.findUnique({
       where: {
-        soa_id: req.query.student + req.query.question,
+        soa_id: req.body.student + req.body.question,
       },
     });
 

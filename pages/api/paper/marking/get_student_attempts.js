@@ -5,7 +5,7 @@ const handler = async (req, res) => {
   try {
     const existingSSA = await prisma.sSA.findUnique({
       where: {
-        ssa_id: req.query.p_number + req.query.sq_id,
+        ssa_id: req.body.p_number + req.body.sq_id,
       },
     });
 

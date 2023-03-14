@@ -18,6 +18,7 @@ const MarkingPage = () => {
     const promises = [studentsPromise];
     const [students] = await Promise.all(promises);
 
+    console.log("exam id", exam_id);
     // now fetch spa and join it with students
     const studentSpaPromise = axios.post(
       "/api/student/paper/get_attempt_by_paper",
@@ -25,8 +26,13 @@ const MarkingPage = () => {
         paperId: exam_id,
       }
     );
+
     const promises2 = [studentSpaPromise];
     const [studentSpa] = await Promise.all(promises2);
+    console.log(
+      "students data before joining with spa",
+      studentSpa.data
+    )
 
     // now join the two
     students.data.course.students.forEach((student) => {
@@ -42,7 +48,7 @@ const MarkingPage = () => {
           ),
         };
       }
-      else{
+      else {
         student.student = {
           ...student.student,
           status: "Not Attempted",

@@ -14,6 +14,16 @@ const MarkPaper = ({
   const [obtainedMarks, setObtainedMarks] = useState(0);
   const [totalMarks, setTotalMarks] = useState(0);
 
+
+  useEffect(() => {
+    console.log("obtainedMarks", obtainedMarks);
+  }, [obtainedMarks]);
+
+  useEffect(() => {
+    console.log("totalMarks", totalMarks);
+  }, [totalMarks]);
+
+
   useEffect(() => {
     getTotalMarks();
   }, [objectiveQuestions, subjectiveQuestions]);
