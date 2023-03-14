@@ -37,7 +37,7 @@ const AnswersTable = ({ questions, answers, isStudent }) => {
 
   return (
     <div className="flex flex-col space-y-10">
-      {questionsWithChild(questions, answers).map((question, index) => (
+      {questionsWithChild().map((question, index) => (
         <AttempContainer
           key={question.sq_id}
           question={question}

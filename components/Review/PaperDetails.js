@@ -4,7 +4,6 @@ import {
   getPaperDateTime,
   convertDateTimeToStrings,
 } from "@/lib/TimeCalculations";
-
 export default function PaperDetails({
   paper: initialPaper,
   isFaculty = false,
@@ -37,16 +36,12 @@ export default function PaperDetails({
       });
   };
 
-
   useEffect(() => {
     if (studentId) {
       getAttemptStatus();
     }
   }, [studentId, paper]);
 
-  if (Object.keys(paper).length === 0) {
-    return <div>loading paper</div>;
-  }
   const paperDateTime = getPaperDateTime(paper.date, paper.duration);
   const start =
     convertDateTimeToStrings(paperDateTime.start, false) +
