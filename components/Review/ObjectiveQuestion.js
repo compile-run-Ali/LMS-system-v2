@@ -5,7 +5,6 @@ export default function ObjectiveQuestion({ question, qNumber }) {
   const answerArray = question.answers.split(",");
   const multipleAllowed = correctArray.length > 1;
   const correctAnswers = question.correct_answer?.split(",") || [];
-  console.log("correctAnswer", correctAnswers);
 
   return (
     <div className="mx-auto my-10 bg-white rounded-lg shadow-lg overflow-hidden">

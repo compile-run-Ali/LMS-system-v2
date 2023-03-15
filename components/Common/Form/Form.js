@@ -75,7 +75,6 @@ export default function Form({
     return dateString + "T" + timeString + "Z";
   };
   
-  console.log("date is", formatDate(dateOfExam, paperTime));
   const submitForm = async (e) => {
     e.preventDefault();
     if (paperName === "" || dateOfExam === "") {
