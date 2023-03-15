@@ -16,7 +16,7 @@ const AddFaculty = () => {
     edit ? router.query.department : ""
   );
   const [email, setEmail] = useState(edit ? router.query.email : "");
-  const [password, setPassword] = useState("");
+  const [password, setPassword] = useState(edit? router.query.password : "");
   const [profilePicture, setProfilePicture] = useState(null);
 
   const handleSubmit = async (event) => {
@@ -30,7 +30,13 @@ const AddFaculty = () => {
     formData.append("password", password);
     formData.append("profile_picture", profilePicture);
 
-    await addFaculty(formData);
+    if (edit) {
+      formData.append("faculty_id", router.query.faculty_id);
+      editFaculty(formData);
+    } else {
+      addFaculty(formData);
+    }
+
   };
   const handleFileChange = (event) => {
     setProfilePicture(event.target.files[0]);
@@ -51,6 +57,22 @@ const AddFaculty = () => {
       router.push("/admin");
     }
   };
+
+  const editFaculty = async (faculty) => {
+    const edited_faculty = await axios.post(
+      `/api/admin/faculty/edit_faculty`,
+      faculty,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    if (edited_faculty.status === 200) {
+      router.push("/admin");
+    }
+  };
+
 
   return (
     <form onSubmit={handleSubmit} className="px-4">
