@@ -7,7 +7,6 @@ import {
   getPaperDateTime,
   compareDateTime,
 } from "@/lib/TimeCalculations";
-import { formatDate } from "@/utils/FormatDate";
 
 export default function ViewContainer() {
   const router = useRouter();
@@ -72,7 +71,9 @@ export default function ViewContainer() {
           </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Date:</span>
-            <span className="ml-2">{formatDate(paperDetails.date)}</span>
+            <span className="ml-2">
+              {convertDateTimeToStrings(paperDetails.date, true)}
+            </span>
           </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Time:</span>

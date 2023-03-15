@@ -1,15 +1,14 @@
-import { useSession } from "next-auth/react";
 import React, { useState, useEffect } from "react";
 import ExamTable from "./ExamTable";
 import Modal from "./Subcomponents/Modal";
 
 export default function DashboardComponent({ exams_data, paperapproval_data }) {
-  const user = useSession();
   const [open, setOpen] = useState(false);
   const [exams, setExams] = useState([]);
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [paperapproval, setPaperApproval] = useState([]);
+
   useEffect(() => {
     if (
       exams_data !== undefined &&
@@ -17,6 +16,8 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
       exams_data.length > 0
     ) {
       setCourses(exams_data);
+      setSelectedCourse(exams_data[0].course.course_code);
+      setExams(exams_data[0].course.paper);
     }
     if (
       paperapproval_data !== undefined &&
@@ -26,7 +27,6 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
       setPaperApproval(paperapproval_data.map((paper) => paper.paper));
     }
   }, [exams_data, paperapproval_data]);
-  console.log(selectedCourse);
 
   const toggleModal = () => {
     //throw notification if no course is selected
@@ -47,12 +47,6 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
       (course) => course.course.course_code === e.target.value
     );
     setExams(course.course.paper);
-    console.log(
-      "course changed to: ",
-      course.course,
-      "papers: ",
-      course.course.paper
-    );
   };
 
   return (
@@ -63,9 +57,9 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
           className="bg-white border rounded-md px-3 py-2"
           onChange={handleCourseChange}
         >
-          <option value="" defaultChecked>
+          {/* <option value="" >
             Select Course
-          </option>
+          </option> */}
           {courses.map((course, index) => (
             <option key={index} value={course.course.course_code}>
               {course.course.course_code} - {course.course.course_name}

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { formatDate } from "@/utils/FormatDate";
 import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 import { useSession } from "next-auth/react";
 
@@ -30,18 +29,18 @@ const ExamTable = ({ exams_data }) => {
       }
       return Promise.resolve(exam); // Return a resolved promise for exams that don't need updating
     });
-  
+
     Promise.all(updatedExams).then((updatedExams) => {
       const sortedExams = updatedExams.sort((a, b) => {
         const aTime = new Date(a.date).getTime();
         const bTime = new Date(b.date).getTime();
         return aTime - bTime;
       });
-  
+
       setExams(sortedExams);
-  
+
       const closedExam = updatedExams.find((exam) => exam.status === "Closed");
-  
+
       if (closedExam) {
         console.log("closed exam: ", closedExam);
         axios
@@ -58,7 +57,6 @@ const ExamTable = ({ exams_data }) => {
       }
     });
   }, [exams_data]);
-  
 
   const handleExamClick = (paper_id) => {
     router.push(`/faculty/exam_details/${paper_id}`);
@@ -89,7 +87,9 @@ const ExamTable = ({ exams_data }) => {
             <td className="border px-4 py-2">{exam.paper_name}</td>
             <td className="border px-4 py-2">{exam.paper_type}</td>
             <td className="border px-4 py-2">{exam.duration} Minutes</td>
-            <td className="border px-4 py-2">{formatDate(exam.date)}</td>
+            <td className="border px-4 py-2">
+              {convertDateTimeToStrings(exam.date, true)}
+            </td>
             <td className="border px-4 py-2">
               {convertDateTimeToStrings(exam.date)}
             </td>

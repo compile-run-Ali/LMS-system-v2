@@ -4,7 +4,6 @@ import Accordion from "./Accordion";
 import { MdEdit } from "react-icons/md";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { formatDate, formatTime } from "@/utils/FormatDate";
 import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 
 export default function Exam({
@@ -229,7 +228,9 @@ export default function Exam({
           </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Date:</span>
-            <span className="ml-2">{formatDate(exam.date)}</span>
+            <span className="ml-2">
+              {convertDateTimeToStrings(exam.date, true)}
+            </span>
           </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Time:</span>
