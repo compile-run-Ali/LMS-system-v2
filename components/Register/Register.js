@@ -32,6 +32,11 @@ export default function Register() {
     if (inputs.length < 6) setInputs([...inputs, ""]);
   };
 
+  const handleFileChange = (event) => {
+    setProfilePicture(event.target.files[0]);
+    console.log(event.target.files[0]);
+  };
+
   const handleChange = (index, event) => {
     const newInputs = [...inputs];
     newInputs[index] = event.target.value;
@@ -62,9 +67,24 @@ export default function Register() {
       profile_picture: profilePicture,
     };
 
-    // add student to student table
+    const formData = new FormData();
+    formData.append("p_number", paNumber);
+    formData.append("name", fullName);
+    formData.append("phone_number", phoneNumber);
+    formData.append("cgpa", 0);
+    formData.append("DOB", dob);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("course_code", selectedCourse);
+    formData.append("profile_picture", profilePicture);
+      
+
     axios
-      .post(`/api/admin/student/add_student`, { ...student })
+      .post(`/api/admin/student/add_student`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then((res) => {
         console.log("student added successfully", res.data);
         // add course and student to SRC table
@@ -351,16 +371,7 @@ export default function Register() {
                 aria-describedby="file_input_help"
                 id="file_input"
                 type="file"
-                onChange={(e) => {
-                  //create url and set that as the image
-                  const file = e.target.files[0];
-                  const reader = new FileReader();
-                  reader.readAsDataURL(file);
-                  reader.onloadend = () => {
-                    const url = reader.result;
-                    setProfilePicture(url);
-                  };
-                }}
+                onChange={handleFileChange}
               />
               <p
                 className="mt-1 pl-2 text-sm text-gray-100 "
