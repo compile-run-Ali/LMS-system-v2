@@ -6,8 +6,7 @@ const handler = async (req, res) => {
     const existingSSA = await prisma.sSA.findMany({
       where: {
         p_number: req.body.p_number,
-        
-        sq_id: {in:req.body.question},
+        sq_id: { in: req.body.question },
       },
     });
 

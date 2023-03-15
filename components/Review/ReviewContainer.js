@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { compareDateTime, getPaperDateTime } from "@/lib/TimeCalculations";
 import ObjectiveReview from "./ObjectiveReview";
 import PaperDetails from "./PaperDetails";
 import { useSession } from "next-auth/react";
 import AnswersTable from "../MarkingDashboard/AnswersTable";
 import MarkPaper from "../MarkingDashboard/MarkPaper";
 import Loader from "../Loader";
+
 export default function ReviewContainer() {
   const router = useRouter();
   const { paper } = router.query;
@@ -56,14 +56,13 @@ export default function ReviewContainer() {
       .then((res) => {
         console.log("paper details fetched successfully", res.data);
 
-        setLoading(false);
-
         setPaperDetails(res.data);
         setObjectiveQuestions(res.data.objective_questions);
         if (paperDetails.paper_type !== "Objective") {
           setSubjectiveQuestions(res.data.subjective_questions);
         }
         console.log("paper details fetched successfully", res.data);
+        setLoading(false);
       })
       .catch((err) => {
         console.log("error in fetching paper details", err.message);
@@ -77,8 +76,10 @@ export default function ReviewContainer() {
   }, [paper, student]);
 
   useEffect(() => {
-    fetchObjectiveAttempts();
-    fetchSubjectiveAttempts();
+    if (session) {
+      fetchObjectiveAttempts();
+      fetchSubjectiveAttempts();
+    }
   }, [objectiveQuestions, subjectiveQuestions]);
 
   if (loading) return <Loader />;
