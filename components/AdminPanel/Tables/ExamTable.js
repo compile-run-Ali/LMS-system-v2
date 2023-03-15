@@ -15,7 +15,7 @@ const ExamTable = ({ exams_data }) => {
       <thead>
         <tr className="bg-blue-800 rounded-md text-white">
           <th className="px-4 py-2">Exams</th>
-          <th className="px-4 py-2">Assigned to:</th>
+          <th className="px-4 py-2"></th>
         </tr>
       </thead>
       <tbody>
@@ -26,8 +26,22 @@ const ExamTable = ({ exams_data }) => {
               <td className=" px-4 py-2">{exam.paperapproval.faculty.name}</td>
             ) : (
               <td className="px-4">
-                <button className="bg-blue-800 text-white px-4 py-1.5 rounded-md">
-                  Assign
+                <button
+                  onClick={() => {
+                    router.push({
+                      pathname: `/faculty/create_exam/${
+                        exam.paper_type === "Objective"
+                          ? "objective"
+                          : "subjective"
+                      }`,
+                      query: {
+                        ...exam,
+                      },
+                    });
+                  }}
+                  className="bg-blue-800 text-white px-4 py-1.5 rounded-md"
+                >
+                  Edit
                 </button>
               </td>
             )}
