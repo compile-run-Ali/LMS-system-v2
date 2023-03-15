@@ -27,9 +27,8 @@ export default function Form({
     edit ? new Date(examDetails.date).toISOString().substr(11, 5) : "09:00"
   );
   console.log("paper time is", paperTime);
-  
-  const [freeflow, setFreeflow] = useState(false);
-  const [review,setReview] = useState(false)
+  const [freeflow, setFreeflow] = useState(edit ? examDetails.freeflow==="true" : false);
+  const [review,setReview] = useState(edit ? examDetails.review==="true" : false)
 
   console.log("exam details", examDetails)
 
@@ -155,6 +154,7 @@ export default function Form({
           <input
             type="checkbox"
             className="accent-slate-100"
+            checked={freeflow}
             onChange={handleFreeflow}
           />
         </div>
@@ -164,6 +164,7 @@ export default function Form({
           <input
             type="checkbox"
             className="accent-slate-100"
+            checked={review}
             onChange={handleReview}
           />
         </div>

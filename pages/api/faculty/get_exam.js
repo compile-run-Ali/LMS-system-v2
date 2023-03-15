@@ -23,6 +23,7 @@ const handler = async (req, res) => {
         freeflow: true,
         status: true,
         paper_id: true,
+        review: true,
       },
     });
     res.status(200).json(paper);
