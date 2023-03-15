@@ -383,17 +383,19 @@ export default function Exam({
                 </select>
               </div>
               <div className="flex justify-end gap-x-5">
-                <div className="mt-10 mb-10">
-                  <button
-                    type="submit"
-                    className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
-                    onClick={() => {
-                      setActive(exam.paper_type === "Objective" ? 2 : 3);
-                    }}
-                  >
-                    Back
-                  </button>
-                </div>
+                {setActive && (
+                  <div className="mt-10 mb-10">
+                    <button
+                      type="submit"
+                      className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
+                      onClick={() => {
+                        setActive(exam.paper_type === "Objective" ? 2 : 3);
+                      }}
+                    >
+                      Back
+                    </button>
+                  </div>
+                )}
                 <div className="mt-10 mb-10">
                   <button
                     type="submit"
