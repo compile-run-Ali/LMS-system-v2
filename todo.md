@@ -86,10 +86,8 @@ functionality of assign in exam table of admin
 14 Once submitted for approval. When SI edits, objective data is not retained.
 15 Close Notification key on Faculty Notification drop down
 16 Loader State
-17 Repeating Notifications? Same notification recurring on every login
-18 Highlight Correct Option when marking paper and reviewing paper
-19 Highlight Correct Option when marking paper and reviewing paper
-20 Create Exam when reloaded does not retain questions
+<!-- 17 Repeating Notifications? Same notification recurring on every login -->
+<!-- 18 Highlight Correct Option when marking paper and reviewing paper -->
 
 
 Status Update once marked for all students. Should share result with Senior faculty
@@ -99,7 +97,7 @@ I.E Exam upload and attempt testing
 
 #15/03/23
 when question navigate in attempt, the answer should be retained
-if not marked unmarked
+if not marked unmarked in subjecTive marking
 answer too dim in paper mark
 reload on save marks
 if finalize result then lock
