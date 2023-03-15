@@ -1,0 +1,1 @@
+// await prisma.favorites.deleteMany({ where: { slug: slug, userId: userId } });

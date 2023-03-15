@@ -179,10 +179,6 @@ const MCQTable = ({
       setObjectiveQuestions(newMCQs);
     }
   };
-  console.log(
-    "mcqs",
-    mcqs,
-  );
 
   return (
     <div className="flex font-poppins flex-col items-center p-6">
