@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "./Input";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -15,6 +15,7 @@ export default function Form({
   const [paperName, setPaperName] = useState(
     edit ? examDetails.paper_name : ""
   );
+
   const [paperDuration, setPaperDuration] = useState(
     edit ? Number(examDetails.duration) : 180
   );
@@ -27,18 +28,22 @@ export default function Form({
     edit ? new Date(examDetails.date).toISOString().substr(11, 5) : "09:00"
   );
   console.log("paper time is", paperTime);
-  const [freeflow, setFreeflow] = useState(edit ? examDetails.freeflow==="true" : false);
-  const [review,setReview] = useState(edit ? examDetails.review==="true" : false)
+  const [freeflow, setFreeflow] = useState(
+    edit ? examDetails.freeflow === "true" : false
+  );
+  const [review, setReview] = useState(
+    edit ? examDetails.review === "true" : false
+  );
 
-  console.log("exam details", examDetails)
+  console.log("exam details", examDetails);
 
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
   };
 
-  const handleReview =(e)=>{
-    setReview(e.target.checked)
-  }
+  const handleReview = (e) => {
+    setReview(e.target.checked);
+  };
 
   const handleDuration = (e) => {
     setPaperDuration(parseInt(e.target.value));
@@ -54,12 +59,11 @@ export default function Form({
 
   const handlePaperTime = (e) => {
     setPaperTime(e.target.value);
-
   };
 
   const handleFreeflow = (e) => {
     setFreeflow(e.target.checked);
-    setFreeFlowGlobal(e.target.checked)
+    setFreeFlowGlobal(e.target.checked);
   };
 
   const formatDate = (examDate, examTime) => {
@@ -76,7 +80,6 @@ export default function Form({
 
   const submitForm = async (e) => {
     e.preventDefault();
-    console.log("formatted date is", formatDate(dateOfExam, paperTime));
     if (paperName === "" || dateOfExam === "") {
       alert("Please fill all the fields");
       return;
@@ -94,13 +97,28 @@ export default function Form({
         weightage: parseInt(weightage),
         paper_type: paperType,
         freeflow: freeflow,
-        review:review
+        review: review,
       }
     );
 
     setPaperId(res.data.paper_id);
     setActive(2);
   };
+
+  const setEditTrue = () => {
+    setEdit(true);
+    setPaperName(examDetails.paper_name);
+    setPaperDuration(Number(examDetails.duration));
+    setWeightage(examDetails.weightage);
+    setDateOfExam(new Date(examDetails.date).toISOString().substr(0, 10));
+    setPaperTime(new Date(examDetails.date).toISOString().substr(11, 5));
+  };
+
+  useEffect(() => {
+    if (Object.keys(router.query).length > 1) {
+      setEditTrue();
+    }
+  }, [examDetails]);
 
   return (
     <form>
@@ -130,7 +148,6 @@ export default function Form({
           onChange={handleDateOfExam}
           value={dateOfExam}
         />
-
         <Input
           text={"Weightage"}
           required={false}

@@ -2,13 +2,12 @@ import React from "react";
 
 export default function Loader() {
   return (
-    <div className="w-fit p-10 rounded-2xl flex justify-center items-center bg-blue-900 mx-auto">
-      <div role="status" className="translate-x-1">
+    <div className="flex justify-center items-center h-screen">
+      <div role="status">
         <svg
           aria-hidden="true"
-          className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-white fill-gray-500 "
+          className="w-8 h-8 mr-2 text-gray-200 animate-spin fill-blue-800"
           viewBox="0 0 100 101"
-          fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
