@@ -4,6 +4,8 @@ export default function ObjectiveQuestion({ question, qNumber }) {
   const correctArray = question.correct_answer.split(",");
   const answerArray = question.answers.split(",");
   const multipleAllowed = correctArray.length > 1;
+  const correctAnswers = question.correct_answer?.split(",") || [];
+  console.log("correctAnswer", correctAnswers);
 
   return (
     <div className="mx-auto my-10 bg-white rounded-lg shadow-lg overflow-hidden">
@@ -34,7 +36,13 @@ export default function ObjectiveQuestion({ question, qNumber }) {
                     }`}
                   ></span>
                 </div>
-                <p className="text-base text-gray-700">{answer}</p>
+                <p
+                  className={`text-base text-gray-700 
+                  ${correctAnswers.includes(answer) && "font-bold"}
+                `}
+                >
+                  {answer}
+                </p>
               </div>
             );
           })}
