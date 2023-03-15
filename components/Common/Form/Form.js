@@ -27,15 +27,12 @@ export default function Form({
   const [paperTime, setPaperTime] = useState(
     edit ? new Date(examDetails.date).toISOString().substr(11, 5) : "09:00"
   );
-  console.log("paper time is", paperTime);
   const [freeflow, setFreeflow] = useState(
     edit ? examDetails.freeflow === "true" : false
   );
   const [review, setReview] = useState(
     edit ? examDetails.review === "true" : false
   );
-
-  console.log("exam details", examDetails);
 
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
@@ -77,7 +74,8 @@ export default function Form({
     const timeString = examTime;
     return dateString + "T" + timeString + "Z";
   };
-
+  
+  console.log("date is", formatDate(dateOfExam, paperTime));
   const submitForm = async (e) => {
     e.preventDefault();
     if (paperName === "" || dateOfExam === "") {
@@ -85,12 +83,12 @@ export default function Form({
       return;
     }
 
+
     const res = await axios.post(
       `/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
       {
         paper_id: examDetails ? examDetails.paper_id : null,
         course_code: router.query.course_code ? router.query.course_code : null,
-
         paper_name: paperName,
         date: formatDate(dateOfExam, paperTime),
         duration: paperDuration,
@@ -100,6 +98,9 @@ export default function Form({
         review: review,
       }
     );
+    if (res) {
+      console.log("paper made ", res.data);
+    }
 
     setPaperId(res.data.paper_id);
     setActive(2);
@@ -112,6 +113,8 @@ export default function Form({
     setWeightage(examDetails.weightage);
     setDateOfExam(new Date(examDetails.date).toISOString().substr(0, 10));
     setPaperTime(new Date(examDetails.date).toISOString().substr(11, 5));
+    setFreeflow(examDetails.freeflow === "true");
+    setReview(examDetails.review === "true");
   };
 
   useEffect(() => {
