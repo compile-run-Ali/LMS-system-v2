@@ -7,6 +7,7 @@ const AttempContainer = ({ question, isStudent }) => {
   const { p_number } = router.query;
   const [givenmarks, setGivenmarks] = useState(question.marksobtained);
   const [changed, setChanged] = useState(false);
+  const [saved, setSaved] = useState(false);
   const markQuestion = async () => {
     await axios
       .post("/api/paper/marking/mark_question", {
@@ -56,6 +57,7 @@ const AttempContainer = ({ question, isStudent }) => {
                   value={changed ? givenmarks : question.marksobtained}
                   step={0.1}
                   onChange={(e) => {
+                    setSaved(false);
                     setChanged(true);
                     setGivenmarks(Number(e.target.value));
                   }}
@@ -70,10 +72,11 @@ const AttempContainer = ({ question, isStudent }) => {
                   <button
                     className="bg-green-800 hover:bg-green-700 text-white py-1 px-2 rounded"
                     onClick={() => {
+                      setSaved(true);
                       markQuestion();
                     }}
                   >
-                    Mark
+                    {!saved ? <>Save Marks</> : <>Marked</>}
                   </button>
                 )}
               </div>

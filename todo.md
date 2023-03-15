@@ -1,5 +1,5 @@
 # Full Features
-- exam review:
+<!-- - exam review: -->
   <!-- -  subjective exam review -->
   <!-- -  objective review ui -->
   <!-- -  total marks at the end of paper -->
@@ -20,13 +20,12 @@ child marks cant be more than parent but issue cuz if another child then it does
 <!-- default value should be true for long question checkbox while making subjective question in exam -->
 <!-- 9 "Closed" Status for paper once paper end time and date have elapsed. -->
 
-In the SPA table:
+<!-- In the SPA table: -->
    <!-- - if a student paper record does not exist, then the status of exam should be shown as "not attempted" in mark exam list -->
    <!-- - when a paper attempt starts the spa status should be updated to "attempted" -->
    <!-- - if time ends it should update to "time ended" -->
    <!-- - if submitted on time, it should update to "submitted" -->
    <!-- - when teacher marks the exam it should be "marked" -->
-   - if the status is marked, student should be able to see his marks in papersList
 # Bug fixes
 <!-- when paper submitted, clear that paper from local storage -->
 <!-- cgpa input field should be a number and can only accept nums 0 to 4 with step 0.01 in making student by admin -->
@@ -41,20 +40,19 @@ total marks are shown more than actual marks, because a parent question's marks 
 while creating subjective question, question number can not be changed to 1 if it has a parent question 
 
 #14/3/23
-padding in login
+<!-- padding in login -->
 <!-- add image in register -->
-time allowed when mcq create
+<!-- time allowed when mcq create -->
 <!-- checkboxes in edit draft -->
-loading states
+<!-- loading states -->
 data retaining issue when allow multiple edit
-delete notification (mark as read)
+<!-- delete notification (mark as read) -->
 <!-- can select max 2 -->
-numbering issue when flag
-same notif multiple times issue
-admin should be able to edit exam details
-correct bold in exam mark
-marked button
-incorrect time in notifications
+<!-- numbering issue when flag -->
+<!-- same notif multiple times issue -->
+<!-- admin should be able to edit exam details -->
+<!-- correct bold in exam mark -->
+<!-- marked button -->
 save marks in subjective marking takes previous marks, not currently changed marks
 
 
@@ -75,13 +73,13 @@ functionality of assign in exam table of admin
 <!-- 3 Option to remove assigned faculty -->
 4 Add check to not assign same Faculty ID to a course twice
 5 Assigning Faculty to Exam feature not working
-6 Photo Upload for faculty edit not Working.
-7 Save or Submit Key for Marking Subjective. (Should display complete paper Sub + Obj)
+<!-- 6 Photo Upload for faculty edit not Working. -->
+<!-- 7 Save or Submit Key for Marking Subjective. (Should display complete paper Sub + Obj) -->
 <!-- 8 Create New MCQ should have 60 seconds by default in Time Allowed slot whenever new MCQ is added Faculty -->
 <!-- 9 Provide Back Keys to Navigate between Exam create stages -->
 10 Exam Settings should retain the first input given. Currently it resets to default every time user revisits
 <!-- 11 Admin cannot assign student ID to a course -->
-12 Admin cannot Edit paper once approved? Exam Settings need to be editable for Admin
+<!-- 12 Admin cannot Edit paper once approved? Exam Settings need to be editable for Admin -->
 <!-- 13 Objective time not displaying when adding new MCQ -->
 14 Once submitted for approval. When SI edits, objective data is not retained.
 15 Close Notification key on Faculty Notification drop down
@@ -97,9 +95,10 @@ I.E Exam upload and attempt testing
 
 #15/03/23
 when question navigate in attempt, the answer should be retained
-if not marked unmarked in subjecTive marking
+<!-- if not marked unmarked in subjecTive marking -->
 answer too dim in paper mark
 reload on save marks
 if finalize result then lock
 error cuz pnumber check
+incorrect time in notifications
 infinte loop error in log when multiple answers checkbox is checked in create objective answers

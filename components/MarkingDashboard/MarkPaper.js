@@ -16,6 +16,7 @@ const MarkPaper = ({
   const [objectiveMarks, setObjectiveMarks] = useState(null);
   const [subjectiveMarks, setSubjectiveMarks] = useState(null);
   const [totalMarks, setTotalMarks] = useState(0);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (objectiveMarks && subjectiveMarks) {
@@ -102,12 +103,13 @@ const MarkPaper = ({
       {!isStudent && (
         <div>
           <button
-            className="p-2 bg-blue-900 text-white rounded-lg"
+            className="p-2 w-32 bg-blue-900 text-white rounded-lg"
             onClick={() => {
+              setSaved(true);
               updateStatus();
             }}
           >
-            Save Marks
+            {saved ? <>Saved</> : <>Save Marks</>}
           </button>
           <Link
             href="/faculty/mark_exam/[exam_id]"
