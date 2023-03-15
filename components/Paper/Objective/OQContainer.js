@@ -24,7 +24,6 @@ export default function OQContainer({
   const [showModal, setShowModal] = useState(false);
   const [numSelected, setNumSelected] = useState(0);
 
-  console.log(showModal);
 
   const saveAnswer = () => {
     const score = markAnswer(
@@ -103,8 +102,10 @@ export default function OQContainer({
       const answers = question.correct_answer?.split(",") || [];
       setCorrectAnswers(answers);
       if (answers.length > 1) {
+        console.log("multiple allowed")
         setMultipleAllowed(true);
       } else {
+        console.log("multiple not allowed")
         setMultipleAllowed(false);
       }
     }
