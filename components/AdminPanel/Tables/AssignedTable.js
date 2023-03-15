@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 
 const AssignedTable = ({ course_data }) => {
-  const router = useRouter();
-
   const [courseData, setCourseData] = useState([]);
 
   useEffect(() => {
