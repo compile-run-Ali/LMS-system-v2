@@ -97,3 +97,10 @@ Student review Page and Comment Function
 Admin ID backdoor. Password recovery
 I.E Exam upload and attempt testing
 
+#15/03/23
+when question navigate in attempt, the answer should be retained
+if not marked unmarked
+answer too dim in paper mark
+reload on save marks
+if finalize result then lock
+error cuz pnumber check
