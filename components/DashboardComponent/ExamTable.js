@@ -28,7 +28,7 @@ const ExamTable = ({ exams_data }) => {
             return exam;
           });
       }
-      return exam;
+      return Promise.resolve(exam); // Return a resolved promise for exams that don't need updating
     });
   
     Promise.all(updatedExams).then((updatedExams) => {

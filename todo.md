@@ -42,13 +42,13 @@ while creating subjective question, question number can not be changed to 1 if i
 
 #14/3/23
 padding in login
-add image in register
+<!-- add image in register -->
 time allowed when mcq create
-checkboxes in edit draft
+<!-- checkboxes in edit draft -->
 loading states
 data retaining issue when allow multiple edit
 delete notification (mark as read)
-can select max 2
+<!-- can select max 2 -->
 numbering issue when flag
 same notif multiple times issue
 admin should be able to edit exam details
