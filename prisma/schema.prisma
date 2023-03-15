@@ -30,10 +30,10 @@ model Student {
 model SRC {
   src_id String @id @default(uuid())
 
-  student  Student @relation(fields: [p_number], references: [p_number])
+  student  Student @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
   p_number String
 
-  course      Course @relation(fields: [course_code], references: [course_code])
+  course      Course @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
   course_code String
 }
 
@@ -71,10 +71,10 @@ model Faculty {
 model FTC {
   ftc_id String @id @default(uuid())
 
-  faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id])
+  faculty    Faculty @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
   faculty_id String
 
-  course      Course @relation(fields: [course_code], references: [course_code])
+  course      Course @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
   course_code String
 }
 
@@ -94,7 +94,7 @@ model PaperApproval {
 model Paper {
   paper_id    String         @id @default(uuid())
   paper_name  String
-  course      Course?        @relation(fields: [course_code], references: [course_code])
+  course      Course?        @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
   course_code String?
   paper_type  String
   examofficer PaperApproval?
@@ -120,13 +120,13 @@ model SubjectiveQuestion {
   long_question  Boolean
   marks          Int
 
-  paper    Paper  @relation(fields: [paper_id], references: [paper_id])
+  paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
   paper_id String
 
   child_quetion SubjectiveQuestion[] @relation("QuestionByParts")
 
   parent_sq_id    String?
-  parent_question SubjectiveQuestion? @relation("QuestionByParts", fields: [parent_sq_id], references: [sq_id])
+  parent_question SubjectiveQuestion? @relation("QuestionByParts", fields: [parent_sq_id], references: [sq_id], onDelete: Cascade)
 
   student_attempts SSA[]
 }
@@ -136,10 +136,10 @@ model SSA {
   ssa_id String @id @default(uuid())
 
   sq_id               String
-  subjective_question SubjectiveQuestion @relation(fields: [sq_id], references: [sq_id])
+  subjective_question SubjectiveQuestion @relation(fields: [sq_id], references: [sq_id], onDelete: Cascade)
 
   p_number String
-  student  Student @relation(fields: [p_number], references: [p_number])
+  student  Student @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
 
   answer        String
   marksobtained Float  @default(0)
@@ -154,7 +154,7 @@ model ObjectiveQuestion {
   marks          Int
   timeAllowed    Int    @default(0)
 
-  paper    Paper  @relation(fields: [paper_id], references: [paper_id])
+  paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
   paper_id String
 
   student_attempst SOA[]
@@ -165,10 +165,10 @@ model SOA {
   soa_id String @id @default(uuid())
 
   oq_id              String
-  objective_question ObjectiveQuestion @relation(fields: [oq_id], references: [oq_id])
+  objective_question ObjectiveQuestion @relation(fields: [oq_id], references: [oq_id], onDelete: Cascade)
 
   p_number String
-  student  Student @relation(fields: [p_number], references: [p_number])
+  student  Student @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
 
   answer        String
   marksobtained Float
@@ -176,9 +176,9 @@ model SOA {
 
 model PaperComment {
   pc_id      String   @id @default(uuid())
-  paper      Paper    @relation(fields: [paper_id], references: [paper_id])
+  paper      Paper    @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
   paper_id   String
-  faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id])
+  faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
   faculty_id String
   comment    String
   time       DateTime @default(now())
@@ -191,7 +191,7 @@ model Notification {
 
   time       DateTime @default(now())
   read       Boolean  @default(false)
-  faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id])
+  faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
   faculty_id String
 }
 
@@ -202,6 +202,6 @@ model SPA {
   status        String? @default("Not Attempted")
   obtainedMarks Float   @default(0)
 
-  student Student @relation(fields: [studentId], references: [p_number])
-  paper   Paper   @relation(fields: [paperId], references: [paper_id])
+  student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
+  paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)
 }
