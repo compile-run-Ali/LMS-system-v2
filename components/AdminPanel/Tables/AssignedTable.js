@@ -12,11 +12,11 @@ const AssignedTable = ({ course_data }) => {
 
   const handleMultipleFaculty = (faculty) => {
     let facultyString = "";
-    faculty.forEach((faculty, index) => {
+    faculty.forEach((fac, index) => {
       if (index === faculty.length - 1) {
-        facultyString += ` ${faculty.name} - ${faculty.department}`;
+        facultyString += ` ${fac.name}`;
       } else {
-        facultyString += ` ${faculty.name} - ${faculty.department}, `;
+        facultyString += ` ${fac.name},`;
       }
     });
     return facultyString;
