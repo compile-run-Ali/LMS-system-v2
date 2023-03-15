@@ -75,19 +75,25 @@ functionality of assign in exam table of admin
 <!-- 3 Option to remove assigned faculty -->
 4 Add check to not assign same Faculty ID to a course twice
 5 Assigning Faculty to Exam feature not working
-6 Photo Upload not Working.
+6 Photo Upload for faculty edit not Working.
 7 Save or Submit Key for Marking Subjective. (Should display complete paper Sub + Obj)
-8 Create New MCQ should have 60 seconds by default in Time Allowed slot whenever new MCQ is added Faculty
-9 Provide Back Keys to Navigate between Exam create stages
+<!-- 8 Create New MCQ should have 60 seconds by default in Time Allowed slot whenever new MCQ is added Faculty -->
+<!-- 9 Provide Back Keys to Navigate between Exam create stages -->
 10 Exam Settings should retain the first input given. Currently it resets to default every time user revisits
 <!-- 11 Admin cannot assign student ID to a course -->
 12 Admin cannot Edit paper once approved? Exam Settings need to be editable for Admin
-13 Objective time not displaying when adding new MCQ
+<!-- 13 Objective time not displaying when adding new MCQ -->
 14 Once submitted for approval. When SI edits, objective data is not retained.
 15 Close Notification key on Faculty Notification drop down
 16 Loader State
 17 Repeating Notifications? Same notification recurring on every login
 18 Highlight Correct Option when marking paper and reviewing paper
 19 Highlight Correct Option when marking paper and reviewing paper
+20 Create Exam when reloaded does not retain questions
 
+
+Status Update once marked for all students. Should share result with Senior faculty
+Student review Page and Comment Function
+Admin ID backdoor. Password recovery
+I.E Exam upload and attempt testing
 

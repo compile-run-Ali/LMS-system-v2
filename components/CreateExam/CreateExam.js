@@ -56,6 +56,15 @@ export default function CreateExam({ paperType }) {
   const [subjectives, setSubjectives] = useState([]);
   const [freeFlowGlobal, setFreeFlowGlobal] = useState(false);
 
+  useEffect(() => {
+    if (router.isReady) {
+      console.log("router is ready");
+      setExamDetails(
+        Object.keys(router.query).length > 1 ? router.query : null
+      );
+    }
+  }, [router]);
+
   const fetchExam = async () => {
     const res = await axios.post("/api/faculty/get_exam", {
       paper_id: paperId,
@@ -67,7 +76,6 @@ export default function CreateExam({ paperType }) {
     const res = await axios.post("/api/faculty/get_objective", {
       paper_id: paperId,
     });
-    console.log(res.data);
     setMCQs(res.data);
   };
 
@@ -91,6 +99,7 @@ export default function CreateExam({ paperType }) {
     }
   }, [paperId, exam, paperType]);
 
+  console.log("exam details in  create exam component are", examDetails);
   return (
     <div className="w-full pl-6 mt-2">
       <Wizard
@@ -113,6 +122,7 @@ export default function CreateExam({ paperType }) {
       {active === 2 && paperId !== 0 && (
         <div className="mt-10">
           <MCQTable
+            exam={exam}
             paperId={paperId}
             setActive={setActive}
             objective_questions={mcqs}
@@ -128,6 +138,7 @@ export default function CreateExam({ paperType }) {
             objectiveQuestions={mcqs}
             subjectiveQuestions={subjectives}
             isEdit={true}
+            setActive={setActive}
           />
         </div>
       )}

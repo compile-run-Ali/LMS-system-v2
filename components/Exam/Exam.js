@@ -17,6 +17,8 @@ export default function Exam({
   const session = useSession();
   const router = useRouter();
 
+  console.log("inside exam set active is", setActive);
+
   const [edit, setEdit] = useState(isEdit);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
@@ -73,6 +75,9 @@ export default function Exam({
   }, []);
 
   const editExam = () => {
+    if (setActive) {
+      setActive(1);
+    }
     router.push({
       pathname: `/faculty/create_exam/${
         exam.paper_type === "Objective" ? "objective" : "subjective"
@@ -197,7 +202,7 @@ export default function Exam({
     <div className="pr-10 pl-7 font-poppins w-full ">
       <div className="bg-gray-100 bg-opacity-50 pt-10 rounded-md">
         {access && (
-          <div className="w-full flex justify-end pr-5">
+          <div className="w-full flex justify-end pr-5 cursor-pointer">
             <div
               onClick={() => {
                 editExam();
@@ -383,7 +388,7 @@ export default function Exam({
                     type="submit"
                     className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
                     onClick={() => {
-                      setActive(3);
+                      setActive(exam.paper_type === "Objective" ? 2 : 3);
                     }}
                   >
                     Back

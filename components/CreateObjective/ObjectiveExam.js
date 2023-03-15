@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import Input from "../Common/Form/Input";
 import MultiSelectDropdown from "./MultiSelect";
+import { useRouter } from "next/router";
 
 const MCQTable = ({
+  exam,
   paperId,
   setActive,
   objective_questions,
@@ -13,7 +15,6 @@ const MCQTable = ({
 }) => {
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
-  const [paper, setPaper] = useState({});
   const [mcqs, setMCQs] = useState(
     objective_questions.map((mcq) => {
       mcq.options = mcq.answers.split(",");
@@ -28,6 +29,20 @@ const MCQTable = ({
     marks: 1,
     time_allowed: 60,
   });
+
+  const router = useRouter();
+
+  const editExam = () => {
+    console.log("pushing back");
+    router.push({
+      pathname: `/faculty/create_exam/${
+        exam.paper_type === "Objective" ? "objective" : "subjective"
+      }`,
+      query: {
+        ...exam,
+      },
+    });
+  };
 
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -126,18 +141,15 @@ const MCQTable = ({
       alert("Please fill all the fields");
       return;
     }
-    const newMCQ = await axios.post(
-      "/api/faculty/edit_objective",
-      {
-        oq_id: mcqs[index].oq_id,
-        paper_id: paperId,
-        question: currentMCQ.question,
-        answers: currentMCQ.options.toString(),
-        correct_answer: currentMCQ.correct_answer,
-        marks: currentMCQ.marks,
-        time_allowed: currentMCQ.time_allowed || 0,
-      }
-    );
+    const newMCQ = await axios.post("/api/faculty/edit_objective", {
+      oq_id: mcqs[index].oq_id,
+      paper_id: paperId,
+      question: currentMCQ.question,
+      answers: currentMCQ.options.toString(),
+      correct_answer: currentMCQ.correct_answer,
+      marks: currentMCQ.marks,
+      time_allowed: currentMCQ.time_allowed || 0,
+    });
 
     if (newMCQ.status === 200) {
       const newMCQs = [...mcqs];
@@ -167,6 +179,10 @@ const MCQTable = ({
       setObjectiveQuestions(newMCQs);
     }
   };
+  console.log(
+    "mcqs",
+    mcqs,
+  );
 
   return (
     <div className="flex font-poppins flex-col items-center p-6">
@@ -193,7 +209,7 @@ const MCQTable = ({
               <td className="px-4 py-2">{mcq.correct_answer}</td>
               <td className="px-4 py-2">{mcq.marks}</td>
               {freeFlow ? null : (
-                <td className="px-4 py-2">{mcq.time_allowed}</td>
+                <td className="px-4 py-2">{mcq.timeAllowed}</td>
               )}
               <td className="px-4 py-2">
                 <button
@@ -315,7 +331,7 @@ const MCQTable = ({
                 text={"Time Allowed in Seconds"}
                 type={"number"}
                 required
-                value={currentMCQ.time_allowed}
+                value={currentMCQ.time_allowed || 60}
                 onChange={handleTimeAllowedChange}
               />
             )}
@@ -343,7 +359,10 @@ const MCQTable = ({
         <button
           type="button"
           className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
-          onClick={() => setActive(1)}
+          onClick={() => {
+            setActive(1);
+            editExam();
+          }}
         >
           Back
         </button>
