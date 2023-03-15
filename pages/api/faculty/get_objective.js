@@ -16,6 +16,7 @@ const handler = async (req, res) => {
               correct_answer: true,
               answers: true,
               marks: true,
+              timeAllowed: true,
             }
           },
         }

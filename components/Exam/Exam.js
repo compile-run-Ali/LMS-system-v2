@@ -16,7 +16,6 @@ export default function Exam({
   const session = useSession();
   const router = useRouter();
 
-  console.log("inside exam set active is", setActive);
 
   const [edit, setEdit] = useState(isEdit);
   const [comment, setComment] = useState("");
@@ -259,9 +258,9 @@ export default function Exam({
         <span className=" text-lg font-medium ml-5">Comments</span>
         <div className="bg-gray-100 bg-opacity-50 px-10 py-5 ">
           {comments &&
-            comments.map((comment) => (
+            comments.map((comment, index) => (
               <div
-                key={comment.pc_id}
+                key={index}
                 className="flex justify-between mb-5 pb-4 border-b border-gray-600 border-opacity-20"
               >
                 <div className=" flex flex-col justify-center">

@@ -99,7 +99,6 @@ export default function CreateExam({ paperType }) {
     }
   }, [paperId, exam, paperType]);
 
-  console.log("exam details in  create exam component are", examDetails);
   return (
     <div className="w-full pl-6 mt-2">
       <Wizard

@@ -27,7 +27,7 @@ const MCQTable = ({
     options: ["", "", "", ""],
     correct_answer: "",
     marks: 1,
-    time_allowed: 60,
+    timeAllowed: 60,
   });
 
   const router = useRouter();
@@ -84,7 +84,7 @@ const MCQTable = ({
   };
 
   const handleTimeAllowedChange = (e) => {
-    setCurrentMCQ({ ...currentMCQ, time_allowed: parseInt(e.target.value) });
+    setCurrentMCQ({ ...currentMCQ, timeAllowed: parseInt(e.target.value) });
   };
 
   const handleAddMCQ = async () => {
@@ -93,7 +93,7 @@ const MCQTable = ({
       currentMCQ.options.includes("") ||
       currentMCQ.correct_answer === "" ||
       currentMCQ.marks === "" ||
-      (!freeFlow && currentMCQ.time_allowed === "")
+      (!freeFlow && !currentMCQ.timeAllowed)
     ) {
       alert("Please fill all the fields");
       return;
@@ -107,10 +107,9 @@ const MCQTable = ({
         answers: currentMCQ.options.toString(),
         correct_answer: currentMCQ.correct_answer,
         marks: currentMCQ.marks,
-        time_allowed: currentMCQ.time_allowed || 0,
+        timeAllowed: currentMCQ.timeAllowed || 60,
       }
     );
-    console.log(newMCQ.data);
     newMCQ.data.options = newMCQ.data.answers.split(",");
     setMCQs([...mcqs, newMCQ.data]);
     setObjectiveQuestions([...mcqs, newMCQ.data]);
@@ -119,7 +118,7 @@ const MCQTable = ({
       options: ["", "", "", ""],
       correct_answer: "",
       marks: 1,
-      time_allowed: null,
+      timeAllowed: 60,
     });
     setAdding(false);
   };
@@ -136,7 +135,7 @@ const MCQTable = ({
       currentMCQ.options.includes("") ||
       currentMCQ.correct_answer === "" ||
       currentMCQ.marks === "" ||
-      (!freeFlow && currentMCQ.time_allowed === "")
+      (!freeFlow && !currentMCQ.timeAllowed)
     ) {
       alert("Please fill all the fields");
       return;
@@ -148,7 +147,7 @@ const MCQTable = ({
       answers: currentMCQ.options.toString(),
       correct_answer: currentMCQ.correct_answer,
       marks: currentMCQ.marks,
-      time_allowed: currentMCQ.time_allowed || 0,
+      timeAllowed: currentMCQ.timeAllowed || 60,
     });
 
     if (newMCQ.status === 200) {
@@ -161,7 +160,7 @@ const MCQTable = ({
         options: [],
         correct_answer: "",
         marks: 1,
-        time_allowed: 60,
+        timeAllowed: 60,
       });
       setEditing(false);
       setIndex(null);
@@ -204,9 +203,7 @@ const MCQTable = ({
               <td className="px-4 py-2">{mcq.options.join(",")}</td>
               <td className="px-4 py-2">{mcq.correct_answer}</td>
               <td className="px-4 py-2">{mcq.marks}</td>
-              {freeFlow ? null : (
-                <td className="px-4 py-2">{mcq.timeAllowed}</td>
-              )}
+              <td className="px-4 py-2">{mcq.timeAllowed}</td>
               <td className="px-4 py-2">
                 <button
                   onClick={handleEditMCQ(index)}
@@ -327,7 +324,7 @@ const MCQTable = ({
                 text={"Time Allowed in Seconds"}
                 type={"number"}
                 required
-                value={currentMCQ.time_allowed || 60}
+                value={currentMCQ.timeAllowed || 60}
                 onChange={handleTimeAllowedChange}
               />
             )}

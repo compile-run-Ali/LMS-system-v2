@@ -102,3 +102,4 @@ answer too dim in paper mark
 reload on save marks
 if finalize result then lock
 error cuz pnumber check
+infinte loop error in log when multiple answers checkbox is checked in create objective answers
