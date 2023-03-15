@@ -27,8 +27,15 @@ export default function Form({
   const [paperTime, setPaperTime] = useState(
     edit ? new Date(examDetails.date).toISOString().substr(11, 5) : "09:00"
   );
-  const [freeflow, setFreeflow] = useState(false);
-  const [review, setReview] = useState(false);
+  console.log("paper time is", paperTime);
+  const [freeflow, setFreeflow] = useState(
+    edit ? examDetails.freeflow === "true" : false
+  );
+  const [review, setReview] = useState(
+    edit ? examDetails.review === "true" : false
+  );
+
+  console.log("exam details", examDetails);
 
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
@@ -107,7 +114,7 @@ export default function Form({
     setPaperTime(new Date(examDetails.date).toISOString().substr(11, 5));
   };
 
-  useEffect(() => { 
+  useEffect(() => {
     if (Object.keys(router.query).length > 1) {
       setEditTrue();
     }
@@ -164,6 +171,7 @@ export default function Form({
           <input
             type="checkbox"
             className="accent-slate-100"
+            checked={freeflow}
             onChange={handleFreeflow}
           />
         </div>
@@ -173,6 +181,7 @@ export default function Form({
           <input
             type="checkbox"
             className="accent-slate-100"
+            checked={review}
             onChange={handleReview}
           />
         </div>
