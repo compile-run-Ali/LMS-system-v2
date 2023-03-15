@@ -381,6 +381,17 @@ export default function Exam({
                 <div className="mt-10 mb-10">
                   <button
                     type="submit"
+                    className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
+                    onClick={() => {
+                      setActive(3);
+                    }}
+                  >
+                    Back
+                  </button>
+                </div>
+                <div className="mt-10 mb-10">
+                  <button
+                    type="submit"
                     className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
                     onClick={() => {
                       router.push("/faculty");

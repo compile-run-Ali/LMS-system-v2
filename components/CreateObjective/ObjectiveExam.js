@@ -343,8 +343,9 @@ const MCQTable = ({
         <button
           type="button"
           className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
+          onClick={() => setActive(1)}
         >
-          Cancel
+          Back
         </button>
         <button
           type="submit"
