@@ -45,7 +45,6 @@ while creating subjective question, question number can not be changed to 1 if i
 <!-- time allowed when mcq create -->
 <!-- checkboxes in edit draft -->
 <!-- loading states -->
-data retaining issue when allow multiple edit
 <!-- delete notification (mark as read) -->
 <!-- can select max 2 -->
 <!-- numbering issue when flag -->
@@ -95,13 +94,17 @@ Admin ID backdoor. Password recovery
 I.E Exam upload and attempt testing
 
 #15/03/23
+### Ali
 when question navigate in attempt, the answer should be retained
 comment feature in paper review
 api correction in making subjective qs
-<!-- if not marked unmarked in subjecTive marking -->
-answer too dim in paper mark
-reload on save marks
-  error cuz pnumber check
 incorrect time in notifications
+<!-- if not marked unmarked in subjecTive marking -->
+### fahad
+reload on save marks
+  <!-- error cuz pnumber check -->
+### ali abdullah
+answer too dim in paper mark
 if student attempted, and exam not marked, then marks obtained should be "unmarked"
 infinte loop error in log when multiple answers checkbox is checked in create objective answers
+data retaining issue when allow multiple edit
