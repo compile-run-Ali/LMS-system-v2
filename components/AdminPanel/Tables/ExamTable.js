@@ -39,7 +39,7 @@ const ExamTable = ({ exams_data }) => {
                     },
                   });
                 }}
-                className="hover:bg-blue-800 hover:text-white p-2 rounded-md transition-colors "
+                className="hover:bg-blue-800 text-blue-800 hover:text-white p-2 rounded-md transition-colors "
               >
                 <MdEdit />
               </button>
