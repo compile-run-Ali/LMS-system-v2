@@ -22,7 +22,7 @@ export default function Index() {
     const courses = await axios.get("/api/admin/course/get_courses");
     const student = await axios.get("/api/admin/student/get_student");
 
-    const exams = await axios.get("/api/admin/get_exams");
+    const exams = await axios.get("/api/admin/paper/get_exams");
 
     setCoursesData(courses.data);
     setStudentData(student.data);

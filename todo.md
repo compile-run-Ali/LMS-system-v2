@@ -86,6 +86,7 @@ save marks in subjective marking takes previous marks, not currently changed mar
 16 Loader State
 <!-- 17 Repeating Notifications? Same notification recurring on every login -->
 <!-- 18 Highlight Correct Option when marking paper and reviewing paper -->
+remove /faculty from edit exam page route
 
 
 Status Update once marked for all students. Should share result with Senior faculty
