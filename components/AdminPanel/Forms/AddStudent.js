@@ -12,11 +12,10 @@ export default function AddStudent() {
   const [cgpa, setCgpa] = useState(router.query.cgpa? router.query.cgpa : "");
   const [DOB, setDob] = useState(router.query.DOB? router.query.DOB : "");
   const [email, setEmail] = useState(router.query.email? router.query.email : "");
-  const [password, setPassword] = useState(router.query.password? router.query.password : "");
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [password, setPassword] = useState("");
+  const [selectedCourse, setSelectedCourse] = useState(router.query.course_code? router.query.course_code : "");
   const [courses, setCourses] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
-
 
   const handleFileChange = (event) => {
     setProfilePicture(event.target.files[0]);
@@ -142,10 +141,10 @@ const editStudent = async (student) => {
           <Input
             text="Date of Birth"
             type="date"
-            value={DOB}
             onChange={(event) => setDob(event.target.value)}
             required
-          />
+            value={DOB ? new Date(DOB).toISOString().substr(0, 10) : ''}
+            />
         </div>
         <div className="mt-6 form-group">
           <label htmlFor="Courses">Courses</label>
