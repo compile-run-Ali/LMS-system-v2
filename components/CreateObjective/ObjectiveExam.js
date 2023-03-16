@@ -130,6 +130,7 @@ const MCQTable = ({
   };
 
   const handleUpdateMCQ = async (index) => {
+    console.log(currentMCQ);
     if (
       currentMCQ.question === "" ||
       currentMCQ.options.includes("") ||
@@ -203,7 +204,9 @@ const MCQTable = ({
               <td className="px-4 py-2">{mcq.options.join(",")}</td>
               <td className="px-4 py-2">{mcq.correct_answer}</td>
               <td className="px-4 py-2">{mcq.marks}</td>
-              <td className="px-4 py-2">{mcq.timeAllowed}</td>
+              {freeFlow ? null : (
+                <td className="px-4 py-2">{mcq.timeAllowed}</td>
+              )}
               <td className="px-4 py-2">
                 <button
                   onClick={handleEditMCQ(index)}
