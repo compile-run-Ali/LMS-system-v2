@@ -1,6 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import axios from "axios";
 
 const StudentsTable = ({ students_data, exam_id }) => {
   const [students, setStudents] = useState([]);
@@ -9,6 +10,22 @@ const StudentsTable = ({ students_data, exam_id }) => {
     console.log(students_data);
     if (students_data) {
       setStudents(students_data);
+      const isAllMarked = students_data.every(
+        (student) =>
+          student.status === "Marked" || student.status === "Not Attempted"
+      );
+      if (isAllMarked) {
+         axios.put(`/api/faculty/update_exam_status`, {
+            paper_id: exam_id,
+            status: "Marked",
+          })
+          .then((response) => {
+            console.log("Exam status updated successfully");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     }
   }, [students_data]);
 

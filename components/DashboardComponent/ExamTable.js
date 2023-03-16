@@ -13,7 +13,7 @@ const ExamTable = ({ exams_data }) => {
     const currentDate = new Date();
     const updatedExams = exams_data.map((exam) => {
       const examDate = new Date(exam.date);
-      if (examDate < currentDate && exam.status !== "Closed") {
+      if (examDate < currentDate && exam.status !== "Closed" && exam.status !== "Marked") {
         return axios
           .put(`/api/faculty/update_exam_status`, {
             paper_id: exam.paper_id,
