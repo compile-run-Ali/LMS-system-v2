@@ -53,6 +53,12 @@ export default function Exam({
     setComments(res.data);
   };
 
+  const addFiveHoursToISOString = (dateString) => {
+    const date = new Date(dateString);
+    date.setHours(date.getHours() + 5);
+    return date.toISOString();
+  };
+
   const getFaculty = async () => {
     const res = await axios.get("/api/paper/get_faculty");
     setFaculty(
@@ -272,10 +278,15 @@ export default function Exam({
                 </div>
                 <div className="flex flex-col text-[#BDBDBD] text-right">
                   <span className="text-xs font-medium mt-1">
-                    {comment.time.split("T")[1].split(".")[0]}
+                    {convertDateTimeToStrings(
+                      addFiveHoursToISOString(comment.time)
+                    )}
                   </span>
                   <span className="text-xs font-medium mt-1">
-                    {comment.time.split("T")[0]}
+                    {convertDateTimeToStrings(
+                      addFiveHoursToISOString(comment.time),
+                      true
+                    )}
                   </span>
                 </div>
               </div>
