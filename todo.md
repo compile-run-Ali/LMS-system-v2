@@ -69,15 +69,16 @@ save marks in subjective marking takes previous marks, not currently changed mar
 ### New
 
 <!-- 1 Delete Faculty feature not working -->
-2 Admin cannot remove Assigned faculty.
+<!-- 2 Admin cannot remove Assigned faculty. -->
+if none selected then alert is buggy
 <!-- 3 Option to remove assigned faculty -->
-4 Add check to not assign same Faculty ID to a course twice
+<!-- 4 Add check to not assign same Faculty ID to a course twice -->
 5 Assigning Faculty to Exam feature not working
 <!-- 6 Photo Upload for faculty edit not Working. -->
 <!-- 7 Save or Submit Key for Marking Subjective. (Should display complete paper Sub + Obj) -->
 <!-- 8 Create New MCQ should have 60 seconds by default in Time Allowed slot whenever new MCQ is added Faculty -->
 <!-- 9 Provide Back Keys to Navigate between Exam create stages -->
-10 Exam Settings should retain the first input given. Currently it resets to default every time user revisits
+<!-- 10 Exam Settings should retain the first input given. Currently it resets to default every time user revisits -->
 <!-- 11 Admin cannot assign student ID to a course -->
 <!-- 12 Admin cannot Edit paper once approved? Exam Settings need to be editable for Admin -->
 <!-- 13 Objective time not displaying when adding new MCQ -->
