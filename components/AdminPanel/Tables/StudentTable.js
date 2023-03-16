@@ -15,6 +15,7 @@ export default function StudentTable({
   };
 
   const editStudent = (index) => {
+    console.log(students[index])
     router.push({
       pathname:"/admin/add_student",
       query:{
@@ -24,6 +25,7 @@ export default function StudentTable({
         cgpa:students[index].cgpa,
         email:students[index].email,
         DOB:students[index].DOB,
+        selectedCourse:students[index].course_code,
       }
     })
   };
