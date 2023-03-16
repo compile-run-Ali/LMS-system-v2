@@ -1,18 +1,31 @@
 import React from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function StudentTable({
   setOpen,
   students,
   setSelectedStudent,
 }) {
+  const router = useRouter();
   const openModal = (index) => {
     setOpen(true);
     setSelectedStudent(students[index].p_number);
   };
-  const editStudent = () => {
-    console.log("Edit Student");
+
+  const editStudent = (index) => {
+    router.push({
+      pathname:"/admin/add_student",
+      query:{
+        p_number:students[index].p_number,
+        name:students[index].name,
+        phone_number:students[index].phone_number,
+        cgpa:students[index].cgpa,
+        email:students[index].email,
+        DOB:students[index].DOB,
+      }
+    })
   };
 
   return (
@@ -47,7 +60,7 @@ export default function StudentTable({
               </td>
               <td className="px-4 py-2">
                 <button
-                  onClick={editStudent(student.p_number)}
+                  onClick={()=>{editStudent(index)}}
                   className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                 >
                   <MdEdit />
