@@ -57,7 +57,7 @@ save marks in subjective marking takes previous marks, not currently changed mar
 
 
 # To be asked
-functionality of assign in exam table of admin
+<!-- functionality of assign in exam table of admin -->
 5 Line for Exam in the table
 8 No Comment alert when marking paper
 10 Student Profile Picture Display Area
@@ -82,7 +82,7 @@ functionality of assign in exam table of admin
 <!-- 12 Admin cannot Edit paper once approved? Exam Settings need to be editable for Admin -->
 <!-- 13 Objective time not displaying when adding new MCQ -->
 14 Once submitted for approval. When SI edits, objective data is not retained.
-15 Close Notification key on Faculty Notification drop down
+<!-- 15 Close Notification key on Faculty Notification drop down -->
 16 Loader State
 <!-- 17 Repeating Notifications? Same notification recurring on every login -->
 <!-- 18 Highlight Correct Option when marking paper and reviewing paper -->
@@ -98,7 +98,7 @@ when question navigate in attempt, the answer should be retained
 <!-- if not marked unmarked in subjecTive marking -->
 answer too dim in paper mark
 reload on save marks
-if finalize result then lock
-error cuz pnumber check
+  error cuz pnumber check
 incorrect time in notifications
+if student attempted, and exam not marked, then marks obtained should be "unmarked"
 infinte loop error in log when multiple answers checkbox is checked in create objective answers
