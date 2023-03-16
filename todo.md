@@ -70,7 +70,6 @@ save marks in subjective marking takes previous marks, not currently changed mar
 
 <!-- 1 Delete Faculty feature not working -->
 <!-- 2 Admin cannot remove Assigned faculty. -->
-if none selected then alert is buggy
 <!-- 3 Option to remove assigned faculty -->
 <!-- 4 Add check to not assign same Faculty ID to a course twice -->
 5 Assigning Faculty to Exam feature not working

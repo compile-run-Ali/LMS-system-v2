@@ -8,8 +8,7 @@ export default function AssignFacultyModal({
   course,
   handleRemove,
 }) {
-  const [selectedFaculty, setSelectedFaculty] = useState(faculty[0]);
-
+  const [selectedFaculty, setSelectedFaculty] = useState('');
 
   const handleFacultyChange = async (e) => {
     const selected_faculty = faculty.find(
