@@ -4,17 +4,18 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 export default function AddStudent() {
-  const [pNumber, setPNumber] = useState("");
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [cgpa, setCgpa] = useState("");
-  const [DOB, setDob] = useState();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const router = useRouter();
+  const [pNumber, setPNumber] = useState(router.query.p_number? router.query.p_number : "");
+  const [edit, setEdit] = useState(router.query.p_number ? true : false);
+  const [name, setName] = useState(router.query.name? router.query.name : "");
+  const [phoneNumber, setPhoneNumber] = useState(router.query.phone_number? router.query.phone_number : "");
+  const [cgpa, setCgpa] = useState(router.query.cgpa? router.query.cgpa : "");
+  const [DOB, setDob] = useState(router.query.DOB? router.query.DOB : "");
+  const [email, setEmail] = useState(router.query.email? router.query.email : "");
+  const [password, setPassword] = useState(router.query.password? router.query.password : "");
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
-  const router = useRouter();
 
 
   const handleFileChange = (event) => {
@@ -45,7 +46,13 @@ export default function AddStudent() {
     formData.append("course_code", selectedCourse);
     formData.append("profile_picture", profilePicture);
     console.log(profilePicture)
-    addStudent(formData);
+
+    if (edit) {
+      formData.append("student_id", router.query.student_id);
+      editStudent(formData);
+    } else {
+      addStudent(formData);
+    }
 
   
     // setPNumber("");
@@ -85,6 +92,20 @@ const addStudent = async (student) => {
   router.push("/admin");
 };
 
+const editStudent = async (student) => {
+  axios
+    .post(`/api/admin/student/edit_student`, student, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((res) => {
+      console.log("student edited successfully", res.data);
+    })
+    .catch((err) => console.log("Error in editing student", err));
+  router.push("/admin");
+};
+
   return (
     <form onSubmit={handleSubmit} className="px-4 font-poppins">
       <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
@@ -95,6 +116,7 @@ const addStudent = async (student) => {
             value={pNumber}
             onChange={(event) => setPNumber(event.target.value)}
             required
+            disabled={edit}
           />
         </div>
         <div className="mb-4">
