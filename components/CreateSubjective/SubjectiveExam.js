@@ -66,7 +66,10 @@ const SubjectiveExam = ({
 
   const handleAddMCQ = async () => {
     console.log(currentSubjective);
-  
+    if (!currentSubjective.questionnumber) {
+      alert("Please set the question number/part number");
+      return;
+    }
     // Check if the new question is a child and validate its marks
     if (currentSubjective.parent_question) {
       const parent = subjectives.find(
@@ -106,7 +109,7 @@ const SubjectiveExam = ({
         marks: currentSubjective.marks,
         questionnumber: currentSubjective.questionnumber,
       }
-    );
+    )
     if (newSubjective.status === 200) {
       setSubjectives([...subjectives, newSubjective.data]);
       setSubjectiveQuestions([...subjectives, newSubjective.data]);
