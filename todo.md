@@ -81,7 +81,7 @@ save marks in subjective marking takes previous marks, not currently changed mar
 <!-- 11 Admin cannot assign student ID to a course -->
 <!-- 12 Admin cannot Edit paper once approved? Exam Settings need to be editable for Admin -->
 <!-- 13 Objective time not displaying when adding new MCQ -->
-14 Once submitted for approval. When SI edits, objective data is not retained.
+<!-- 14 Once submitted for approval. When SI edits, objective data is not retained. -->
 <!-- 15 Close Notification key on Faculty Notification drop down -->
 16 Loader State
 <!-- 17 Repeating Notifications? Same notification recurring on every login -->
@@ -96,6 +96,8 @@ I.E Exam upload and attempt testing
 
 #15/03/23
 when question navigate in attempt, the answer should be retained
+comment feature in paper review
+api correction in making subjective qs
 <!-- if not marked unmarked in subjecTive marking -->
 answer too dim in paper mark
 reload on save marks
