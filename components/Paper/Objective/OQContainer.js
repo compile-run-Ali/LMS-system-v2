@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import CountdownTimer from "../CountdownTimer";
 import SubmitModal from "../SubmitModal";
+import Loader from "@/components/Loader";
 
 export default function OQContainer({
   question,
@@ -23,7 +24,8 @@ export default function OQContainer({
   const [saved, setSaved] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [numSelected, setNumSelected] = useState(0);
-
+  const [loading, setLoading] = useState(true);
+  const [changed, setChanged] = useState(false);
 
   const saveAnswer = () => {
     const score = markAnswer(
@@ -97,27 +99,46 @@ export default function OQContainer({
     // selectedanswer will be a string in form a1,a2
     // convert correctAnswer into an array
     if (question) {
+      setLoading(true);
+      axios
+        .get("/api/student/paper/oq/get_answer", {
+          params: {
+            p_number: session.user.id,
+            oq_id: question.oq_id,
+          },
+        })
+        .then((res) => {
+          if (res.data) {
+            setSelectedAnswer(res.data.answer.split(","));
+            console.log("answer already exists", res.data);
+            setNumSelected(res.data.answer?.split(",").length || 0);
+          } else {
+            setNumSelected(0);
+            setSelectedAnswer([]);
+          }
+
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log("error", err.message);
+        });
       // set freeFlow to NOT
       setSelectedAnswer([]);
       const answers = question.correct_answer?.split(",") || [];
       setCorrectAnswers(answers);
       if (answers.length > 1) {
-        console.log("multiple allowed")
+        console.log("multiple allowed");
         setMultipleAllowed(true);
       } else {
-        console.log("multiple not allowed")
+        console.log("multiple not allowed");
         setMultipleAllowed(false);
       }
     }
   }, [question]);
 
-  useEffect(
-    () => () => {
-      setSaved(false);
-    },
-    [selectedAnswer]
-  );
-  const maxNumSelected = correctAnswers.length;
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 w-full">
@@ -140,28 +161,38 @@ export default function OQContainer({
               {question.answers?.split(",").map((answer, index) => (
                 <div
                   key={index}
-                  className={`w-full flex my-3 rounded-lg p-4 text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 ${
-                    selectedAnswer.includes(answer)
-                      ? "bg-zinc-300"
-                      : "bg-white hover:bg-zinc-200 "
-                  }`}
+                  className={`w-full flex my-3 rounded-lg p-4 bg-white text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 `}
                   onClick={() => {
+                    setChanged(selectedAnswer.includes(answer) ? false : true);
+                    setSaved(selectedAnswer.includes(answer) ? true : false);
                     const input = document.querySelector(
                       `input[value='${answer}']`
                     );
-                    if (selectedAnswer.includes(answer)) {
-                      setSelectedAnswer(
-                        selectedAnswer.filter((a) => a !== answer)
-                      );
-                      setNumSelected(numSelected - 1);
-                      input.checked = false; // uncheck the checkbox
-                    } else if (
-                      numSelected < correctAnswers.length &&
-                      numSelected < maxNumSelected
-                    ) {
-                      setSelectedAnswer([...selectedAnswer, answer]);
-                      setNumSelected(numSelected + 1);
+                    if (!multipleAllowed) {
+                      setSelectedAnswer([answer]);
+                      setNumSelected(1);
                       input.checked = true; // check the checkbox
+                    } else {
+                      if (selectedAnswer.includes(answer)) {
+                        setSelectedAnswer(
+                          selectedAnswer.filter((a) => a !== answer)
+                        );
+                        setNumSelected(numSelected - 1);
+                        input.checked = false;
+                      } else {
+                        if (numSelected < correctAnswers.length) {
+                          setSelectedAnswer([...selectedAnswer, answer]);
+                          setNumSelected(numSelected + 1);
+                          input.checked = true;
+                        } else {
+                          // remove first element of selectAnswer, and add this option
+                          setSelectedAnswer([
+                            ...selectedAnswer.slice(1),
+                            answer,
+                          ]);
+                          input.checked = true;
+                        }
+                      }
                     }
                   }}
                 >
@@ -169,7 +200,7 @@ export default function OQContainer({
                     type={multipleAllowed ? "checkbox" : "radio"}
                     name="answer"
                     value={answer}
-                    className="mr-4"
+                    className="mr-4 accent-blue-700"
                     checked={selectedAnswer.includes(answer)} // set the checked attribute
                     readOnly // disable user input on this element
                   />
@@ -193,10 +224,9 @@ export default function OQContainer({
                   " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 }
                 onClick={() => {
-                  if (selectedAnswer.length === 0 || saved) {
+                  if (selectedAnswer.length === 0 || saved || !changed) {
                     currentQuestion > 0 &&
                       setCurrentQuestion(currentQuestion - 1);
-                    setNumSelected(0);
                   } else {
                     alert("Please save your answer before proceeding");
                   }
@@ -220,19 +250,22 @@ export default function OQContainer({
             )}
             <button
               className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
-                ${saved ? "bg-green-600" : "bg-white hover:bg-zinc-300"}`}
+                ${
+                  saved || !changed
+                    ? "bg-green-600"
+                    : "bg-white hover:bg-zinc-300"
+                }`}
               onClick={saveAnswer}
             >
-              {saved ? "Saved" : "Save"}
+              {saved || !changed ? "Saved" : "Save"}
             </button>
             {currentQuestion < totalQuestions - 1 ? (
               <button
                 className="bg-white hover:bg-zinc-300 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 onClick={() => {
                   // if opt not selected OR saved
-                  if (selectedAnswer.length === 0 || saved) {
+                  if (selectedAnswer.length === 0 || saved || !changed) {
                     setCurrentQuestion(currentQuestion + 1);
-                    setNumSelected(0);
                   } else {
                     alert("Please save your answer before proceeding");
                   }
@@ -262,9 +295,7 @@ export default function OQContainer({
           />
         </>
       ) : (
-        <div>
-          <h1>loading</h1>
-        </div>
+        <Loader />
       )}
     </div>
   );

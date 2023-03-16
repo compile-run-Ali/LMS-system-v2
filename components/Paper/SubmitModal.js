@@ -31,8 +31,6 @@ export default function SubmitModal({
       });
   };
 
-  console.log("papers before deleting", paperDetails);
-
   const clearPaperFromLocal = () => {
     const papers = JSON.parse(localStorage.getItem("papers")) || {};
     delete papers[paper];

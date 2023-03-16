@@ -95,10 +95,17 @@ I.E Exam upload and attempt testing
 
 #15/03/23
 ### Ali
+<!-- incorrect time in notifications -->
+  <!-- make a function that returns the same string 5 hrs ahead -->
 when question navigate in attempt, the answer should be retained
+  make loading components
+  fetch soa and ssa in respective components and set them
+  for objective, check the method used to mark in objective review container
 comment feature in paper review
+  add comment field in spa table, default null
+  on exam review page, add a comment component that gets(if any) and sets comment in database 
+  use same api to get comment, and another api to set comment, (both are made)
 api correction in making subjective qs
-incorrect time in notifications
 <!-- if not marked unmarked in subjecTive marking -->
 ### fahad
 reload on save marks
