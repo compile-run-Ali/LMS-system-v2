@@ -27,27 +27,36 @@ export default function Courses({ courses, setCourses, faculty }) {
   };
 
   const handleAssignFaculty = async (faculty) => {
-    const assignedFaculty = await axios.post(
-      "/api/admin/assign_faculty_to_courses",
-      {
+    if (!faculty) return alert("Please select a faculty");
+
+    await axios
+      .post("/api/admin/assign_faculty_to_courses", {
         course_code: selectedCourse,
         faculty_id: faculty,
-      }
-    );
-    if (assignedFaculty.status === 200) {
-      const newCourses = courses.map((course) => {
-        if (assignedFaculty.data.course.course_code === course.course_code) {
-          return {
-            ...course,
-            faculty: [...course.faculty, assignedFaculty.data.faculty],
-          };
+      })
+      .then((res) => {
+        console.log("Response", res);
+        if (res.status === 200) {
+          const newCourses = courses.map((course) => {
+            if (res.data.course.course_code === course.course_code) {
+              return {
+                ...course,
+                faculty: [...course.faculty, res.data.faculty],
+              };
+            }
+            return course;
+          });
+          setCourses(newCourses);
+          setAssignFacultyOpen(false);
         }
-        return course;
+      })
+      .catch((err) => {
+        console.log("Error", err);
+        if (err.response.status === 409) {
+          alert("Faculty already assigned to this course");
+        }
       });
-      setCourses(newCourses);
-      setAssignFacultyOpen(false);
-    }
-    router.reload();
+    // router.reload();
   };
   return (
     <div>
