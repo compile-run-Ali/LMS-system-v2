@@ -68,7 +68,7 @@ const FacultyTable = ({faculty, setSelectedFaculty, setOpen}) => {
                         <td className="px-4 py-2">
                             <button
                                 onClick={handleEditMCQ(index)}
-                                className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white"
+                                className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                             >
                                 <MdEdit />
                             </button>
@@ -76,7 +76,7 @@ const FacultyTable = ({faculty, setSelectedFaculty, setOpen}) => {
                         <td className="px-4 py-2">
                             <button
                                 onClick={() => { openModal(index)}}
-                                className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
+                                className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                             >
                                 <MdDelete />
                             </button>

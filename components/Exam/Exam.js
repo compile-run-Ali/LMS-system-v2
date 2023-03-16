@@ -16,7 +16,6 @@ export default function Exam({
   const session = useSession();
   const router = useRouter();
 
-
   const [edit, setEdit] = useState(isEdit);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
@@ -205,7 +204,7 @@ export default function Exam({
               onClick={() => {
                 editExam();
               }}
-              className="bg-white text-[#f5c51a]  p-2 rounded hover:bg-[#f5c51a] hover:text-white"
+              className="bg-white text-[#f5c51a]  p-2 rounded hover:bg-[#f5c51a] hover:text-white transition-colors"
             >
               <MdEdit />
             </div>
