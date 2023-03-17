@@ -9,103 +9,112 @@ const SubjectiveExam = ({
   subjective_questions,
   setSubjectiveQuestions,
 }) => {
-  const [questionToBeEdited, setQuestionToBeEdited] = useState({});
   const [subjectivesLocal, setSubjectivesLocal] =
     useState(subjective_questions);
+  const [previousParent, setPreviousParent] = useState(null);
   const [longQuestion, setLongQuestion] = useState(true);
-  //len of subjectives
 
-  useEffect(() => {
-    console.log(subjectivesLocal);
-  }, [subjectivesLocal]);
-
-  const [currentSubjective, setCurrentMCQ] = useState({
+  const [currentSubjective, setCurrentQuestion] = useState({
     sq_id: "",
     question: "",
-    parent_question: "",
+    parent_sq_id: "",
     long_question: longQuestion,
     marks: 1,
-    questionnumber: 1,
+    questionnumber: subjectivesLocal.length + 1,
   });
 
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
 
   const handleQuestionChange = (e) => {
-    setCurrentMCQ({ ...currentSubjective, question: e.target.value });
+    setCurrentQuestion({ ...currentSubjective, question: e.target.value });
   };
 
-  const handleParentQuestionChange = async (e) => {
-    const parent_question = subjectivesLocal.find(
-      (subjective) => subjective.question === e.target.value
-    );
-    if (!parent_question) {
-      setCurrentMCQ({ ...currentSubjective, parent_question: "" });
-      return;
-    } else {
-      setCurrentMCQ({
-        ...currentSubjective,
-        parent_question: parent_question.sq_id,
-      });
-    }
+  const handleParentQuestionChange = (e) => {
+    setCurrentQuestion({
+      ...currentSubjective,
+      parent_sq_id: e.target.value || "",
+    });
   };
 
   const handleQuestionNumberChange = (e) => {
-    setCurrentMCQ({
+    setCurrentQuestion({
       ...currentSubjective,
       questionnumber: parseInt(e.target.value),
     });
   };
 
+  const validateQuestionData = () => {
+    const isChild = currentSubjective.parent_sq_id ? true : false;
+
+    if (
+      !currentSubjective.question ||
+      !currentSubjective.questionnumber ||
+      !currentSubjective.marks
+    ) {
+      alert("Please fill all the fields");
+      return false;
+    }
+
+    // if is child then check if part number already exists
+    if (isChild) {
+      const parentOfAdded = subjectivesLocal.find(
+        (subjective) => subjective.sq_id === currentSubjective.parent_sq_id
+      );
+      if (!parentOfAdded.child_question) parentOfAdded.child_question = [];
+      const partNumberExists = parentOfAdded.child_question.find(
+        (subjective) =>
+          subjective.questionnumber === currentSubjective.questionnumber &&
+          subjective.sq_id !== currentSubjective.sq_id
+      );
+      if (partNumberExists) {
+        alert("Part number already exists");
+        return false;
+      }
+      // also check that child question marks cant exceed parent question marks
+      let totalMarks = 0;
+      parentOfAdded.child_question.forEach((child) => {
+        if (child.sq_id !== currentSubjective.sq_id) totalMarks += child.marks;
+      });
+
+      if (totalMarks + currentSubjective.marks > parentOfAdded.marks) {
+        alert(
+          "Total marks of all parts of a question cannot exceed the total marks of the question"
+        );
+        return false;
+      }
+    } else {
+      // if a question number already exists then it cant be current questions question number
+      const questionNumberExists = subjectivesLocal.find(
+        (subjective) =>
+          subjective.questionnumber === currentSubjective.questionnumber &&
+          subjective.sq_id !== currentSubjective.sq_id
+      );
+      if (questionNumberExists) {
+        alert("Question number already exists");
+        return false;
+      }
+    }
+    return true;
+  };
+
   const handleAddMCQ = async () => {
-    const isChild = currentSubjective.parent_question ? true : false;
-    console.log("adding", currentSubjective);
+    // validate data
+    const isValid = validateQuestionData();
+    if (!isValid) return;
 
-    // if (!currentSubjective.questionnumber) {
-    //   alert("Please set the question number/part number");
-    //   return;
-    // }
-    // // Check if the new question is a child and validate its marks
-    // if (currentSubjective.parent_question) {
-    //   const parent = subjectives.find(
-    //     (subjective) => subjective.sq_id === currentSubjective.parent_question
-    //   );
-    //   const children = subjectives.filter(
-    //     (subjective) =>
-    //       subjective.parent_question === currentSubjective.parent_question &&
-    //       subjective.sq_id !== currentSubjective.sq_id // exclude the current question being added/edited
-    //   );
-    //   const totalMarks = children.reduce((acc, cur) => acc + cur.marks, 0);
-
-    //   if (!parent || totalMarks + currentSubjective.marks > parent.marks) {
-    //     alert("Invalid marks for child question");
-    //     return;
-    //   }
-    // } else {
-    //   // Check if the new question is a parent and validate its marks
-    //   const children = subjectives.filter(
-    //     (subjective) => subjective.parent_question === currentSubjective.sq_id // include only its immediate children
-    //   );
-    //   const totalMarks = children.reduce((acc, cur) => acc + cur.marks, 0);
-
-    //   if (totalMarks > currentSubjective.marks) {
-    //     alert("Invalid marks for parent question");
-    //     return;
-    //   }
-    // }
-
+    const isChild = currentSubjective.parent_sq_id ? true : false;
     const newSubjective = await axios.post(
       "/api/faculty/paper_creation/add_subjective",
       {
         paper_id: paperId,
         question: currentSubjective.question,
-        parent_question: currentSubjective.parent_question,
+        parent_sq_id: currentSubjective.parent_sq_id,
         long_question: currentSubjective.long_question,
         marks: currentSubjective.marks,
         questionnumber: currentSubjective.questionnumber,
       }
     );
-    console.log("new question", newSubjective);
     if (newSubjective.status === 200) {
       let updatedSubjectiveQuestions = [];
       // make sure to sort the newly added question according to questionnumber
@@ -113,9 +122,8 @@ const SubjectiveExam = ({
         // if question is child, add the child to parent's children and sort the child_question array of parent
 
         const parentOfAdded = subjectivesLocal.find(
-          (subjective) => subjective.sq_id === currentSubjective.parent_question
+          (subjective) => subjective.sq_id === currentSubjective.parent_sq_id
         );
-        console.log("parent of added", parentOfAdded);
         // edit parent's child in subjectives
         const children = [
           ...(parentOfAdded.child_question || []),
@@ -138,93 +146,189 @@ const SubjectiveExam = ({
 
       setSubjectivesLocal(updatedSubjectiveQuestions);
       setSubjectiveQuestions(updatedSubjectiveQuestions);
-      setCurrentMCQ({
+      setCurrentQuestion({
         sq_id: "",
         question: "",
-        parent_question: "",
+        parent_sq_id: "",
         marks: 1,
         long_question: longQuestion,
+        questionnumber: subjectivesLocal.length + 1,
       });
       setAdding(false);
+    } else {
+      alert("Error adding question");
     }
   };
 
-  const handleEditMCQ =
-    (question) =>
-    () => {
-      setEditing(true);
-      setQuestionToBeEdited(question);
-      setCurrentMCQ(question);
-    };
+  const handleEditMCQ = (question) => () => {
+    setEditing(!editing);
+    setPreviousParent(question.parent_sq_id);
+    setCurrentQuestion(question);
+  };
 
   const handleUpdateMCQ = async (question) => {
-    const isChild = question.parent_question ? true : false;
+    // variable to check if now has parent
+    const isValid = validateQuestionData();
+    if (!isValid) return;
+    const nowHasParent = question.parent_sq_id ? true : false;
+    // how to check if previously had parent?
+    const previouslyHadParent = previousParent ? true : false;
 
-    const updatedSubjective = await axios.post("/api/faculty/edit_subjective", {
-      sq_id: question.sq_id,
-      question: currentSubjective.question,
-      parent_sq_id: currentSubjective.parent_question,
-      questionnumber: currentSubjective.questionnumber,
-      long_question: currentSubjective.long_question,
-      marks: currentSubjective.marks,
-    });
-    if (updatedSubjective.status === 200) {
-      // updatedSUbjective will be the parent question
-      console.log(
-        "updated subjective",
-        updatedSubjective.data,
-      );
-      /*  api is working, write logic to update state array, 
-       make sure to:
-        1. if question is child, edit the child in parent's child_question array
-        2. if question had a parent previously then remove this question from that question's array
-        3. if question is parent, edit the parent
-        
-         */
-      // if (isChild) {
-      //   // if question is child, edit the subje
-      //   const parentOfDeleted = subjectivesLocal.find(
-      //     (subjective) => subjective.sq_id === question.sq_id
-      //   ).parent_question;
-      //   // edit parent's child in subjectives
-      //   const updatedSubjectives = subjectivesLocal.map((subjective) => {
-      //     if (subjective.sq_id === parentOfDeleted) {
-      //       return updatedSubjective.data;
-      //     }
-      //     return subjective;
-      //   });
-      //   setSubjectivesLocal(updatedSubjectives);
-      //   setSubjectiveQuestions(updatedSubjectives);
-      // } else {
-      //   // if question is parent, edit the parent
-      //   const updatedSubjectives = subjectivesLocal.map((subjective) => {
-      //     if (subjective.sq_id === question.sq_id) {
-      //       return updatedSubjective.data;
-      //     }
-      //     return subjective;
-      //   });
-      //   setSubjectivesLocal(updatedSubjectives);
-      //   setSubjectiveQuestions(updatedSubjectives);
-      // }
+    await axios
+      .post("/api/faculty/edit_subjective", {
+        sq_id: question.sq_id,
+        question: currentSubjective.question,
+        parent_sq_id: currentSubjective.parent_sq_id,
+        questionnumber: currentSubjective.questionnumber,
+        long_question: currentSubjective.long_question,
+        marks: currentSubjective.marks,
+      })
+      .then((res) => {
+        // case 1: previously had parent, now no parent
+        // case 2: previously had no parent, now no parent
+        // case 3: previously had no parent, now has parent
+        // case 4: previously had parent, now has parent
+        let updatedSubjectives = [];
+        // case 1: previously had parent, now no parent
+        if (previouslyHadParent && !nowHasParent) {
+          console.log("case 1: previously had parent, now no parent");
+          // remove child from parent question array and push it in general array in sorted array
+          // remove child from parent's child_question array
+          const parentOfRemoved = subjectivesLocal.find(
+            (subjective) => subjective.sq_id === previousParent
+          );
+          const children = (parentOfRemoved.child_question || []).filter(
+            (child) => child.sq_id !== question.sq_id
+          );
+          // edit parent's child in subjectives
+          updatedSubjectives = subjectivesLocal.map((subjective) => {
+            if (subjective.sq_id === parentOfRemoved.sq_id) {
+              return { ...subjective, child_question: children };
+            }
+            return subjective;
+          });
+          // push in general array
+          updatedSubjectives = [...updatedSubjectives, question].sort(
+            (a, b) => a.questionnumber - b.questionnumber
+          );
+        }
+        // case 2: previously had no parent, now no parent OR parent not changed
+        else if (!previouslyHadParent && !nowHasParent) {
+          console.log("case 2: previously had no parent, now no parent");
+          // just sort the array
+          updatedSubjectives = subjectivesLocal.map((subjective) => {
+            if (subjective.sq_id === question.sq_id) {
+              return question;
+            }
+            return subjective;
+          });
+          updatedSubjectives = updatedSubjectives.sort(
+            (a, b) => a.questionnumber - b.questionnumber
+          );
+        }
+        // case 3: previously had no parent, now has parent
+        else if (!previouslyHadParent && nowHasParent) {
+          // working
+          // push in parent array, set parent field
+          console.log("case 3: previously had no parent, now has parent");
+          // add the question to the parent's child_question array
+          const parentOfAdded = subjectivesLocal.find(
+            (subjective) => subjective.sq_id === currentSubjective.parent_sq_id
+          );
+          const children = [
+            ...(parentOfAdded.child_question || []),
+            question,
+          ].sort((a, b) => a.questionnumber - b.questionnumber);
+          updatedSubjectives = subjectivesLocal.map((subjective) => {
+            if (subjective.sq_id === parentOfAdded.sq_id) {
+              return {
+                ...subjective,
+                child_question: children,
+              };
+            }
+            return subjective;
+          });
+          updatedSubjectives = updatedSubjectives.filter(
+            (subjective) => subjective.sq_id !== question.sq_id
+          );
+        }
+        // case 4: previously had parent, now has parent
+        else if (previouslyHadParent && nowHasParent) {
+          // original questions parent id does not change
+          console.log("case 4: previously had parent, now has parent");
 
-      // const newMCQs = [...subjectives];
-      // newMCQs[index] = updatedSubjective.data;
-      // setSubjectives(newMCQs);
-      // setSubjectiveQuestions(newMCQs);
-      setCurrentMCQ({
-        sq_id: "",
-        question: "",
-        parent_question: "",
-        marks: 1,
-        long_question: false,
+          // if parent existss but not changed
+          if (currentSubjective.parent_sq_id === previousParent) {
+            // only edit the current child question of parent
+            const parentOfEdited = subjectivesLocal.find(
+              (subjective) =>
+                subjective.sq_id === currentSubjective.parent_sq_id
+            );
+
+            const children = parentOfEdited.child_question
+              .map((child_question) => {
+                if (child_question.sq_id === question.sq_id) {
+                  return question;
+                }
+                return child_question;
+              })
+              .sort((a, b) => a.questionnumber - b.questionnumber);
+
+            updatedSubjectives = subjectivesLocal.map((subjective) => {
+              if (subjective.sq_id === parentOfEdited.sq_id) {
+                return { ...subjective, child_question: children };
+              }
+              return subjective;
+            });
+          } else {
+            // remove the question from the previous parent's child_question array
+            // add the question to the new parent's child_question array
+            const parentOfDeleted = subjectivesLocal.find(
+              (subjective) => subjective.sq_id === previousParent
+            );
+            const childrenAfterDeleting = parentOfDeleted.child_question.filter(
+              (child) => child.sq_id !== question.sq_id
+            );
+            const parentOfAdded = subjectivesLocal.find(
+              (subjective) =>
+                subjective.sq_id === currentSubjective.parent_sq_id
+            );
+            const childrenAfterAdding = [
+              ...(parentOfAdded.child_question || []),
+              question,
+            ].sort((a, b) => a.questionnumber - b.questionnumber);
+            updatedSubjectives = subjectivesLocal.map((subjective) => {
+              if (subjective.sq_id === parentOfDeleted.sq_id) {
+                return { ...subjective, child_question: childrenAfterDeleting };
+              }
+              if (subjective.sq_id === parentOfAdded.sq_id) {
+                return { ...subjective, child_question: childrenAfterAdding };
+              }
+              return subjective;
+            });
+          }
+        }
+        setSubjectivesLocal(updatedSubjectives);
+        setSubjectiveQuestions(updatedSubjectives);
+        setCurrentQuestion({
+          sq_id: "",
+          question: "",
+          parent_sq_id: "",
+          marks: 1,
+          long_question: false,
+          questionnumber: 1,
+        });
+
+        setEditing(false);
+        setPreviousParent(null);
+      })
+
+      .catch((err) => {
+        console.log("Error updating question", err);
       });
-      setEditing(false);
-      setQuestionToBeEdited(null);
-    }
   };
 
   const handleDeleteSubjective = async (sq_id, parent, isChild = false) => {
-    console.log("delete subjective", sq_id, "parent is", parent);
     const deletedSubjective = await axios.post(
       "/api/faculty/remove_subjective",
       {
@@ -263,7 +367,8 @@ const SubjectiveExam = ({
       <table className="w-full mt-6 text-left table-collapse">
         <thead>
           <tr>
-            <th className="px-4 py-2">SR#</th>
+            <th className="px-4">Q#</th>
+            <th className="px-4">Part</th>
             <th className="px-4 py-2">Question</th>
             <th className="px-4 py-2">Parent Question</th>
             <th className="px-4 py-2">Marks</th>
@@ -273,13 +378,21 @@ const SubjectiveExam = ({
         </thead>
         <tbody>
           {subjectivesLocal.map((subjective, index) => (
-            <>
-              {" "}
-              <tr key={index} className="border-t">
-                <td className="px-4 py-2">{subjective.questionnumber}</td>
+            <React.Fragment key={subjective.sq_id}>
+              <tr
+                className={` border
+              ${
+                subjective.child_question &&
+                subjective.child_question.length > 0 &&
+                "border border-b-0"
+              }
+              `}
+              >
+                <td className="px-6">{subjective.questionnumber}</td>
+                <td className="px-6"></td>
                 <td className="px-4 py-2">{subjective.question}</td>
                 <td className="px-4 py-2">
-                  {subjective.parent_question?.question}
+                  {subjective.parent_sq_id?.question}
                 </td>
                 <td className="px-4 py-2">{subjective.marks}</td>
                 <td className="px-4 py-2">
@@ -302,12 +415,18 @@ const SubjectiveExam = ({
                 </td>
               </tr>
               {subjective.child_question?.map((child, index) => (
-                <tr key={child.sq_id} className="border-l">
-                  <td className="px-4 py-2 pl-12">{child.questionnumber}</td>
-                  <td className="px-4 py-2">{child.question}</td>
-                  <td className="px-4 py-2">{subjective.question}</td>
-                  <td className="px-4 py-2">{child.marks}</td>
-                  <td className="px-4 py-2">
+                <tr
+                  key={child.sq_id}
+                  className={`border-x ${
+                    index === subjective.child_question.length - 1 && "border-b"
+                  }`}
+                >
+                  <td className="pl-2"></td>
+                  <td className="pl-2">{child.questionnumber}</td>
+                  <td className="px-4 py-1">{child.question}</td>
+                  <td className="px-4 py-1">{subjective.question}</td>
+                  <td className="px-4 py-1">{child.marks}</td>
+                  <td className="px-4 py-1">
                     <button
                       onClick={handleEditMCQ(child)}
                       className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
@@ -327,7 +446,7 @@ const SubjectiveExam = ({
                   </td>
                 </tr>
               ))}
-            </>
+            </React.Fragment>
           ))}
         </tbody>
       </table>
@@ -359,15 +478,19 @@ const SubjectiveExam = ({
 
               <select
                 type="text"
-                value={currentSubjective.parent_question?.sq_id}
+                value={currentSubjective.parent_sq_id || ""}
                 onChange={handleParentQuestionChange}
                 className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]"
               >
                 <option value="">Select Parent Question</option>
                 {subjectivesLocal
-                  .filter((subjective) => !subjective.parent_question)
+                  .filter(
+                    (subjective) =>
+                      !subjective.parent_sq_id &&
+                      subjective.sq_id !== currentSubjective.sq_id
+                  )
                   .map((subjective, index) => (
-                    <option key={index} value={subjective.question}>
+                    <option key={index} value={subjective.sq_id}>
                       {subjective.question}
                     </option>
                   ))}
@@ -381,7 +504,7 @@ const SubjectiveExam = ({
               min={1}
               value={currentSubjective.marks}
               onChange={(e) =>
-                setCurrentMCQ({
+                setCurrentQuestion({
                   ...currentSubjective,
                   marks: parseInt(e.target.value),
                 })
@@ -390,14 +513,18 @@ const SubjectiveExam = ({
             <Input
               // if parent exists the question number will be called part number other wise, question number
               text={
-                currentSubjective.parent_question
+                currentSubjective.parent_sq_id
                   ? "Part Number"
                   : "Question Number"
               }
               type={"number"}
               required
-              min={subjectivesLocal.length + 1}
-              value={currentSubjective.questionnumber}
+              min={1}
+              value={
+                currentSubjective.parent_sq_id
+                  ? 1
+                  : currentSubjective.questionnumber
+              }
               onChange={handleQuestionNumberChange}
             />
           </div>
@@ -417,7 +544,7 @@ const SubjectiveExam = ({
           {editing ? (
             <button
               onClick={() => {
-                handleUpdateMCQ(questionToBeEdited);
+                handleUpdateMCQ(currentSubjective);
               }}
               className="bg-blue-800 text-white p-2 rounded hover:bg-blue-700"
             >
@@ -444,7 +571,29 @@ const SubjectiveExam = ({
         <button
           type="submit"
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-          onClick={() => setActive(4)}
+          onClick={() => {
+            // check if all parent question marks are equal to sum of their child question marks
+            let allowProceed = true;
+            subjectivesLocal.forEach((subjective) => {
+              if (
+                subjective.child_question &&
+                subjective.child_question.length > 0
+              ) {
+                let sum = 0;
+                subjective.child_question.forEach((child) => {
+                  sum += child.marks;
+                });
+                if (sum !== subjective.marks) {
+                  alert(
+                    `Question ${subjective.questionnumber}'s marks are less than the sum of its marks.`
+                  );
+                  allowProceed = false;
+                }
+              }
+            });
+
+            if (allowProceed) setActive(4);
+          }}
         >
           Proceed
         </button>

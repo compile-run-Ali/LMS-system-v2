@@ -80,10 +80,18 @@ export default function CreateExam({ paperType }) {
   };
 
   const fetchSubjectives = async () => {
-    const res = await axios.post("/api/faculty/get_subjective", {
-      paper_id: paperId,
-    });
-    setSubjectives(res.data);
+    await axios
+      .post("/api/faculty/get_subjective", {
+        paper_id: paperId,
+      })
+      .then((res) => {
+        const allQuestion = res.data;
+        setSubjectives(res.data.filter((question) => !question.parent_sq_id));
+        console.log("allQuestion", res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
@@ -98,6 +106,9 @@ export default function CreateExam({ paperType }) {
       fetchSubjectives();
     }
   }, [paperId, exam, paperType]);
+
+  // console.log("subjectives", subjectives);
+  console.log("mcqs", mcqs);
 
   return (
     <div className="w-full pl-6 mt-2">

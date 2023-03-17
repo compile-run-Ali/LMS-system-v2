@@ -21,7 +21,8 @@ const SubjectiveTable = ({ subjective_questions }) => {
       <table className="table-auto w-full bg-white rounded-lg">
         <thead>
           <tr className="text-blue-800">
-            <th className=" px-4 py-2">Sr. No.</th>
+            <th className=" px-4 py-2">Q</th>
+            <th className=" px-4 py-2">Part</th>
             <th className=" px-4 py-2">Question</th>
             <th className=" px-4 py-2">Parent Question</th>
             <th className=" px-4 py-2">Marks</th>
@@ -29,14 +30,28 @@ const SubjectiveTable = ({ subjective_questions }) => {
         </thead>
         <tbody>
           {subjectives.map((question, index) => (
-            <tr key={index} className="text-center">
-              <td className=" px-4 py-2">{index + 1}</td>
-              <td className=" px-4 py-2">{question.question}</td>
-              <td className=" px-4 py-2">
-                {question.parent_question?.question}
-              </td>
-              <td className=" px-4 py-2">{question.marks}</td>
-            </tr>
+            <React.Fragment key={question.sq_id}>
+              <tr key={index} className="text-center">
+                <td className=" px-4 py-2">{question.questionnumber}</td>
+                <th className=" px-4 py-2"></th>
+                <td className=" px-4 py-2">{question.question}</td>
+                <td className=" px-4 py-2">
+                  {question.parent_question?.question}
+                </td>
+                <td className=" px-4 py-2">{question.marks}</td>
+              </tr>
+              {question.child_question?.map((child, index) => (
+                <tr key={child.sq_id} className="text-center">
+                  <th className=" px-4 py-2"></th>
+                  <td className=" px-4 py-2">{child.questionnumber}</td>
+                  <td className=" px-4 py-2">{child.question}</td>
+                  <td className=" px-4 py-2">
+                    {child.parent_question?.question}
+                  </td>
+                  <td className=" px-4 py-2">{child.marks}</td>
+                </tr>
+              ))}
+            </React.Fragment>
           ))}
         </tbody>
       </table>
