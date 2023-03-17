@@ -41,7 +41,7 @@ export default function Exam({
     const res = await axios.post("/api/paper/get_comments", {
       paper_id: exam.paper_id,
     });
-    console.log(res.data);
+    console.log("paper comments", res.data);
 
     // sort comment by date and time
     res.data.sort((a, b) => {
@@ -148,52 +148,54 @@ export default function Exam({
     }
   };
 
-  const sendForward = async () => {
-    const sendForward = await axios.post("/api/faculty/edit_paperapproval", {
-      paper_id: exam.paper_id,
-      examofficer: selectedFaculty,
-      level: faculty.filter(
-        (faculty) => faculty.faculty_id === selectedFaculty
-      )[0].level,
-    });
-    if (sendForward.status === 200) {
-      addComment({
-        comment: `Exam Sent Forward by ${session.data.user.name} to ${
-          faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
-            .name
-        }`,
-        faculty_id: session.data.user.id,
+  const sendForward = () => {
+    axios
+      .post("/api/faculty/edit_paperapproval", {
         paper_id: exam.paper_id,
-      });
-      console.log("Exam Sent Forward");
-      generateNotification();
-      router.push("/faculty");
-    }
+        examofficer: selectedFaculty,
+        level: faculty.filter(
+          (faculty) => faculty.faculty_id === selectedFaculty
+        )[0].level,
+      })
+      .then(() => {
+        addComment({
+          comment: `Exam Sent Forward by ${session.data.user.name} to ${
+            faculty.filter(
+              (faculty) => faculty.faculty_id === selectedFaculty
+            )[0].name
+          }`,
+          faculty_id: session.data.user.id,
+          paper_id: exam.paper_id,
+        });
+        console.log("Exam Sent Forward");
+        generateNotification();
+        router.push("/faculty");
+      })
+      .catch((err) => console.log(err));
   };
 
-  const generateNotification = async () => {
-    const res = await axios.post("/api/faculty/generate_notification", {
-      faculty_id: selectedFaculty,
-      notification: `You have a new exam to approve by ${session.data.user.name}`,
-    });
-    if (res.status === 200) {
-      console.log("Notification sent");
-    }
+  const generateNotification = () => {
+    axios
+      .post("/api/faculty/generate_notification", {
+        faculty_id: selectedFaculty,
+        notification: `You have a new exam to approve by ${session.data.user.name}`,
+      })
+      .catch((err) => console.log(err));
   };
 
-  const addComment = async ({ comment }) => {
+  const addComment = ({ comment }) => {
     if (session.status === "authenticated") {
-      const res = await axios.post("/api/faculty/add_comment", {
-        paper_id: exam.paper_id,
-        comment: comment,
-        faculty_id: session.data.user.id,
-      });
-
-      if (res.status === 200) {
-        setComments([...comments, res.data]);
-        setComment("");
-      }
-      // setComments([...comments, new_comment])
+      axios
+        .post("/api/faculty/add_comment", {
+          paper_id: exam.paper_id,
+          comment: comment,
+          faculty_id: session.data.user.id,
+        })
+        .then((res) => {
+          setComments([...comments, res.data]);
+          setComment("");
+        })
+        .catch((err) => console.log(err));
     }
   };
 

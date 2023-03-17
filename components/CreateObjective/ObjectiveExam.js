@@ -30,6 +30,17 @@ const MCQTable = ({
     timeAllowed: 60,
   });
 
+  useEffect(() => {
+    if (mcqs.length === 0) {
+      setMCQs(
+        objective_questions.map((mcq) => {
+          mcq.options = mcq.answers.split(",");
+          return mcq;
+        })
+      );
+    }
+  }, [objective_questions]);
+
   const router = useRouter();
 
   const editExam = () => {

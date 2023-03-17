@@ -26,6 +26,8 @@ const MCQTable = ({ objective_questions }) => {
             <th className=" px-4 py-2">Options</th>
             <th className=" px-4 py-2">Correct Option</th>
             <th className=" px-4 py-2">Marks</th>
+            <th className=" px-4 py-2">Time Allowed</th>
+
           </tr>
         </thead>
         <tbody>
@@ -36,6 +38,7 @@ const MCQTable = ({ objective_questions }) => {
               <td className=" px-4 py-2">{mcq.answers}</td>
               <td className=" px-4 py-2">{mcq.correct_answer}</td>
               <td className=" px-4 py-2">{mcq.marks}</td>
+              <td className=" px-4 py-2">{mcq.timeAllowed}</td>
             </tr>
           ))}
         </tbody>
