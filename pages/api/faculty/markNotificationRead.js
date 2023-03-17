@@ -2,23 +2,17 @@ import { PrismaClient } from "@prisma/client";
 
 const handler = async (req, res) => {
   const prisma = new PrismaClient();
+
   try {
-    const paper = await prisma.paper.update({
+    const updatedNotification = await prisma.notification.update({
       where: {
-        paper_id: req.body.paper_id,
+        notification_id: req.body.notification_id,
       },
       data: {
-        status: "Approved",
+        read: true,
       },
     });
-
-    await prisma.paperApproval.delete({
-      where: {
-        paper_id: req.body.paper_id,
-      },
-    });
-
-    res.status(200).json(paper);
+    res.status(200).json(updatedNotification);
   } catch (err) {
     throw new Error(err.message);
   }

@@ -4,6 +4,7 @@ import Accordion from "./Accordion";
 import { MdEdit } from "react-icons/md";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 
 export default function Exam({
   exam,
@@ -14,41 +15,56 @@ export default function Exam({
 }) {
   const session = useSession();
   const router = useRouter();
-  const [totalMarks, setTotalMarks] = useState(0);
-  const [totalQuestions, setTotalQuestions] = useState(0);
+
   const [edit, setEdit] = useState(isEdit);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
   const [faculty, setFaculty] = useState();
   const [selectedFaculty, setSelectedFaculty] = useState();
+  const [access, setAccess] = useState(null);
 
-  const checkAccess = () => {
-    if (session.status === "authenticated") {
-      if (exam.status === "Pending Approval") {
-        return exam.examofficer.faculty_id === session.data.user.id
-          ? true
-          : false;
-      } else if (exam.status === "Approved") {
-        return false;
-      } else if (exam.status === "Draft") {
-        return true;
+  useEffect(() => {
+    setAccess(() => {
+      if (session.status === "authenticated") {
+        if (exam.status === "Pending Approval") {
+          return exam.examofficer.faculty_id === session.data.user.id;
+        } else if (exam.status === "Approved") {
+          return false;
+        } else if (exam.status === "Draft") {
+          return true;
+        }
       }
-    }
-  };
+    });
+  }, [session]);
 
-  const [access, setAccess] = useState(checkAccess());
   const getComments = async () => {
     const res = await axios.post("/api/paper/get_comments", {
       paper_id: exam.paper_id,
     });
     console.log(res.data);
+
+    // sort comment by date and time
+    res.data.sort((a, b) => {
+      const dateA = new Date(a.time);
+      const dateB = new Date(b.time);
+      return dateA - dateB;
+    });
+
     setComments(res.data);
+  };
+
+  const addFiveHoursToISOString = (dateString) => {
+    const date = new Date(dateString);
+    date.setHours(date.getHours() + 5);
+    return date.toISOString();
   };
 
   const getFaculty = async () => {
     const res = await axios.get("/api/paper/get_faculty");
     setFaculty(
-      res.data.filter((faculty) => faculty.faculty_id !== session.data.user.id)
+      res.data.filter(
+        (faculty) => faculty.faculty_id !== session?.data?.user.id
+      )
     );
   };
 
@@ -62,6 +78,9 @@ export default function Exam({
   }, []);
 
   const editExam = () => {
+    if (setActive) {
+      setActive(1);
+    }
     router.push({
       pathname: `/faculty/create_exam/${
         exam.paper_type === "Objective" ? "objective" : "subjective"
@@ -73,6 +92,11 @@ export default function Exam({
   };
 
   const submitExam = async () => {
+    if (!selectedFaculty) {
+      alert("Please select a faculty to submit to");
+      return;
+    }
+
     const submitExam = await axios.post("/api/faculty/submit_exam", {
       paper_id: exam.paper_id,
       faculty_id: selectedFaculty,
@@ -89,13 +113,15 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
+      generateNotification();
       router.push("/faculty");
     }
   };
 
   const approve = async () => {
-    const approveExam = await axios.post("/api/faculty/approve_exam", {
+    const approveExam = await axios.post("/api/faculty/update_exam_status", {
       paper_id: exam.paper_id,
+      status: "Approved",
     });
     if (approveExam.status === 200) {
       addComment({
@@ -118,6 +144,7 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
+      router.push("/faculty");
     }
   };
 
@@ -138,6 +165,19 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
+      console.log("Exam Sent Forward");
+      generateNotification();
+      router.push("/faculty");
+    }
+  };
+
+  const generateNotification = async () => {
+    const res = await axios.post("/api/faculty/generate_notification", {
+      faculty_id: selectedFaculty,
+      notification: `You have a new exam to approve by ${session.data.user.name}`,
+    });
+    if (res.status === 200) {
+      console.log("Notification sent");
     }
   };
 
@@ -164,13 +204,13 @@ export default function Exam({
   return (
     <div className="pr-10 pl-7 font-poppins w-full ">
       <div className="bg-gray-100 bg-opacity-50 pt-10 rounded-md">
-        {!edit && access && (
-          <div className="w-full flex justify-end pr-5">
+        {access && (
+          <div className="w-full flex justify-end pr-5 cursor-pointer">
             <div
               onClick={() => {
                 editExam();
               }}
-              className="bg-white text-[#f5c51a]  p-2 rounded hover:bg-[#f5c51a] hover:text-white"
+              className="bg-white text-[#f5c51a]  p-2 rounded hover:bg-[#f5c51a] hover:text-white transition-colors"
             >
               <MdEdit />
             </div>
@@ -192,21 +232,15 @@ export default function Exam({
           </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Date:</span>
-            <span className="ml-2">{exam.date}</span>
+            <span className="ml-2">
+              {convertDateTimeToStrings(exam.date, true)}
+            </span>
           </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Time:</span>
-            <span className="ml-2">{exam.time}</span>
+            <span className="ml-2">{convertDateTimeToStrings(exam.date)}</span>
           </div>
 
-          <div className="pl-20">
-            <span className=" font-medium">Total Marks:</span>
-            <span className="ml-2">{totalMarks}</span>
-          </div>
-          <div className="pl-20">
-            <span className=" font-medium">Total Questions:</span>
-            <span className="ml-2">{totalQuestions}</span>
-          </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Duration:</span>
             <span className="ml-2">{exam.duration}</span>
@@ -229,9 +263,9 @@ export default function Exam({
         <span className=" text-lg font-medium ml-5">Comments</span>
         <div className="bg-gray-100 bg-opacity-50 px-10 py-5 ">
           {comments &&
-            comments.map((comment) => (
+            comments.map((comment, index) => (
               <div
-                key={comment.pc_id}
+                key={index}
                 className="flex justify-between mb-5 pb-4 border-b border-gray-600 border-opacity-20"
               >
                 <div className=" flex flex-col justify-center">
@@ -244,10 +278,15 @@ export default function Exam({
                 </div>
                 <div className="flex flex-col text-[#BDBDBD] text-right">
                   <span className="text-xs font-medium mt-1">
-                    {comment.time.split("T")[1].split(".")[0]}
+                    {convertDateTimeToStrings(
+                      addFiveHoursToISOString(comment.time)
+                    )}
                   </span>
                   <span className="text-xs font-medium mt-1">
-                    {comment.time.split("T")[0]}
+                    {convertDateTimeToStrings(
+                      addFiveHoursToISOString(comment.time),
+                      true
+                    )}
                   </span>
                 </div>
               </div>
@@ -268,12 +307,17 @@ export default function Exam({
             <button
               className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
               onClick={() => {
+                if (!comment) {
+                  alert("Please enter a comment");
+                  return;
+                }
                 addComment({ comment });
               }}
             >
               Add Comment
             </button>
           </div>
+
           {exam.examofficer?.faculty_id === session.data.user.id ? (
             <div>
               <div className="flex justify-end">
@@ -293,7 +337,7 @@ export default function Exam({
                   </select>
                 </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex gap-x-5 justify-end">
                 <div className="mt-10 mb-10">
                   <button
                     type="submit"
@@ -349,6 +393,19 @@ export default function Exam({
                 </select>
               </div>
               <div className="flex justify-end gap-x-5">
+                {setActive && (
+                  <div className="mt-10 mb-10">
+                    <button
+                      type="submit"
+                      className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
+                      onClick={() => {
+                        setActive(exam.paper_type === "Objective" ? 2 : 3);
+                      }}
+                    >
+                      Back
+                    </button>
+                  </div>
+                )}
                 <div className="mt-10 mb-10">
                   <button
                     type="submit"
@@ -376,6 +433,17 @@ export default function Exam({
           )}
         </div>
       )}
+
+      <div className="mt-10 pr-10 flex justify-start gap-x-5 mb-10">
+        <button
+          className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+          onClick={() => {
+            router.push("/faculty/mark_exam/" + exam.paper_id);
+          }}
+        >
+          Mark Exam
+        </button>
+      </div>
     </div>
   );
 }

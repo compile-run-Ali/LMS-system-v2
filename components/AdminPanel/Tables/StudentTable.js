@@ -1,13 +1,33 @@
 import React from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-export default function StudentTable({ setOpen, students }) {
-  const openModal = () => {
+export default function StudentTable({
+  setOpen,
+  students,
+  setSelectedStudent,
+}) {
+  const router = useRouter();
+  const openModal = (index) => {
     setOpen(true);
+    setSelectedStudent(students[index].p_number);
   };
-  const editStudent = () => {
-    console.log("Edit Student");
+
+  const editStudent = (index) => {
+    console.log(students[index])
+    router.push({
+      pathname:"/admin/add_student",
+      query:{
+        p_number:students[index].p_number,
+        name:students[index].name,
+        phone_number:students[index].phone_number,
+        cgpa:students[index].cgpa,
+        email:students[index].email,
+        DOB:students[index].DOB,
+        selectedCourse:students[index].course_code,
+      }
+    })
   };
 
   return (
@@ -29,10 +49,7 @@ export default function StudentTable({ setOpen, students }) {
           {students.map((student, index) => (
             <tr key={index} className="bg-white">
               <td className=" px-4 py-2">
-                <Link
-                  key={student.p_number}
-                  href={`/student/profile/${student.p_number}`}
-                >
+                <Link key={student.p_number} href={`/student/profile`}>
                   {student.p_number}
                 </Link>
               </td>
@@ -45,16 +62,18 @@ export default function StudentTable({ setOpen, students }) {
               </td>
               <td className="px-4 py-2">
                 <button
-                  onClick={editStudent(student.p_number)}
-                  className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white"
+                  onClick={()=>{editStudent(index)}}
+                  className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                 >
                   <MdEdit />
                 </button>
               </td>
               <td className="px-4 py-2">
                 <button
-                  onClick={openModal}
-                  className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
+                  onClick={() => {
+                    openModal(index);
+                  }}
+                  className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                 >
                   <MdDelete />
                 </button>

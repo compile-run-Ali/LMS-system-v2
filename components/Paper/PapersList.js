@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  compareDateTime,
   getPaperDateTime,
   convertDateTimeToStrings,
 } from "@/lib/TimeCalculations";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 
-export default function PapersList({ papers, isLive, p_number }) {
+export default function PapersList({ papers, status }) {
   const [sortedPapers, setSortedPapers] = useState([]);
+  const [attemptStatus, setAttemptStatus] = useState([]);
+  const isLive = status === "Live Papers";
+  const isPast = status === "Past Papers";
+  const { data: session } = useSession();
 
+  const getPaperStatus = (paper_id) => {
+    const paper = attemptStatus.find((paper) => paper.paperId === paper_id);
+    if (paper) {
+      return paper.status;
+    } else {
+      return "Not Attempted";
+    }
+  };
   useEffect(() => {
     const newSortedPapers = papers.sort(
       (a, b) => Date.parse(a.date) - Date.parse(b.date)
@@ -16,13 +29,27 @@ export default function PapersList({ papers, isLive, p_number }) {
     setSortedPapers(newSortedPapers);
   }, [papers]);
 
+  useEffect(() => {
+    const getAttemptStatus = async () => {
+      const res = await axios.get(`/api/student/paper/get_attempt_status`, {
+        params: {
+          studentId: session.user.id,
+        },
+      });
+      setAttemptStatus(res.data);
+    };
+    getAttemptStatus();
+  }, [session]);
+
+  console.log("attemptStatus", attemptStatus);
+
   const getRow = (paper) => {
     const { start, end } = getPaperDateTime(paper.date, paper.duration);
     const startDate = convertDateTimeToStrings(start, true);
     const startTime = convertDateTimeToStrings(start);
     const endDate = convertDateTimeToStrings(end);
+
     return (
-      // <div className="mb-4 flex justify-between bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white p-4 items-center hover:-translate-y-0.5 hover:to-blue-800 hover:from-blue-800 transition-all">
       <>
         <td className="px-4 py-2">{paper.paper_name}</td>
         <td className="px-4 py-2">{paper.paper_type}</td>
@@ -30,22 +57,45 @@ export default function PapersList({ papers, isLive, p_number }) {
         <td className="px-4 py-2">{startTime}</td>
         <td className="px-4 py-2">{endDate}</td>
         <td className="px-4 py-2">
+          {/* if paper is live and is submitted, show submitted button, else show attempt button */}
+          {/* if paper is past and review is allowed, show review button, else show review not allowed button */}
+          {/* else show view button */}
           {isLive ? (
-            <Link href={`/paper/attempt/${p_number}/${paper.paper_id}`}>
-              <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded">
+            getPaperStatus(paper.paper_id) === "Submitted" ? (
+              <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
+                Submitted
+              </button>
+            ) : (
+              <Link
+                href={`/paper/attempt/${paper.paper_id}`}
+                className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              >
                 Attempt
+              </Link>
+            )
+          ) : isPast ? (
+            paper.review ? (
+              <Link
+                href={`/paper/review/${paper.paper_id}`}
+                className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              >
+                Review
+              </Link>
+            ) : (
+              <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
+                Review Not Allowed
               </button>
-            </Link>
+            )
           ) : (
-            // <Link href={`/paper/${paper.paper_id}`}>
-              <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                View
-              </button>
-            // </Link>
+            <Link
+              href={`/paper/view/${paper.paper_id}`}
+              className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
+            >
+              View
+            </Link>
           )}
         </td>
       </>
-      // </div>
     );
   };
 
@@ -63,10 +113,9 @@ export default function PapersList({ papers, isLive, p_number }) {
           </tr>
         </thead>
         <tbody>
-          {/* href={`/paper/attempt/${p_number}/${paper.paper_id}`} */}
           {sortedPapers.map((paper) => {
             return (
-              // add Link tag to live papers only
+              // add Link tag to live papers only and those with attempt status empty
               <tr key={paper.paper_id}>{getRow(paper)}</tr>
             );
           })}

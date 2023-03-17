@@ -17,13 +17,13 @@ const handler = async (req, res) => {
         },
         paper_name: true,
         paper_type: true,
-        time: true,
         date: true,
         duration: true,
         weightage: true,
         freeflow: true,
         status: true,
         paper_id: true,
+        review: true,
       },
     });
     res.status(200).json(paper);

@@ -2,20 +2,22 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { AiOutlinePlusCircle } from "react-icons/ai";
+import { useRouter } from "next/router";
 
 export default function Register() {
+  const router = useRouter();
   const [inputs, setInputs] = useState([""]);
   const [paNumber, setPaNumber] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
-  const [cgpa, setCgpa] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [cPassword, setCPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [profilePicture, setProfilePicture] = useState(null);
 
   useEffect(() => {
     axios
@@ -30,6 +32,11 @@ export default function Register() {
     if (inputs.length < 6) setInputs([...inputs, ""]);
   };
 
+  const handleFileChange = (event) => {
+    setProfilePicture(event.target.files[0]);
+    console.log(event.target.files[0]);
+  };
+
   const handleChange = (index, event) => {
     const newInputs = [...inputs];
     newInputs[index] = event.target.value;
@@ -37,26 +44,47 @@ export default function Register() {
   };
 
   const registerStudent = async () => {
-
-    if(!paNumber || !fullName||
-      !email || !dob || !cgpa || !phoneNumber || !password || !cPassword){
-        return alert("Please fill all fields")
-      }
-
+    if (
+      !paNumber ||
+      !fullName ||
+      !email ||
+      !dob ||
+      !phoneNumber ||
+      !password ||
+      !cPassword
+    ) {
+      return alert("Please fill all fields");
+    }
 
     const student = {
       p_number: paNumber,
       name: fullName,
       phone_number: phoneNumber,
-      cgpa,
+      cgpa: 0,
       DOB: dob,
       email,
       password,
+      profile_picture: profilePicture,
     };
 
-    // add student to student table
+    const formData = new FormData();
+    formData.append("p_number", paNumber);
+    formData.append("name", fullName);
+    formData.append("phone_number", phoneNumber);
+    formData.append("cgpa", 0);
+    formData.append("DOB", dob);
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("course_code", selectedCourse);
+    formData.append("profile_picture", profilePicture);
+      
+
     axios
-      .post(`/api/admin/student/add_student`, { ...student })
+      .post(`/api/admin/student/add_student`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then((res) => {
         console.log("student added successfully", res.data);
         // add course and student to SRC table
@@ -68,9 +96,13 @@ export default function Register() {
           .then((res) => {
             console.log("course added successfully", res.data);
           })
-          .catch((err) => console.log(err));
+          .catch((err) =>
+            console.log("Error in registering student to course", err)
+          );
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log("Error in registering student", err));
+
+    router.push("/");
   };
 
   return (
@@ -94,7 +126,7 @@ export default function Register() {
                   </label>
                   <input
                     value={paNumber}
-                    onChange={(e) => setPaNumber(Number(e.target.value))}
+                    onChange={(e) => setPaNumber(e.target.value)}
                     type="text"
                     className="form-control block
                   w-full px-3 py-1.5 text-sm font-normal text-gray-700
@@ -201,64 +233,39 @@ export default function Register() {
                     className="form-control block w-full px-3 py-1.5 text-sm font-normal
                     text-gray-700 bg-white bg-clip-padding border border-solid 
                     border-gray-300 rounded transition ease-in-out m-0 
-                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none dateSelectorColor"
                     id="dob"
                   />
                 </div>
-                <div className="form-group mb-5">
+
+                <div className="form-group mb-6">
                   <label
-                    htmlFor="cgpa"
+                    htmlFor="Courses"
                     className="text-blue-900 font-medium text-sm"
                   >
-                    CGPA
+                    Courses
                   </label>
-                  <input
-                    value={cgpa}
-                    onChange={(e) => setCgpa(Number(e.target.value))}
-                    type="text"
-                    className="form-control block
-            w-full
-            px-3
-            py-1.5
-            text-sm
-            font-normal
-            text-gray-700
-            bg-white bg-clip-padding
-            border border-solid border-gray-300
-            rounded
-            transition
-            ease-in-out
-            m-0
-            focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                    id="cgpa"
-                  />
-                </div>
-              </div>
 
-              <div className="form-group mb-6">
-                <label
-                  htmlFor="Courses"
-                  className="text-blue-900 font-medium text-sm"
-                >
-                  Courses
-                </label>
-
-                <select
-                  className="form-control block w-full px-3 py-1.5 my-2 text-sm font-normal text-gray-700 
+                  <select
+                    className="form-control block w-full px-3 py-1.5 text-sm font-normal text-gray-700 
                   bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
                   focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                  id="Courses"
-                  onChange={(e) => {
-                    setSelectedCourse(e.target.value);
-                  }}
-                >
-                  <option value={""}>Select a course</option>
-                  {courses?.map((course) => (
-                    <option key={course.course_code} value={course.course_code}>
-                      {course.course_name}
-                    </option>
-                  ))}
-                </select>
+                    id="Courses"
+                    onChange={(e) => {
+                      setSelectedCourse(e.target.value);
+                    }}
+                  >
+                    <option value={""}>Select a course</option>
+                    {courses?.map((course) => (
+                      <option
+                        key={course.course_code}
+                        value={course.course_code}
+                      >
+                        {course.course_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-5">
@@ -364,6 +371,7 @@ export default function Register() {
                 aria-describedby="file_input_help"
                 id="file_input"
                 type="file"
+                onChange={handleFileChange}
               />
               <p
                 className="mt-1 pl-2 text-sm text-gray-100 "

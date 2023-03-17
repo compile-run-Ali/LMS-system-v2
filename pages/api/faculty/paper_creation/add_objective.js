@@ -1,7 +1,8 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient()
+  console.log("Add Objective Question", req.body);
+  const prisma = new PrismaClient();
   try {
     //Create New Objective Question
     const newObjective = await prisma.objectiveQuestion.create({
@@ -10,13 +11,14 @@ const handler = async (req, res) => {
         answers: req.body.answers,
         marks: req.body.marks,
         correct_answer: req.body.correct_answer,
+        timeAllowed: req.body.timeAllowed,
         paper: {
           connect: {
-            paper_id: req.body.paper_id
+            paper_id: req.body.paper_id,
           },
         },
       },
-    })
+    });
     //Update Paper enty with new questions
     // await prisma.paper.update({
     //   where: {
@@ -30,10 +32,10 @@ const handler = async (req, res) => {
     //     },
     //   },
     // })
-    res.status(200).json(newObjective)
+    res.status(200).json(newObjective);
   } catch (err) {
-    throw new Error(err.message)
+    throw new Error(err.message);
   }
-}
+};
 
-export default handler
+export default handler;

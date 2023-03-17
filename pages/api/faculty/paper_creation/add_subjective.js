@@ -1,62 +1,61 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient()
   try {
-    //Create New SQ and connect to paper
-    const newSQ = await prisma.subjectiveQuestion.create({
-      data: {
-        question: req.body.question,
-        marks: req.body.marks,
-        long_question: req.body.long_question,
-        paper: {
-          connect: {
-            paper_id: req.body.paper_id,
-          },
-        },
-      },
-    })
-    if (req.body.parent_question !== "") {
-      const updatedSQ = await prisma.subjectiveQuestion.update({
-        where: {
-          sq_id: newSQ.sq_id,
-        },
+    // Use transaction API to ensure that both create and update operations are executed as a single transaction
+    const result = await prisma.$transaction(async (prisma) => {
+      let updatedSQ;
+
+      // Create new SQ and connect to paper
+      const newSQ = await prisma.subjectiveQuestion.create({
         data: {
-          parent_question: {
+          question: req.body.question,
+          marks: req.body.marks,
+          long_question: req.body.long_question,
+          questionnumber: req.body.questionnumber,
+          paper: {
             connect: {
-              sq_id: req.body.parent_question,
+              paper_id: req.body.paper_id,
             },
           },
         },
-        select: {
-          sq_id: true,
-          question: true,
-          marks: true,
-          long_question: true,
-          parent_question: true
-        }
-      })
-      res.status(200).json(updatedSQ)
-    }
+      });
 
+      updatedSQ = newSQ;
+      // Update parent question and add child question to its "child_question" array
+      if (req.body.parent_question) {
+        await prisma.subjectiveQuestion.update({
+          where: {
+            sq_id: req.body.parent_question,
+          },
+          data: {
+            child_question: {
+              connect: {
+                sq_id: newSQ.sq_id,
+              },
+            },
+          },
+          select: {
+            sq_id: true,
+            question: true,
+            marks: true,
+            long_question: true,
+            parent_question: true,
+            questionnumber: true,
+            child_question: true,
+          },
+        });
+      }
 
-    //Update Paper with new questions
-    // await prisma.paper.update({
-    //   where: {
-    //     paper_id: req.body.paper_id,
-    //   },
-    //   data: {
-    //     subjectiveQuestions: {
-    //       connect: {
-    //         sq_id: newSQ.sq_id,
-    //       },
-    //     },
-    //   },
-    // })
-    res.status(200).json(newSQ)
+      return updatedSQ;
+    });
+
+    res.status(200).json(result);
   } catch (err) {
-    throw new Error(err.message)
+    console.log(err);
   }
-}
+};
 
-export default handler
+export default handler;

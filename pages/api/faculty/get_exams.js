@@ -16,15 +16,14 @@ const handler = async (req, res) => {
                 paper_id: true,
                 paper_name: true,
                 paper_type: true,
-                time: true,
                 date: true,
                 duration: true,
                 weightage: true,
                 freeflow: true,
                 status: true,
-              }
-            }
-          }
+              },
+            },
+          },
         },
         courses: {
           select: {
@@ -39,26 +38,25 @@ const handler = async (req, res) => {
                     paper_id: true,
                     paper_name: true,
                     paper_type: true,
-                    time: true,
                     date: true,
                     duration: true,
                     weightage: true,
                     freeflow: true,
                     examofficer: true,
                     status: true,
-                  }
-                }
-              }
-            }
-          }
-        }
-        }
-    })
-    console.log(exams)
-    res.status(200).json(exams)
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    console.log(exams);
+    res.status(200).json(exams);
   } catch (err) {
-    throw new Error(err.message)
+    throw new Error(err.message);
   }
-}
+};
 
 export default handler;

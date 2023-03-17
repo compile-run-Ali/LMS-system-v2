@@ -11,22 +11,26 @@ export default function LoginAlternative({ facultyLogin }) {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-    const handleLogin = async () => {
-        const signin = await signIn("credentials", {
-            redirect: false,
-            username: email,
-            password: password,
-            role: facultyLogin ? "faculty" : "student"
-        }
-        )
-
-        console.log(signin)
-        if (signin.status === 200) {
-            router.push({
-                pathname: facultyLogin ? "/faculty" : "/student",
-            })
-        }
+  const handleLogin = async () => {
+    const signin = await signIn("credentials", {
+      redirect: false,
+      username: email,
+      password: password,
+      role: facultyLogin ? "faculty" : "student",
+    });
+    console.log(signin);
+    if (signin.status === 200) {
+      router.push({
+        pathname: facultyLogin ? "/faculty" : "/student",
+      });
     }
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
+    }
+  };
 
   return (
     <div className={`w-full flex h-screen font-poppins ${Styles.main} pt-10`}>
@@ -44,7 +48,7 @@ export default function LoginAlternative({ facultyLogin }) {
           </span>
 
           <div className="w-full flex flex-col mt-10">
-            <label className="text-white text-sm font-medium">Email</label>
+            <label className="text-white text-sm font-medium">{facultyLogin?"Login":"P Number"}</label>
             <input
               type="text"
               className="w-full h-10 rounded-md bg-white px-4 mt-2 py-4 placeholder:text-[#BCBEC0] text-sm "
@@ -63,6 +67,7 @@ export default function LoginAlternative({ facultyLogin }) {
               className="w-full h-10 rounded-md bg-white px-4 mt-2 py-4 placeholder:text-[#BCBEC0] text-sm "
               placeholder="Password"
               value={password}
+              onKeyDown={handleKeyDown}
               onChange={(e) => {
                 setPassword(e.target.value);
               }}

@@ -9,9 +9,16 @@ const handler = async (req, res) => {
         p_number: true,
         name: true,
         email: true,
-        phone_number: true,
         cgpa: true,
         DOB: true,
+        password: true,
+        phone_number: true,
+        profile_picture: true,
+        courses: {
+          select: {
+            course_code: true,
+          },
+        },
       },
     });
     res.status(200).json(student);

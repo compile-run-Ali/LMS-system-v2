@@ -1,3 +1,4 @@
+// add answer of studednt to the question
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
@@ -16,6 +17,7 @@ export default async function handler(req, res) {
         },
         data: {
           answer: req.body.answer,
+          marksobtained: req.body.marks,
         },
       });
 
@@ -24,9 +26,11 @@ export default async function handler(req, res) {
       const newSOA = await prisma.sOA.create({
         data: {
           soa_id: req.body.p_number + req.body.oq_id,
-          p_number: Number(req.body.p_number),
+          p_number: req.body.p_number,
           oq_id: req.body.oq_id,
           answer: req.body.answer,
+          marksobtained: req.body.marks,
+
         },
       });
 

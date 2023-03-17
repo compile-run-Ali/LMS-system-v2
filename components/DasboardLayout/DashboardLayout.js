@@ -13,7 +13,7 @@ export default function DashboardLayout({ admin, children }) {
     }
 
     return (
-        <div className="w-full">
+        <div className="w-full min-h-screen">
             <div className={`hidden md:flex w-[270px] ${Styles.sideBar} ease-in-out duration-300 ${showSidebar ? 'translate-x-0' : '-translate-x-[170px]'}`}>
                 <div className={`flex mt-10 items-center ease-in-out duration-300 ${showSidebar ? 'translate-x-0' : 'translate-x-[160px]'}  h-full`}>
                     <div className="pl-10">

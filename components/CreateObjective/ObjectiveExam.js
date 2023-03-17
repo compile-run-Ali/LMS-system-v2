@@ -3,12 +3,15 @@ import React, { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import Input from "../Common/Form/Input";
 import MultiSelectDropdown from "./MultiSelect";
+import { useRouter } from "next/router";
 
 const MCQTable = ({
+  exam,
   paperId,
   setActive,
   objective_questions,
   setObjectiveQuestions,
+  freeFlow,
 }) => {
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
@@ -24,7 +27,22 @@ const MCQTable = ({
     options: ["", "", "", ""],
     correct_answer: "",
     marks: 1,
+    timeAllowed: 60,
   });
+
+  const router = useRouter();
+
+  const editExam = () => {
+    console.log("pushing back");
+    router.push({
+      pathname: `/faculty/create_exam/${
+        exam.paper_type === "Objective" ? "objective" : "subjective"
+      }`,
+      query: {
+        ...exam,
+      },
+    });
+  };
 
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -65,26 +83,42 @@ const MCQTable = ({
     setCurrentMCQ({ ...currentMCQ, options: newOptions });
   };
 
+  const handleTimeAllowedChange = (e) => {
+    setCurrentMCQ({ ...currentMCQ, timeAllowed: parseInt(e.target.value) });
+  };
+
   const handleAddMCQ = async () => {
+    if (
+      currentMCQ.question === "" ||
+      currentMCQ.options.includes("") ||
+      currentMCQ.correct_answer === "" ||
+      currentMCQ.marks === "" ||
+      (!freeFlow && !currentMCQ.timeAllowed)
+    ) {
+      alert("Please fill all the fields");
+      return;
+    }
+
     const newMCQ = await axios.post(
-      "http://localhost:3000/api/faculty/paper_creation/add_objective",
+      "/api/faculty/paper_creation/add_objective",
       {
         paper_id: paperId,
         question: currentMCQ.question,
         answers: currentMCQ.options.toString(),
         correct_answer: currentMCQ.correct_answer,
         marks: currentMCQ.marks,
+        timeAllowed: currentMCQ.timeAllowed || 60,
       }
     );
-    console.log(newMCQ.data);
-    newMCQ.data.options = newMCQ.data.answers.split(", ");
+    newMCQ.data.options = newMCQ.data.answers.split(",");
     setMCQs([...mcqs, newMCQ.data]);
     setObjectiveQuestions([...mcqs, newMCQ.data]);
     setCurrentMCQ({
       question: "",
-      options: [],
+      options: ["", "", "", ""],
       correct_answer: "",
       marks: 1,
+      timeAllowed: 60,
     });
     setAdding(false);
   };
@@ -96,17 +130,27 @@ const MCQTable = ({
   };
 
   const handleUpdateMCQ = async (index) => {
-    const newMCQ = await axios.post(
-      "http://localhost:3000/api/faculty/edit_objective",
-      {
-        oq_id: mcqs[index].oq_id,
-        paper_id: paperId,
-        question: currentMCQ.question,
-        answers: currentMCQ.options.toString(),
-        correct_answer: currentMCQ.correct_answer,
-        marks: currentMCQ.marks,
-      }
-    );
+    console.log(currentMCQ);
+    if (
+      currentMCQ.question === "" ||
+      currentMCQ.options.includes("") ||
+      currentMCQ.correct_answer === "" ||
+      currentMCQ.marks === "" ||
+      (!freeFlow && !currentMCQ.timeAllowed)
+    ) {
+      alert("Please fill all the fields");
+      return;
+    }
+    const newMCQ = await axios.post("/api/faculty/edit_objective", {
+      oq_id: mcqs[index].oq_id,
+      paper_id: paperId,
+      question: currentMCQ.question,
+      answers: currentMCQ.options.toString(),
+      correct_answer: currentMCQ.correct_answer,
+      marks: currentMCQ.marks,
+      timeAllowed: currentMCQ.timeAllowed || 60,
+    });
+
     if (newMCQ.status === 200) {
       const newMCQs = [...mcqs];
       newMCQs[index] = currentMCQ;
@@ -117,6 +161,7 @@ const MCQTable = ({
         options: [],
         correct_answer: "",
         marks: 1,
+        timeAllowed: 60,
       });
       setEditing(false);
       setIndex(null);
@@ -124,12 +169,9 @@ const MCQTable = ({
   };
 
   const handleDeleteMCQ = async (index) => {
-    const res = await axios.post(
-      "http://localhost:3000/api/faculty/remove_objective",
-      {
-        oq_id: mcqs[index].oq_id,
-      }
-    );
+    const res = await axios.post("/api/faculty/remove_objective", {
+      oq_id: mcqs[index].oq_id,
+    });
     if (res.status === 200) {
       const newMCQs = [...mcqs];
       newMCQs.splice(index, 1);
@@ -149,6 +191,7 @@ const MCQTable = ({
             <th className="px-4 py-2">Options</th>
             <th className="px-4 py-2">Correct Option</th>
             <th className="px-4 py-2">Marks</th>
+            {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
             <th className="px-4 py-2"></th>
             <th className="px-4 py-2"></th>
           </tr>
@@ -158,13 +201,16 @@ const MCQTable = ({
             <tr key={index} className="border-t">
               <td className="px-4 py-2">{index + 1}</td>
               <td className="px-4 py-2">{mcq.question}</td>
-              <td className="px-4 py-2">{mcq.options.join(", ")}</td>
+              <td className="px-4 py-2">{mcq.options.join(",")}</td>
               <td className="px-4 py-2">{mcq.correct_answer}</td>
               <td className="px-4 py-2">{mcq.marks}</td>
+              {freeFlow ? null : (
+                <td className="px-4 py-2">{mcq.timeAllowed}</td>
+              )}
               <td className="px-4 py-2">
                 <button
                   onClick={handleEditMCQ(index)}
-                  className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white"
+                  className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                 >
                   <MdEdit />
                 </button>
@@ -174,7 +220,7 @@ const MCQTable = ({
                   onClick={() => {
                     handleDeleteMCQ(index);
                   }}
-                  className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white"
+                  className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                 >
                   <MdDelete />
                 </button>
@@ -275,6 +321,16 @@ const MCQTable = ({
               value={currentMCQ.marks}
               onChange={handleMarksChange}
             />
+            {/* input for time allowed */}
+            {freeFlow ? null : (
+              <Input
+                text={"Time Allowed in Seconds"}
+                type={"number"}
+                required
+                value={currentMCQ.timeAllowed || 60}
+                onChange={handleTimeAllowedChange}
+              />
+            )}
           </div>
           {editing ? (
             <button
@@ -299,8 +355,12 @@ const MCQTable = ({
         <button
           type="button"
           className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
+          onClick={() => {
+            setActive(1);
+            editExam();
+          }}
         >
-          Cancel
+          Back
         </button>
         <button
           type="submit"

@@ -3,34 +3,43 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import OQContainer from "./Objective/OQContainer";
 import SQContainer from "./Subjective/SQContainer";
+import { useSession } from "next-auth/react";
 import NavigationGrid from "./NavigationGrid";
-import { compareDateTime, getPaperDateTime } from "@/lib/TimeCalculations";
+import Loader from "../Loader";
 import Timer from "./Timer";
+import Submitted from "./Submitted";
 
 export default function PaperContainer({}) {
+  const { data: session, status } = useSession();
   const router = useRouter();
-  const { student, paper } = router.query;
+  const { paper } = router.query;
   const [questions, setQuestions] = useState([]);
+  const [student, setStudent] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [paperDetails, setPaperDetails] = useState({});
-  /* 
-    inside useeffect 
-    fetch paper questions from backend
-    shuffle them for each student, and store them in local storage
-    and set them equal to a state
-    */
+  const [objectiveCount, setObjectiveCount] = useState(0);
+  const [flags, setFlags] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (localStorage.getItem("localCurrent")) {
-      console.log(`local current is ${localStorage.getItem("localCurrent")}`);
-      setCurrentQuestion(parseInt(localStorage.getItem("localCurrent")));
+    if (paper) {
+      let papers = JSON.parse(localStorage.getItem("papers") || "{}");
+      if (papers[paper]?.current) {
+        console.log("setting current", papers[paper].current);
+        setCurrentQuestion(papers[paper].current);
+      }
     }
-  }, []);
+  }, [paper]);
+
+  useEffect(() => () => {
+    if (status === "authenticated") {
+      setStudent(session.user.id);
+    }
+  });
+  [session];
 
   const shuffleArray = (array) => {
-    // Create a copy of the original array
     const shuffledArray = [...array];
-    // Shuffle the array using the Fisher-Yates shuffle algorithm
     for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffledArray[i], shuffledArray[j]] = [
@@ -41,136 +50,199 @@ export default function PaperContainer({}) {
     return shuffledArray;
   };
 
-  // function to store the currentQuestion value in local storage on change
   const setCurrentAndLocal = (newValue) => {
+    let papers = JSON.parse(localStorage.getItem("papers") || "{}");
+
     setCurrentQuestion(newValue);
-    localStorage.setItem("localCurrent", newValue);
-    console.log(
-      `current question is ${newValue} and local current is ${localStorage.getItem(
-        "localCurrent"
-      )}`
-    );
+    papers[paper].current = newValue;
+    localStorage.setItem("papers", JSON.stringify(papers));
   };
-
-  /* 
-    first load
-    local storage is empty
-    get questions from api, shuffle them, and store them in local storage
-
-    not first load
-    local storage is not empty
-    get questions from local storage,
-
-    to check whether a random load is first or not
-    check if local storage is empty or not
-
-    if local storage is empty, then it is first load
-    if local storage is not empty, then it is not first load
-   */
 
   useEffect(() => {
     if (student && paper) {
       // get paper here and if paper is live, only then set questions
-      axios
-        .get(`/api/paper/${paper}`)
-        .then((res) => {
-          console.log(res.data);
-          // if (compareDateTime(res.data.date, res.data.duration) === "live") {
-          if (
-            compareDateTime(
-              res.data.date,
-              getPaperDateTime(res.data.date, res.data.duration).end
-            ) === "live"
-          ) {
-            setPaperDetails(res.data);
-            let isObjective;
-            res.data.paper_type === "Objective"
-              ? (isObjective = true)
-              : (isObjective = false);
+      let papers = JSON.parse(localStorage.getItem("papers") || "{}");
 
-            // apply checks here, and then call apis
+      if (papers[paper]) {
+        console.log(
+          "paper exists in local storage, getting from there",
+          papers[paper]
+        );
+        // paper exists
+        setQuestions([
+          ...(papers[paper].objectiveQuestions || []),
+          ...(papers[paper].subjectiveQuestions || []),
+        ]);
+        setLoading(false);
+        setObjectiveCount(papers[paper].objectiveCount || 0);
+        setFlags(papers[paper].flags || []);
+        setPaperDetails(papers[paper]);
+      } else {
+        // do below logic
+        console.log(
+          "paper does not exist in local storage, getting from server"
+        );
+        //update spa status to Attempted
+        axios
+          .post(`/api/student/paper/update_attempt_status`, {
+            studentId: session.user.id,
+            paperId: paper,
+            status: "Attempted",
+          })
+          .then((res) => {
+            console.log("updated attempt status ", res.data);
+          })
+          .catch((err) => {
+            console.log("error updating attempt status", err);
+          });
 
-            if (localStorage.getItem("paperQuestions")) {
-              // not first time
-              const storedQuestions = JSON.parse(
-                localStorage.getItem("paperQuestions")
-              );
-              setQuestions(storedQuestions);
-              console.log(
-                `not the first time, stored questions are `,
-                storedQuestions
-              );
-            } else {
-              // first time
+        // get paper details
+        axios
+          .get(`/api/paper/${paper}`)
+          .then((res) => {
+            // push the paper id in papers index array
+            const currentPaper = res.data;
+            // if paper is live get paper
+            if (currentPaper) {
+              papers[paper] = currentPaper;
+              localStorage.setItem("papers", JSON.stringify(papers));
+              setPaperDetails(res.data);
+
+              // get objective questions
               axios
-                .get(`/api/student/paper/${isObjective ? "oq" : "sq"}/${paper}`)
+                .get(`/api/student/paper/oq/${paper}`)
                 .then((res) => {
-                  console.log("questions are", res.data);
                   const randomizedQuestions = shuffleArray(res.data);
-                  localStorage.setItem(
-                    "paperQuestions",
-                    JSON.stringify(randomizedQuestions)
-                  );
-                  localStorage.setItem("localCurrent", 0);
-                  setQuestions(randomizedQuestions);
-                  console.log(
-                    `first time, randomized questions are `,
-                    randomizedQuestions
-                  );
+                  // set objective questions in array and local current, both in value of the paper_id key
+                  papers[paper].objectiveQuestions = randomizedQuestions;
+                  papers[paper].current = 0;
+                  papers[paper].objectiveCount = randomizedQuestions.length;
+                  localStorage.setItem("papers", JSON.stringify(papers));
+                  setObjectiveCount(randomizedQuestions.length);
+
+                  // if paper is not objective
+                  if (currentPaper.paper_type !== "Objective") {
+                    // get subjective questions
+                    axios
+                      .get(`/api/student/paper/sq/${paper}`)
+                      .then((res) => {
+                        const subjectiveQuestions = res.data;
+                        let subjectiveWithChild = [];
+                        subjectiveQuestions.forEach((question) => {
+                          if (question.parent_sq_id) {
+                            const parent = subjectiveQuestions.find(
+                              (q) => q.sq_id === question.parent_sq_id
+                            );
+                            let children = [];
+                            if (parent) {
+                              children = parent.children || [];
+                              children.push(question);
+                              parent.children = children;
+                            }
+                          } else {
+                            subjectiveWithChild.push(question);
+                          }
+                        });
+                        papers[paper].subjectiveQuestions = subjectiveWithChild;
+                        localStorage.setItem("papers", JSON.stringify(papers));
+                        setQuestions(
+                          [
+                            ...papers[paper].objectiveQuestions,
+                            ...papers[paper].subjectiveQuestions,
+                          ] || []
+                        );
+                      })
+                      .catch((err) => {
+                        console.log("error ", err.message);
+                      });
+                  }
+                  setLoading(false);
                 })
                 .catch((err) => {
                   console.log("error ", err.message);
                 });
             }
-            // axios
-            //   .get(`/api/student/paper/${isObjective ? "oq" : "sq"}/${paper}`)
-            //   .then((res) => {
-            //     console.log("questions are", res.data);
-            //     setQuestions(randomizedQuestions);
-            //   })
-            //   .catch((err) => {
-            //     console.log("error ", err.message);
-            //   });
-          } else {
-            router.push(`/student/${student}`);
-          }
-        })
-        .catch((err) => {
-          console.log("error ", err.message);
-        });
+            // if paper is not live, push back to papers list
+            else {
+              router.push(`/student`);
+            }
+          })
+          .catch((err) => {
+            console.log("error ", err.message);
+          });
+      }
     }
-  }, [paper]);
+  }, [paper, student]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
-    <div className="flex justify-center mx-auto w-3/4 font-poppins mt-28 space-x-20">
-      <div className="w-2/3">
-        {paperDetails.paper_type === "Objective" ? (
+    <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
+      <div className="w-2/3  rounded-l-2xl">
+        {currentQuestion === questions.length ? (
+          <Submitted />
+        ) : paperDetails.paper_type === "Objective" ? (
           <OQContainer
             question={questions[currentQuestion]}
             totalQuestions={questions.length}
             currentQuestion={currentQuestion}
             setCurrentQuestion={setCurrentAndLocal}
             freeFlow={paperDetails.freeflow}
+            flags={flags || []}
+            setFlags={setFlags}
           />
         ) : (
-          <SQContainer
-            question={questions[currentQuestion]}
-            totalQuestions={questions.length}
-            currentQuestion={currentQuestion}
-            setCurrentQuestion={setCurrentAndLocal}
-            freeFlow={paperDetails.freeflow}
-          />
+          <>
+            {currentQuestion < objectiveCount ? (
+              <OQContainer
+                question={questions[currentQuestion]}
+                totalQuestions={questions.length}
+                currentQuestion={currentQuestion}
+                setCurrentQuestion={setCurrentAndLocal}
+                freeFlow={paperDetails.freeflow}
+                flags={flags || []}
+                setFlags={setFlags}
+              />
+            ) : (
+              <SQContainer
+                question={questions[currentQuestion]}
+                totalQuestions={questions.length}
+                currentQuestion={currentQuestion}
+                setCurrentQuestion={setCurrentAndLocal}
+                freeFlow={paperDetails.freeflow}
+                flags={flags || []}
+                setFlags={setFlags}
+              />
+            )}
+          </>
         )}
       </div>
-      <div className="w-1/3 shadow-lg h-fit border-2 border-zinc-100 rounded-md p-10">
+      <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
         <Timer paper={paperDetails} />
-        {paperDetails.freeflow && (
-          <NavigationGrid
-            totalQuestions={questions.length}
-            currentQuestion={currentQuestion}
-            setCurrentQuestion={setCurrentAndLocal}
-          />
-        )}
+        {(paperDetails.freeflow ||
+          (paperDetails.paper_type !== "Objective" &&
+            currentQuestion >= objectiveCount)) &&
+          currentQuestion < questions.length && (
+            <NavigationGrid
+              totalQuestions={
+                paperDetails.freeflow
+                  ? questions.length
+                  : questions.length - objectiveCount
+              }
+              currentQuestion={
+                paperDetails.freeflow
+                  ? currentQuestion
+                  : currentQuestion - objectiveCount
+              }
+              freeFlow={paperDetails.freeflow}
+              offset={objectiveCount}
+              setCurrentQuestion={setCurrentAndLocal}
+              flags={flags || []}
+              setFlags={setFlags}
+            />
+          )}
       </div>
     </div>
   );

@@ -9,11 +9,11 @@ const handler = async (req, res) => {
       data: {
         paper_name: req.body.paper_name,
         paper_type: req.body.paper_type,
-        time: req.body.time,
         date: req.body.date,
         duration: req.body.duration,
         weightage: req.body.weightage,
         freeflow: req.body.freeflow,
+        review: req.body.review,
         course: {
           connect: {
             course_code: req.body.course_code,

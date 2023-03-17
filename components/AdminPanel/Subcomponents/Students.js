@@ -2,16 +2,41 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import StudentTable from "../Tables/StudentTable";
 import DeleteModal from "./DeleteModal";
+import axios from "axios";
 
 export default function Students({ students, setStudents }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState("");
   const addStudents = () => {
     router.push("/admin/add_student");
   };
+
+  const handleDelete = async () => {
+    console.log(selectedStudent)
+    const deletedStudent = await axios.post(
+      "/api/admin/student/remove_student",
+      {
+        p_number: selectedStudent,
+      }
+    );
+    if (deletedStudent.status === 200) {
+      const newStudents = students.filter(
+        (student) => student.student_id !== selectedStudent
+      );
+      setStudents(newStudents);
+      setOpen(false);
+    }
+    router.reload();
+  };
+
   return (
     <div>
-      <DeleteModal setIsOpen={setOpen} isOpen={open} />
+      <DeleteModal
+        setIsOpen={setOpen}
+        isOpen={open}
+        handleDelete={handleDelete}
+      />
       <div className="mt-10 flex justify-end">
         <button
           onClick={addStudents}
@@ -20,7 +45,11 @@ export default function Students({ students, setStudents }) {
           Add Students
         </button>
       </div>
-      <StudentTable setOpen={setOpen} students={students} />
+      <StudentTable
+        setOpen={setOpen}
+        students={students}
+        setSelectedStudent={setSelectedStudent}
+      />
     </div>
   );
 }

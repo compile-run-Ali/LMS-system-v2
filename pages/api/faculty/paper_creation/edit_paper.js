@@ -10,11 +10,11 @@ const handler = async (req, res) => {
       },
       data: {
         paper_name: req.body.paper_name,
-        time: req.body.paper_time,
         date: req.body.date,
         duration: req.body.duration,
         weightage: req.body.weightage,
         freeflow: req.body.freeflow,
+        review: req.body.review
       }
     })
     res.status(200).json(paper)

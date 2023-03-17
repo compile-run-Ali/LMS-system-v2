@@ -1,0 +1,92 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import {
+  convertDateTimeToStrings,
+  getPaperDateTime,
+  compareDateTime,
+} from "@/lib/TimeCalculations";
+
+export default function ViewContainer() {
+  const router = useRouter();
+  const { paper } = router.query;
+  const { data: session, status } = useSession();
+  const [paperDetails, setPaperDetails] = useState({});
+  const [student, setStudent] = useState(null);
+
+  useEffect(
+    () => () => {
+      if (status === "authenticated") {
+        setStudent(session.user.id);
+      }
+    },
+    [session]
+  );
+
+  useEffect(() => {
+    if (student && paper) {
+      axios
+        .get(`/api/student/paper/${student}`)
+
+        .then((res) => {
+          const requestedPaper = res.data.find(
+            (paperObj) => paperObj.paper_id === paper
+          );
+          setPaperDetails(requestedPaper);
+          if (requestedPaper) {
+            // paper exists
+
+            const paperDateTime = getPaperDateTime(
+              requestedPaper.date,
+              requestedPaper.duration
+            );
+            const paperStatus = compareDateTime(
+              paperDateTime.start,
+              paperDateTime.end
+            );
+            if (paperStatus !== "upcoming") {
+              router.push(`/student`);
+            }
+          }
+        });
+    }
+  }, [student, paper]);
+
+  return (
+    <div className="pr-10   pl-7 font-poppins w-full ">
+      <div className="bg-gray-100 bg-opacity-50 py-10 rounded-md">
+        <div className="font-semibold text-center text-3xl mt-5 mb-10">
+          Exam Details
+        </div>
+
+        <div className="grid grid-cols-3 gap-y-3">
+          <div className="pl-20">
+            <span className=" font-medium">Exam Name:</span>
+            <span className="ml-2">{paperDetails.paper_name}</span>
+          </div>
+          <div className="pl-20">
+            <span className=" font-medium">Exam Type:</span>
+            <span className="ml-2">{paperDetails.paper_type}</span>
+          </div>
+          <div className="pl-20">
+            <span className=" font-medium">Exam Date:</span>
+            <span className="ml-2">
+              {convertDateTimeToStrings(paperDetails.date, true)}
+            </span>
+          </div>
+          <div className="pl-20">
+            <span className=" font-medium">Exam Time:</span>
+            <span className="ml-2">
+              {convertDateTimeToStrings(paperDetails.date)}
+            </span>
+          </div>
+          <div className="pl-20">
+            <span className=" font-medium">Exam Duration:</span>
+            <span className="ml-2">{paperDetails.duration}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
