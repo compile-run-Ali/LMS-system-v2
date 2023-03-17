@@ -160,42 +160,52 @@ const SubjectiveExam = ({
   const handleUpdateMCQ = async (question) => {
     const isChild = question.parent_question ? true : false;
 
-    const updatedSubjective = await axios.post("/api/faculty/add_subjective", {
+    const updatedSubjective = await axios.post("/api/faculty/edit_subjective", {
       sq_id: question.sq_id,
-      paper_id: paperId,
       question: currentSubjective.question,
-      parent_question: currentSubjective.parent_question,
+      parent_sq_id: currentSubjective.parent_question,
+      questionnumber: currentSubjective.questionnumber,
       long_question: currentSubjective.long_question,
       marks: currentSubjective.marks,
     });
     if (updatedSubjective.status === 200) {
       // updatedSUbjective will be the parent question
-
-      if (isChild) {
-        // if question is child, edit the subje
-        const parentOfDeleted = subjectivesLocal.find(
-          (subjective) => subjective.sq_id === question.sq_id
-        ).parent_question;
-        // edit parent's child in subjectives
-        const updatedSubjectives = subjectivesLocal.map((subjective) => {
-          if (subjective.sq_id === parentOfDeleted) {
-            return updatedSubjective.data;
-          }
-          return subjective;
-        });
-        setSubjectivesLocal(updatedSubjectives);
-        setSubjectiveQuestions(updatedSubjectives);
-      } else {
-        // if question is parent, edit the parent
-        const updatedSubjectives = subjectivesLocal.map((subjective) => {
-          if (subjective.sq_id === question.sq_id) {
-            return updatedSubjective.data;
-          }
-          return subjective;
-        });
-        setSubjectivesLocal(updatedSubjectives);
-        setSubjectiveQuestions(updatedSubjectives);
-      }
+      console.log(
+        "updated subjective",
+        updatedSubjective.data,
+      );
+      /*  api is working, write logic to update state array, 
+       make sure to:
+        1. if question is child, edit the child in parent's child_question array
+        2. if question had a parent previously then remove this question from that question's array
+        3. if question is parent, edit the parent
+        
+         */
+      // if (isChild) {
+      //   // if question is child, edit the subje
+      //   const parentOfDeleted = subjectivesLocal.find(
+      //     (subjective) => subjective.sq_id === question.sq_id
+      //   ).parent_question;
+      //   // edit parent's child in subjectives
+      //   const updatedSubjectives = subjectivesLocal.map((subjective) => {
+      //     if (subjective.sq_id === parentOfDeleted) {
+      //       return updatedSubjective.data;
+      //     }
+      //     return subjective;
+      //   });
+      //   setSubjectivesLocal(updatedSubjectives);
+      //   setSubjectiveQuestions(updatedSubjectives);
+      // } else {
+      //   // if question is parent, edit the parent
+      //   const updatedSubjectives = subjectivesLocal.map((subjective) => {
+      //     if (subjective.sq_id === question.sq_id) {
+      //       return updatedSubjective.data;
+      //     }
+      //     return subjective;
+      //   });
+      //   setSubjectivesLocal(updatedSubjectives);
+      //   setSubjectiveQuestions(updatedSubjectives);
+      // }
 
       // const newMCQs = [...subjectives];
       // newMCQs[index] = updatedSubjective.data;
