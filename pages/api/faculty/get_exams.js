@@ -21,9 +21,9 @@ const handler = async (req, res) => {
                 weightage: true,
                 freeflow: true,
                 status: true,
-              }
-            }
-          }
+              },
+            },
+          },
         },
         courses: {
           select: {
@@ -44,19 +44,19 @@ const handler = async (req, res) => {
                     freeflow: true,
                     examofficer: true,
                     status: true,
-                  }
-                }
-              }
-            }
-          }
-        }
-        }
-    })
-    console.log(exams)
-    res.status(200).json(exams)
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    console.log(exams);
+    res.status(200).json(exams);
   } catch (err) {
-    throw new Error(err.message)
+    throw new Error(err.message);
   }
-}
+};
 
 export default handler;
