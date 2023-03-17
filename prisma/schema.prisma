@@ -123,7 +123,7 @@ model SubjectiveQuestion {
   paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
   paper_id String
 
-  child_quetion SubjectiveQuestion[] @relation("QuestionByParts")
+  child_question SubjectiveQuestion[] @relation("QuestionByParts")
 
   parent_sq_id    String?
   parent_question SubjectiveQuestion? @relation("QuestionByParts", fields: [parent_sq_id], references: [sq_id], onDelete: Cascade)
