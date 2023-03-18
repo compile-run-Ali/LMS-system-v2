@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import AnswersTable from "../MarkingDashboard/AnswersTable";
 import MarkPaper from "../MarkingDashboard/MarkPaper";
 import Loader from "../Loader";
+import CommentBox from "./CommentBox";
 
 export default function ReviewContainer() {
   const router = useRouter();
@@ -76,7 +77,7 @@ export default function ReviewContainer() {
   }, [paper, student]);
 
   useEffect(() => {
-    if (session) {
+    if (session?.user?.id && paperDetails?.paper_id) {
       fetchObjectiveAttempts();
       fetchSubjectiveAttempts();
     }
@@ -107,6 +108,8 @@ export default function ReviewContainer() {
         subjectiveQuestions={subjectiveQuestions}
         isStudent={true}
       />
+
+      <CommentBox paper={paper} student={student} isStudent={true} />
     </div>
   );
 }

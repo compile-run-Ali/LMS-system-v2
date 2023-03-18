@@ -4,7 +4,8 @@ export default async function handler(req, res) {
   const prisma = new PrismaClient();
 
   try {
-    const { studentId, paperId, status, obtainedMarks } = req.body;
+    const { studentId, paperId, status, obtainedMarks, studentComment } =
+      req.body;
 
     // find an existing record with the provided id
     let existingSPA = await prisma.sPA.findUnique({
@@ -26,12 +27,16 @@ export default async function handler(req, res) {
     const updatedSPA = await prisma.sPA.update({
       where: { spaId: studentId + paperId },
       data: {
-        status: status,
+        status: status !== undefined ? status : existingSPA.status,
         obtainedMarks: obtainedMarks
           ? obtainedMarks
           : obtainedMarks === 0
           ? 0
           : existingSPA.obtainedMarks,
+        studentComment:
+          studentComment !== undefined
+            ? studentComment
+            : existingSPA.studentComment,
       },
     });
 

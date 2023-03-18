@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import MarkPaper from "@/components/MarkingDashboard/MarkPaper";
 import Loader from "@/components/Loader";
+import CommentBox from "@/components/Review/CommentBox";
 
 const Index = () => {
   const router = useRouter();
@@ -104,6 +105,8 @@ const Index = () => {
                 objectiveQuestions={objectiveQuestions}
                 subjectiveQuestions={subjectiveQuestions}
               />
+
+              <CommentBox student={p_number} paper={exam_id} />
             </div>
           )}
         </DashboardLayout>

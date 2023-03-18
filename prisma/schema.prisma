@@ -196,11 +196,12 @@ model Notification {
 }
 
 model SPA {
-  spaId         String  @id @default(uuid())
-  studentId     String
-  paperId       String
-  status        String? @default("Not Attempted")
-  obtainedMarks Float   @default(0)
+  spaId          String  @id @default(uuid())
+  studentId      String
+  paperId        String
+  status         String? @default("Not Attempted")
+  obtainedMarks  Float   @default(0)
+  studentComment String? @default("")
 
   student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
   paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)
