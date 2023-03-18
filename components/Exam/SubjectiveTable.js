@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
 
-const SubjectiveTable = ({ subjective_questions }) => {
+const SubjectiveTable = ({ subjective_questions = [] }) => {
   const [subjectives, setSubjectives] = useState([]);
 
   useEffect(() => {
     setSubjectives(subjective_questions);
   }, [subjective_questions]);
 
-  if (subjectives.length === 0) {
+  if (subjectives && subjectives.length === 0) {
     return (
       <div className="text-center text-red-600 font-bold text-xl">
         No Questions Added
@@ -29,7 +29,7 @@ const SubjectiveTable = ({ subjective_questions }) => {
           </tr>
         </thead>
         <tbody>
-          {subjectives.map((question, index) => (
+          {subjectives?.map((question, index) => (
             <React.Fragment key={question.sq_id}>
               <tr key={index} className="text-center">
                 <td className=" px-4 py-2">{question.questionnumber}</td>

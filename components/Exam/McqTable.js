@@ -8,7 +8,7 @@ const MCQTable = ({ objective_questions }) => {
     setMCQs(objective_questions);
   }, [objective_questions]);
 
-  if (mcqs.length === 0) {
+  if (mcqs && mcqs.length === 0) {
     return (
       <div className="text-center text-red-600 font-bold text-xl">
         No Questions Added
@@ -27,11 +27,10 @@ const MCQTable = ({ objective_questions }) => {
             <th className=" px-4 py-2">Correct Option</th>
             <th className=" px-4 py-2">Marks</th>
             <th className=" px-4 py-2">Time Allowed</th>
-
           </tr>
         </thead>
         <tbody>
-          {mcqs.map((mcq, index) => (
+          {mcqs?.map((mcq, index) => (
             <tr key={index} className="text-center">
               <td className=" px-4 py-2">{index + 1}</td>
               <td className=" px-4 py-2">{mcq.question}</td>
