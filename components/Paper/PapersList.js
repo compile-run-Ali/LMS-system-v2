@@ -14,11 +14,6 @@ export default function PapersList({ papers, status }) {
   const isPast = status === "Past Papers";
   const { data: session } = useSession();
 
-  console.log(
-    "papers list rendered",
-    papers,
-  );
-
   const getPaperStatus = (paper_id) => {
     const paper = attemptStatus.find((paper) => paper.paperId === paper_id);
     if (paper) {

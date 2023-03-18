@@ -3,6 +3,8 @@ const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   try {
+    console.log("received", req.body);
+
     const existingSSA = await prisma.sSA.findUnique({
       where: {
         ssa_id: req.body.p_number + req.body.sq_id,

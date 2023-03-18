@@ -16,7 +16,7 @@
 <!-- in objective question attempt, allow to select only correct number of option e.g if there are 2 correct options, then student can select only 2 options -->
 <!--done while registering a student admin should also be able to enroll student in a course  -->
 <!-- While creating a child question, the max marks should be less then parent question's remaining marks-->
-child marks cant be more than parent but issue cuz if another child then it doesn't consider children before it
+<!-- child marks cant be more than parent but issue cuz if another child then it doesn't consider children before it -->
 <!-- default value should be true for long question checkbox while making subjective question in exam -->
 <!-- 9 "Closed" Status for paper once paper end time and date have elapsed. -->
 
@@ -37,7 +37,7 @@ marks not updated if an individual question is marked
 marks being doubled in mark exam on initial load
 total marks are shown more than actual marks, because a parent question's marks are also counted
 
-while creating subjective question, question number can not be changed to 1 if it has a parent question 
+<!-- while creating subjective question, question number can not be changed to 1 if it has a parent question  -->
 
 #14/3/23
 <!-- padding in login -->
@@ -97,7 +97,7 @@ I.E Exam upload and attempt testing
 ### Ali
 <!-- incorrect time in notifications -->
   <!-- make a function that returns the same string 5 hrs ahead -->
-when question navigate in attempt, the answer should be retained
+<!-- when question navigate in attempt, the answer should be retained
   make loading components
   fetch soa and ssa in respective components and set them
   for objective, check the method used to mark in objective review container
@@ -105,13 +105,13 @@ comment feature in paper review
   add comment field in spa table, default null
   on exam review page, add a comment component that gets(if any) and sets comment in database 
   use same api to get comment, and another api to set comment, (both are made)
-api correction in making subjective qs
+api correction in making subjective qs -->
 <!-- if not marked unmarked in subjecTive marking -->
 ### fahad
 reload on save marks
   <!-- error cuz pnumber check -->
 ### ali abdullah
-answer too dim in paper mark
+<!-- answer too dim in paper mark -->
 if student attempted, and exam not marked, then marks obtained should be "unmarked"
 infinte loop error in log when multiple answers checkbox is checked in create objective answers
 data retaining issue when allow multiple edit

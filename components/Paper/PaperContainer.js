@@ -126,24 +126,10 @@ export default function PaperContainer({}) {
                     axios
                       .get(`/api/student/paper/sq/${paper}`)
                       .then((res) => {
-                        const subjectiveQuestions = res.data;
-                        let subjectiveWithChild = [];
-                        subjectiveQuestions.forEach((question) => {
-                          if (question.parent_sq_id) {
-                            const parent = subjectiveQuestions.find(
-                              (q) => q.sq_id === question.parent_sq_id
-                            );
-                            let children = [];
-                            if (parent) {
-                              children = parent.children || [];
-                              children.push(question);
-                              parent.children = children;
-                            }
-                          } else {
-                            subjectiveWithChild.push(question);
-                          }
-                        });
-                        papers[paper].subjectiveQuestions = subjectiveWithChild;
+                        const subjectiveQuestions = res.data.filter(
+                          (question) => !question.parent_sq_id
+                        );
+                        papers[paper].subjectiveQuestions = subjectiveQuestions;
                         localStorage.setItem("papers", JSON.stringify(papers));
                         setQuestions(
                           [

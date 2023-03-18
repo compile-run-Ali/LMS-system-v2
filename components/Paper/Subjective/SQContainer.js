@@ -20,6 +20,8 @@ export default function SQContainer({
   const [answers, setAnswers] = useState({});
   const [saved, setSaved] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [changed, setChanged] = useState(false);
 
   const saveAnswer = () => {
     if (!answers) {
@@ -28,7 +30,6 @@ export default function SQContainer({
     }
 
     for (let question_id in answers) {
-      console.log(`Key: ${question_id}, Value: ${answers[question_id]}`);
       axios
         .post(`/api/student/paper/sq/add_answer`, {
           p_number: session?.data?.user?.id,
@@ -36,19 +37,17 @@ export default function SQContainer({
           answer: answers[question_id],
         })
         .then((res) => {
+          setSaved(true);
           console.log("answer added successfully ", res.data);
         })
         .catch((err) => {
           console.log("error ", err.message);
         });
     }
-
-    setSaved(true);
   };
 
   const flagQuestion = (current) => {
     let f = flags;
-    console.log("flags", f);
     f.includes(current)
       ? (f = f.filter((flags) => flags !== current))
       : (f = [...flags, current]);
@@ -56,27 +55,56 @@ export default function SQContainer({
     const papers = JSON.parse(localStorage.getItem("papers"));
     papers[paper].flags = f;
     localStorage.setItem("papers", JSON.stringify(papers));
-    console.log(
-      "flagged",
-      JSON.parse(localStorage.getItem("papers"))[paper].flags
-    );
   };
 
   useEffect(() => {
     if (question) {
+      const hasChild = question.child_question.length > 0;
       setAnswers("");
-      setSaved(false);
+      setChanged(false);
+      let questionIdToBeFetched;
+      if (!hasChild) {
+        questionIdToBeFetched = [question.sq_id];
+      } else {
+        questionIdToBeFetched =
+          question.child_question.map((child) => child.sq_id) || [];
+      }
+
+      axios
+        .get("/api/student/paper/sq/get_answer", {
+          params: {
+            p_number: session?.data?.user?.id,
+            sq_ids: questionIdToBeFetched.join(","),
+          },
+        })
+        .then((res) => {
+          if (hasChild) {
+            const answers = {};
+            res.data.forEach((answer) => {
+              answers[answer.sq_id] = answer.answer;
+            });
+            setAnswers(answers);
+          } else {
+            setAnswers({
+              [question.sq_id]: res.data[0]?.answer,
+            });
+          }
+
+          console.log("received answers are", res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }, [question]);
 
   useEffect(
     () => () => {
-      setSaved(false);
+      if (changed) setSaved(false);
+      else setSaved(true);
     },
     [answers]
   );
-
-  console.log("answer ", answers);
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl text-white">
@@ -90,8 +118,8 @@ export default function SQContainer({
               </div>
             </div>
             <div className="py-4 rounded-lg space-y-2 ">
-              {question.children ? (
-                question.children.map((childQuestion, index) => (
+              {question.child_question && question.child_question.length > 0 ? (
+                question.child_question.map((childQuestion, index) => (
                   <div key={childQuestion.sq_id}>
                     <div className="text-xl">
                       <div className="flex justify-between items-center ">
@@ -118,14 +146,14 @@ export default function SQContainer({
                       <textarea
                         className="border bg-white rounded-md p-2 w-full text-black border-black focus:outline-yellow-500"
                         maxLength={childQuestion.long_question ? 100000 : 50}
-                        value={answers[childQuestion.questionnumber]}
+                        value={answers[childQuestion.sq_id]}
                         rows={childQuestion.long_question ? 10 : 2}
                         onChange={(e) => {
+                          setChanged(true);
                           setAnswers({
                             ...answers,
                             [childQuestion.sq_id]: e.target.value,
                           });
-                          console.log("answer", answers);
                         }}
                       />
                     </div>
@@ -144,14 +172,13 @@ export default function SQContainer({
                   <textarea
                     className="border bg-white rounded-md p-2 w-full text-black border-black focus:outline-yellow-500"
                     maxLength={question.long_question ? 100000 : 50}
-                    value={answers[question.questionnumber]}
+                    value={answers[question.sq_id]}
                     rows={question.long_question ? 10 : 2}
                     onChange={(e) => {
+                      setChanged(true);
                       setAnswers({
-                        ...answers,
                         [question.sq_id]: e.target.value,
                       });
-                      console.log("answer", answers);
                     }}
                   />
                 </div>
