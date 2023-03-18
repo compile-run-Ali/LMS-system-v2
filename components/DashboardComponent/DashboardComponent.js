@@ -90,7 +90,7 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
         paperapproval_data.length > 0 && (
           <div className="pr-10 pl-5 mt-10">
             <h1 className="text-2xl font-poppins font-bold">
-              Submitted For Approval:
+              To Approve:
             </h1>
             <ExamTable exams_data={paperapproval} />
           </div>
