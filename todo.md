@@ -88,8 +88,8 @@ save marks in subjective marking takes previous marks, not currently changed mar
 remove /faculty from edit exam page route
 
 
-Status Update once marked for all students. Should share result with Senior faculty
-Student review Page and Comment Function
+<!-- Status Update once marked for all students. Should share result with Senior faculty -->
+<!-- Student review Page and Comment Function -->
 Admin ID backdoor. Password recovery
 I.E Exam upload and attempt testing
 
