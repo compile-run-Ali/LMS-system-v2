@@ -23,6 +23,8 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
       router.push({
         pathname: facultyLogin ? "/faculty" : "/student",
       });
+    } else {
+      alert("Invalid Credentials");
     }
   };
 
