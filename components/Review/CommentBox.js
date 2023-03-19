@@ -17,7 +17,6 @@ const CommentBox = ({ student, paper, isStudent }) => {
         },
       })
       .then((res) => {
-        console.log("attempt details fetched successfully", res.data);
         setComment(res.data.studentComment);
       })
       .catch((err) => {
@@ -33,7 +32,6 @@ const CommentBox = ({ student, paper, isStudent }) => {
         studentComment: comment,
       })
       .then((res) => {
-        console.log("comment submitted successfully", res.data);
       })
       .catch((err) => {
         console.log("error in submitting comment", err.message);
@@ -45,10 +43,6 @@ const CommentBox = ({ student, paper, isStudent }) => {
       fetchAttemptDetails();
     }
   }, [student, paper]);
-
-  if (!isStudent && !comment) {
-    return <></>;
-  }
 
   return (
     <div className=" mb-10">
