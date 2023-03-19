@@ -8,7 +8,7 @@
   <!-- - Then subjective questions should be shown with correct order, as they are shown in paper attempt, here faculty also marks the attempts -->
   <!-- - Then faculty should proceed, here a summary of student's attempt should be shown, such as marks obtained -->
   <!-- - Then faculty go back to a table where they can see a table of every student's attempt of a specific quiz, and also see who did not attempt that quiz -->
-  - When all student's exam has been marked, the status of that exam should be "marked", and faculty should still be able to see the above tables
+  <!-- - When all student's exam has been marked, the status of that exam should be "marked", and faculty should still be able to see the above tables -->
   - all faculties assigned to that course should be able to see the above tables
   - add exam status in exam details
 # Incomplete features
@@ -108,7 +108,7 @@ comment feature in paper review
 api correction in making subjective qs -->
 <!-- if not marked unmarked in subjecTive marking -->
 ### fahad
-reload on save marks
+<!-- reload on save marks -->
   <!-- error cuz pnumber check -->
 ### ali abdullah
 <!-- answer too dim in paper mark -->

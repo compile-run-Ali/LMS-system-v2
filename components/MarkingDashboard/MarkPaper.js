@@ -19,7 +19,10 @@ const MarkPaper = ({
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    if (objectiveMarks && subjectiveMarks) {
+    if (
+      (objectiveMarks || objectiveMarks === 0) &&
+      (subjectiveMarks || subjectiveMarks === 0)
+    ) {
       setObtainedMarks(objectiveMarks + subjectiveMarks);
     }
   }, [objectiveMarks, subjectiveMarks]);
@@ -76,6 +79,7 @@ const MarkPaper = ({
       return answer ? total + answer.marksobtained : total;
     }, 0);
 
+    console.log("objective marks", objectiveAnswers);
     setObjectiveMarks(marks);
   };
 
@@ -102,6 +106,14 @@ const MarkPaper = ({
       </div>
       {!isStudent && (
         <div>
+          <button
+            className="p-2 w-32 bg-blue-900 text-white rounded-lg mr-4"
+            onClick={() => {
+              router.reload();
+            }}
+          >
+            Set Marks
+          </button>
           <button
             className="p-2 w-32 bg-blue-900 text-white rounded-lg"
             onClick={() => {
