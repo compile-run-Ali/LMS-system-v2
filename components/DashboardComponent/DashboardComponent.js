@@ -57,14 +57,15 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
           className="bg-white border rounded-md px-3 py-2"
           onChange={handleCourseChange}
         >
-          {/* <option value="" >
-            Select Course
-          </option> */}
-          {courses.map((course, index) => (
-            <option key={index} value={course.course.course_code}>
-              {course.course.course_code} - {course.course.course_name}
-            </option>
-          ))}
+          {courses && courses.length > 0 ? (
+            courses.map((course, index) => (
+              <option key={index} value={course.course.course_code}>
+                {course.course.course_code} - {course.course.course_name}
+              </option>
+            ))
+          ) : (
+            <option value="">No Courses</option>
+          )}
         </select>
       </div>
       {courses.length > 0 && (
@@ -80,6 +81,9 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
           <Modal open={open} setOpen={setOpen} courseCode={selectedCourse} />
 
           <div className="pr-10 pl-5">
+            <h1 className="text-2xl font-poppins font-bold">
+              All Exams of your Course
+            </h1>
             <ExamTable exams_data={exams} setExamsData={setExams} />
           </div>
         </div>
@@ -89,10 +93,12 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
         paperapproval_data !== null &&
         paperapproval_data.length > 0 && (
           <div className="pr-10 pl-5 mt-10">
-            <h1 className="text-2xl font-poppins font-bold">
-              To Approve:
-            </h1>
-            <ExamTable exams_data={paperapproval} />
+            <h1 className="text-2xl font-poppins font-bold">To Approve:</h1>
+            <ExamTable
+              exams_data={paperapproval.filter(
+                (paper) => paper.status === "Pending Approval"
+              )}
+            />
           </div>
         )}
     </div>

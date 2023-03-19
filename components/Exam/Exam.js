@@ -41,7 +41,7 @@ export default function Exam({
     const res = await axios.post("/api/paper/get_comments", {
       paper_id: exam.paper_id,
     });
-    console.log('paper comments',res.data);
+    console.log("paper comments", res.data);
 
     // sort comment by date and time
     res.data.sort((a, b) => {
@@ -149,6 +149,10 @@ export default function Exam({
   };
 
   const sendForward = async () => {
+    if (!selectedFaculty) {
+      alert("Please select a faculty to send to");
+      return;
+    }
     const sendForward = await axios.post("/api/faculty/edit_paperapproval", {
       paper_id: exam.paper_id,
       examofficer: selectedFaculty,

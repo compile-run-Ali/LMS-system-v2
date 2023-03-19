@@ -3,6 +3,8 @@ import axios from "axios";
 
 const CommentBox = ({ student, paper, isStudent }) => {
   const [comment, setComment] = useState("");
+  const [studentPaperAttempt, setStudentPaperAttempt] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const handleCommentChange = (e) => {
     if (isStudent) setComment(e.target.value);
@@ -18,6 +20,7 @@ const CommentBox = ({ student, paper, isStudent }) => {
       })
       .then((res) => {
         setComment(res.data.studentComment);
+        setStudentPaperAttempt(res.data);
       })
       .catch((err) => {
         console.log("error in fetching attempt details", err.message);
@@ -32,6 +35,8 @@ const CommentBox = ({ student, paper, isStudent }) => {
         studentComment: comment,
       })
       .then((res) => {
+        console.log("comment submitted successfully", res.data);
+        setSubmitted(true);
       })
       .catch((err) => {
         console.log("error in submitting comment", err.message);
@@ -44,6 +49,17 @@ const CommentBox = ({ student, paper, isStudent }) => {
     }
   }, [student, paper]);
 
+  if (
+    isStudent &&
+    studentPaperAttempt &&
+    studentPaperAttempt.status !== "Marked"
+  ) {
+    return (
+      <div className="text-2xl font-bold mb-10 mx-auto w-full">
+        Not yet marked.
+      </div>
+    );
+  }
   return (
     <div className=" mb-10">
       <div className="text-2xl font-bold">
@@ -67,7 +83,7 @@ const CommentBox = ({ student, paper, isStudent }) => {
             className="bg-blue-900 text-white px-4 py-2 rounded-md"
             onClick={comment.length > 0 ? () => submitComment() : () => {}}
           >
-            Submit
+            {submitted ? "Submitted" : "Submit"}
           </button>
         )}
       </div>

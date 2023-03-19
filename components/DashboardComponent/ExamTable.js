@@ -66,8 +66,6 @@ const ExamTable = ({ exams_data }) => {
     router.push(`/faculty/exam_details/${paper_id}`);
   };
 
-  console.log(exams);
-
   if (!exams_data || (exams_data && exams_data.length === 0)) {
     return (
       <div className="flex justify-center items-center w-full h-full">

@@ -71,7 +71,7 @@ export default function Topbar({ admin }) {
           </ClickAwayListener>
           <div className="user-profile flex items-center gap-3">
             {session?.data?.user?.image && (
-              <div className="w-8 h-8 rounded-full border border-blue-900 relative">
+              <div className="w-8 h-8 rounded-full border border-blue-900 relative hover:scale-[3.0] hover:translate-y-5 hover:-translate-x-5 transition-all">
                 <Image
                   src={`/uploads/${session?.data?.user?.image}`}
                   // src="/avatar.png"
