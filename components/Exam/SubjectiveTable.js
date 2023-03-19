@@ -15,6 +15,10 @@ const SubjectiveTable = ({ subjective_questions = [] }) => {
       </div>
     );
   }
+  console.log(
+    'subjective_questions',
+    subjective_questions
+  );
 
   return (
     <div className="w-full font-poppins mt-10 rounded-lg">
@@ -46,7 +50,7 @@ const SubjectiveTable = ({ subjective_questions = [] }) => {
                   <td className=" px-4 py-2">{child.questionnumber}</td>
                   <td className=" px-4 py-2">{child.question}</td>
                   <td className=" px-4 py-2">
-                    {child.parent_question?.question}
+                    {question.question}
                   </td>
                   <td className=" px-4 py-2">{child.marks}</td>
                 </tr>

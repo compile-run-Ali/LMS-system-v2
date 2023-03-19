@@ -97,7 +97,6 @@ const MCQTable = ({
   const handleTimeAllowedChange = (e) => {
     setCurrentMCQ({ ...currentMCQ, timeAllowed: parseInt(e.target.value) });
   };
-
   const handleAddMCQ = async () => {
     if (
       currentMCQ.question === "" ||
@@ -122,6 +121,7 @@ const MCQTable = ({
       }
     );
     newMCQ.data.options = newMCQ.data.answers.split(",");
+    setMultipleOptions(false);
     setMCQs([...mcqs, newMCQ.data]);
     setObjectiveQuestions([...mcqs, newMCQ.data]);
     setCurrentMCQ({
