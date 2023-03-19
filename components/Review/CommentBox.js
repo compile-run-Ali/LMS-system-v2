@@ -26,11 +26,6 @@ const CommentBox = ({ student, paper, isStudent }) => {
   };
 
   const submitComment = () => {
-    console.log("submit comment", comment);
-
-    console.log("student id", student);
-    console.log("paper id", paper);
-
     axios
       .post("/api/student/paper/update_attempt_status", {
         studentId: student,
@@ -50,6 +45,10 @@ const CommentBox = ({ student, paper, isStudent }) => {
       fetchAttemptDetails();
     }
   }, [student, paper]);
+
+  if (!isStudent && !comment) {
+    return <></>;
+  }
 
   return (
     <div className=" mb-10">
