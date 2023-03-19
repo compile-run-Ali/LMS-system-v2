@@ -51,7 +51,9 @@ const StudentsTable = ({ students_data, exam_id }) => {
             <td className="border px-4 py-2">{student.p_number}</td>
             <td className="border px-4 py-2">{student.name}</td>
             <td className="border px-4 py-2">{student.status}</td>
-            <td className="border px-4 py-2">{student.obtainedMarks.toFixed(2)}</td>
+            <td className="border px-4 py-2">{
+              student.status === "Marked" ? student.obtainedMarks : "Not Marked"
+            }</td>
             <td className="border px-4 py-2 text-center">
               {student.status !== "Not Attempted" && (
                 <Link

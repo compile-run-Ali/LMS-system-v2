@@ -50,6 +50,7 @@ const MarkPaper = ({
       .then((res) => {
         if (res) {
           console.log("status updated successfully", res.data);
+          router.push(`/faculty/mark_exam/${exam_id}`);
         }
       })
       .catch((err) => {
@@ -115,22 +116,14 @@ const MarkPaper = ({
             Set Marks
           </button>
           <button
-            className="p-2 w-32 bg-blue-900 text-white rounded-lg"
+            className="px-6 py-2 bg-blue-900 text-white rounded-lg"
             onClick={() => {
               setSaved(true);
               updateStatus();
             }}
           >
-            {saved ? <>Saved</> : <>Save Marks</>}
+            {saved ? <>Saving...</> : <>Save and Proceed</>}
           </button>
-          <Link
-            href="/faculty/mark_exam/[exam_id]"
-            as={`/faculty/mark_exam/${exam_id}`}
-          >
-            <button className="p-2 bg-yellow-500 text-white rounded-lg ml-4">
-              Back to Results
-            </button>
-          </Link>
         </div>
       )}
     </div>
