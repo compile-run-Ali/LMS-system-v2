@@ -46,14 +46,13 @@ const ExamTable = ({ exams_data }) => {
       const closedExam = updatedExams.find((exam) => exam.status === "Closed");
 
       if (closedExam) {
-        console.log("closed exam: ", closedExam);
         axios
           .post(`/api/faculty/generate_notification`, {
-            notification: closedExam.paper_name + " has been closed",
+            notification: closedExam.paper_name + " has been closed.",
             faculty_id: session.user.id,
           })
           .then((response) => {
-            console.log("Notification sent successfully");
+            console.log(response.data);
           })
           .catch((error) => {
             console.log(error);
