@@ -361,6 +361,8 @@ const SubjectiveExam = ({
     }
   };
 
+  console.log("subjective local are", subjectivesLocal);
+
   return (
     <div className="flex font-poppins flex-col items-center p-6">
       <h1 className="text-2xl font-bold">Subjective Question</h1>
@@ -377,7 +379,7 @@ const SubjectiveExam = ({
           </tr>
         </thead>
         <tbody>
-          {subjectivesLocal.map((subjective, index) => (
+          {subjectivesLocal.sort((a, b) => a.questionnumber - b.questionnumber).map((subjective, index) => (
             <React.Fragment key={subjective.sq_id}>
               <tr
                 className={` border
