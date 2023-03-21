@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Input from "./Input";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Spinner from "@/components/Loader/Spinner";
 
 export default function Form({
   setActive,
@@ -11,6 +12,7 @@ export default function Form({
   setFreeFlowGlobal,
 }) {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(examDetails ? true : false);
   const [paperName, setPaperName] = useState(
     edit ? examDetails.paper_name : ""
@@ -74,14 +76,14 @@ export default function Form({
     const timeString = examTime;
     return dateString + "T" + timeString + "Z";
   };
-  
+
   const submitForm = async (e) => {
     e.preventDefault();
     if (paperName === "" || dateOfExam === "") {
       alert("Please fill all the fields");
       return;
     }
-
+    setLoading(true);
 
     const res = await axios.post(
       `/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
@@ -98,6 +100,7 @@ export default function Form({
       }
     );
     if (res) {
+      setLoading(false);
       console.log("paper made ", res.data);
     }
 
@@ -124,6 +127,10 @@ export default function Form({
 
   return (
     <form>
+      <Spinner
+        show={loading}
+        message={edit ? "Updating Paper Details" : "Creating Paper"}
+      />
       <div className="w-full grid grid-cols-2 pr-10 gap-x-5 mt-10 font-poppins">
         <Input
           text={"Paper Name"}
@@ -198,7 +205,7 @@ export default function Form({
         <button
           type="submit"
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-          onClick={submitForm}
+          onClick={(e) => submitForm(e)}
         >
           Proceed
         </button>

@@ -2,14 +2,15 @@ import ArrowDownSVG from "@/svgs/arrow_down";
 import NotificationSVG from "@/svgs/notification";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import NotificationDropdown from "./NotificationDropdown";
 import axios from "axios";
 import ClickAwayListener from "react-click-away-listener";
-import { TbPoint } from "react-icons/tb";
+import { useRouter } from "next/router";
 
 export default function Topbar({ admin }) {
+  const router = useRouter();
   const [showNotification, setShowNotification] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const session = useSession();
@@ -39,11 +40,10 @@ export default function Topbar({ admin }) {
     <div>
       <div className="flex items-center justify-between mr-10 h-[110px]">
         <div className="flex">
-          <div className="logo">
+          <div className="logo cursor-pointer" onClick={() => router.push("/")}>
             <Image src="/logo.png" width={100} height={100} alt="logo" />
           </div>
         </div>
-
         <div className="flex items-center gap-3">
           <ClickAwayListener onClickAway={() => setShowNotification(false)}>
             <div className="notification-icon mr-5">
