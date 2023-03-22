@@ -56,7 +56,17 @@ export default function PaperContainer({ startOfPage }) {
   // }, [paper]);
 
   useEffect(() => () => {
+    if (session) {
+      const timeToSess = (new Date() - startOfPage) / 1000;
+      console.log(
+        "Time to session in its own use effect is",
+        timeToSess,
+        "\nSession is",
+        session
+      );
+    }
     if (status === "authenticated") {
+      // console.log("session is ", session);
       setStudent(session.user.id);
     }
   });
