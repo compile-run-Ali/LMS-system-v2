@@ -42,7 +42,7 @@ export default function DashboardLayout({ admin, children }) {
           showSidebar ? " translate-x-0" : "-translate-x-[100px]"
         }`}
       >
-        {/* <Topbar admin /> */}
+        <Topbar admin />
         {children}
       </div>
     </div>

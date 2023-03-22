@@ -16,8 +16,8 @@ export default function OQContainer({
   setFlags,
 }) {
   const router = useRouter();
-  const { paper } = router.query;
-  const { data: session, status } = useSession();
+  const { paper } = router.query;  const session = useSession();
+
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [multipleAllowed, setMultipleAllowed] = useState(false);
@@ -27,6 +27,7 @@ export default function OQContainer({
   const [loading, setLoading] = useState(true);
   const [changed, setChanged] = useState(false);
 
+  console.log("INSIDE OQ CONTAINER with ",question);
   const saveAnswer = () => {
     const score = markAnswer(
       question.correct_answer,
@@ -36,7 +37,7 @@ export default function OQContainer({
     // mark answer right here
     axios
       .post(`/api/student/paper/oq/add_answer`, {
-        p_number: session.user.id,
+        p_number: session.data.user.id,
         oq_id: question.oq_id,
         answer: selectedAnswer.join(","),
         marks: score,
@@ -103,11 +104,14 @@ export default function OQContainer({
       axios
         .get("/api/student/paper/oq/get_answer", {
           params: {
-            p_number: session.user.id,
+            p_number: session.data.user.id,
             oq_id: question.oq_id,
           },
         })
         .then((res) => {
+          console.log(
+            'CALL DONE'
+          );
           if (res.data) {
             setSelectedAnswer(res.data.answer.split(","));
             console.log("answer already exists", res.data);
