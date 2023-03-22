@@ -33,7 +33,7 @@ Subjective
 */
 
 export default function PaperContainer({ startOfPage }) {
-  const { data: session, status } = useSession();
+  const session = useSession();
   const router = useRouter();
   const { paper } = router.query;
   // const [questions, setQuestions] = useState([]);
@@ -65,7 +65,7 @@ export default function PaperContainer({ startOfPage }) {
         session
       );
     }
-    if (status === "authenticated") {
+    if (session.status === "authenticated") {
       // console.log("session is ", session);
       setStudent(session.user.id);
     }
