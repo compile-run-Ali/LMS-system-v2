@@ -38,11 +38,12 @@ export default function PaperContainer({ startOfPage }) {
   const { paper } = router.query;
   // const [questions, setQuestions] = useState([]);
   const [student, setStudent] = useState(null);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  // const [currentQuestion, setCurrentQuestion] = useState(0);
   // const [paperDetails, setPaperDetails] = useState({});
   // const [objectiveCount, setObjectiveCount] = useState(0);
   // const [flags, setFlags] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [count, setCount] = useState(0);
 
   // useEffect(() => {
   //   if (paper) {
@@ -73,15 +74,39 @@ export default function PaperContainer({ startOfPage }) {
     return shuffledArray;
   };
 
-  const setCurrentAndLocal = (newValue) => {
-    let papers = JSON.parse(localStorage.getItem("papers") || "{}");
+  // const setCurrentAndLocal = (newValue) => {
+  //   let papers = JSON.parse(localStorage.getItem("papers") || "{}");
 
-    setCurrentQuestion(newValue);
-    papers[paper].current = newValue;
-    localStorage.setItem("papers", JSON.stringify(papers));
-  };
+  //   setCurrentQuestion(newValue);
+  //   papers[paper].current = newValue;
+  //   localStorage.setItem("papers", JSON.stringify(papers));
+  // };
 
   useEffect(() => {
+    const useEffectTimeEnter = (new Date() - startOfPage) / 1000;
+    console.log(
+      "Iteration number: ",
+      count + 1,
+      "\nTime to enter useEffect: ",
+      useEffectTimeEnter.toFixed(3),
+      "seconds\n Paper is: ",
+      paper,
+      "\nStudent is: ",
+      student
+    );
+
+    setCount(count + 1);
+
+    if (paper) {
+      const timeToGetpaper = (new Date() - startOfPage) / 1000;
+      console.log("time to get paper", timeToGetpaper);
+    }
+
+    if (session) {
+      const timeToAuthenticate = (new Date() - startOfPage) / 1000;
+      console.log("time to authenticate", timeToAuthenticate);
+    }
+
     if (student && paper) {
       // get paper here and if paper is live, only then set questions
       // let papers = JSON.parse(localStorage.getItem("papers") || "{}");
@@ -124,8 +149,7 @@ export default function PaperContainer({ startOfPage }) {
       const apiStartTime = new Date();
       const reachedApi = (apiStartTime - startOfPage) / 1000;
 
-      console.log(`
-        Time taken to reach api: ${reachedApi} seconds`);
+      console.log(`Time taken to reach api: ${reachedApi} seconds`);
       axios
         .get(`/api/paper/${paper}`)
         .then((res) => {
@@ -200,9 +224,9 @@ export default function PaperContainer({ startOfPage }) {
     }
   }, [paper, student]);
 
-  if (loading) {
-    return <Loader />;
-  }
+  // if (loading) {
+  //   return <Loader />;
+  // }
 
   return (
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
