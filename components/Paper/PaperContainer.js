@@ -9,6 +9,29 @@ import Loader from "../Loader";
 import Timer from "./Timer";
 import Submitted from "./Submitted";
 
+/* 
+Objective
+  localstorage 
+  {‌
+    Order change
+    ‌Same mcq on reload
+    ‌Flag mcq
+  }
+
+  ‌Timed mcq
+  ‌Multiple answers
+  ‌Retain answer
+
+Subjective
+  localstorage
+  {
+    ‌Flag question
+  }
+  ‌Same order
+  ‌Child answers
+  ‌Retain answer
+*/
+
 export default function PaperContainer({}) {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -83,75 +106,86 @@ export default function PaperContainer({}) {
           "paper does not exist in local storage, getting from server"
         );
         //update spa status to Attempted
-        axios
-          .post(`/api/student/paper/update_attempt_status`, {
-            studentId: session.user.id,
-            paperId: paper,
-            status: "Attempted",
-          })
-          .then((res) => {
-            console.log("updated attempt status ", res.data);
-          })
-          .catch((err) => {
-            console.log("error updating attempt status", err);
-          });
+        // axios
+        //   .post(`/api/student/paper/update_attempt_status`, {
+        //     studentId: session.user.id,
+        //     paperId: paper,
+        //     status: "Attempted",
+        //   })
+        //   .then((res) => {
+        //     console.log("updated attempt status ", res.data);
+        //   })
+        //   .catch((err) => {
+        //     console.log("error updating attempt status", err);
+        //   });
 
         // get paper details
+        const startTime = new Date();
+
         axios
           .get(`/api/paper/${paper}`)
           .then((res) => {
+            // subtract time here from startTime to get time taken in seconds
+            const endTime = new Date();
+            const timeDiffInSeconds = (endTime - startTime) / 1000;
+
+            console.log(
+              `Time taken to fetch paper details: ${timeDiffInSeconds} seconds`
+            );
+
+            console.log("paper details from server", res.data);
             // push the paper id in papers index array
-            const currentPaper = res.data;
-            // if paper is live get paper
-            if (currentPaper) {
-              papers[paper] = currentPaper;
-              localStorage.setItem("papers", JSON.stringify(papers));
-              setPaperDetails(res.data);
+            // const currentPaper = res.data;
+            // // if paper is live get paper
+            // if (currentPaper) {
+            //   papers[paper] = currentPaper;
+            //   localStorage.setItem("papers", JSON.stringify(papers));
+            //   setPaperDetails(res.data);
 
-              // get objective questions
-              axios
-                .get(`/api/student/paper/oq/${paper}`)
-                .then((res) => {
-                  const randomizedQuestions = shuffleArray(res.data);
-                  // set objective questions in array and local current, both in value of the paper_id key
-                  papers[paper].objectiveQuestions = randomizedQuestions;
-                  papers[paper].current = 0;
-                  papers[paper].objectiveCount = randomizedQuestions.length;
-                  localStorage.setItem("papers", JSON.stringify(papers));
-                  setObjectiveCount(randomizedQuestions.length);
+            //   // get objective questions
+            //   axios
+            //     .get(`/api/student/paper/oq/${paper}`)
+            //     .then((res) => {
+            //       const randomizedQuestions = shuffleArray(res.data);
+            //       // set objective questions in array and local current, both in value of the paper_id key
+            //       papers[paper].objectiveQuestions = randomizedQuestions;
+            //       papers[paper].current = 0;
+            //       papers[paper].objectiveCount = randomizedQuestions.length;
+            //       localStorage.setItem("papers", JSON.stringify(papers));
+            //       setObjectiveCount(randomizedQuestions.length);
 
-                  // if paper is not objective
-                  if (currentPaper.paper_type !== "Objective") {
-                    // get subjective questions
-                    axios
-                      .get(`/api/student/paper/sq/${paper}`)
-                      .then((res) => {
-                        const subjectiveQuestions = res.data.filter(
-                          (question) => !question.parent_sq_id
-                        );
-                        papers[paper].subjectiveQuestions = subjectiveQuestions;
-                        localStorage.setItem("papers", JSON.stringify(papers));
-                        setQuestions(
-                          [
-                            ...papers[paper].objectiveQuestions,
-                            ...papers[paper].subjectiveQuestions,
-                          ] || []
-                        );
-                      })
-                      .catch((err) => {
-                        console.log("error ", err.message);
-                      });
-                  }
-                  setLoading(false);
-                })
-                .catch((err) => {
-                  console.log("error ", err.message);
-                });
-            }
-            // if paper is not live, push back to papers list
-            else {
-              router.push(`/student`);
-            }
+            //       // if paper is not objective
+            //       if (currentPaper.paper_type !== "Objective") {
+            //         // get subjective questions
+            //         axios
+            //           .get(`/api/student/paper/sq/${paper}`)
+            //           .then((res) => {
+            //             const subjectiveQuestions = res.data.filter(
+            //               (question) => !question.parent_sq_id
+            //             );
+            //             papers[paper].subjectiveQuestions = subjectiveQuestions;
+            //             localStorage.setItem("papers", JSON.stringify(papers));
+            //             setQuestions(
+            //               [
+            //                 ...papers[paper].objectiveQuestions,
+            //                 ...papers[paper].subjectiveQuestions,
+            //               ] || []
+            //             );
+            //           })
+            //           .catch((err) => {
+            //             console.log("error ", err.message);
+            //           });
+            //       }
+            //       setLoading(false);
+            //     })
+            //     .catch((err) => {
+            //       console.log("error ", err.message);
+            //     });
+            // }
+            // // if paper is not live, push back to papers list
+            // else {
+            //   router.push(`/student`);
+            // }
           })
           .catch((err) => {
             console.log("error ", err.message);
@@ -166,7 +200,7 @@ export default function PaperContainer({}) {
 
   return (
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
-      <div className="w-2/3  rounded-l-2xl">
+      {/* <div className="w-2/3  rounded-l-2xl">
         {currentQuestion === questions.length ? (
           <Submitted />
         ) : paperDetails.paper_type === "Objective" ? (
@@ -229,7 +263,7 @@ export default function PaperContainer({}) {
               setFlags={setFlags}
             />
           )}
-      </div>
+      </div> */}
     </div>
   );
 }
