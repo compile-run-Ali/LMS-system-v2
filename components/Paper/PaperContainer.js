@@ -67,7 +67,7 @@ export default function PaperContainer({ startOfPage }) {
     }
     if (session.status === "authenticated") {
       // console.log("session is ", session);
-      setStudent(session.user.id);
+      setStudent(session.data.user.id);
     }
   });
   [session];
