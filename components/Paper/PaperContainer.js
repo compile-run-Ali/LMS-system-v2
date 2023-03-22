@@ -32,16 +32,16 @@ Subjective
   ‌Retain answer
 */
 
-export default function PaperContainer({}) {
+export default function PaperContainer({ startOfPage }) {
   const { data: session, status } = useSession();
   const router = useRouter();
   const { paper } = router.query;
-  const [questions, setQuestions] = useState([]);
+  // const [questions, setQuestions] = useState([]);
   const [student, setStudent] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [paperDetails, setPaperDetails] = useState({});
-  const [objectiveCount, setObjectiveCount] = useState(0);
-  const [flags, setFlags] = useState([]);
+  // const [paperDetails, setPaperDetails] = useState({});
+  // const [objectiveCount, setObjectiveCount] = useState(0);
+  // const [flags, setFlags] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // useEffect(() => {
@@ -87,109 +87,115 @@ export default function PaperContainer({}) {
       // let papers = JSON.parse(localStorage.getItem("papers") || "{}");
 
       // if (papers[paper]) {
-        // console.log(
-        //   "paper exists in local storage, getting from there",
-        //   papers[paper]
-        // );
-        // // paper exists
-        // setQuestions([
-        //   ...(papers[paper].objectiveQuestions || []),
-        //   ...(papers[paper].subjectiveQuestions || []),
-        // ]);
-        // setLoading(false);
-        // setObjectiveCount(papers[paper].objectiveCount || 0);
-        // setFlags(papers[paper].flags || []);
-        // setPaperDetails(papers[paper]);
+      // console.log(
+      //   "paper exists in local storage, getting from there",
+      //   papers[paper]
+      // );
+      // // paper exists
+      // setQuestions([
+      //   ...(papers[paper].objectiveQuestions || []),
+      //   ...(papers[paper].subjectiveQuestions || []),
+      // ]);
+      // setLoading(false);
+      // setObjectiveCount(papers[paper].objectiveCount || 0);
+      // setFlags(papers[paper].flags || []);
+      // setPaperDetails(papers[paper]);
       // } else {
-        // do below logic
-        // console.log(
-        //   "paper does not exist in local storage, getting from server"
-        // );
-        //update spa status to Attempted
-        // axios
-        //   .post(`/api/student/paper/update_attempt_status`, {
-        //     studentId: session.user.id,
-        //     paperId: paper,
-        //     status: "Attempted",
-        //   })
-        //   .then((res) => {
-        //     console.log("updated attempt status ", res.data);
-        //   })
-        //   .catch((err) => {
-        //     console.log("error updating attempt status", err);
-        //   });
+      // do below logic
+      // console.log(
+      //   "paper does not exist in local storage, getting from server"
+      // );
+      //update spa status to Attempted
+      // axios
+      //   .post(`/api/student/paper/update_attempt_status`, {
+      //     studentId: session.user.id,
+      //     paperId: paper,
+      //     status: "Attempted",
+      //   })
+      //   .then((res) => {
+      //     console.log("updated attempt status ", res.data);
+      //   })
+      //   .catch((err) => {
+      //     console.log("error updating attempt status", err);
+      //   });
 
-        // get paper details
-        const startTime = new Date();
+      // get paper details
 
-        axios
-          .get(`/api/paper/${paper}`)
-          .then((res) => {
-            // subtract time here from startTime to get time taken in seconds
-            const endTime = new Date();
-            const timeDiffInSeconds = (endTime - startTime) / 1000;
+      const apiStartTime = new Date();
+      const reachedApi = (apiStartTime - startOfPage) / 1000;
 
-            console.log(
-              `Time taken to fetch paper details: ${timeDiffInSeconds} seconds`
-            );
+      console.log(`
+        Time taken to reach api: ${reachedApi} seconds`);
+      axios
+        .get(`/api/paper/${paper}`)
+        .then((res) => {
+          // subtract time here from startTime to get time taken in seconds
+          const endTime = new Date();
+          const timeDiffInSeconds = (endTime - apiStartTime) / 1000;
+          const useEffectTime = (endTime - startOfPage) / 1000;
 
-            console.log("paper details from server", res.data);
-            // push the paper id in papers index array
-            // const currentPaper = res.data;
-            // // if paper is live get paper
-            // if (currentPaper) {
-            //   papers[paper] = currentPaper;
-            //   localStorage.setItem("papers", JSON.stringify(papers));
-            //   setPaperDetails(res.data);
+          console.log(
+            `Time taken to fetch paper details: ${timeDiffInSeconds} seconds`
+          );
+          console.log(`Time from start to end: ${useEffectTime} seconds`);
 
-            //   // get objective questions
-            //   axios
-            //     .get(`/api/student/paper/oq/${paper}`)
-            //     .then((res) => {
-            //       const randomizedQuestions = shuffleArray(res.data);
-            //       // set objective questions in array and local current, both in value of the paper_id key
-            //       papers[paper].objectiveQuestions = randomizedQuestions;
-            //       papers[paper].current = 0;
-            //       papers[paper].objectiveCount = randomizedQuestions.length;
-            //       localStorage.setItem("papers", JSON.stringify(papers));
-            //       setObjectiveCount(randomizedQuestions.length);
+          console.log("paper details from server", res.data);
+          // push the paper id in papers index array
+          // const currentPaper = res.data;
+          // // if paper is live get paper
+          // if (currentPaper) {
+          //   papers[paper] = currentPaper;
+          //   localStorage.setItem("papers", JSON.stringify(papers));
+          //   setPaperDetails(res.data);
 
-            //       // if paper is not objective
-            //       if (currentPaper.paper_type !== "Objective") {
-            //         // get subjective questions
-            //         axios
-            //           .get(`/api/student/paper/sq/${paper}`)
-            //           .then((res) => {
-            //             const subjectiveQuestions = res.data.filter(
-            //               (question) => !question.parent_sq_id
-            //             );
-            //             papers[paper].subjectiveQuestions = subjectiveQuestions;
-            //             localStorage.setItem("papers", JSON.stringify(papers));
-            //             setQuestions(
-            //               [
-            //                 ...papers[paper].objectiveQuestions,
-            //                 ...papers[paper].subjectiveQuestions,
-            //               ] || []
-            //             );
-            //           })
-            //           .catch((err) => {
-            //             console.log("error ", err.message);
-            //           });
-            //       }
-            //       setLoading(false);
-            //     })
-            //     .catch((err) => {
-            //       console.log("error ", err.message);
-            //     });
-            // }
-            // // if paper is not live, push back to papers list
-            // else {
-            //   router.push(`/student`);
-            // }
-          })
-          .catch((err) => {
-            console.log("error ", err.message);
-          });
+          //   // get objective questions
+          //   axios
+          //     .get(`/api/student/paper/oq/${paper}`)
+          //     .then((res) => {
+          //       const randomizedQuestions = shuffleArray(res.data);
+          //       // set objective questions in array and local current, both in value of the paper_id key
+          //       papers[paper].objectiveQuestions = randomizedQuestions;
+          //       papers[paper].current = 0;
+          //       papers[paper].objectiveCount = randomizedQuestions.length;
+          //       localStorage.setItem("papers", JSON.stringify(papers));
+          //       setObjectiveCount(randomizedQuestions.length);
+
+          //       // if paper is not objective
+          //       if (currentPaper.paper_type !== "Objective") {
+          //         // get subjective questions
+          //         axios
+          //           .get(`/api/student/paper/sq/${paper}`)
+          //           .then((res) => {
+          //             const subjectiveQuestions = res.data.filter(
+          //               (question) => !question.parent_sq_id
+          //             );
+          //             papers[paper].subjectiveQuestions = subjectiveQuestions;
+          //             localStorage.setItem("papers", JSON.stringify(papers));
+          //             setQuestions(
+          //               [
+          //                 ...papers[paper].objectiveQuestions,
+          //                 ...papers[paper].subjectiveQuestions,
+          //               ] || []
+          //             );
+          //           })
+          //           .catch((err) => {
+          //             console.log("error ", err.message);
+          //           });
+          //       }
+          //       setLoading(false);
+          //     })
+          //     .catch((err) => {
+          //       console.log("error ", err.message);
+          //     });
+          // }
+          // // if paper is not live, push back to papers list
+          // else {
+          //   router.push(`/student`);
+          // }
+        })
+        .catch((err) => {
+          console.log("error ", err.message);
+        });
       // }
     }
   }, [paper, student]);
