@@ -44,15 +44,15 @@ export default function PaperContainer({}) {
   const [flags, setFlags] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (paper) {
-      let papers = JSON.parse(localStorage.getItem("papers") || "{}");
-      if (papers[paper]?.current) {
-        console.log("setting current", papers[paper].current);
-        setCurrentQuestion(papers[paper].current);
-      }
-    }
-  }, [paper]);
+  // useEffect(() => {
+  //   if (paper) {
+  //     let papers = JSON.parse(localStorage.getItem("papers") || "{}");
+  //     if (papers[paper]?.current) {
+  //       console.log("setting current", papers[paper].current);
+  //       setCurrentQuestion(papers[paper].current);
+  //     }
+  //   }
+  // }, [paper]);
 
   useEffect(() => () => {
     if (status === "authenticated") {
@@ -84,27 +84,27 @@ export default function PaperContainer({}) {
   useEffect(() => {
     if (student && paper) {
       // get paper here and if paper is live, only then set questions
-      let papers = JSON.parse(localStorage.getItem("papers") || "{}");
+      // let papers = JSON.parse(localStorage.getItem("papers") || "{}");
 
-      if (papers[paper]) {
-        console.log(
-          "paper exists in local storage, getting from there",
-          papers[paper]
-        );
-        // paper exists
-        setQuestions([
-          ...(papers[paper].objectiveQuestions || []),
-          ...(papers[paper].subjectiveQuestions || []),
-        ]);
-        setLoading(false);
-        setObjectiveCount(papers[paper].objectiveCount || 0);
-        setFlags(papers[paper].flags || []);
-        setPaperDetails(papers[paper]);
-      } else {
+      // if (papers[paper]) {
+        // console.log(
+        //   "paper exists in local storage, getting from there",
+        //   papers[paper]
+        // );
+        // // paper exists
+        // setQuestions([
+        //   ...(papers[paper].objectiveQuestions || []),
+        //   ...(papers[paper].subjectiveQuestions || []),
+        // ]);
+        // setLoading(false);
+        // setObjectiveCount(papers[paper].objectiveCount || 0);
+        // setFlags(papers[paper].flags || []);
+        // setPaperDetails(papers[paper]);
+      // } else {
         // do below logic
-        console.log(
-          "paper does not exist in local storage, getting from server"
-        );
+        // console.log(
+        //   "paper does not exist in local storage, getting from server"
+        // );
         //update spa status to Attempted
         // axios
         //   .post(`/api/student/paper/update_attempt_status`, {
@@ -190,7 +190,7 @@ export default function PaperContainer({}) {
           .catch((err) => {
             console.log("error ", err.message);
           });
-      }
+      // }
     }
   }, [paper, student]);
 
