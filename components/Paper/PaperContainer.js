@@ -9,8 +9,31 @@ import Loader from "../Loader";
 import Timer from "./Timer";
 import Submitted from "./Submitted";
 
-export default function PaperContainer({}) {
-  const { data: session, status } = useSession();
+/* 
+Objective
+  localstorage 
+  {‌
+    Order change
+    ‌Same mcq on reload
+    ‌Flag mcq
+  }
+
+  ‌Timed mcq
+  ‌Multiple answers
+  ‌Retain answer
+
+Subjective
+  localstorage
+  {
+    ‌Flag question
+  }
+  ‌Same order
+  ‌Child answers
+  ‌Retain answer
+*/
+
+export default function PaperContainer({ startOfPage }) {
+  const session = useSession();
   const router = useRouter();
   const { paper } = router.query;
   const [questions, setQuestions] = useState([]);
@@ -20,20 +43,23 @@ export default function PaperContainer({}) {
   const [objectiveCount, setObjectiveCount] = useState(0);
   const [flags, setFlags] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (paper) {
       let papers = JSON.parse(localStorage.getItem("papers") || "{}");
       if (papers[paper]?.current) {
-        console.log("setting current", papers[paper].current);
         setCurrentQuestion(papers[paper].current);
       }
     }
   }, [paper]);
 
   useEffect(() => () => {
-    if (status === "authenticated") {
-      setStudent(session.user.id);
+    if (session) {
+      const timeToSess = (new Date() - startOfPage) / 1000;
+    }
+    if (session.status === "authenticated") {
+      setStudent(session.data.user.id);
     }
   });
   [session];
@@ -59,6 +85,30 @@ export default function PaperContainer({}) {
   };
 
   useEffect(() => {
+    const useEffectTimeEnter = (new Date() - startOfPage) / 1000;
+    console.log(
+      "Iteration number: ",
+      count + 1,
+      "\nTime to enter useEffect: ",
+      useEffectTimeEnter.toFixed(3),
+      "seconds\n Paper is: ",
+      paper,
+      "\nStudent is: ",
+      student
+    );
+
+    setCount(count + 1);
+
+    if (paper) {
+      const timeToGetpaper = (new Date() - startOfPage) / 1000;
+      console.log("time to get paper", timeToGetpaper);
+    }
+
+    if (session) {
+      const timeToAuthenticate = (new Date() - startOfPage) / 1000;
+      console.log("time to authenticate", timeToAuthenticate);
+    }
+
     if (student && paper) {
       // get paper here and if paper is live, only then set questions
       let papers = JSON.parse(localStorage.getItem("papers") || "{}");
@@ -82,24 +132,27 @@ export default function PaperContainer({}) {
         console.log(
           "paper does not exist in local storage, getting from server"
         );
-        //update spa status to Attempted
-        axios
-          .post(`/api/student/paper/update_attempt_status`, {
-            studentId: session.user.id,
-            paperId: paper,
-            status: "Attempted",
-          })
-          .then((res) => {
-            console.log("updated attempt status ", res.data);
-          })
-          .catch((err) => {
-            console.log("error updating attempt status", err);
-          });
 
         // get paper details
+
+        const apiStartTime = new Date();
+        const reachedApi = (apiStartTime - startOfPage) / 1000;
+
+        console.log(`Time taken to reach api: ${reachedApi} seconds`);
         axios
           .get(`/api/paper/${paper}`)
           .then((res) => {
+            // subtract time here from startTime to get time taken in seconds
+            const endTime = new Date();
+            const timeDiffInSeconds = (endTime - apiStartTime) / 1000;
+            const useEffectTime = (endTime - startOfPage) / 1000;
+
+            console.log(
+              `Time taken to fetch paper details: ${timeDiffInSeconds} seconds`
+            );
+            console.log(`Time from start to end: ${useEffectTime} seconds`);
+
+            console.log("paper details from server", res.data);
             // push the paper id in papers index array
             const currentPaper = res.data;
             // if paper is live get paper
@@ -112,6 +165,10 @@ export default function PaperContainer({}) {
               axios
                 .get(`/api/student/paper/oq/${paper}`)
                 .then((res) => {
+                  console.log(
+                    "time taken to get objective",
+                    (new Date() - startOfPage) / 1000
+                  );
                   const randomizedQuestions = shuffleArray(res.data);
                   // set objective questions in array and local current, both in value of the paper_id key
                   papers[paper].objectiveQuestions = randomizedQuestions;
@@ -119,34 +176,43 @@ export default function PaperContainer({}) {
                   papers[paper].objectiveCount = randomizedQuestions.length;
                   localStorage.setItem("papers", JSON.stringify(papers));
                   setObjectiveCount(randomizedQuestions.length);
-
-                  // if paper is not objective
-                  if (currentPaper.paper_type !== "Objective") {
-                    // get subjective questions
-                    axios
-                      .get(`/api/student/paper/sq/${paper}`)
-                      .then((res) => {
-                        const subjectiveQuestions = res.data.filter(
-                          (question) => !question.parent_sq_id
-                        );
-                        papers[paper].subjectiveQuestions = subjectiveQuestions;
-                        localStorage.setItem("papers", JSON.stringify(papers));
-                        setQuestions(
-                          [
-                            ...papers[paper].objectiveQuestions,
-                            ...papers[paper].subjectiveQuestions,
-                          ] || []
-                        );
-                      })
-                      .catch((err) => {
-                        console.log("error ", err.message);
-                      });
-                  }
                   setLoading(false);
+                  setQuestions(papers[paper].objectiveQuestions);
+                  console.log(
+                    "objective set in ",
+                    (new Date() - startOfPage) / 1000
+                  );
                 })
                 .catch((err) => {
                   console.log("error ", err.message);
                 });
+
+              // if paper is not objective
+              if (currentPaper.paper_type !== "Objective") {
+                // get subjective questions
+                axios
+                  .get(`/api/student/paper/sq/${paper}`)
+                  .then((res) => {
+                    console.log(
+                      "time taken to get subjective",
+                      (new Date() - startOfPage) / 1000
+                    );
+                    const subjectiveQuestions = res.data.filter(
+                      (question) => !question.parent_sq_id
+                    );
+                    papers[paper].subjectiveQuestions = subjectiveQuestions;
+                    localStorage.setItem("papers", JSON.stringify(papers));
+                    setQuestions(
+                      [
+                        ...papers[paper].objectiveQuestions,
+                        ...papers[paper].subjectiveQuestions,
+                      ] || []
+                    );
+                  })
+                  .catch((err) => {
+                    console.log("error ", err.message);
+                  });
+              }
             }
             // if paper is not live, push back to papers list
             else {
@@ -155,6 +221,20 @@ export default function PaperContainer({}) {
           })
           .catch((err) => {
             console.log("error ", err.message);
+          });
+
+        //update spa status to Attempted
+        axios
+          .post(`/api/student/paper/update_attempt_status`, {
+            studentId: session.data.user.id,
+            paperId: paper,
+            status: "Attempted",
+          })
+          .then((res) => {
+            console.log("updated attempt status ", res.data);
+          })
+          .catch((err) => {
+            console.log("error updating attempt status", err);
           });
       }
     }

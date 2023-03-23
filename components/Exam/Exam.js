@@ -5,6 +5,7 @@ import { MdEdit } from "react-icons/md";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
+import Spinner from "../Loader/Spinner";
 
 export default function Exam({
   exam,
@@ -16,6 +17,10 @@ export default function Exam({
   const session = useSession();
   const router = useRouter();
 
+  const [loading, setLoading] = useState({
+    show: false,
+    message: "",
+  });
   const [edit, setEdit] = useState(isEdit);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
@@ -97,6 +102,10 @@ export default function Exam({
       return;
     }
 
+    setLoading({
+      show: true,
+      message: "Submitting Exam...",
+    });
     const submitExam = await axios.post("/api/faculty/submit_exam", {
       paper_id: exam.paper_id,
       faculty_id: selectedFaculty,
@@ -105,6 +114,11 @@ export default function Exam({
       )[0].level,
     });
     if (submitExam.status === 200) {
+      setLoading({
+        show: false,
+        message: "",
+      });
+
       addComment({
         comment: `Exam Submitted by ${session.data.user.name} to ${
           faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
@@ -206,125 +220,187 @@ export default function Exam({
   };
 
   return (
-    <div className="pr-10 pl-7 font-poppins w-full ">
-      <div className="bg-gray-100 bg-opacity-50 pt-10 rounded-md">
-        {access && (
-          <div className="w-full flex justify-end pr-5 cursor-pointer">
-            <div
-              onClick={() => {
-                editExam();
-              }}
-              className="bg-white text-[#f5c51a]  p-2 rounded hover:bg-[#f5c51a] hover:text-white transition-colors"
-            >
-              <MdEdit />
+    <>
+      <Spinner show={loading.show} message={loading.message} />
+      <div className="pr-10 pl-7 font-poppins w-full ">
+        <div className="bg-gray-100 bg-opacity-50 pt-10 rounded-md">
+          {access && (
+            <div className="w-full flex justify-end pr-5 cursor-pointer">
+              <div
+                onClick={() => {
+                  editExam();
+                }}
+                className="bg-white text-[#f5c51a]  p-2 rounded hover:bg-[#f5c51a] hover:text-white transition-colors"
+              >
+                <MdEdit />
+              </div>
+            </div>
+          )}
+
+          <div className="font-semibold text-center text-3xl mt-5 mb-10">
+            Exam Details
+          </div>
+
+          <div className="grid grid-cols-3 gap-y-3">
+            <div className="pl-20">
+              <span className=" font-medium">Exam Name:</span>
+              <span className="ml-2">{exam.paper_name}</span>
+            </div>
+            <div className="pl-20">
+              <span className=" font-medium">Exam Type:</span>
+              <span className="ml-2">{exam.paper_type}</span>
+            </div>
+            <div className="pl-20">
+              <span className=" font-medium">Exam Date:</span>
+              <span className="ml-2">
+                {convertDateTimeToStrings(exam.date, true)}
+              </span>
+            </div>
+            <div className="pl-20">
+              <span className=" font-medium">Exam Time:</span>
+              <span className="ml-2">
+                {convertDateTimeToStrings(exam.date)}
+              </span>
+            </div>
+
+            <div className="pl-20">
+              <span className=" font-medium">Exam Duration:</span>
+              <span className="ml-2">{exam.duration}</span>
             </div>
           </div>
-        )}
 
-        <div className="font-semibold text-center text-3xl mt-5 mb-10">
-          Exam Details
+          <div className="bg-gray-100 py-5 mt-5 px-5 border-b border-slate-400 border-opacity-50">
+            <Accordion questions={objectiveQuestions} paperType={"Objective"} />
+          </div>
+          {exam.paper_type === "Subjective/Objective" && (
+            <div className="bg-gray-100 py-5 px-5 border-b border-slate-400 border-opacity-50">
+              <Accordion
+                questions={subjectiveQuestions}
+                paperType={"Subjective/Objective"}
+              />
+            </div>
+          )}
         </div>
-
-        <div className="grid grid-cols-3 gap-y-3">
-          <div className="pl-20">
-            <span className=" font-medium">Exam Name:</span>
-            <span className="ml-2">{exam.paper_name}</span>
-          </div>
-          <div className="pl-20">
-            <span className=" font-medium">Exam Type:</span>
-            <span className="ml-2">{exam.paper_type}</span>
-          </div>
-          <div className="pl-20">
-            <span className=" font-medium">Exam Date:</span>
-            <span className="ml-2">
-              {convertDateTimeToStrings(exam.date, true)}
-            </span>
-          </div>
-          <div className="pl-20">
-            <span className=" font-medium">Exam Time:</span>
-            <span className="ml-2">{convertDateTimeToStrings(exam.date)}</span>
-          </div>
-
-          <div className="pl-20">
-            <span className=" font-medium">Exam Duration:</span>
-            <span className="ml-2">{exam.duration}</span>
-          </div>
-        </div>
-
-        <div className="bg-gray-100 py-5 mt-5 px-5 border-b border-slate-400 border-opacity-50">
-          <Accordion questions={objectiveQuestions} paperType={"Objective"} />
-        </div>
-        {exam.paper_type === "Subjective/Objective" && (
-          <div className="bg-gray-100 py-5 px-5 border-b border-slate-400 border-opacity-50">
-            <Accordion
-              questions={subjectiveQuestions}
-              paperType={"Subjective/Objective"}
-            />
-          </div>
-        )}
-      </div>
-      <div className="mt-10 font-poppins">
-        <span className=" text-lg font-medium ml-5">Comments</span>
-        <div className="bg-gray-100 bg-opacity-50 px-10 py-5 ">
-          {comments &&
-            comments.map((comment, index) => (
-              <div
-                key={index}
-                className="flex justify-between mb-5 pb-4 border-b border-gray-600 border-opacity-20"
-              >
-                <div className=" flex flex-col justify-center">
-                  <span className="text-[#212121] font-medium">
-                    {comment.comment}
-                  </span>
-                  <span className="text-sm mt-2 text-[#828282]">
-                    By {comment.faculty?.name}
-                  </span>
+        <div className="mt-10 font-poppins">
+          <span className=" text-lg font-medium ml-5">Comments</span>
+          <div className="bg-gray-100 bg-opacity-50 px-10 py-5 ">
+            {comments &&
+              comments.map((comment, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between mb-5 pb-4 border-b border-gray-600 border-opacity-20"
+                >
+                  <div className=" flex flex-col justify-center">
+                    <span className="text-[#212121] font-medium">
+                      {comment.comment}
+                    </span>
+                    <span className="text-sm mt-2 text-[#828282]">
+                      By {comment.faculty?.name}
+                    </span>
+                  </div>
+                  <div className="flex flex-col text-[#BDBDBD] text-right">
+                    <span className="text-xs font-medium mt-1">
+                      {convertDateTimeToStrings(
+                        addFiveHoursToISOString(comment.time)
+                      )}
+                    </span>
+                    <span className="text-xs font-medium mt-1">
+                      {convertDateTimeToStrings(
+                        addFiveHoursToISOString(comment.time),
+                        true
+                      )}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col text-[#BDBDBD] text-right">
-                  <span className="text-xs font-medium mt-1">
-                    {convertDateTimeToStrings(
-                      addFiveHoursToISOString(comment.time)
-                    )}
-                  </span>
-                  <span className="text-xs font-medium mt-1">
-                    {convertDateTimeToStrings(
-                      addFiveHoursToISOString(comment.time),
-                      true
-                    )}
-                  </span>
+              ))}
+          </div>
+        </div>
+        {edit && access && (
+          <div>
+            <div className="flex flex-col mt-5">
+              <span className="text-lg pr-5 py-5 font-medium">
+                Add Comments
+              </span>
+              <textarea
+                className="p-5 bg-slate-100 border border-slate-300 rounded-md focus:outline-none active:outline-none"
+                onChange={(e) => setComment(e.target.value)}
+                value={comment}
+              />
+            </div>
+            <div className="flex justify-end mt-5">
+              <button
+                className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+                onClick={() => {
+                  if (!comment) {
+                    alert("Please enter a comment");
+                    return;
+                  }
+                  addComment({ comment });
+                }}
+              >
+                Add Comment
+              </button>
+            </div>
+
+            {exam.examofficer?.faculty_id === session.data.user.id ? (
+              <div>
+                <div className="flex justify-end">
+                  <div className="mt-10 mb-10">
+                    <select
+                      className="bg-gray-100 border-2 border-gray-300 rounded-lg py-4 px-8"
+                      onChange={handleSelectedFaculty}
+                    >
+                      <option value="">Submit to</option>
+                      {faculty &&
+                        faculty.map((faculty) => (
+                          <option
+                            key={faculty.faculty_id}
+                            value={faculty.faculty_id}
+                          >{`${faculty.name} (${faculty.department})`}</option>
+                        ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="flex gap-x-5 justify-end">
+                  <div className="mt-10 mb-10">
+                    <button
+                      type="submit"
+                      className="bg-red-800 hover:bg-red-700 font-medium text-white rounded-lg py-4 px-8"
+                      onClick={() => {
+                        sendBack();
+                      }}
+                    >
+                      Send Back
+                    </button>
+                  </div>
+                  <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
+                    <button
+                      type="submit"
+                      className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+                      onClick={() => {
+                        sendForward();
+                      }}
+                    >
+                      Send Forward
+                    </button>
+                  </div>
+                  {exam.examofficer?.level > 2 && (
+                    <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
+                      <button
+                        type="submit"
+                        className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
+                        onClick={() => {
+                          approve();
+                        }}
+                      >
+                        Approve
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
-            ))}
-        </div>
-      </div>
-      {edit && access && (
-        <div>
-          <div className="flex flex-col mt-5">
-            <span className="text-lg pr-5 py-5 font-medium">Add Comments</span>
-            <textarea
-              className="p-5 bg-slate-100 border border-slate-300 rounded-md focus:outline-none active:outline-none"
-              onChange={(e) => setComment(e.target.value)}
-              value={comment}
-            />
-          </div>
-          <div className="flex justify-end mt-5">
-            <button
-              className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-              onClick={() => {
-                if (!comment) {
-                  alert("Please enter a comment");
-                  return;
-                }
-                addComment({ comment });
-              }}
-            >
-              Add Comment
-            </button>
-          </div>
-
-          {exam.examofficer?.faculty_id === session.data.user.id ? (
-            <div>
-              <div className="flex justify-end">
+            ) : (
+              <div>
                 <div className="mt-10 mb-10">
                   <select
                     className="bg-gray-100 border-2 border-gray-300 rounded-lg py-4 px-8"
@@ -340,114 +416,59 @@ export default function Exam({
                       ))}
                   </select>
                 </div>
-              </div>
-              <div className="flex gap-x-5 justify-end">
-                <div className="mt-10 mb-10">
-                  <button
-                    type="submit"
-                    className="bg-red-800 hover:bg-red-700 font-medium text-white rounded-lg py-4 px-8"
-                    onClick={() => {
-                      sendBack();
-                    }}
-                  >
-                    Send Back
-                  </button>
-                </div>
-                <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
-                  <button
-                    type="submit"
-                    className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-                    onClick={() => {
-                      sendForward();
-                    }}
-                  >
-                    Send Forward
-                  </button>
-                </div>
-                {exam.examofficer?.level > 2 && (
+                <div className="flex justify-end gap-x-5">
+                  {setActive && (
+                    <div className="mt-10 mb-10">
+                      <button
+                        type="submit"
+                        className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
+                        onClick={() => {
+                          setActive(exam.paper_type === "Objective" ? 2 : 3);
+                        }}
+                      >
+                        Back
+                      </button>
+                    </div>
+                  )}
+                  <div className="mt-10 mb-10">
+                    <button
+                      type="submit"
+                      className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+                      onClick={() => {
+                        router.push("/faculty");
+                      }}
+                    >
+                      Save Draft
+                    </button>
+                  </div>
                   <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
                     <button
                       type="submit"
                       className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
                       onClick={() => {
-                        approve();
+                        submitExam();
                       }}
                     >
-                      Approve
+                      Submit
                     </button>
                   </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div className="mt-10 mb-10">
-                <select
-                  className="bg-gray-100 border-2 border-gray-300 rounded-lg py-4 px-8"
-                  onChange={handleSelectedFaculty}
-                >
-                  <option value="">Submit to</option>
-                  {faculty &&
-                    faculty.map((faculty) => (
-                      <option
-                        key={faculty.faculty_id}
-                        value={faculty.faculty_id}
-                      >{`${faculty.name} (${faculty.department})`}</option>
-                    ))}
-                </select>
-              </div>
-              <div className="flex justify-end gap-x-5">
-                {setActive && (
-                  <div className="mt-10 mb-10">
-                    <button
-                      type="submit"
-                      className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
-                      onClick={() => {
-                        setActive(exam.paper_type === "Objective" ? 2 : 3);
-                      }}
-                    >
-                      Back
-                    </button>
-                  </div>
-                )}
-                <div className="mt-10 mb-10">
-                  <button
-                    type="submit"
-                    className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-                    onClick={() => {
-                      router.push("/faculty");
-                    }}
-                  >
-                    Save Draft
-                  </button>
-                </div>
-                <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
-                  <button
-                    type="submit"
-                    className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
-                    onClick={() => {
-                      submitExam();
-                    }}
-                  >
-                    Submit
-                  </button>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
-      )}
+            )}
+          </div>
+        )}
 
-      <div className="mt-10 pr-10 flex justify-start gap-x-5 mb-10">
-        <button
-          className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-          onClick={() => {
-            router.push("/faculty/mark_exam/" + exam.paper_id);
-          }}
-        >
-          Mark Exam
-        </button>
+        <div className="mt-10 pr-10 flex justify-start gap-x-5 mb-10">
+          <button
+            className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+            onClick={() => {
+              router.push("/faculty/mark_exam/" + exam.paper_id);
+            }}
+          >
+            Mark Exam
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

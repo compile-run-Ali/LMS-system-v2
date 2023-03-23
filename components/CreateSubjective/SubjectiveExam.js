@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import Input from "../Common/Form/Input";
 import axios from "axios";
+import Spinner from "../Loader/Spinner";
 
 const SubjectiveExam = ({
   paperId,
@@ -9,12 +10,16 @@ const SubjectiveExam = ({
   subjective_questions,
   setSubjectiveQuestions,
 }) => {
+  const [loading, setLoading] = useState({
+    show: false,
+    message: "",
+  });
   const [subjectivesLocal, setSubjectivesLocal] =
     useState(subjective_questions);
   const [previousParent, setPreviousParent] = useState(null);
   const [longQuestion, setLongQuestion] = useState(true);
 
-  const [currentSubjective, setCurrentQuestion] = useState({
+  const [currentQuestion, setCurrentQuestion] = useState({
     sq_id: "",
     question: "",
     parent_sq_id: "",
@@ -27,30 +32,30 @@ const SubjectiveExam = ({
   const [adding, setAdding] = useState(false);
 
   const handleQuestionChange = (e) => {
-    setCurrentQuestion({ ...currentSubjective, question: e.target.value });
+    setCurrentQuestion({ ...currentQuestion, question: e.target.value });
   };
 
   const handleParentQuestionChange = (e) => {
     setCurrentQuestion({
-      ...currentSubjective,
+      ...currentQuestion,
       parent_sq_id: e.target.value || "",
     });
   };
 
   const handleQuestionNumberChange = (e) => {
     setCurrentQuestion({
-      ...currentSubjective,
+      ...currentQuestion,
       questionnumber: parseInt(e.target.value),
     });
   };
 
   const validateQuestionData = () => {
-    const isChild = currentSubjective.parent_sq_id ? true : false;
+    const isChild = currentQuestion.parent_sq_id ? true : false;
 
     if (
-      !currentSubjective.question ||
-      !currentSubjective.questionnumber ||
-      !currentSubjective.marks
+      !currentQuestion.question ||
+      !currentQuestion.questionnumber ||
+      !currentQuestion.marks
     ) {
       alert("Please fill all the fields");
       return false;
@@ -59,13 +64,13 @@ const SubjectiveExam = ({
     // if is child then check if part number already exists
     if (isChild) {
       const parentOfAdded = subjectivesLocal.find(
-        (subjective) => subjective.sq_id === currentSubjective.parent_sq_id
+        (subjective) => subjective.sq_id === currentQuestion.parent_sq_id
       );
       if (!parentOfAdded.child_question) parentOfAdded.child_question = [];
       const partNumberExists = parentOfAdded.child_question.find(
         (subjective) =>
-          subjective.questionnumber === currentSubjective.questionnumber &&
-          subjective.sq_id !== currentSubjective.sq_id
+          subjective.questionnumber === currentQuestion.questionnumber &&
+          subjective.sq_id !== currentQuestion.sq_id
       );
       if (partNumberExists) {
         alert("Part number already exists");
@@ -74,10 +79,10 @@ const SubjectiveExam = ({
       // also check that child question marks cant exceed parent question marks
       let totalMarks = 0;
       parentOfAdded.child_question.forEach((child) => {
-        if (child.sq_id !== currentSubjective.sq_id) totalMarks += child.marks;
+        if (child.sq_id !== currentQuestion.sq_id) totalMarks += child.marks;
       });
 
-      if (totalMarks + currentSubjective.marks > parentOfAdded.marks) {
+      if (totalMarks + currentQuestion.marks > parentOfAdded.marks) {
         alert(
           "Total marks of all parts of a question cannot exceed the total marks of the question"
         );
@@ -87,8 +92,8 @@ const SubjectiveExam = ({
       // if a question number already exists then it cant be current questions question number
       const questionNumberExists = subjectivesLocal.find(
         (subjective) =>
-          subjective.questionnumber === currentSubjective.questionnumber &&
-          subjective.sq_id !== currentSubjective.sq_id
+          subjective.questionnumber === currentQuestion.questionnumber &&
+          subjective.sq_id !== currentQuestion.sq_id
       );
       if (questionNumberExists) {
         alert("Question number already exists");
@@ -103,26 +108,35 @@ const SubjectiveExam = ({
     const isValid = validateQuestionData();
     if (!isValid) return;
 
-    const isChild = currentSubjective.parent_sq_id ? true : false;
+    setLoading({
+      show: true,
+      message: "Adding Question...",
+    });
+
+    const isChild = currentQuestion.parent_sq_id ? true : false;
     const newSubjective = await axios.post(
       "/api/faculty/paper_creation/add_subjective",
       {
         paper_id: paperId,
-        question: currentSubjective.question,
-        parent_sq_id: currentSubjective.parent_sq_id,
-        long_question: currentSubjective.long_question,
-        marks: currentSubjective.marks,
-        questionnumber: currentSubjective.questionnumber,
+        question: currentQuestion.question,
+        parent_sq_id: currentQuestion.parent_sq_id,
+        long_question: currentQuestion.long_question,
+        marks: currentQuestion.marks,
+        questionnumber: currentQuestion.questionnumber,
       }
     );
     if (newSubjective.status === 200) {
+      setLoading({
+        show: false,
+        message: "",
+      });
       let updatedSubjectiveQuestions = [];
       // make sure to sort the newly added question according to questionnumber
       if (isChild) {
         // if question is child, add the child to parent's children and sort the child_question array of parent
 
         const parentOfAdded = subjectivesLocal.find(
-          (subjective) => subjective.sq_id === currentSubjective.parent_sq_id
+          (subjective) => subjective.sq_id === currentQuestion.parent_sq_id
         );
         // edit parent's child in subjectives
         const children = [
@@ -144,6 +158,8 @@ const SubjectiveExam = ({
         ].sort((a, b) => a.questionnumber - b.questionnumber);
       }
 
+      const prevLength = subjectivesLocal.length;
+
       setSubjectivesLocal(updatedSubjectiveQuestions);
       setSubjectiveQuestions(updatedSubjectiveQuestions);
       setCurrentQuestion({
@@ -152,7 +168,7 @@ const SubjectiveExam = ({
         parent_sq_id: "",
         marks: 1,
         long_question: longQuestion,
-        questionnumber: subjectivesLocal.length + 1,
+        questionnumber: prevLength + 2,
       });
       setAdding(false);
     } else {
@@ -161,15 +177,36 @@ const SubjectiveExam = ({
   };
 
   const handleEditMCQ = (question) => () => {
-    setEditing(!editing);
-    setPreviousParent(question.parent_sq_id);
-    setCurrentQuestion(question);
+    console.log(editing, "is editing");
+    if (editing) {
+      console.log("editing is true");
+      setCurrentQuestion({
+        sq_id: "",
+        question: "",
+        parent_sq_id: "",
+        marks: 1,
+        long_question: longQuestion,
+        questionnumber: subjectivesLocal.length + 1,
+      });
+      setEditing(false);
+    } else {
+      setEditing(true);
+      setCurrentQuestion(question);
+      setPreviousParent(question.parent_sq_id);
+    }
+    setAdding(false);
   };
+
+  console.log("cuurent is", currentQuestion);
 
   const handleUpdateMCQ = async (question) => {
     // variable to check if now has parent
     const isValid = validateQuestionData();
     if (!isValid) return;
+    setLoading({
+      show: true,
+      message: "Updating Question...",
+    });
     const nowHasParent = question.parent_sq_id ? true : false;
     // how to check if previously had parent?
     const previouslyHadParent = previousParent ? true : false;
@@ -177,13 +214,17 @@ const SubjectiveExam = ({
     await axios
       .post("/api/faculty/edit_subjective", {
         sq_id: question.sq_id,
-        question: currentSubjective.question,
-        parent_sq_id: currentSubjective.parent_sq_id,
-        questionnumber: currentSubjective.questionnumber,
-        long_question: currentSubjective.long_question,
-        marks: currentSubjective.marks,
+        question: currentQuestion.question,
+        parent_sq_id: currentQuestion.parent_sq_id,
+        questionnumber: currentQuestion.questionnumber,
+        long_question: currentQuestion.long_question,
+        marks: currentQuestion.marks,
       })
       .then((res) => {
+        setLoading({
+          show: false,
+          message: "",
+        });
         // case 1: previously had parent, now no parent
         // case 2: previously had no parent, now no parent
         // case 3: previously had no parent, now has parent
@@ -233,7 +274,7 @@ const SubjectiveExam = ({
           console.log("case 3: previously had no parent, now has parent");
           // add the question to the parent's child_question array
           const parentOfAdded = subjectivesLocal.find(
-            (subjective) => subjective.sq_id === currentSubjective.parent_sq_id
+            (subjective) => subjective.sq_id === currentQuestion.parent_sq_id
           );
           const children = [
             ...(parentOfAdded.child_question || []),
@@ -258,11 +299,10 @@ const SubjectiveExam = ({
           console.log("case 4: previously had parent, now has parent");
 
           // if parent existss but not changed
-          if (currentSubjective.parent_sq_id === previousParent) {
+          if (currentQuestion.parent_sq_id === previousParent) {
             // only edit the current child question of parent
             const parentOfEdited = subjectivesLocal.find(
-              (subjective) =>
-                subjective.sq_id === currentSubjective.parent_sq_id
+              (subjective) => subjective.sq_id === currentQuestion.parent_sq_id
             );
 
             const children = parentOfEdited.child_question
@@ -290,8 +330,7 @@ const SubjectiveExam = ({
               (child) => child.sq_id !== question.sq_id
             );
             const parentOfAdded = subjectivesLocal.find(
-              (subjective) =>
-                subjective.sq_id === currentSubjective.parent_sq_id
+              (subjective) => subjective.sq_id === currentQuestion.parent_sq_id
             );
             const childrenAfterAdding = [
               ...(parentOfAdded.child_question || []),
@@ -329,6 +368,10 @@ const SubjectiveExam = ({
   };
 
   const handleDeleteSubjective = async (sq_id, parent, isChild = false) => {
+    setLoading({
+      show: true,
+      message: "Deleting Question...",
+    });
     const deletedSubjective = await axios.post(
       "/api/faculty/remove_subjective",
       {
@@ -336,6 +379,10 @@ const SubjectiveExam = ({
       }
     );
     if (deletedSubjective.status === 200) {
+      setLoading({
+        show: false,
+        message: "",
+      });
       if (isChild) {
         // we have parent of deleted question, access the parent question, and delete its child from there
         const newMCQs = [...subjectivesLocal];
@@ -363,7 +410,10 @@ const SubjectiveExam = ({
 
   return (
     <div className="flex font-poppins flex-col items-center p-6">
+      <Spinner show={loading.show} message={loading.message} />
+
       <h1 className="text-2xl font-bold">Subjective Question</h1>
+
       <table className="w-full mt-6 text-left table-collapse">
         <thead>
           <tr>
@@ -377,58 +427,29 @@ const SubjectiveExam = ({
           </tr>
         </thead>
         <tbody>
-          {subjectivesLocal.map((subjective, index) => (
-            <React.Fragment key={subjective.sq_id}>
-              <tr
-                className={` border
+          {subjectivesLocal
+            .sort((a, b) => a.questionnumber - b.questionnumber)
+            .map((subjective, index) => (
+              <React.Fragment key={subjective.sq_id}>
+                <tr
+                  className={` border
               ${
                 subjective.child_question &&
                 subjective.child_question.length > 0 &&
                 "border border-b-0"
               }
               `}
-              >
-                <td className="px-6">{subjective.questionnumber}</td>
-                <td className="px-6"></td>
-                <td className="px-4 py-2">{subjective.question}</td>
-                <td className="px-4 py-2">
-                  {subjective.parent_sq_id?.question}
-                </td>
-                <td className="px-4 py-2">{subjective.marks}</td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={handleEditMCQ(subjective)}
-                    className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
-                  >
-                    <MdEdit />
-                  </button>
-                </td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={() => {
-                      handleDeleteSubjective(subjective.sq_id);
-                    }}
-                    className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
-                  >
-                    <MdDelete />
-                  </button>
-                </td>
-              </tr>
-              {subjective.child_question?.map((child, index) => (
-                <tr
-                  key={child.sq_id}
-                  className={`border-x ${
-                    index === subjective.child_question.length - 1 && "border-b"
-                  }`}
                 >
-                  <td className="pl-2"></td>
-                  <td className="pl-2">{child.questionnumber}</td>
-                  <td className="px-4 py-1">{child.question}</td>
-                  <td className="px-4 py-1">{subjective.question}</td>
-                  <td className="px-4 py-1">{child.marks}</td>
-                  <td className="px-4 py-1">
+                  <td className="px-6">{subjective.questionnumber}</td>
+                  <td className="px-6"></td>
+                  <td className="px-4 py-2">{subjective.question}</td>
+                  <td className="px-4 py-2">
+                    {subjective.parent_sq_id?.question}
+                  </td>
+                  <td className="px-4 py-2">{subjective.marks}</td>
+                  <td className="px-4 py-2">
                     <button
-                      onClick={handleEditMCQ(child)}
+                      onClick={handleEditMCQ(subjective)}
                       className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                     >
                       <MdEdit />
@@ -437,7 +458,7 @@ const SubjectiveExam = ({
                   <td className="px-4 py-2">
                     <button
                       onClick={() => {
-                        handleDeleteSubjective(child.sq_id, subjective, true);
+                        handleDeleteSubjective(subjective.sq_id);
                       }}
                       className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                     >
@@ -445,14 +466,49 @@ const SubjectiveExam = ({
                     </button>
                   </td>
                 </tr>
-              ))}
-            </React.Fragment>
-          ))}
+                {subjective.child_question?.map((child, index) => (
+                  <tr
+                    key={child.sq_id}
+                    className={`border-x ${
+                      index === subjective.child_question.length - 1 &&
+                      "border-b"
+                    }`}
+                  >
+                    <td className="pl-2"></td>
+                    <td className="pl-2">{child.questionnumber}</td>
+                    <td className="px-4 py-1">{child.question}</td>
+                    <td className="px-4 py-1">{subjective.question}</td>
+                    <td className="px-4 py-1">{child.marks}</td>
+                    <td className="px-4 py-1">
+                      <button
+                        onClick={handleEditMCQ(child)}
+                        className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
+                      >
+                        <MdEdit />
+                      </button>
+                    </td>
+                    <td className="px-4 py-2">
+                      <button
+                        onClick={() => {
+                          handleDeleteSubjective(child.sq_id, subjective, true);
+                        }}
+                        className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
+                      >
+                        <MdDelete />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </React.Fragment>
+            ))}
         </tbody>
       </table>
       <div className="w-full flex justify-center mt-10">
         <button
-          onClick={() => setAdding(true)}
+          onClick={() => {
+            setAdding(true);
+            setEditing(false);
+          }}
           className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
         >
           Add Subjective
@@ -468,7 +524,7 @@ const SubjectiveExam = ({
             <Input
               text={"Question"}
               required
-              value={currentSubjective.question}
+              value={currentQuestion.question}
               onChange={handleQuestionChange}
             />
           </div>
@@ -478,7 +534,7 @@ const SubjectiveExam = ({
 
               <select
                 type="text"
-                value={currentSubjective.parent_sq_id || ""}
+                value={currentQuestion.parent_sq_id || ""}
                 onChange={handleParentQuestionChange}
                 className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]"
               >
@@ -487,7 +543,7 @@ const SubjectiveExam = ({
                   .filter(
                     (subjective) =>
                       !subjective.parent_sq_id &&
-                      subjective.sq_id !== currentSubjective.sq_id
+                      subjective.sq_id !== currentQuestion.sq_id
                   )
                   .map((subjective, index) => (
                     <option key={index} value={subjective.sq_id}>
@@ -502,10 +558,10 @@ const SubjectiveExam = ({
               type={"number"}
               required
               min={1}
-              value={currentSubjective.marks}
+              value={currentQuestion.marks}
               onChange={(e) =>
                 setCurrentQuestion({
-                  ...currentSubjective,
+                  ...currentQuestion,
                   marks: parseInt(e.target.value),
                 })
               }
@@ -513,17 +569,15 @@ const SubjectiveExam = ({
             <Input
               // if parent exists the question number will be called part number other wise, question number
               text={
-                currentSubjective.parent_sq_id
-                  ? "Part Number"
-                  : "Question Number"
+                currentQuestion.parent_sq_id ? "Part Number" : "Question Number"
               }
               type={"number"}
               required
               min={1}
               value={
-                currentSubjective.parent_sq_id
+                currentQuestion.parent_sq_id
                   ? 1
-                  : currentSubjective.questionnumber
+                  : currentQuestion.questionnumber
               }
               onChange={handleQuestionNumberChange}
             />
@@ -544,7 +598,7 @@ const SubjectiveExam = ({
           {editing ? (
             <button
               onClick={() => {
-                handleUpdateMCQ(currentSubjective);
+                handleUpdateMCQ(currentQuestion);
               }}
               className="bg-blue-800 text-white p-2 rounded hover:bg-blue-700"
             >

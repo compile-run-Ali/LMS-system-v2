@@ -33,7 +33,7 @@ const SubjectiveTable = ({ subjective_questions = [] }) => {
           </tr>
         </thead>
         <tbody>
-          {subjectives?.map((question, index) => (
+          {subjectives?.sort((a, b) => a.questionnumber - b.questionnumber).map((question, index) => (
             <React.Fragment key={question.sq_id}>
               <tr key={index} className="text-center">
                 <td className=" px-4 py-2">{question.questionnumber}</td>
@@ -44,7 +44,7 @@ const SubjectiveTable = ({ subjective_questions = [] }) => {
                 </td>
                 <td className=" px-4 py-2">{question.marks}</td>
               </tr>
-              {question.child_question?.map((child, index) => (
+              {question.child_question?.sort((a, b) => a.questionnumber - b.questionnumber).map((child, index) => (
                 <tr key={child.sq_id} className="text-center">
                   <th className=" px-4 py-2"></th>
                   <td className=" px-4 py-2">{child.questionnumber}</td>
