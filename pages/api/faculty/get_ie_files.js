@@ -6,18 +6,19 @@ const handler = async (req, res) => {
     //get all papers
     const paper = await prisma.paper.findUnique({
       where: {
-        paper_id: req.body.paper_id,
+        paper_id: req.query.paperId,
       },
       select: {
         ie_questions: {
           select: {
             fileName: true,
             ie_id: true,
+            fileUrl: true,
           },
         },
       },
     });
-    res.status(200).json(paper.ie_questions);
+    res.status(200).json(paper);
   } catch (err) {
     throw new Error(err.message);
   }

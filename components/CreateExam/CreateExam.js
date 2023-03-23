@@ -174,6 +174,17 @@ export default function CreateExam({ paperType }) {
           />
         </div>
       )}
+            {active === 3 && paperId !== 0 && paperType === "IE" && (
+        <div className="mt-10">
+          <Exam
+            exam={exam}
+            objectiveQuestions={mcqs}
+            subjectiveQuestions={subjectives}
+            isEdit={true}
+            setActive={setActive}
+          />
+        </div>
+      )}
       {active === 3 &&
         paperId !== 0 &&
         paperType === "Subjective/Objective" && (
