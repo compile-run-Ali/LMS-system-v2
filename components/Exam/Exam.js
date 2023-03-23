@@ -268,10 +268,12 @@ export default function Exam({
               <span className="ml-2">{exam.duration}</span>
             </div>
           </div>
+          {exam.paper_type === "Objective" && (
 
           <div className="bg-gray-100 py-5 mt-5 px-5 border-b border-slate-400 border-opacity-50">
             <Accordion questions={objectiveQuestions} paperType={"Objective"} />
           </div>
+        )}
           {exam.paper_type === "Subjective/Objective" && (
             <div className="bg-gray-100 py-5 px-5 border-b border-slate-400 border-opacity-50">
               <Accordion

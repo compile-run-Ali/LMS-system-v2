@@ -6,6 +6,7 @@ import MCQTable from "../CreateObjective/ObjectiveExam";
 import Exam from "../Exam/Exam";
 import axios from "axios";
 import SubjectiveExam from "../CreateSubjective/SubjectiveExam";
+import IeExam from "../CreateIE/IeExam";
 
 const wizardItemsObjective = [
   {
@@ -55,6 +56,7 @@ export default function CreateExam({ paperType }) {
   const [mcqs, setMCQs] = useState([]);
   const [subjectives, setSubjectives] = useState([]);
   const [freeFlowGlobal, setFreeFlowGlobal] = useState(false);
+  const [ieFiles, setIeFiles] = useState([]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -77,6 +79,13 @@ export default function CreateExam({ paperType }) {
       paper_id: paperId,
     });
     setMCQs(res.data);
+  };
+
+  const fetchIeFiles = async () => {
+    const res = await axios.post("/api/faculty/get_ie_files", {
+      paper_id: paperId,
+    });
+    setIeFiles(res.data);
   };
 
   const fetchSubjectives = async () => {
@@ -105,6 +114,9 @@ export default function CreateExam({ paperType }) {
       fetchObjectives();
       fetchSubjectives();
     }
+    if (paperType === "IE" && paperId !== 0) {
+      fetchIeFiles();
+    }
   }, [paperId, exam, paperType]);
 
   // console.log("subjectives", subjectives);
@@ -129,7 +141,7 @@ export default function CreateExam({ paperType }) {
           setFreeFlowGlobal={setFreeFlowGlobal}
         />
       )}
-      {active === 2 && paperId !== 0 && (
+      {active === 2 && paperId !== 0 && paperType !== "IE" && (
         <div className="mt-10">
           <MCQTable
             exam={exam}
@@ -141,7 +153,28 @@ export default function CreateExam({ paperType }) {
           />
         </div>
       )}
+      {active === 2 && paperId !== 0 && paperType === "IE" && (
+        <div className="mt-10">
+          <IeExam
+          paperId={paperId}
+          setActive={setActive}
+          exam={exam}
+          ieFiles={ieFiles}
+          />
+        </div>
+      )}
       {active === 3 && paperId !== 0 && paperType === "Objective" && (
+        <div className="mt-10">
+          <Exam
+            exam={exam}
+            objectiveQuestions={mcqs}
+            subjectiveQuestions={subjectives}
+            isEdit={true}
+            setActive={setActive}
+          />
+        </div>
+      )}
+            {active === 3 && paperId !== 0 && paperType === "IE" && (
         <div className="mt-10">
           <Exam
             exam={exam}

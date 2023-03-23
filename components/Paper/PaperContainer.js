@@ -8,6 +8,7 @@ import NavigationGrid from "./NavigationGrid";
 import Loader from "../Loader";
 import Timer from "./Timer";
 import Submitted from "./Submitted";
+import IEContainer from "./IE/IEContainer";
 
 /* 
 Objective
@@ -44,6 +45,8 @@ export default function PaperContainer({ startOfPage }) {
   const [flags, setFlags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
+  //excelData
+  const [excelData, setExcelData] = useState([]);
 
   useEffect(() => {
     if (paper) {
@@ -213,6 +216,46 @@ export default function PaperContainer({ startOfPage }) {
                     console.log("error ", err.message);
                   });
               }
+              if (currentPaper.paper_type === "IE") {
+                axios.get(`/api/faculty/get_ie_files`, {
+                  params: {
+                    paperId: paper,
+                  },
+                })
+                  .then((res) => {
+                    console.log("time taken to get ie", res.data);
+              
+                    // Make second API call using response of first
+                    //extract file urls from response
+                    console.log("Response from first API call", res.data)
+                    //loop through the data array and make a post request for each file url
+                    res.data.ie_questions.forEach((file) => {
+                      axios.post(`/api/faculty/read_file`, {
+                        fileUrl: file.fileUrl
+                      })
+                      .then((res) => {
+                        console.log("Response from second API call", res.data)
+                        //loop through the res.data and if the data is filled, excelData
+                        res.data.forEach((data) => {
+                          if (data) {
+                            setExcelData(excelData => [...excelData, data])
+                          }
+                        })
+                        
+
+                      })
+                      .catch((error) => {
+                        console.error("Error in second API call", error);
+                      });
+                    })
+            
+                  })
+                  .catch((error) => {
+                    console.error("Error in first API call", error);
+                  });
+              }
+              
+
             }
             // if paper is not live, push back to papers list
             else {
@@ -247,7 +290,7 @@ export default function PaperContainer({ startOfPage }) {
   return (
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">
-        {currentQuestion === questions.length ? (
+        {currentQuestion === questions.length && paperDetails.paper_type!=="IE" ? (
           <Submitted />
         ) : paperDetails.paper_type === "Objective" ? (
           <OQContainer
@@ -259,7 +302,7 @@ export default function PaperContainer({ startOfPage }) {
             flags={flags || []}
             setFlags={setFlags}
           />
-        ) : (
+        ) : paperDetails.paper_type === "Subjective/Objective" ? (
           <>
             {currentQuestion < objectiveCount ? (
               <OQContainer
@@ -283,6 +326,10 @@ export default function PaperContainer({ startOfPage }) {
               />
             )}
           </>
+        ) : (
+          <IEContainer 
+          excelData={excelData}
+          />
         )}
       </div>
       <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">

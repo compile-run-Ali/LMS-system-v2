@@ -107,6 +107,7 @@ model Paper {
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]
+  ie_questions         IeQuestion[]
 
   PaperComment PaperComment[]
   attempts     SPA[]
@@ -159,6 +160,18 @@ model ObjectiveQuestion {
 
   student_attempst SOA[]
 }
+
+model IeQuestion {
+  ie_id String @id @default(uuid())
+
+  fileName String
+  fileUrl  String
+  
+  paper Paper @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+  paper_id String
+}
+
+
 
 //Student Objective Question Attempt
 model SOA {

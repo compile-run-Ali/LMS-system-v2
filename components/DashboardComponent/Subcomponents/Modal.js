@@ -11,6 +11,12 @@ export default function Modal({ open, setOpen, courseCode }) {
     const handleNext = async () => {
         if (examType === "I.E") {
             // Redirect to create exam page for IE
+            router.push({
+                pathname: `/faculty/create_exam/ie`,
+                query: {
+                    course_code: courseCode
+                }
+            })
         } else if (examType === "SO") {
             // Redirect to create exam page for subjective/objective
             router.push({

@@ -38,6 +38,13 @@ const handler = async (req, res) => {
             parent_sq_id: true,
           },
         },
+        ie_questions: {
+          select: {
+            ie_id: true,
+            fileName: true,
+            fileUrl: true,
+          },
+        },
       },
     });
     res.status(200).json(paper);
