@@ -1,17 +1,26 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FaQuestionCircle } from "react-icons/fa";
+import Spinner from "../Loader/Spinner";
 
 export default function Login({ facultyLogin, setFacultyLogin }) {
   const router = useRouter();
 
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState({
+    show: false,
+    message: "",
+  });
 
   const handleLogin = async () => {
+    setLoading({
+      show: true,
+      message: "Logging in...",
+    });
     const signin = await signIn("credentials", {
       redirect: false,
       username: email,
@@ -24,6 +33,10 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
         pathname: facultyLogin ? "/faculty" : "/student",
       });
     } else {
+      setLoading({
+        show: false,
+        message: "",
+      });
       alert("Invalid Credentials");
     }
   };
@@ -36,6 +49,7 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
 
   return (
     <div className="w-full h-screen font-poppins flex flex-col justify-center items-center mt-10 ">
+      <Spinner show={loading.show} message={loading.message} />
       <div className="w-2/3 lg:w-2/3 h-[90%] flex flex-col bg-blue-900 border border-slate-300 shadow-xl">
         <div className="flex justify-center">
           <Image src="/logo.png" width={300} height={300} alt="logo" />
