@@ -110,7 +110,7 @@ const editStudent = async (student) => {
       <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
         <div className="mb-4">
           <Input
-            text="PA Number"
+            text="Army Number"
             type="text"
             value={pNumber}
             onChange={(event) => setPNumber(event.target.value)}

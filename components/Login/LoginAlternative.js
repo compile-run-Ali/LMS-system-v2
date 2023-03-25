@@ -48,7 +48,9 @@ export default function LoginAlternative({ facultyLogin }) {
           </span>
 
           <div className="w-full flex flex-col mt-10">
-            <label className="text-white text-sm font-medium">{facultyLogin?"Login":"P Number"}</label>
+            <label className="text-white text-sm font-medium">
+              {facultyLogin ? "Login" : "Army Number"}
+            </label>
             <input
               type="text"
               className="w-full h-10 rounded-md bg-white px-4 mt-2 py-4 placeholder:text-[#BCBEC0] text-sm "

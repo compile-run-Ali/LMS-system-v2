@@ -119,10 +119,10 @@ export default function Register() {
               <div className="grid grid-cols-2 gap-5">
                 <div className="form-group mb-5">
                   <label
-                    htmlFor="PA number"
+                    htmlFor="Army number"
                     className="text-blue-900 font-medium text-sm"
                   >
-                    PA Number
+                    Army Number
                   </label>
                   <input
                     value={paNumber}
@@ -133,7 +133,7 @@ export default function Register() {
                 bg-white bg-clip-padding border border-solid border-gray-300
                   rounded transition ease-in-out m-0
               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                    id="PA number"
+                    id="Army number"
                     aria-describedby="emailHelp123"
                   />
                 </div>

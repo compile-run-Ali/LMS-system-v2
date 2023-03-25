@@ -115,3 +115,41 @@ api correction in making subjective qs -->
 if student attempted, and exam not marked, then marks obtained should be "unmarked"
 infinte loop error in log when multiple answers checkbox is checked in create objective answers
 data retaining issue when allow multiple edit
+
+
+### New
+1 Option select button should automatically save sudents response. There should be no need for a separate "Save" key.
+2 Approve Key to be given at faculty home page for approving papers with each line of paper in pending approval status. Faculty should have the option to approve without opening the paper. (For Comndant and Cl only)
+3 Remove "Create Paper" Options from Seniority Faculty IDs (Comandant and CI)
+4 Clicking on the Notification should navigate to the concerned paper
+5 "Submit to" button should be changed to "mark to"
+6 Remove "Send Forward" and "Send Back" Keys
+7 Comments Section should only be enbaled when a faculty is selected from Submit to Drop Down
+8 Comment should be enclosed in inverted comma's and the smaller text in subscript needs to indicate who was the comment maked to. (currently it only denotes who wrote the comment and not who it was directed to)
+9 Once Faculty opens an exam, there should be a header on the top of page indicating Exam Name to notify which exam the user is currently in.
+10 Cancel Key not working. When pressed should navigate user to outside of the exam edit screen
+11 Invert Ul to display the adding new question functions at the top op screen and the existing questions below to cut out excessive scrolling for end user.
+If not page should automatically scroll down to the right area when "Create new MCQ" or "create new Subjective is clicked"
+12 Invert Ul to display older exams in approved or closed states below and the latest exams pending approval at the top of page
+13 Invert Ul to display older exams in closed or marked state below and the latest attempt awaiting attempt or review at the top of page
+14 Question # sequence and part # sequence should automatically assign correct serial # for subjective questions to minimize user's effort. (currently it is doing so haphazardly an dis inconsistent)
+15 Create Exam steps should be clickable keys to allow simpler navigation between stages. (Exam Settings, Objective, Subjective, Exam Review)
+16 Default Time for Objectives should retain the user's last choice rather than changing back to 60 seconds each time.
+17 Comment Box to be included for Faculty to add his reasoning while marking the paper
+18 Change Sign in page name to "ASC e-Exam System"
+19 "Register as student" key should have same layout as all other keys.
+20 Remove "Login as Faculty" key from bottom right and key "Login as Faculty" key on top right of page.
+<!-- 21 Change "PA#" to "Army #" -->
+22 Add "Rank" field with drop down containing the following values (2nd Lt, Lt, Capt, Maj)
+23 Add PA# and Rank fields (Capt, Major, Letenant Colonel, Colonel, Brg, Maj Gen, Lt Gen)
+24 Change Faculty levels from numbers to (Comdt, CI, SI MT, SI SW, SI AT, Inst)
+25 Remove "Department" Field
+26 Table of Existing Exams should be segregated into two tables "Previous Exams of this Course" and "Open Exams"
+27 "Previous Exams of this Course" table should only hold exams that are either "marked/checked", "approved" or "closed" with a key to change marked exam to closed
+28 "Open Exams" table should hold papers in statuses "darfts" or "pending approval" (It should also notify in a new column which faculty member the paper is currently with e.g SI/Ci for pending approval and instructor name for drafts)
+29 Currently when selected time for exam is elapsed the exam is moved to closed state and locked forever and is inaccessible for all faculty. Admin should be able to change this status.
+30 Add Course Duration fields as "Start Dat" and "End Date"
+31 Add "Sponsor DS" field with a drop down of all registered faculty members to select from.
+32 Add 'Course Strength" field and a cap for max # of students to be registered in each course.
+33 Add Index # field instead of CGPA
+34 Add "Save as Draft" or "Submit to" key in Admin panel

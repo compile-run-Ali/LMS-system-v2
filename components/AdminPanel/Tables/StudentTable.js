@@ -15,19 +15,19 @@ export default function StudentTable({
   };
 
   const editStudent = (index) => {
-    console.log(students[index])
+    console.log(students[index]);
     router.push({
-      pathname:"/admin/add_student",
-      query:{
-        p_number:students[index].p_number,
-        name:students[index].name,
-        phone_number:students[index].phone_number,
-        cgpa:students[index].cgpa,
-        email:students[index].email,
-        DOB:students[index].DOB,
-        selectedCourse:students[index].course_code,
-      }
-    })
+      pathname: "/admin/add_student",
+      query: {
+        p_number: students[index].p_number,
+        name: students[index].name,
+        phone_number: students[index].phone_number,
+        cgpa: students[index].cgpa,
+        email: students[index].email,
+        DOB: students[index].DOB,
+        selectedCourse: students[index].course_code,
+      },
+    });
   };
 
   return (
@@ -35,7 +35,7 @@ export default function StudentTable({
       <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
         <thead>
           <tr className="bg-blue-800 rounded-md text-white">
-            <th className="px-4 py-2">P Number</th>
+            <th className="px-4 py-2">Army Number</th>
             <th className="px-4 py-2">Name</th>
             <th className="px-4 py-2">Phone Number</th>
             <th className="px-4 py-2">CGPA</th>
@@ -62,7 +62,9 @@ export default function StudentTable({
               </td>
               <td className="px-4 py-2">
                 <button
-                  onClick={()=>{editStudent(index)}}
+                  onClick={() => {
+                    editStudent(index);
+                  }}
                   className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                 >
                   <MdEdit />

@@ -66,7 +66,7 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
                   htmlFor="username"
                   className="block text-sm font-medium text-blue-900"
                 >
-                  {!facultyLogin ? "PA Number" : "Email"}
+                  {!facultyLogin ? "Army Number" : "Email"}
                 </label>
                 <input
                   onChange={(e) => {
