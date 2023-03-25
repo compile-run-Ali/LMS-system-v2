@@ -82,8 +82,10 @@ export default function CreateExam({ paperType }) {
   };
 
   const fetchIeFiles = async () => {
-    const res = await axios.post("/api/faculty/get_ie_files", {
-      paper_id: paperId,
+    const res = await axios.get(`/api/faculty/get_ie_files`, {
+      params: {
+        paperId: paperId,
+      },
     });
     setIeFiles(res.data);
   };
@@ -156,10 +158,10 @@ export default function CreateExam({ paperType }) {
       {active === 2 && paperId !== 0 && paperType === "IE" && (
         <div className="mt-10">
           <IeExam
-          paperId={paperId}
-          setActive={setActive}
-          exam={exam}
-          ieFiles={ieFiles}
+            paperId={paperId}
+            setActive={setActive}
+            exam={exam}
+            ieFiles={ieFiles}
           />
         </div>
       )}
@@ -174,7 +176,7 @@ export default function CreateExam({ paperType }) {
           />
         </div>
       )}
-            {active === 3 && paperId !== 0 && paperType === "IE" && (
+      {active === 3 && paperId !== 0 && paperType === "IE" && (
         <div className="mt-10">
           <Exam
             exam={exam}
