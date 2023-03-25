@@ -17,6 +17,7 @@ const handler = async (req, res) => {
         level: true,
         faculty_id: true,
         department: true,
+        position: true,
       },
     });
     res.status(200).json(faculty);

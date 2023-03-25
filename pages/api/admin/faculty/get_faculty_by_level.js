@@ -20,6 +20,7 @@ const handler = async (req, res) => {
             password: true,
             profile_picture: true,
             level: true,
+            position: true,
         },
         })
         res.status(200).json(faculty)

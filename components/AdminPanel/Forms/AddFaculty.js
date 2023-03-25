@@ -16,9 +16,38 @@ const AddFaculty = () => {
     edit ? router.query.department : ""
   );
   const [email, setEmail] = useState(edit ? router.query.email : "");
-  const [password, setPassword] = useState(edit? router.query.password : "");
+  const [position, setPosition] = useState(edit ? router.query.position : "");
+  const [password, setPassword] = useState(edit ? router.query.password : "");
   const [profilePicture, setProfilePicture] = useState(null);
 
+  const levels = [
+    {
+      title: "Comdt",
+      level: 4,
+    },
+    {
+      title: "CI",
+      level: 3,
+    },
+    {
+      title: "SI MT",
+      level: 2,
+    },
+    {
+      title: "SI SW",
+      level: 2,
+    },
+    {
+      title: "SI AT",
+      level: 2,
+    },
+    {
+      title: "Inst",
+      level: 1,
+    },
+  ];
+
+  console.log("position is", position, "level is", level);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
@@ -28,6 +57,7 @@ const AddFaculty = () => {
     formData.append("department", department);
     formData.append("email", email);
     formData.append("password", password);
+    formData.append("position", position);
     formData.append("profile_picture", profilePicture);
 
     if (edit) {
@@ -36,7 +66,6 @@ const AddFaculty = () => {
     } else {
       addFaculty(formData);
     }
-
   };
   const handleFileChange = (event) => {
     setProfilePicture(event.target.files[0]);
@@ -72,7 +101,6 @@ const AddFaculty = () => {
       router.push("/admin");
     }
   };
-
 
   return (
     <form onSubmit={handleSubmit} className="px-4">
@@ -121,14 +149,34 @@ const AddFaculty = () => {
             onChange={(event) => setDepartment(event.target.value)}
           />
         </div>
-        <div className="mb-4">
-          <Input
-            text="Level"
-            type="text"
-            value={level}
-            onChange={(event) => setLevel(event.target.value)}
-            required
-          />
+        <div className="mt-5">
+          <label
+            className="block mb-2 text-primary-black"
+            htmlFor="level_input"
+          >
+            Level
+          </label>
+          <select
+            className="block w-full text-sm text-gray-900 px-2 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
+            aria-describedby="level_input_help"
+            id="level_input"
+            value={position}
+            onChange={(event) => {
+              setPosition(event.target.value);
+              setLevel(
+                event.target.options[event.target.selectedIndex].getAttribute(
+                  "level"
+                )
+              );
+            }}
+          >
+            <option value="">Select Level</option>
+            {levels.map((level) => (
+              <option value={level.title} level={level.level} key={level.title}>
+                {level.title}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="font-poppins mt-4">
@@ -157,7 +205,7 @@ const AddFaculty = () => {
           className="bg-blue-800 hover:bg-blue-700 text-lg mt-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
           type="submit"
         >
-          Add Faculty
+          {edit ? "Edit Faculty" : "Add Faculty"}
         </button>
       </div>
     </form>

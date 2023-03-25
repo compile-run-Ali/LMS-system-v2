@@ -11,6 +11,7 @@ const handler = async (req, res) => {
         paperapproval: {
           select: {
             level: true,
+            position: true,
             paper: {
               select: {
                 paper_id: true,

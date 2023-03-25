@@ -1,13 +1,13 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt"
+import bcrypt from "bcrypt";
 
 const confirmPasswordHash = (plainPassword, hashedPassword) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     bcrypt.compare(plainPassword, hashedPassword, function (err, res) {
-          resolve(res);
-      });
-  })
-}
+      resolve(res);
+    });
+  });
+};
 
 const handler = async (email, password) => {
   const prisma = new PrismaClient();
@@ -15,29 +15,24 @@ const handler = async (email, password) => {
   try {
     const faculty = await prisma.faculty.findFirst({
       where: {
-        email
-      }
+        email,
+      },
     });
 
-  if (faculty !== null && faculty !== undefined && faculty.length !== 0)
-    {
-        //Compare the hash
-    const matched = await confirmPasswordHash(password, faculty.password);
-        if (matched)
-        {
-          return faculty   
-        }
-        else
-        {
-            throw new Error("Invalid Password")
-        }
-    }
-    else {
-        throw new Error("Faculty not found")
+    if (faculty !== null && faculty !== undefined && faculty.length !== 0) {
+      //Compare the hash
+      const matched = await confirmPasswordHash(password, faculty.password);
+      if (matched) {
+        return faculty;
+      } else {
+        throw new Error("Invalid Password");
+      }
+    } else {
+      throw new Error("Faculty not found");
     }
   } catch (err) {
-    throw new Error(err.message)
+    throw new Error(err.message);
   }
-}
+};
 
-export default handler
+export default handler;
