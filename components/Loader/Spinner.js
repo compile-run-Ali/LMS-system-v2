@@ -5,8 +5,6 @@ const Spinner = ({ show, message = "Loading..." }) => {
     return null;
   }
 
-  console.log("loader called");
-
   return (
     <div
       style={{ height: "calc(100vh + 200px)" }}
@@ -17,7 +15,7 @@ const Spinner = ({ show, message = "Loading..." }) => {
           className="animate-spin rounded-full aspect-square w-16 border-t-2 border-b-2 border-blue-900"
           style={{ animationDuration: "2s" }}
         ></div>
-        <div className="text-xs text-center mt-4 w-16">{message}</div>
+        <div className="text-xs text-black text-center mt-4 w-16">{message}</div>
       </div>
     </div>
   );

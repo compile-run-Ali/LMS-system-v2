@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import CountdownTimer from "../CountdownTimer";
 import SubmitModal from "../SubmitModal";
 import Loader from "@/components/Loader";
+import Spinner from "@/components/Loader/Spinner";
 
 export default function OQContainer({
   question,
@@ -16,7 +17,8 @@ export default function OQContainer({
   setFlags,
 }) {
   const router = useRouter();
-  const { paper } = router.query;  const session = useSession();
+  const { paper } = router.query;
+  const session = useSession();
 
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
@@ -26,9 +28,16 @@ export default function OQContainer({
   const [numSelected, setNumSelected] = useState(0);
   const [loading, setLoading] = useState(true);
   const [changed, setChanged] = useState(false);
+  const [savingAnswer, setSavingAnswer] = useState({
+    show: false,
+    message: "",
+  });
 
-  console.log("INSIDE OQ CONTAINER with ",question);
   const saveAnswer = () => {
+    setSavingAnswer({
+      show: true,
+      message: "Saving answer...",
+    });
     const score = markAnswer(
       question.correct_answer,
       selectedAnswer.join(","),
@@ -44,6 +53,10 @@ export default function OQContainer({
       })
       .then((res) => {
         console.log("answer added successfully ", res.data);
+        setSavingAnswer({
+          show: false,
+          message: "",
+        });
       })
       .catch((err) => {
         console.log("error ", err.message);
@@ -95,6 +108,15 @@ export default function OQContainer({
       JSON.parse(localStorage.getItem("papers"))[paper].flags
     );
   };
+
+  useEffect(() => {
+    if (changed) {
+      saveAnswer();
+    }
+  }, [selectedAnswer]);
+
+  console.log("changed is", changed);
+
   useEffect(() => {
     // correctanswer will be a string in form a1,a2
     // selectedanswer will be a string in form a1,a2
@@ -109,9 +131,7 @@ export default function OQContainer({
           },
         })
         .then((res) => {
-          console.log(
-            'CALL DONE'
-          );
+          console.log("CALL DONE");
           if (res.data) {
             setSelectedAnswer(res.data.answer.split(","));
             console.log("answer already exists", res.data);
@@ -146,6 +166,7 @@ export default function OQContainer({
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 w-full">
+      <Spinner show={savingAnswer.show} message={savingAnswer.message} />
       {question ? (
         <>
           <div className="relative">
@@ -252,17 +273,6 @@ export default function OQContainer({
                 {flags.includes(String(currentQuestion)) ? "Remove" : "Review"}
               </button>
             )}
-            <button
-              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
-                ${
-                  saved || !changed
-                    ? "bg-green-600"
-                    : "bg-white hover:bg-zinc-300"
-                }`}
-              onClick={saveAnswer}
-            >
-              {saved || !changed ? "Saved" : "Save"}
-            </button>
             {currentQuestion < totalQuestions - 1 ? (
               <button
                 className="bg-white hover:bg-zinc-300 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"

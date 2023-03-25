@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import SubmitModal from "../SubmitModal";
+import Spinner from "@/components/Loader/Spinner";
 
 export default function SQContainer({
   question,
@@ -20,14 +21,18 @@ export default function SQContainer({
   const [answers, setAnswers] = useState({});
   const [saved, setSaved] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [changed, setChanged] = useState(false);
+  const [savingAnswer, setSavingAnswer] = useState({
+    show: false,
+    message: "",
+  });
 
   const saveAnswer = () => {
     if (!answers) {
       alert("Your answer is empty. Please type anything to continue.");
       return;
     }
+    setSavingAnswer({ show: true, message: "Saving answer..." });
 
     for (let question_id in answers) {
       axios
@@ -38,6 +43,7 @@ export default function SQContainer({
         })
         .then((res) => {
           setSaved(true);
+          setSavingAnswer({ show: false, message: "" });
           console.log("answer added successfully ", res.data);
         })
         .catch((err) => {
@@ -108,6 +114,7 @@ export default function SQContainer({
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl text-white">
+      <Spinner show={savingAnswer.show} message={savingAnswer.message} />
       {question ? (
         <>
           <div>
@@ -119,46 +126,48 @@ export default function SQContainer({
             </div>
             <div className="py-4 rounded-lg space-y-2 ">
               {question.child_question && question.child_question.length > 0 ? (
-                question.child_question.sort((a, b) => a.questionnumber - b.questionnumber).map((childQuestion, index) => (
-                  <div key={childQuestion.sq_id}>
-                    <div className="text-xl">
-                      <div className="flex justify-between items-center ">
-                        <p>
-                          {childQuestion.questionnumber +
-                            ". " +
-                            childQuestion.question}
-                        </p>
-                        <p className="text-base">
-                          ({childQuestion.marks} Marks)
-                        </p>
+                question.child_question
+                  .sort((a, b) => a.questionnumber - b.questionnumber)
+                  .map((childQuestion, index) => (
+                    <div key={childQuestion.sq_id}>
+                      <div className="text-xl">
+                        <div className="flex justify-between items-center ">
+                          <p>
+                            {childQuestion.questionnumber +
+                              ". " +
+                              childQuestion.question}
+                          </p>
+                          <p className="text-base">
+                            ({childQuestion.marks} Marks)
+                          </p>
+                        </div>
+                      </div>
+                      <div className="pb-4 rounded-lg space-y-2">
+                        <label className="">
+                          Answer
+                          {!childQuestion.long_question && (
+                            <span className="text-gray-200 text-sm">
+                              {" "}
+                              (Max 50 characters)
+                            </span>
+                          )}
+                        </label>
+                        <textarea
+                          className="border bg-white rounded-md p-2 w-full text-black border-black focus:outline-yellow-500"
+                          maxLength={childQuestion.long_question ? 100000 : 50}
+                          value={answers[childQuestion.sq_id]}
+                          rows={childQuestion.long_question ? 10 : 2}
+                          onChange={(e) => {
+                            setChanged(true);
+                            setAnswers({
+                              ...answers,
+                              [childQuestion.sq_id]: e.target.value,
+                            });
+                          }}
+                        />
                       </div>
                     </div>
-                    <div className="pb-4 rounded-lg space-y-2">
-                      <label className="">
-                        Answer
-                        {!childQuestion.long_question && (
-                          <span className="text-gray-200 text-sm">
-                            {" "}
-                            (Max 50 characters)
-                          </span>
-                        )}
-                      </label>
-                      <textarea
-                        className="border bg-white rounded-md p-2 w-full text-black border-black focus:outline-yellow-500"
-                        maxLength={childQuestion.long_question ? 100000 : 50}
-                        value={answers[childQuestion.sq_id]}
-                        rows={childQuestion.long_question ? 10 : 2}
-                        onChange={(e) => {
-                          setChanged(true);
-                          setAnswers({
-                            ...answers,
-                            [childQuestion.sq_id]: e.target.value,
-                          });
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))
+                  ))
               ) : (
                 <div className="pb-4 rounded-lg space-y-2">
                   <label className="">
