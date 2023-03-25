@@ -137,8 +137,8 @@ If not page should automatically scroll down to the right area when "Create new 
 16 Default Time for Objectives should retain the user's last choice rather than changing back to 60 seconds each time.
 <!-- 17 Comment Box to be included for Faculty to add his reasoning while marking the paper -->
 <!-- 18 Change Sign in page name to "ASC e-Exam System" -->
-19 "Register as student" key should have same layout as all other keys.
-20 Remove "Login as Faculty" key from bottom right and key "Login as Faculty" key on top right of page.
+<!-- 19 "Register as student" key should have same layout as all other keys. -->
+<!-- 20 Remove "Login as Faculty" key from bottom right and key "Login as Faculty" key on top right of page. -->
 <!-- 21 Change "PA#" to "Army #" -->
 22 Add "Rank" field with drop down containing the following values (2nd Lt, Lt, Capt, Maj)
 23 Add PA# and Rank fields (Capt, Major, Letenant Colonel, Colonel, Brg, Maj Gen, Lt Gen)

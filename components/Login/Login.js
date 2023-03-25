@@ -59,7 +59,7 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
           <h2 className="mt-1 text-2xl">Student Portal</h2>
         </div>
         <div className="w-full h-4/5 mt-2 pt-5  border-t border-slate-300 relative z-10 flex justify-between items-end pb-20 pr-40 bg-white ">
-          <div className="w-[40%]  ml-14">
+          <div className="w-[40%] ml-14">
             <form>
               <div>
                 <label
@@ -78,7 +78,7 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
                   autoComplete="off"
                   required
                   className="relative block w-full mt-2 appearance-none rounded-none bg-transparent
-                                        border border-gray-300 px-3  py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                   border border-gray-300 px-3  py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                 />
               </div>
               <div className="mt-5">
@@ -131,7 +131,7 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
             </div>
 
             {!facultyLogin && (
-              <div className="my-3 cursor-pointer">
+              <div className="mt-3 cursor-pointer">
                 <Link href={"/register"}>
                   <button
                     className="group relative flex w-full justify-center border border-transparent
@@ -142,18 +142,6 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
                 </Link>
               </div>
             )}
-            <div className="mt-5">
-              <button
-                onClick={() => {
-                  setFacultyLogin(!facultyLogin);
-                }}
-                type="Login"
-                className="group relative flex w-full justify-center border border-transparent
-                 bg-blue-900 py-2 px-4 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Login as {!facultyLogin ? <>Faculty</> : <>Student</>}
-              </button>
-            </div>
           </div>
         </div>
       </div>
