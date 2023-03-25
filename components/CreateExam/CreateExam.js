@@ -45,12 +45,10 @@ const wizardItemsSubjective = [
 export default function CreateExam({ paperType }) {
   const router = useRouter();
 
-  const [examDetails, setExamDetails] = useState(
-    Object.keys(router.query).length > 1 ? router.query : null
-  );
+  const [examDetails, setExamDetails] = useState(null);
   const [active, setActive] = useState(1);
   const [paperId, setPaperId] = useState(
-    examDetails ? examDetails.paper_id : 0
+    Object.keys(router.query).length > 0 ? router.query.paper_id : 0
   );
   const [exam, setExam] = useState();
   const [mcqs, setMCQs] = useState([]);
@@ -61,8 +59,11 @@ export default function CreateExam({ paperType }) {
   useEffect(() => {
     if (router.isReady) {
       console.log("router is ready");
+      setPaperId(
+        Object.keys(router.query).length > 0 ? router.query.paper_id : 0
+      );
       setExamDetails(
-        Object.keys(router.query).length > 1 ? router.query : null
+        Object.keys(router.query).length > 0 ? router.query : null
       );
     }
   }, [router]);
@@ -73,6 +74,8 @@ export default function CreateExam({ paperType }) {
     });
     setExam(res.data);
   };
+
+  console.log("paper id is", paperId);
 
   const fetchObjectives = async () => {
     const res = await axios.post("/api/faculty/get_objective", {
@@ -98,7 +101,7 @@ export default function CreateExam({ paperType }) {
       .then((res) => {
         const allQuestion = res.data;
         setSubjectives(res.data.filter((question) => !question.parent_sq_id));
-        console.log("allQuestion", res.data);
+        // console.log("allQuestion", res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -106,28 +109,27 @@ export default function CreateExam({ paperType }) {
   };
 
   useEffect(() => {
-    if (paperId !== 0 && !exam) {
+    if (paperId && !exam) {
+      console.log("paper id is", paperId, "fetching exam");
       fetchExam();
     }
-    if (paperType === "Objective" && paperId !== 0) {
+    if (paperType === "Objective" && paperId) {
       fetchObjectives();
     }
-    if (paperType === "Subjective/Objective" && paperId !== 0) {
+    if (paperType === "Subjective/Objective" && paperId) {
       fetchObjectives();
       fetchSubjectives();
     }
-    if (paperType === "IE" && paperId !== 0) {
+    if (paperType === "IE" && paperId) {
       fetchIeFiles();
     }
   }, [paperId, exam, paperType]);
-
-  // console.log("subjectives", subjectives);
-  console.log("mcqs", mcqs);
 
   return (
     <div className="w-full pl-6 mt-2">
       <Wizard
         active={active}
+        setActive={setActive}
         items={
           paperType === "Subjective/Objective"
             ? wizardItemsSubjective

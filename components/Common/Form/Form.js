@@ -12,29 +12,50 @@ export default function Form({
   setFreeFlowGlobal,
 }) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({
+    show: false,
+    message: "",
+  });
   const [edit, setEdit] = useState(examDetails ? true : false);
-  const [paperName, setPaperName] = useState(
-    edit ? examDetails.paper_name : ""
-  );
+  const [paperName, setPaperName] = useState("");
+  const [paperDuration, setPaperDuration] = useState(180);
+  const [weightage, setWeightage] = useState("");
+  const [dateOfExam, setDateOfExam] = useState(null);
+  const [paperTime, setPaperTime] = useState("09:00");
+  const [freeflow, setFreeflow] = useState(false);
+  const [review, setReview] = useState(false);
 
-  const [paperDuration, setPaperDuration] = useState(
-    edit ? Number(examDetails.duration) : 180
-  );
-  const [weightage, setWeightage] = useState(edit ? examDetails.weightage : "");
-
-  const [dateOfExam, setDateOfExam] = useState(
-    edit ? new Date(examDetails.date).toISOString().substr(0, 10) : ""
-  );
-  const [paperTime, setPaperTime] = useState(
-    edit ? new Date(examDetails.date).toISOString().substr(11, 5) : "09:00"
-  );
-  const [freeflow, setFreeflow] = useState(
-    edit ? examDetails.freeflow === "true" : false
-  );
-  const [review, setReview] = useState(
-    edit ? examDetails.review === "true" : false
-  );
+  useEffect(() => {
+    if (edit) {
+      setLoading({
+        show: true,
+        message: "Loading Exam Details",
+      });
+      axios.post("/api/faculty/get_exam", {
+        paper_id: examDetails.paper_id,
+      })
+        .then((res) => {
+          setPaperName(res.data.paper_name);
+          setPaperDuration(res.data.duration);
+          setWeightage(res.data.weightage);
+          setDateOfExam(new Date(res.data.date).toISOString().substr(0, 10));
+          setPaperTime(new Date(res.data.date).toISOString().substr(11, 5));
+          setFreeflow(res.data.freeflow);
+          setReview(res.data.review);
+          setLoading({
+            show: false,
+            message: "",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading({
+            show: false,
+            message: "",
+          });
+        });
+    }
+  }, [edit]);
 
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
@@ -83,7 +104,10 @@ export default function Form({
       alert("Please fill all the fields");
       return;
     }
-    setLoading(true);
+    setLoading({
+      show: true,
+      message: edit ? "Updating Paper Details" : "Creating Paper",
+    });
 
     const res = await axios.post(
       `/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
@@ -100,7 +124,10 @@ export default function Form({
       }
     );
     if (res) {
-      setLoading(false);
+      setLoading({
+        show: false,
+        message: "",
+      });
       console.log("paper made ", res.data);
     }
 
@@ -110,27 +137,17 @@ export default function Form({
 
   const setEditTrue = () => {
     setEdit(true);
-    setPaperName(examDetails.paper_name);
-    setPaperDuration(Number(examDetails.duration));
-    setWeightage(examDetails.weightage);
-    setDateOfExam(new Date(examDetails.date).toISOString().substr(0, 10));
-    setPaperTime(new Date(examDetails.date).toISOString().substr(11, 5));
-    setFreeflow(examDetails.freeflow === "true");
-    setReview(examDetails.review === "true");
   };
 
   useEffect(() => {
-    if (Object.keys(router.query).length > 1) {
+    if (Object.keys(router.query).length > 0) {
       setEditTrue();
     }
   }, [examDetails]);
 
   return (
     <form>
-      <Spinner
-        show={loading}
-        message={edit ? "Updating Paper Details" : "Creating Paper"}
-      />
+      <Spinner show={loading.show} message={loading.message} />
       <div className="w-full grid grid-cols-2 pr-10 gap-x-5 mt-10 font-poppins">
         <Input
           text={"Paper Name"}

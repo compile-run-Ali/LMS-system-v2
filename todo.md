@@ -133,7 +133,7 @@ If not page should automatically scroll down to the right area when "Create new 
 12 Invert Ul to display older exams in approved or closed states below and the latest exams pending approval at the top of page
 13 Invert Ul to display older exams in closed or marked state below and the latest attempt awaiting attempt or review at the top of page
 14 Question # sequence and part # sequence should automatically assign correct serial # for subjective questions to minimize user's effort. (currently it is doing so haphazardly an dis inconsistent)
-15 Create Exam steps should be clickable keys to allow simpler navigation between stages. (Exam Settings, Objective, Subjective, Exam Review)
+<!-- 15 Create Exam steps should be clickable keys to allow simpler navigation between stages. (Exam Settings, Objective, Subjective, Exam Review) -->
 16 Default Time for Objectives should retain the user's last choice rather than changing back to 60 seconds each time.
 <!-- 17 Comment Box to be included for Faculty to add his reasoning while marking the paper -->
 <!-- 18 Change Sign in page name to "ASC e-Exam System" -->
