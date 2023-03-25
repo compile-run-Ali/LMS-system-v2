@@ -11,6 +11,7 @@ const handler = async (req, res) => {
       },
       select: {
         faculty_id: true,
+        pa_number: true,
         name: true,
         email: true,
         phone_number: true,

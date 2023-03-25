@@ -141,7 +141,7 @@ If not page should automatically scroll down to the right area when "Create new 
 <!-- 20 Remove "Login as Faculty" key from bottom right and key "Login as Faculty" key on top right of page. -->
 <!-- 21 Change "PA#" to "Army #" -->
 <!-- 22 Add "Rank" field with drop down containing the following values (2nd Lt, Lt, Capt, Maj) -->
-23 Add PA# and Rank fields (Capt, Major, Letenant Colonel, Colonel, Brg, Maj Gen, Lt Gen)
+<!-- 23 Add PA# and Rank fields (Capt, Major, Letenant Colonel, Colonel, Brg, Maj Gen, Lt Gen) -->
 <!-- 24 Change Faculty levels from numbers to (Comdt, CI, SI MT, SI SW, SI AT, Inst) -->
 <!-- 25 Remove "Department" Field -->
 26 Table of Existing Exams should be segregated into two tables "Previous Exams of this Course" and "Open Exams"

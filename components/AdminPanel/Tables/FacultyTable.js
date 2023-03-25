@@ -22,6 +22,7 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
     router.push({
       pathname: "/admin/add_faculty",
       query: {
+        pa_number: facultyData[index].pa_number,
         faculty_id: facultyData[index].faculty_id,
         name: facultyData[index].name,
         phone_number: facultyData[index].phone_number,
@@ -52,6 +53,7 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
     <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
       <thead>
         <tr className="bg-blue-800 rounded-md text-white">
+          <th className="px-4 py-2">PA Number</th>
           <th className="px-4 py-2">Name</th>
           <th className="px-4 py-2">Phone Number</th>
           <th className="px-4 py-2">Rank</th>
@@ -64,6 +66,7 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
       <tbody>
         {facultyData.map((facultyMember, index) => (
           <tr key={index} className="bg-white">
+            <td className=" px-4 py-2">{facultyMember.pa_number}</td>
             <td className=" px-4 py-2">{facultyMember.name}</td>
             <td className=" px-4 py-2">{facultyMember.phone_number}</td>
             <td className=" px-4 py-2">{facultyMember.rank}</td>

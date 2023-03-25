@@ -47,7 +47,9 @@ const handler = async (req, res) => {
                   faculty_id: fields.faculty_id,
                 },
                 data: facultyData,
+                pa_number: true,
                 select: {
+                  pa_number: true,
                   faculty_id: true,
                   name: true,
                   email: true,
@@ -69,6 +71,7 @@ const handler = async (req, res) => {
               },
               data: facultyData,
               select: {
+                pa_number: true,
                 faculty_id: true,
                 name: true,
                 email: true,

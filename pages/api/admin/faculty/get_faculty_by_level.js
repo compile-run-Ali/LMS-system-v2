@@ -12,6 +12,7 @@ const handler = async (req, res) => {
         },
       },
       select: {
+        pa_number: true,
         faculty_id: true,
         name: true,
         email: true,

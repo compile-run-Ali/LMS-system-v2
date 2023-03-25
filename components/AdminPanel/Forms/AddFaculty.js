@@ -11,6 +11,7 @@ const AddFaculty = () => {
   const [phoneNumber, setPhoneNumber] = useState(
     edit ? router.query.phone_number : ""
   );
+  const [pa_number, setPaNumber] = useState(edit ? router.query.pa_number : "");
   const [level, setLevel] = useState(edit ? router.query.level : "");
   const [email, setEmail] = useState(edit ? router.query.email : "");
   const [position, setPosition] = useState(edit ? router.query.position : "");
@@ -55,11 +56,17 @@ const AddFaculty = () => {
     "Lieutenant General",
   ];
 
-  console.log('rank is ',rank);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // if pnumber is not a number give alert
+    if (isNaN(pa_number)) {
+      alert("PA Number should be a number");
+      return;
+    }
+
     const formData = new FormData();
+    formData.append("pa_number", pa_number);
     formData.append("name", name);
     formData.append("phone_number", phoneNumber);
     formData.append("level", level);
@@ -116,12 +123,21 @@ const AddFaculty = () => {
   return (
     <form onSubmit={handleSubmit} className="px-4">
       <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
-        <div className="mb-4 ">
+        <div className="mb-4 col-span-2">
           <Input
             text="Name"
             type="text"
             value={name}
             onChange={(event) => setName(event.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-4 ">
+          <Input
+            text="PA Number"
+            type="String"
+            value={pa_number}
+            onChange={(event) => setPaNumber(event.target.value)}
             required
           />
         </div>
@@ -157,6 +173,7 @@ const AddFaculty = () => {
             Rank
           </label>
           <select
+            required
             className="block w-full text-sm text-gray-900 px-2 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
             aria-describedby="rank_input_help"
             id="rank_input"
@@ -181,6 +198,7 @@ const AddFaculty = () => {
             Level
           </label>
           <select
+          required
             className="block w-full text-sm text-gray-900 px-2 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
             aria-describedby="level_input_help"
             id="level_input"

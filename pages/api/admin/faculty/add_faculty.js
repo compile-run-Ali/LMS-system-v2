@@ -36,6 +36,7 @@ const handler = async (req, res) => {
 
         const hash = await bcrypt.hash(fields.password, 0);
         const facultyData = {
+          pa_number: fields.pa_number,
           name: fields.name,
           email: fields.email,
           password: hash,
@@ -62,6 +63,7 @@ const handler = async (req, res) => {
               .create({
                 data: facultyData,
                 select: {
+                  pa_number: true,
                   faculty_id: true,
                   name: true,
                   email: true,
@@ -82,6 +84,7 @@ const handler = async (req, res) => {
               select: {
                 faculty_id: true,
                 name: true,
+                pa_number: true,
                 email: true,
                 rank: true,
                 position: true,
