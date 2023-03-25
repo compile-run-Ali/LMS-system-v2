@@ -98,7 +98,7 @@ export default function Exam({
 
   const submitExam = async () => {
     if (!selectedFaculty) {
-      alert("Please select a faculty to submit to");
+      alert("Please select a faculty to mark to");
       return;
     }
 
@@ -352,7 +352,7 @@ export default function Exam({
                       className="bg-gray-100 border-2 border-gray-300 rounded-lg py-4 px-8"
                       onChange={handleSelectedFaculty}
                     >
-                      <option value="">Submit to</option>
+                      <option value="">Mark to</option>
                       {faculty &&
                         faculty.map((faculty) => (
                           <option
@@ -408,7 +408,7 @@ export default function Exam({
                     className="bg-gray-100 border-2 border-gray-300 rounded-lg py-4 px-8"
                     onChange={handleSelectedFaculty}
                   >
-                    <option value="">Submit to</option>
+                    <option value="">Mark to</option>
                     {faculty &&
                       faculty.map((faculty) => (
                         <option

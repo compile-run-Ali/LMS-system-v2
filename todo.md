@@ -122,7 +122,7 @@ data retaining issue when allow multiple edit
 2 Approve Key to be given at faculty home page for approving papers with each line of paper in pending approval status. Faculty should have the option to approve without opening the paper. (For Comndant and Cl only)
 3 Remove "Create Paper" Options from Seniority Faculty IDs (Comandant and CI)
 4 Clicking on the Notification should navigate to the concerned paper
-5 "Submit to" button should be changed to "mark to"
+<!-- 5 "Submit to" button should be changed to "mark to" -->
 6 Remove "Send Forward" and "Send Back" Keys
 7 Comments Section should only be enbaled when a faculty is selected from Submit to Drop Down
 8 Comment should be enclosed in inverted comma's and the smaller text in subscript needs to indicate who was the comment maked to. (currently it only denotes who wrote the comment and not who it was directed to)
