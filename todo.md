@@ -118,7 +118,7 @@ data retaining issue when allow multiple edit
 
 
 ### New
-1 Option select button should automatically save sudents response. There should be no need for a separate "Save" key.
+<!-- 1 Option select button should automatically save sudents response. There should be no need for a separate "Save" key. -->
 2 Approve Key to be given at faculty home page for approving papers with each line of paper in pending approval status. Faculty should have the option to approve without opening the paper. (For Comndant and Cl only)
 3 Remove "Create Paper" Options from Seniority Faculty IDs (Comandant and CI)
 4 Clicking on the Notification should navigate to the concerned paper
