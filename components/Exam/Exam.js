@@ -147,47 +147,47 @@ export default function Exam({
     }
   };
 
-  const sendBack = async () => {
-    const sendBack = await axios.post("/api/faculty/edit_paperapproval", {
-      paper_id: exam.paper_id,
-      examofficer: null,
-    });
-    if (sendBack.status === 200) {
-      addComment({
-        comment: `Exam Sent Back by ${session.data.user.name}`,
-        faculty_id: session.data.user.id,
-        paper_id: exam.paper_id,
-      });
-      router.push("/faculty");
-    }
-  };
+  // const sendBack = async () => {
+  //   const sendBack = await axios.post("/api/faculty/edit_paperapproval", {
+  //     paper_id: exam.paper_id,
+  //     examofficer: null,
+  //   });
+  //   if (sendBack.status === 200) {
+  //     addComment({
+  //       comment: `Exam Sent Back by ${session.data.user.name}`,
+  //       faculty_id: session.data.user.id,
+  //       paper_id: exam.paper_id,
+  //     });
+  //     router.push("/faculty");
+  //   }
+  // };
 
-  const sendForward = async () => {
-    if (!selectedFaculty) {
-      alert("Please select a faculty to send to");
-      return;
-    }
-    const sendForward = await axios.post("/api/faculty/edit_paperapproval", {
-      paper_id: exam.paper_id,
-      examofficer: selectedFaculty,
-      level: faculty.filter(
-        (faculty) => faculty.faculty_id === selectedFaculty
-      )[0].level,
-    });
-    if (sendForward.status === 200) {
-      addComment({
-        comment: `Exam Sent Forward by ${session.data.user.name} to ${
-          faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
-            .name
-        }`,
-        faculty_id: session.data.user.id,
-        paper_id: exam.paper_id,
-      });
-      console.log("Exam Sent Forward");
-      generateNotification();
-      router.push("/faculty");
-    }
-  };
+  // const sendForward = async () => {
+  //   if (!selectedFaculty) {
+  //     alert("Please select a faculty to send to");
+  //     return;
+  //   }
+  //   const sendForward = await axios.post("/api/faculty/edit_paperapproval", {
+  //     paper_id: exam.paper_id,
+  //     examofficer: selectedFaculty,
+  //     level: faculty.filter(
+  //       (faculty) => faculty.faculty_id === selectedFaculty
+  //     )[0].level,
+  //   });
+  //   if (sendForward.status === 200) {
+  //     addComment({
+  //       comment: `Exam Sent Forward by ${session.data.user.name} to ${
+  //         faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
+  //           .name
+  //       }`,
+  //       faculty_id: session.data.user.id,
+  //       paper_id: exam.paper_id,
+  //     });
+  //     console.log("Exam Sent Forward");
+  //     generateNotification();
+  //     router.push("/faculty");
+  //   }
+  // };
 
   const generateNotification = async () => {
     const res = await axios.post("/api/faculty/generate_notification", {
@@ -364,7 +364,7 @@ export default function Exam({
                   </div>
                 </div>
                 <div className="flex gap-x-5 justify-end">
-                  <div className="mt-10 mb-10">
+                  {/* <div className="mt-10 mb-10">
                     <button
                       type="submit"
                       className="bg-red-800 hover:bg-red-700 font-medium text-white rounded-lg py-4 px-8"
@@ -385,7 +385,7 @@ export default function Exam({
                     >
                       Send Forward
                     </button>
-                  </div>
+                  </div> */}
                   {exam.examofficer?.level > 2 && (
                     <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
                       <button

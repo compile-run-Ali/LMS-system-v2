@@ -123,7 +123,7 @@ data retaining issue when allow multiple edit
 3 Remove "Create Paper" Options from Seniority Faculty IDs (Comandant and CI)
 4 Clicking on the Notification should navigate to the concerned paper
 <!-- 5 "Submit to" button should be changed to "mark to" -->
-6 Remove "Send Forward" and "Send Back" Keys
+<!-- 6 Remove "Send Forward" and "Send Back" Keys -->
 7 Comments Section should only be enbaled when a faculty is selected from Submit to Drop Down
 8 Comment should be enclosed in inverted comma's and the smaller text in subscript needs to indicate who was the comment maked to. (currently it only denotes who wrote the comment and not who it was directed to)
 9 Once Faculty opens an exam, there should be a header on the top of page indicating Exam Name to notify which exam the user is currently in.
