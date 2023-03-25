@@ -127,7 +127,7 @@ data retaining issue when allow multiple edit
 7 Comments Section should only be enbaled when a faculty is selected from Submit to Drop Down
 8 Comment should be enclosed in inverted comma's and the smaller text in subscript needs to indicate who was the comment maked to. (currently it only denotes who wrote the comment and not who it was directed to)
 9 Once Faculty opens an exam, there should be a header on the top of page indicating Exam Name to notify which exam the user is currently in.
-10 Cancel Key not working. When pressed should navigate user to outside of the exam edit screen
+<!-- 10 Cancel Key not working. When pressed should navigate user to outside of the exam edit screen -->
 11 Invert Ul to display the adding new question functions at the top op screen and the existing questions below to cut out excessive scrolling for end user.
 If not page should automatically scroll down to the right area when "Create new MCQ" or "create new Subjective is clicked"
 12 Invert Ul to display older exams in approved or closed states below and the latest exams pending approval at the top of page

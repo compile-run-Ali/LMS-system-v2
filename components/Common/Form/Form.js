@@ -198,6 +198,7 @@ export default function Form({
       <div className="mt-10 w-full pr-10 flex justify-end gap-x-5">
         <button
           type="button"
+          onClick={() => router.push("/")}
           className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
         >
           Cancel
