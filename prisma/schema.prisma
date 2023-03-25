@@ -19,6 +19,7 @@ model Student {
   cgpa            Float
   email           String
   DOB             DateTime
+  rank            String? 
   profile_picture String?
 
   courses            SRC[]

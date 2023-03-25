@@ -5,21 +5,34 @@ import { useRouter } from "next/router";
 
 export default function AddStudent() {
   const router = useRouter();
-  const [pNumber, setPNumber] = useState(router.query.p_number? router.query.p_number : "");
+  const [pNumber, setPNumber] = useState(
+    router.query.p_number ? router.query.p_number : ""
+  );
   const [edit, setEdit] = useState(router.query.p_number ? true : false);
-  const [name, setName] = useState(router.query.name? router.query.name : "");
-  const [phoneNumber, setPhoneNumber] = useState(router.query.phone_number? router.query.phone_number : "");
-  const [cgpa, setCgpa] = useState(router.query.cgpa? router.query.cgpa : "");
-  const [DOB, setDob] = useState(router.query.DOB? router.query.DOB : "");
-  const [email, setEmail] = useState(router.query.email? router.query.email : "");
+  const [name, setName] = useState(router.query.name ? router.query.name : "");
+  const [phoneNumber, setPhoneNumber] = useState(
+    router.query.phone_number ? router.query.phone_number : ""
+  );
+  const [cgpa, setCgpa] = useState(router.query.cgpa ? router.query.cgpa : "");
+  const [DOB, setDob] = useState(router.query.DOB ? router.query.DOB : "");
+  const [email, setEmail] = useState(
+    router.query.email ? router.query.email : ""
+  );
   const [password, setPassword] = useState("");
-  const [selectedCourse, setSelectedCourse] = useState(router.query.course_code? router.query.course_code : "");
+  const courseObject = router.query.selectedCourse
+    ? JSON.parse(router.query.selectedCourse)
+    : null;
+  const [selectedCourse, setSelectedCourse] = useState(
+    courseObject ? courseObject.course.course_code : null
+  );
   const [courses, setCourses] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [rank, setRank] = useState(router.query.rank ? router.query.rank : "");
+  const ranks = ["2nd Lt", "Lt", "Capt", "Maj"];
 
   const handleFileChange = (event) => {
     setProfilePicture(event.target.files[0]);
-    console.log(event.target.files[0])
+    console.log(event.target.files[0]);
   };
 
   useEffect(() => {
@@ -33,7 +46,7 @@ export default function AddStudent() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     const formData = new FormData();
     formData.append("p_number", pNumber);
     formData.append("name", name);
@@ -43,8 +56,10 @@ export default function AddStudent() {
     formData.append("email", email);
     formData.append("password", password);
     formData.append("course_code", selectedCourse);
+    formData.append("rank", rank);
     formData.append("profile_picture", profilePicture);
-    console.log(profilePicture)
+
+    console.log(profilePicture);
 
     if (edit) {
       formData.append("student_id", router.query.student_id);
@@ -53,7 +68,6 @@ export default function AddStudent() {
       addStudent(formData);
     }
 
-  
     // setPNumber("");
     // setName("");
     // setPhoneNumber("");
@@ -63,47 +77,46 @@ export default function AddStudent() {
     // setPassword("");
     // setProfilePicture(null);
   };
-    
 
-const addStudent = async (student) => {
-  axios
-    .post(`/api/admin/student/add_student`, student, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then((res) => {
-      console.log("student added successfully", res.data);
-      // add course and student to SRC table
-      axios
-        .post(`/api/student/register`, {
-          p_number: pNumber,
-          course_code: selectedCourse,
-        })
-        .then((res) => {
-          console.log("course added successfully", res.data);
-        })
-        .catch((err) =>
-          console.log("Error in registering student to course", err)
-        );
-    })
-    .catch((err) => console.log("Error in registering student", err));
-  router.push("/admin");
-};
+  const addStudent = async (student) => {
+    axios
+      .post(`/api/admin/student/add_student`, student, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        console.log("student added successfully", res.data);
+        // add course and student to SRC table
+        axios
+          .post(`/api/student/register`, {
+            p_number: pNumber,
+            course_code: selectedCourse,
+          })
+          .then((res) => {
+            console.log("course added successfully", res.data);
+          })
+          .catch((err) =>
+            console.log("Error in registering student to course", err)
+          );
+      })
+      .catch((err) => console.log("Error in registering student", err));
+    router.push("/admin");
+  };
 
-const editStudent = async (student) => {
-  axios
-    .post(`/api/admin/student/edit_student`, student, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then((res) => {
-      console.log("student edited successfully", res.data);
-    })
-    .catch((err) => console.log("Error in editing student", err));
-  router.push("/admin");
-};
+  const editStudent = async (student) => {
+    axios
+      .post(`/api/admin/student/edit_student`, student, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        console.log("student edited successfully", res.data);
+      })
+      .catch((err) => console.log("Error in editing student", err));
+    router.push("/admin");
+  };
 
   return (
     <form onSubmit={handleSubmit} className="px-4 font-poppins">
@@ -129,6 +142,15 @@ const editStudent = async (student) => {
         </div>
         <div className="mb-4">
           <Input
+            text="Email"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <Input
             text="Phone Number"
             type="text"
             value={phoneNumber}
@@ -143,8 +165,8 @@ const editStudent = async (student) => {
             type="date"
             onChange={(event) => setDob(event.target.value)}
             required
-            value={DOB ? new Date(DOB).toISOString().substr(0, 10) : ''}
-            />
+            value={DOB ? new Date(DOB).toISOString().substr(0, 10) : ""}
+          />
         </div>
         <div className="mt-6 form-group">
           <label htmlFor="Courses">Courses</label>
@@ -154,6 +176,7 @@ const editStudent = async (student) => {
                   bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
                   focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
             id="Courses"
+            value={selectedCourse}
             onChange={(e) => {
               setSelectedCourse(e.target.value);
             }}
@@ -166,14 +189,26 @@ const editStudent = async (student) => {
             ))}
           </select>
         </div>
-        <div className="mb-4">
-          <Input
-            text="Email"
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
+        <div className="mt-6">
+          <label htmlFor="Rank">Rank</label>
+
+          <select
+            className="form-control block w-full mt-2 px-3 py-2.5 text-sm font-normal text-gray-700 
+                  bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
+                  focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+            id="Courses"
+            value={rank}
+            onChange={(e) => {
+              setRank(e.target.value);
+            }}
+          >
+            <option value={""}>Select a rank</option>
+            {ranks?.map((rank) => (
+              <option key={rank} value={rank}>
+                {rank}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
           <Input
@@ -185,7 +220,10 @@ const editStudent = async (student) => {
           />
         </div>
         <div className="font-poppins mt-[22px]">
-          <label className="block mb-2  text-primary-black" htmlFor="file_input">
+          <label
+            className="block mb-2  text-primary-black"
+            htmlFor="file_input"
+          >
             Upload Profile Pic{" "}
             <span
               className="mt-1 pl-1 text-xs text-black-100 "

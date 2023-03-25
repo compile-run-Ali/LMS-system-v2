@@ -32,6 +32,7 @@ export default async function handler(req, res) {
           cgpa: Number(fields.cgpa),
           email: fields.email,
           DOB: new Date(fields.DOB),
+          rank: fields.rank
         };
 
 
@@ -61,6 +62,7 @@ export default async function handler(req, res) {
                 cgpa: true,
                 email: true,
                 DOB: true,
+                rank: true,
                 profile_picture: true,
               },
             }).then(resolve).catch(reject);
@@ -75,6 +77,7 @@ export default async function handler(req, res) {
               cgpa: true,
               email: true,
               DOB: true,
+              rank: true,
             },
           }).then(resolve).catch(reject);
         }
