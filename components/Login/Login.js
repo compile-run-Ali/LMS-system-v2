@@ -133,9 +133,12 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
             {!facultyLogin && (
               <div className="my-3 cursor-pointer">
                 <Link href={"/register"}>
-                  <span className="hover:text-blue-500 text-slate-700">
+                  <button
+                    className="group relative flex w-full justify-center border border-transparent
+                 bg-blue-900 py-2 px-4 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                  >
                     Register as Student
-                  </span>
+                  </button>
                 </Link>
               </div>
             )}
