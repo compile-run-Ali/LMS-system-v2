@@ -1,18 +1,18 @@
-import React, { createContext, useReducer } from 'react'
-import AppReducer from './AppReducer'
+import React, { createContext, useReducer } from "react";
+import AppReducer from "./AppReducer";
 
 const initialState = {
-  show: true,
-}
+  show: false,
+};
 
-export const SidebarContext = createContext(initialState)
+export const SidebarContext = createContext(initialState);
 
 export const SidebarProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(AppReducer, initialState)
+  const [state, dispatch] = useReducer(AppReducer, initialState);
   function setShowSidebar() {
     dispatch({
-      type: 'TOGGLE_SIDEBAR',
-    })
+      type: "TOGGLE_SIDEBAR",
+    });
   }
   return (
     <SidebarContext.Provider
@@ -23,5 +23,5 @@ export const SidebarProvider = ({ children }) => {
     >
       {children}
     </SidebarContext.Provider>
-  )
-}
+  );
+};
