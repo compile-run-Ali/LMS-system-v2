@@ -4,8 +4,14 @@ export default async function handler(req, res) {
   const prisma = new PrismaClient();
 
   try {
-    const { studentId, paperId, status, obtainedMarks, studentComment } =
-      req.body;
+    const {
+      studentId,
+      paperId,
+      status,
+      obtainedMarks,
+      studentComment,
+      teacherComment,
+    } = req.body;
 
     // find an existing record with the provided id
     let existingSPA = await prisma.sPA.findUnique({
@@ -37,6 +43,10 @@ export default async function handler(req, res) {
           studentComment !== undefined
             ? studentComment
             : existingSPA.studentComment,
+        teacherComment:
+          teacherComment !== undefined
+            ? teacherComment
+            : existingSPA.teacherComment,
       },
     });
 

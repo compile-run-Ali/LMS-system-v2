@@ -135,7 +135,7 @@ If not page should automatically scroll down to the right area when "Create new 
 14 Question # sequence and part # sequence should automatically assign correct serial # for subjective questions to minimize user's effort. (currently it is doing so haphazardly an dis inconsistent)
 15 Create Exam steps should be clickable keys to allow simpler navigation between stages. (Exam Settings, Objective, Subjective, Exam Review)
 16 Default Time for Objectives should retain the user's last choice rather than changing back to 60 seconds each time.
-17 Comment Box to be included for Faculty to add his reasoning while marking the paper
+<!-- 17 Comment Box to be included for Faculty to add his reasoning while marking the paper -->
 <!-- 18 Change Sign in page name to "ASC e-Exam System" -->
 19 "Register as student" key should have same layout as all other keys.
 20 Remove "Login as Faculty" key from bottom right and key "Login as Faculty" key on top right of page.

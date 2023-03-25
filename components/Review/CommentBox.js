@@ -2,12 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const CommentBox = ({ student, paper, isStudent }) => {
-  const [comment, setComment] = useState("");
+  const [studentComment, setStudentComment] = useState("");
+  const [teacherComment, setTeacherComment] = useState("");
   const [studentPaperAttempt, setStudentPaperAttempt] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleCommentChange = (e) => {
-    if (isStudent) setComment(e.target.value);
+  const handleStudentChange = (e) => {
+    setSubmitted(false);
+    if (isStudent) setStudentComment(e.target.value);
+  };
+
+  const handleTeacherChange = (e) => {
+    setSubmitted(false);
+    if (!isStudent) setTeacherComment(e.target.value);
   };
 
   const fetchAttemptDetails = async () => {
@@ -19,7 +26,8 @@ const CommentBox = ({ student, paper, isStudent }) => {
         },
       })
       .then((res) => {
-        setComment(res.data.studentComment);
+        setStudentComment(res.data.studentComment);
+        setTeacherComment(res.data.teacherComment);
         setStudentPaperAttempt(res.data);
       })
       .catch((err) => {
@@ -32,7 +40,8 @@ const CommentBox = ({ student, paper, isStudent }) => {
       .post("/api/student/paper/update_attempt_status", {
         studentId: student,
         paperId: paper,
-        studentComment: comment,
+        studentComment: studentComment,
+        teacherComment: teacherComment,
       })
       .then((res) => {
         console.log("comment submitted successfully", res.data);
@@ -61,31 +70,71 @@ const CommentBox = ({ student, paper, isStudent }) => {
     );
   }
   return (
-    <div className=" mb-10">
-      <div className="text-2xl font-bold">
-        Comment
-        {!isStudent ? " by Student" : " to Teacher"}
-      </div>
-      <div className="my-2 p-6 bg-blue-900 rounded-md">
-        <textarea
-          className={`
+    <div
+      className={`mb-10 flex
+      ${!isStudent ? "flex-col-reverse" : "flex-col"}
+    `}
+    >
+      <div>
+        {/* student's comment box */}
+        <div className="text-2xl font-bold">
+          Comment
+          {!isStudent ? " by Student" : " to Teacher"}
+        </div>
+        <div className="my-2 p-6 bg-blue-900 rounded-md">
+          <textarea
+            className={`
           border rounded-md p-2 w-full
           ${isStudent ? "bg-white text-black" : "bg-gray-200 text-gray-700"}
           `}
-          value={comment}
-          onChange={(e) => handleCommentChange(e)}
-          disabled={!isStudent}
-        />
+            value={studentComment}
+            onChange={(e) => handleStudentChange(e)}
+            disabled={!isStudent}
+          />
+        </div>
+        <div className="flex justify-end">
+          {isStudent && (
+            <button
+              className="bg-blue-900 text-white px-4 py-2 rounded-md"
+              onClick={
+                studentComment.length > 0 ? () => submitComment() : () => {}
+              }
+            >
+              {submitted ? "Comment Added" : "Add Comment"}
+            </button>
+          )}
+        </div>
       </div>
-      <div className="flex justify-end">
-        {isStudent && (
-          <button
-            className="bg-blue-900 text-white px-4 py-2 rounded-md"
-            onClick={comment.length > 0 ? () => submitComment() : () => {}}
-          >
-            {submitted ? "Submitted" : "Submit"}
-          </button>
-        )}
+
+      {/* teacher's comment box */}
+      <div>
+        <div className="text-2xl font-bold">
+          Comment
+          {isStudent ? " by Teacher" : " to Student"}
+        </div>
+        <div className="my-2 p-6 bg-blue-900 rounded-md">
+          <textarea
+            className={`
+          border rounded-md p-2 w-full
+          ${!isStudent ? "bg-white text-black" : "bg-gray-200 text-gray-700"}
+          `}
+            value={teacherComment}
+            onChange={(e) => handleTeacherChange(e)}
+            disabled={isStudent}
+          />
+        </div>
+        <div className="flex justify-end">
+          {!isStudent && (
+            <button
+              className="bg-blue-900 text-white px-4 py-2 rounded-md"
+              onClick={
+                teacherComment.length > 0 ? () => submitComment() : () => {}
+              }
+            >
+              {submitted ? "Comment Added" : "Add Comment"}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

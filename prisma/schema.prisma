@@ -215,6 +215,7 @@ model SPA {
   status         String? @default("Not Attempted")
   obtainedMarks  Float   @default(0)
   studentComment String? @default("")
+  teacherComment String? @default("")
 
   student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
   paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)
