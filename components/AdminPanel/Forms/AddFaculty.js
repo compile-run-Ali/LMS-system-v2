@@ -82,8 +82,10 @@ const AddFaculty = () => {
         },
       }
     );
-    if (new_faculty.status === 200) {
+    if (new_faculty.status === 200 && !new_faculty.data.emailExists) {
       router.push("/admin");
+    } else {
+      alert("Email already exists");
     }
   };
 

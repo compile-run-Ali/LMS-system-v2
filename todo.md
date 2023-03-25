@@ -140,9 +140,9 @@ If not page should automatically scroll down to the right area when "Create new 
 <!-- 19 "Register as student" key should have same layout as all other keys. -->
 <!-- 20 Remove "Login as Faculty" key from bottom right and key "Login as Faculty" key on top right of page. -->
 <!-- 21 Change "PA#" to "Army #" -->
-22 Add "Rank" field with drop down containing the following values (2nd Lt, Lt, Capt, Maj)
+<!-- 22 Add "Rank" field with drop down containing the following values (2nd Lt, Lt, Capt, Maj) -->
 23 Add PA# and Rank fields (Capt, Major, Letenant Colonel, Colonel, Brg, Maj Gen, Lt Gen)
-24 Change Faculty levels from numbers to (Comdt, CI, SI MT, SI SW, SI AT, Inst)
+<!-- 24 Change Faculty levels from numbers to (Comdt, CI, SI MT, SI SW, SI AT, Inst) -->
 25 Remove "Department" Field
 26 Table of Existing Exams should be segregated into two tables "Previous Exams of this Course" and "Open Exams"
 27 "Previous Exams of this Course" table should only hold exams that are either "marked/checked", "approved" or "closed" with a key to change marked exam to closed

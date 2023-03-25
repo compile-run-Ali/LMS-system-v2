@@ -20,7 +20,20 @@ const handler = async (req, res) => {
         console.error(err);
         return reject(err);
       }
+
       try {
+        const existingFaculty = await prisma.faculty.findUnique({
+          where: {
+            email: fields.email,
+          },
+        });
+
+        if (existingFaculty) {
+          res.json({
+            emailExists: true,
+          });
+        }
+
         const hash = await bcrypt.hash(fields.password, 0);
         const facultyData = {
           name: fields.name,
@@ -85,8 +98,10 @@ const handler = async (req, res) => {
       }
     });
   });
-
-  res.status(200).json(data);
+  res.status(200).json({
+    ...data,
+    emailExists: false,
+  });
 };
 
 export default handler;

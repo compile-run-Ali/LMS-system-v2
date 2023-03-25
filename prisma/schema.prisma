@@ -19,7 +19,7 @@ model Student {
   cgpa            Float
   email           String
   DOB             DateTime
-  rank            String? 
+  rank            String?
   profile_picture String?
 
   courses            SRC[]
@@ -57,7 +57,9 @@ model Faculty {
   name            String
   password        String
   level           Int
-  email           String
+  position        String?
+  rank            String?
+  email           String  @unique
   department      String
   phone_number    String
   profile_picture String?
@@ -167,12 +169,10 @@ model IeQuestion {
 
   fileName String
   fileUrl  String
-  
-  paper Paper @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+
+  paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
   paper_id String
 }
-
-
 
 //Student Objective Question Attempt
 model SOA {
