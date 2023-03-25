@@ -29,6 +29,7 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
         email: facultyData[index].email,
         profile_picture: facultyData[index].profile_picture,
         position: facultyData[index].position,
+        rank: facultyData[index].rank,
       },
     });
   };
@@ -53,6 +54,7 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
         <tr className="bg-blue-800 rounded-md text-white">
           <th className="px-4 py-2">Name</th>
           <th className="px-4 py-2">Phone Number</th>
+          <th className="px-4 py-2">Rank</th>
           <th className="px-4 py-2">Level</th>
           <th className="px-4 py-2">Email</th>
           <th className="px-4 py-2"></th>
@@ -64,6 +66,7 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
           <tr key={index} className="bg-white">
             <td className=" px-4 py-2">{facultyMember.name}</td>
             <td className=" px-4 py-2">{facultyMember.phone_number}</td>
+            <td className=" px-4 py-2">{facultyMember.rank}</td>
             <td className=" px-4 py-2">{facultyMember.position}</td>
             <td className=" px-4 py-2">{facultyMember.email}</td>
             <td className="px-4 py-2">

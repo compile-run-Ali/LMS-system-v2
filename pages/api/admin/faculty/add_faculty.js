@@ -42,6 +42,7 @@ const handler = async (req, res) => {
           level: Number(fields.level),
           phone_number: fields.phone_number,
           position: fields.position,
+          rank: fields.rank,
         };
 
         if (files.profile_picture) {
@@ -67,6 +68,7 @@ const handler = async (req, res) => {
                   level: true,
                   position: true,
                   phone_number: true,
+                  rank: true,
                   profile_picture: true,
                 },
               })
@@ -81,6 +83,7 @@ const handler = async (req, res) => {
                 faculty_id: true,
                 name: true,
                 email: true,
+                rank: true,
                 position: true,
                 level: true,
                 phone_number: true,

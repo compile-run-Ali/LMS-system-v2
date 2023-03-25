@@ -10,6 +10,7 @@ const handler = async (req, res) => {
         name: true,
         email: true,
         phone_number: true,
+        rank: true,
         profile_picture: true,
         level: true,
         position: true,

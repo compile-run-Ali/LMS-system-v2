@@ -16,6 +16,7 @@ const AddFaculty = () => {
   const [position, setPosition] = useState(edit ? router.query.position : "");
   const [password, setPassword] = useState(edit ? router.query.password : "");
   const [profilePicture, setProfilePicture] = useState(null);
+  const [rank, setRank] = useState(edit ? router.query.rank : "");
 
   const levels = [
     {
@@ -44,7 +45,18 @@ const AddFaculty = () => {
     },
   ];
 
-  console.log("position is", position, "level is", level);
+  const ranks = [
+    "Captain",
+    "Major",
+    "Lieutenant Colonel",
+    "Colonel",
+    "Brigadier General",
+    "Major General",
+    "Lieutenant General",
+  ];
+
+  console.log('rank is ',rank);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData();
@@ -54,6 +66,7 @@ const AddFaculty = () => {
     formData.append("email", email);
     formData.append("password", password);
     formData.append("position", position);
+    formData.append("rank", rank);
     formData.append("profile_picture", profilePicture);
 
     if (edit) {
@@ -139,8 +152,26 @@ const AddFaculty = () => {
             required
           />
         </div>
-        <div className="mb-4">
-          drop down of rank here
+        <div className="mt-5">
+          <label className="block mb-2 text-primary-black" htmlFor="rank_input">
+            Rank
+          </label>
+          <select
+            className="block w-full text-sm text-gray-900 px-2 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
+            aria-describedby="rank_input_help"
+            id="rank_input"
+            value={rank}
+            onChange={(event) => {
+              setRank(event.target.value);
+            }}
+          >
+            <option value="">Select Rank</option>
+            {ranks.map((rank) => (
+              <option value={rank} key={rank}>
+                {rank}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mt-5">
           <label

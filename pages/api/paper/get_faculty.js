@@ -15,6 +15,7 @@ const handler = async (req, res) => {
         name: true,
         email: true,
         level: true,
+        rank: true,
         faculty_id: true,
         position: true,
       },
@@ -23,6 +24,6 @@ const handler = async (req, res) => {
   } catch (err) {
     throw new Error(err.message);
   }
-}
+};
 
 export default handler;
