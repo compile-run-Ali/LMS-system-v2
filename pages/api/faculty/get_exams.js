@@ -33,7 +33,6 @@ const handler = async (req, res) => {
                 course_code: true,
                 course_name: true,
                 credit_hours: true,
-                department: true,
                 paper: {
                   select: {
                     paper_id: true,

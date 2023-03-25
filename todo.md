@@ -143,7 +143,7 @@ If not page should automatically scroll down to the right area when "Create new 
 <!-- 22 Add "Rank" field with drop down containing the following values (2nd Lt, Lt, Capt, Maj) -->
 23 Add PA# and Rank fields (Capt, Major, Letenant Colonel, Colonel, Brg, Maj Gen, Lt Gen)
 <!-- 24 Change Faculty levels from numbers to (Comdt, CI, SI MT, SI SW, SI AT, Inst) -->
-25 Remove "Department" Field
+<!-- 25 Remove "Department" Field -->
 26 Table of Existing Exams should be segregated into two tables "Previous Exams of this Course" and "Open Exams"
 27 "Previous Exams of this Course" table should only hold exams that are either "marked/checked", "approved" or "closed" with a key to change marked exam to closed
 28 "Open Exams" table should hold papers in statuses "darfts" or "pending approval" (It should also notify in a new column which faculty member the paper is currently with e.g SI/Ci for pending approval and instructor name for drafts)

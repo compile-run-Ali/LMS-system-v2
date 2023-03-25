@@ -14,7 +14,6 @@ const handler = async (req, res) => {
                 name: true,
                 email: true,
                 phone_number: true,
-                department: true,
                 profile_picture: true,
                 level: true,
                 position: true,

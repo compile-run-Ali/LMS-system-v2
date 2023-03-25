@@ -73,7 +73,7 @@ export default function AssignFacultyModal({
                         <option
                           key={index}
                           value={faculty.faculty_id}
-                        >{`${faculty.name} - ${faculty.department}`}</option>
+                        >{`${faculty.name}`}</option>
                       ))}
                     </select>
                   </div>

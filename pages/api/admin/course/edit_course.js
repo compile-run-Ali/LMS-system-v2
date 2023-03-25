@@ -12,7 +12,6 @@ const handler = async (req, res) => {
         course_name: req.body.course_name,
         credit_hours: Number(req.body.credit_hours),
         course_code: req.body.course_code,
-        department: req.body.department,
       },
     })
     res.status(200).json(faculty)

@@ -26,7 +26,6 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
         name: facultyData[index].name,
         phone_number: facultyData[index].phone_number,
         level: facultyData[index].level,
-        department: facultyData[index].department,
         email: facultyData[index].email,
         profile_picture: facultyData[index].profile_picture,
         position: facultyData[index].position,
@@ -55,7 +54,6 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
           <th className="px-4 py-2">Name</th>
           <th className="px-4 py-2">Phone Number</th>
           <th className="px-4 py-2">Level</th>
-          <th className="px-4 py-2">Department</th>
           <th className="px-4 py-2">Email</th>
           <th className="px-4 py-2"></th>
           <th className="px-4 py-2"></th>
@@ -67,7 +65,6 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
             <td className=" px-4 py-2">{facultyMember.name}</td>
             <td className=" px-4 py-2">{facultyMember.phone_number}</td>
             <td className=" px-4 py-2">{facultyMember.position}</td>
-            <td className=" px-4 py-2">{facultyMember.department}</td>
             <td className=" px-4 py-2">{facultyMember.email}</td>
             <td className="px-4 py-2">
               <button

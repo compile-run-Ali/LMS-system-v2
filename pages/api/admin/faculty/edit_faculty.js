@@ -22,7 +22,6 @@ const handler = async (req, res) => {
         const facultyData = {
           name: fields.name,
           email: fields.email,
-          department: fields.department,
           phone_number: fields.phone_number,
           level: Number(fields.level),
           position: fields.position,
@@ -52,7 +51,6 @@ const handler = async (req, res) => {
                   name: true,
                   email: true,
                   phone_number: true,
-                  department: true,
                   level: true,
                   position: true,
                   profile_picture: true,
@@ -73,7 +71,6 @@ const handler = async (req, res) => {
                 name: true,
                 email: true,
                 phone_number: true,
-                department: true,
                 level: true,
                 position: true,
               },

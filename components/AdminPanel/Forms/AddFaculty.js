@@ -12,9 +12,6 @@ const AddFaculty = () => {
     edit ? router.query.phone_number : ""
   );
   const [level, setLevel] = useState(edit ? router.query.level : "");
-  const [department, setDepartment] = useState(
-    edit ? router.query.department : ""
-  );
   const [email, setEmail] = useState(edit ? router.query.email : "");
   const [position, setPosition] = useState(edit ? router.query.position : "");
   const [password, setPassword] = useState(edit ? router.query.password : "");
@@ -54,7 +51,6 @@ const AddFaculty = () => {
     formData.append("name", name);
     formData.append("phone_number", phoneNumber);
     formData.append("level", level);
-    formData.append("department", department);
     formData.append("email", email);
     formData.append("password", password);
     formData.append("position", position);
@@ -144,12 +140,7 @@ const AddFaculty = () => {
           />
         </div>
         <div className="mb-4">
-          <Input
-            text="Department"
-            type="text"
-            value={department}
-            onChange={(event) => setDepartment(event.target.value)}
-          />
+          drop down of rank here
         </div>
         <div className="mt-5">
           <label

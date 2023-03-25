@@ -16,7 +16,6 @@ const handler = async (req, res) => {
         email: true,
         level: true,
         faculty_id: true,
-        department: true,
         position: true,
       },
     });

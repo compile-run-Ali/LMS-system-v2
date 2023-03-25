@@ -358,7 +358,7 @@ export default function Exam({
                           <option
                             key={faculty.faculty_id}
                             value={faculty.faculty_id}
-                          >{`${faculty.name} (${faculty.department})`}</option>
+                          >{`${faculty.name}`}</option>
                         ))}
                     </select>
                   </div>
@@ -414,7 +414,7 @@ export default function Exam({
                         <option
                           key={faculty.faculty_id}
                           value={faculty.faculty_id}
-                        >{`${faculty.name} (${faculty.department})`}</option>
+                        >{`${faculty.name}`}</option>
                       ))}
                   </select>
                 </div>

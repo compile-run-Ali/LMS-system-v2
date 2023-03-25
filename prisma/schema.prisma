@@ -43,7 +43,6 @@ model Course {
 
   course_name  String
   credit_hours Int
-  department   String
 
   students SRC[]
   faculty  FTC[]
@@ -60,7 +59,6 @@ model Faculty {
   position        String?
   rank            String?
   email           String  @unique
-  department      String
   phone_number    String
   profile_picture String?
 

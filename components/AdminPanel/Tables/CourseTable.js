@@ -32,7 +32,6 @@ const CourseTable = ({
         course_name: coursesData[index].course_name,
         course_code: coursesData[index].course_code,
         credit_hours: coursesData[index].credit_hours,
-        department: coursesData[index].department,
       },
     });
   };
@@ -56,7 +55,6 @@ const CourseTable = ({
           <th className="px-4 py-2">Name</th>
           <th className="px-4 py-2">Course Code</th>
           <th className="px-4 py-2">Credit Hours</th>
-          <th className="px-4 py-2">Department</th>
           <th className="px-4 py-2"></th>
           <th className="px-4 py-2"></th>
           <th className="px-4 py-2"></th>
@@ -68,7 +66,6 @@ const CourseTable = ({
             <td className="border px-4 py-2">{course.course_name}</td>
             <td className="border px-4 py-2">{course.course_code}</td>
             <td className="border px-4 py-2">{course.credit_hours}</td>
-            <td className="border px-4 py-2">{course.department}</td>
             <td className="px-4 py-2">
               <button
                 onClick={() => {
