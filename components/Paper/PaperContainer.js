@@ -102,16 +102,6 @@ export default function PaperContainer({ startOfPage }) {
 
     setCount(count + 1);
 
-    if (paper) {
-      const timeToGetpaper = (new Date() - startOfPage) / 1000;
-      console.log("time to get paper", timeToGetpaper);
-    }
-
-    if (session) {
-      const timeToAuthenticate = (new Date() - startOfPage) / 1000;
-      console.log("time to authenticate", timeToAuthenticate);
-    }
-
     if (student && paper) {
       // get paper here and if paper is live, only then set questions
       let papers = JSON.parse(localStorage.getItem("papers") || "{}");
@@ -138,23 +128,11 @@ export default function PaperContainer({ startOfPage }) {
 
         // get paper details
 
-        const apiStartTime = new Date();
-        const reachedApi = (apiStartTime - startOfPage) / 1000;
 
-        console.log(`Time taken to reach api: ${reachedApi} seconds`);
         axios
           .get(`/api/paper/${paper}`)
           .then((res) => {
             // subtract time here from startTime to get time taken in seconds
-            const endTime = new Date();
-            const timeDiffInSeconds = (endTime - apiStartTime) / 1000;
-            const useEffectTime = (endTime - startOfPage) / 1000;
-
-            console.log(
-              `Time taken to fetch paper details: ${timeDiffInSeconds} seconds`
-            );
-            console.log(`Time from start to end: ${useEffectTime} seconds`);
-
             console.log("paper details from server", res.data);
             // push the paper id in papers index array
             const currentPaper = res.data;
@@ -168,10 +146,6 @@ export default function PaperContainer({ startOfPage }) {
               axios
                 .get(`/api/student/paper/oq/${paper}`)
                 .then((res) => {
-                  console.log(
-                    "time taken to get objective",
-                    (new Date() - startOfPage) / 1000
-                  );
                   const randomizedQuestions = shuffleArray(res.data);
                   // set objective questions in array and local current, both in value of the paper_id key
                   papers[paper].objectiveQuestions = randomizedQuestions;
@@ -181,10 +155,6 @@ export default function PaperContainer({ startOfPage }) {
                   setObjectiveCount(randomizedQuestions.length);
                   setLoading(false);
                   setQuestions(papers[paper].objectiveQuestions);
-                  console.log(
-                    "objective set in ",
-                    (new Date() - startOfPage) / 1000
-                  );
                 })
                 .catch((err) => {
                   console.log("error ", err.message);
