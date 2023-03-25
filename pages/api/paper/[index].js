@@ -38,15 +38,15 @@ const handle = async (req, res) => {
             student_attempst: true,
           },
         },
-        // ie_questions: {
-        //   select: {
-        //     ie_id: true,
-        //     fileName: true,
-        //     fileUrl: true,
-        //     paper: true,
-        //     paper_id: true,
-        //   },
-        // },
+        ie_questions: {
+          select: {
+            ie_id: true,
+            fileName: true,
+            fileUrl: true,
+            paper: true,
+            paper_id: true,
+          },
+        },
         subjective_questions: {
           where: {
             parent_question: null,

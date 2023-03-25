@@ -115,7 +115,6 @@ export default function OQContainer({
     }
   }, [selectedAnswer]);
 
-  console.log("changed is", changed);
 
   useEffect(() => {
     // correctanswer will be a string in form a1,a2
@@ -131,7 +130,6 @@ export default function OQContainer({
           },
         })
         .then((res) => {
-          console.log("CALL DONE");
           if (res.data) {
             setSelectedAnswer(res.data.answer.split(","));
             console.log("answer already exists", res.data);
