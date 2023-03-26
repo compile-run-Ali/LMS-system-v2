@@ -36,7 +36,7 @@ export default function Index() {
     }
 
     try {
-      const student = await axios.get("/api/admin/student/get_students");
+      const student = await axios.get("/api/admin/student/get_student");
       setStudentData(student.data);
     } catch (studentError) {
       console.log(
