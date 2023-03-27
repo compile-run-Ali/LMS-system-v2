@@ -391,7 +391,7 @@ export default function Exam({
                         sendForward();
                       }}
                     >
-                      Send Forward
+                      Mark To
                     </button>
                   </div>
                   {exam.examofficer?.level > 2 && (
@@ -459,7 +459,7 @@ export default function Exam({
                         submitExam();
                       }}
                     >
-                      Submit
+                      Mark To
                     </button>
                   </div>
                 </div>
