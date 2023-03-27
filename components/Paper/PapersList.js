@@ -10,18 +10,13 @@ import axios from "axios";
 export default function PapersList({ papers, status }) {
   const [sortedPapers, setSortedPapers] = useState([]);
   const [attemptStatus, setAttemptStatus] = useState([]);
+  const [updatedPapers, setUpdatedPapers] = useState([]);
   const isLive = status === "Live Papers";
   const isPast = status === "Past Papers";
   const { data: session } = useSession();
 
-  const getPaperStatus = (paper_id) => {
-    const paper = attemptStatus.find((paper) => paper.paperId === paper_id);
-    if (paper) {
-      return paper.status;
-    } else {
-      return "Not Attempted";
-    }
-  };
+
+
   useEffect(() => {
     const newSortedPapers = papers.sort(
       (a, b) => Date.parse(a.date) - Date.parse(b.date)
@@ -36,67 +31,36 @@ export default function PapersList({ papers, status }) {
           studentId: session.user.id,
         },
       });
-      console.log("attempt status fetched successfully", res.data);
       setAttemptStatus(res.data);
     };
     getAttemptStatus();
+
   }, [session]);
 
-  const getRow = (paper) => {
-    const { start, end } = getPaperDateTime(paper.date, paper.duration);
-    const startDate = convertDateTimeToStrings(start, true);
-    const startTime = convertDateTimeToStrings(start);
-    const endDate = convertDateTimeToStrings(end);
+  useEffect(() => {
+    const newUpdatedPapers = sortedPapers.map((paper) => {
+      console.log(attemptStatus)
+      const attempt = attemptStatus.find(
+        (attempt) => attempt.paperId === paper.paper_id
+      );
 
-    return (
-      <>
-        <td className="px-4 py-2">{paper.paper_name}</td>
-        <td className="px-4 py-2">{paper.paper_type}</td>
-        <td className="px-4 py-2">{startDate}</td>
-        <td className="px-4 py-2">{startTime}</td>
-        <td className="px-4 py-2">{endDate}</td>
-        <td className="px-4 py-2">
-          {/* if paper is live and is submitted, show submitted button, else show attempt button */}
-          {/* if paper is past and review is allowed, show review button, else show review not allowed button */}
-          {/* else show view button */}
-          {isLive ? (
-            getPaperStatus(paper.paper_id) === "Submitted" ? (
-              <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
-                Submitted
-              </button>
-            ) : (
-              <Link
-                href={`/paper/attempt/${paper.paper_id}`}
-                className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
-              >
-                Attempt
-              </Link>
-            )
-          ) : isPast ? (
-            paper.review ? (
-              <Link
-                href={`/paper/review/${paper.paper_id}`}
-                className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
-              >
-                Review
-              </Link>
-            ) : (
-              <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
-                Review Not Allowed
-              </button>
-            )
-          ) : (
-            <Link
-              href={`/paper/view/${paper.paper_id}`}
-              className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
-            >
-              View
-            </Link>
-          )}
-        </td>
-      </>
-    );
-  };
+
+      if (attempt) {
+        return { ...paper, attemptStatus: true };
+      } else {
+        return { ...paper, attemptStatus: false };
+      }
+
+      
+    });
+
+    console.log("newUpdatedPapers", newUpdatedPapers);
+    setUpdatedPapers(newUpdatedPapers);
+  }, [attemptStatus]);
+
+
+
+
 
   return (
     <div>
@@ -112,10 +76,12 @@ export default function PapersList({ papers, status }) {
           </tr>
         </thead>
         <tbody>
-          {sortedPapers.map((paper) => {
+          {updatedPapers.map((paper,index) => {
             return (
               // add Link tag to live papers only and those with attempt status empty
-              <tr key={paper.paper_id}>{getRow(paper)}</tr>
+              <tr key={paper.paper_id}>
+                <PaperRow paper={paper} attemptStatus={paper.attemptStatus} status={status} />
+              </tr>
             );
           })}
         </tbody>
@@ -123,3 +89,64 @@ export default function PapersList({ papers, status }) {
     </div>
   );
 }
+
+const PaperRow = ({ paper, attemptStatus, status }) => {
+  const { start, end } = getPaperDateTime(paper.date, paper.duration);
+  const startDate = convertDateTimeToStrings(start, true);
+  const startTime = convertDateTimeToStrings(start);
+  const endDate = convertDateTimeToStrings(end);
+  const isLive = status === "Live Papers";
+  const isPast = status === "Past Papers";
+  console.log("attempt status is ", attemptStatus);
+  return (
+    <>
+      <td className="px-4 py-2">{paper.paper_name}</td>
+      <td className="px-4 py-2">{paper.paper_type}</td>
+      <td className="px-4 py-2">{startDate}</td>
+      <td className="px-4 py-2">{startTime}</td>
+      <td className="px-4 py-2">{endDate}</td>
+      <td className="px-4 py-2">
+        {/* if paper is live and is submitted, show submitted button, else show attempt button */}
+        {/* if paper is past and review is allowed, show review button, else show review not allowed button */}
+        {/* else show view button */}
+        {isLive ? (
+          !attemptStatus ?
+            (
+              <Link
+              href={`/paper/attempt/${paper.paper_id}`}
+              className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded`}
+            >
+              Attempt
+            </Link>
+             
+            ) : (
+              <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
+                Attempted
+              </button>
+            )
+        ) : isPast ? (
+          paper.review ? (
+            <Link
+              href={`/paper/review/${paper.paper_id}`}
+              className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
+            >
+              Review
+            </Link>
+          ) : (
+            <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
+              Review Not Allowed
+            </button>
+          )
+        ) : (
+          <Link
+            href={`/paper/view/${paper.paper_id}`}
+            className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
+          >
+            View
+          </Link>
+        )}
+      </td>
+    </>
+  );
+};
+
