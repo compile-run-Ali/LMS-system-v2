@@ -14,9 +14,11 @@ const handler = async (req, res) => {
         password: true,
         phone_number: true,
         profile_picture: true,
+        rank: true,
         courses: {
           select: {
             course_code: true,
+            course: true,
           },
         },
       },

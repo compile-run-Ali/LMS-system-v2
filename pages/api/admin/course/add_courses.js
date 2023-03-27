@@ -9,7 +9,6 @@ const handler = async (req, res) => {
         course_code: req.body.course_code,
         course_name: req.body.name,
         credit_hours: Number(req.body.credit_hours),
-        department: req.body.department,
       },
     });
     res.status(200).json(course)

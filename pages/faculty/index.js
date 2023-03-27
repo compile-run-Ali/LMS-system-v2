@@ -21,6 +21,9 @@ export default function Dashboard() {
         setExams(res.data.courses);
         setPaperApproval(res.data.paperapproval);
         setLoading(false);
+      })
+      .catch((error) => {
+        console.log("error in api: /api/faculty/get_exams", error);
       });
   };
 

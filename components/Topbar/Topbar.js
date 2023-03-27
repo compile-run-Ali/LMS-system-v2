@@ -2,14 +2,15 @@ import ArrowDownSVG from "@/svgs/arrow_down";
 import NotificationSVG from "@/svgs/notification";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import NotificationDropdown from "./NotificationDropdown";
 import axios from "axios";
 import ClickAwayListener from "react-click-away-listener";
-import { TbPoint } from "react-icons/tb";
+import { useRouter } from "next/router";
 
 export default function Topbar({ admin }) {
+  const router = useRouter();
   const [showNotification, setShowNotification] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const session = useSession();
@@ -39,11 +40,10 @@ export default function Topbar({ admin }) {
     <div>
       <div className="flex items-center justify-between mr-10 h-[110px]">
         <div className="flex">
-          <div className="logo">
+          <div className="logo cursor-pointer" onClick={() => router.push("/")}>
             <Image src="/logo.png" width={100} height={100} alt="logo" />
           </div>
         </div>
-
         <div className="flex items-center gap-3">
           <ClickAwayListener onClickAway={() => setShowNotification(false)}>
             <div className="notification-icon mr-5">
@@ -71,7 +71,7 @@ export default function Topbar({ admin }) {
           </ClickAwayListener>
           <div className="user-profile flex items-center gap-3">
             {session?.data?.user?.image && (
-              <div className="w-8 h-8 rounded-full border border-blue-900 relative">
+              <div className="w-8 h-8 rounded-full border border-blue-900 relative hover:scale-[3.0] hover:translate-y-5 hover:-translate-x-5 transition-all">
                 <Image
                   src={`/uploads/${session?.data?.user?.image}`}
                   // src="/avatar.png"

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import AttempContainer from "./AttempContainer";
 
-const AnswersTable = ({ questions, answers, isStudent }) => {
+const AnswersTable = ({
+  questions,
+  answers,
+  isStudent,
+}) => {
   const questionWithAnswers = (questions, answers) =>
     questions.map((question) => {
       const answer = answers.find((answer) => answer?.sq_id === question.sq_id);
@@ -13,27 +17,29 @@ const AnswersTable = ({ questions, answers, isStudent }) => {
       };
     });
 
-    const questionsWithChild = () => {
-      let allQuestions = questionWithAnswers(questions, answers);
-      allQuestions.sort((a, b) => a.questionnumber - b.questionnumber);
-      let subjectiveWithChild = [];
-      allQuestions.forEach((question) => {
-        if (question.parent_sq_id) {
-          const parent = allQuestions.find((q) => q.sq_id === question.parent_sq_id);
-          let children = [];
-          if (parent) {
-            children = parent.children || [];
-            children.push(question);
-            children.sort((a, b) => a.questionnumber - b.questionnumber);
-            parent.children = children;
-          }
-        } else {
-          subjectiveWithChild.push(question);
+  const questionsWithChild = () => {
+    let allQuestions = questionWithAnswers(questions, answers);
+    allQuestions.sort((a, b) => a.questionnumber - b.questionnumber);
+    let subjectiveWithChild = [];
+    allQuestions.forEach((question) => {
+      if (question.parent_sq_id) {
+        const parent = allQuestions.find(
+          (q) => q.sq_id === question.parent_sq_id
+        );
+        let children = [];
+        if (parent) {
+          children = parent.children || [];
+          children.push(question);
+          children.sort((a, b) => a.questionnumber - b.questionnumber);
+          parent.children = children;
         }
-      });
-      return subjectiveWithChild;
-    };
-    
+      } else {
+        subjectiveWithChild.push(question);
+      }
+    });
+
+    return subjectiveWithChild;
+  };
 
   return (
     <div className="flex flex-col space-y-10">

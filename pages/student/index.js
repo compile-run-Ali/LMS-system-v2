@@ -22,37 +22,6 @@ export default function Dashboard() {
     <BaseLayout title={"Dashboard"}>
       <DashboardLayout>
         <StudentDashboard session={session} />
-
-        {/* 
-
-            dashboard
-              previous Papers
-                see details if allowed
-              live Papers
-              
-              
-            objective type
-                all options rendered,
-                
-            subjective type
-                type answer
-              both have different ui
-            
-
-
-            previous paper details ONLY IF ALLOWED
-              subjective attempt
-              objective attempt
-
-            student profile          DONE
-            student registration    DONE
-
-            questions ki attempt ko database me save
-            har attempt me sath k sath save
-              update if editted
-            if sequential
-              then cant navigate around questions
-          */}
       </DashboardLayout>
     </BaseLayout>
   );

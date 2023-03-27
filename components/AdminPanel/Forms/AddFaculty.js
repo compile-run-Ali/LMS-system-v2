@@ -11,23 +11,69 @@ const AddFaculty = () => {
   const [phoneNumber, setPhoneNumber] = useState(
     edit ? router.query.phone_number : ""
   );
+  const [pa_number, setPaNumber] = useState(edit ? router.query.pa_number : "");
   const [level, setLevel] = useState(edit ? router.query.level : "");
-  const [department, setDepartment] = useState(
-    edit ? router.query.department : ""
-  );
   const [email, setEmail] = useState(edit ? router.query.email : "");
-  const [password, setPassword] = useState(edit? router.query.password : "");
+  const [position, setPosition] = useState(edit ? router.query.position : "");
+  const [password, setPassword] = useState(edit ? router.query.password : "");
   const [profilePicture, setProfilePicture] = useState(null);
+  const [rank, setRank] = useState(edit ? router.query.rank : "");
+
+  const levels = [
+    {
+      title: "Comdt",
+      level: 4,
+    },
+    {
+      title: "CI",
+      level: 3,
+    },
+    {
+      title: "SI MT",
+      level: 2,
+    },
+    {
+      title: "SI SW",
+      level: 2,
+    },
+    {
+      title: "SI AT",
+      level: 2,
+    },
+    {
+      title: "Inst",
+      level: 1,
+    },
+  ];
+
+  const ranks = [
+    "Captain",
+    "Major",
+    "Lieutenant Colonel",
+    "Colonel",
+    "Brigadier General",
+    "Major General",
+    "Lieutenant General",
+  ];
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // if pnumber is not a number give alert
+    if (isNaN(pa_number)) {
+      alert("PA Number should be a number");
+      return;
+    }
+
     const formData = new FormData();
+    formData.append("pa_number", pa_number);
     formData.append("name", name);
     formData.append("phone_number", phoneNumber);
     formData.append("level", level);
-    formData.append("department", department);
     formData.append("email", email);
     formData.append("password", password);
+    formData.append("position", position);
+    formData.append("rank", rank);
     formData.append("profile_picture", profilePicture);
 
     if (edit) {
@@ -36,7 +82,6 @@ const AddFaculty = () => {
     } else {
       addFaculty(formData);
     }
-
   };
   const handleFileChange = (event) => {
     setProfilePicture(event.target.files[0]);
@@ -53,8 +98,10 @@ const AddFaculty = () => {
         },
       }
     );
-    if (new_faculty.status === 200) {
+    if (new_faculty.status === 200 && !new_faculty.data.emailExists) {
       router.push("/admin");
+    } else {
+      alert("Email already exists");
     }
   };
 
@@ -73,16 +120,24 @@ const AddFaculty = () => {
     }
   };
 
-
   return (
     <form onSubmit={handleSubmit} className="px-4">
       <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
-        <div className="mb-4 ">
+        <div className="mb-4 col-span-2">
           <Input
             text="Name"
             type="text"
             value={name}
             onChange={(event) => setName(event.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-4 ">
+          <Input
+            text="PA Number"
+            type="String"
+            value={pa_number}
+            onChange={(event) => setPaNumber(event.target.value)}
             required
           />
         </div>
@@ -113,22 +168,57 @@ const AddFaculty = () => {
             required
           />
         </div>
-        <div className="mb-4">
-          <Input
-            text="Department"
-            type="text"
-            value={department}
-            onChange={(event) => setDepartment(event.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <Input
-            text="Level"
-            type="text"
-            value={level}
-            onChange={(event) => setLevel(event.target.value)}
+        <div className="mt-5">
+          <label className="block mb-2 text-primary-black" htmlFor="rank_input">
+            Rank
+          </label>
+          <select
             required
-          />
+            className="block w-full text-sm text-gray-900 px-2 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
+            aria-describedby="rank_input_help"
+            id="rank_input"
+            value={rank}
+            onChange={(event) => {
+              setRank(event.target.value);
+            }}
+          >
+            <option value="">Select Rank</option>
+            {ranks.map((rank) => (
+              <option value={rank} key={rank}>
+                {rank}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mt-5">
+          <label
+            className="block mb-2 text-primary-black"
+            htmlFor="level_input"
+          >
+            Level
+          </label>
+          <select
+          required
+            className="block w-full text-sm text-gray-900 px-2 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
+            aria-describedby="level_input_help"
+            id="level_input"
+            value={position}
+            onChange={(event) => {
+              setPosition(event.target.value);
+              setLevel(
+                event.target.options[event.target.selectedIndex].getAttribute(
+                  "level"
+                )
+              );
+            }}
+          >
+            <option value="">Select Level</option>
+            {levels.map((level) => (
+              <option value={level.title} level={level.level} key={level.title}>
+                {level.title}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="font-poppins mt-4">
@@ -157,7 +247,7 @@ const AddFaculty = () => {
           className="bg-blue-800 hover:bg-blue-700 text-lg mt-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
           type="submit"
         >
-          Add Faculty
+          {edit ? "Edit Faculty" : "Add Faculty"}
         </button>
       </div>
     </form>

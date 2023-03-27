@@ -15,7 +15,8 @@ const StudentsTable = ({ students_data, exam_id }) => {
           student.status === "Marked" || student.status === "Not Attempted"
       );
       if (isAllMarked) {
-         axios.put(`/api/faculty/update_exam_status`, {
+        axios
+          .put(`/api/faculty/update_exam_status`, {
             paper_id: exam_id,
             status: "Marked",
           })
@@ -33,7 +34,7 @@ const StudentsTable = ({ students_data, exam_id }) => {
     <table className="table-auto w-full mt-10 font-poppins text-left">
       <thead>
         <tr className="bg-blue-800 text-white font-medium ">
-          <th className="px-4 py-2">P Number</th>
+          <th className="px-4 py-2">Army Number</th>
           <th className="px-4 py-2">Student Name</th>
           <th className="px-4 py-2">Status</th>
           <th className="px-4 py-2">Marks</th>
@@ -51,7 +52,11 @@ const StudentsTable = ({ students_data, exam_id }) => {
             <td className="border px-4 py-2">{student.p_number}</td>
             <td className="border px-4 py-2">{student.name}</td>
             <td className="border px-4 py-2">{student.status}</td>
-            <td className="border px-4 py-2">{student.obtainedMarks}</td>
+            <td className="border px-4 py-2">
+              {student.status === "Marked"
+                ? student.obtainedMarks
+                : "Not Marked"}
+            </td>
             <td className="border px-4 py-2 text-center">
               {student.status !== "Not Attempted" && (
                 <Link

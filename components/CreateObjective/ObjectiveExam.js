@@ -4,6 +4,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import Input from "../Common/Form/Input";
 import MultiSelectDropdown from "./MultiSelect";
 import { useRouter } from "next/router";
+import Spinner from "../Loader/Spinner";
 
 const MCQTable = ({
   exam,
@@ -13,6 +14,10 @@ const MCQTable = ({
   setObjectiveQuestions,
   freeFlow,
 }) => {
+  const [loading, setLoading] = useState({
+    show: false,
+    message: "",
+  });
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
   const [mcqs, setMCQs] = useState(
@@ -29,6 +34,17 @@ const MCQTable = ({
     marks: 1,
     timeAllowed: 60,
   });
+
+  useEffect(() => {
+    if (mcqs.length === 0) {
+      setMCQs(
+        objective_questions.map((mcq) => {
+          mcq.options = mcq.answers.split(",");
+          return mcq;
+        })
+      );
+    }
+  }, [objective_questions]);
 
   const router = useRouter();
 
@@ -86,7 +102,6 @@ const MCQTable = ({
   const handleTimeAllowedChange = (e) => {
     setCurrentMCQ({ ...currentMCQ, timeAllowed: parseInt(e.target.value) });
   };
-
   const handleAddMCQ = async () => {
     if (
       currentMCQ.question === "" ||
@@ -99,6 +114,11 @@ const MCQTable = ({
       return;
     }
 
+    setLoading({
+      show: true,
+      message: "Adding Question",
+    });
+
     const newMCQ = await axios.post(
       "/api/faculty/paper_creation/add_objective",
       {
@@ -110,7 +130,12 @@ const MCQTable = ({
         timeAllowed: currentMCQ.timeAllowed || 60,
       }
     );
+    setLoading({
+      show: false,
+      message: "",
+    });
     newMCQ.data.options = newMCQ.data.answers.split(",");
+    setMultipleOptions(false);
     setMCQs([...mcqs, newMCQ.data]);
     setObjectiveQuestions([...mcqs, newMCQ.data]);
     setCurrentMCQ({
@@ -124,7 +149,8 @@ const MCQTable = ({
   };
 
   const handleEditMCQ = (index) => () => {
-    setEditing(true);
+    setEditing(!editing);
+    setAdding(false);
     setIndex(index);
     setCurrentMCQ(mcqs[index]);
   };
@@ -141,6 +167,11 @@ const MCQTable = ({
       alert("Please fill all the fields");
       return;
     }
+
+    setLoading({
+      show: true,
+      message: "Updating Question",
+    });
     const newMCQ = await axios.post("/api/faculty/edit_objective", {
       oq_id: mcqs[index].oq_id,
       paper_id: paperId,
@@ -152,6 +183,10 @@ const MCQTable = ({
     });
 
     if (newMCQ.status === 200) {
+      setLoading({
+        show: false,
+        message: "",
+      });
       const newMCQs = [...mcqs];
       newMCQs[index] = currentMCQ;
       setMCQs(newMCQs);
@@ -169,10 +204,20 @@ const MCQTable = ({
   };
 
   const handleDeleteMCQ = async (index) => {
+    setLoading({
+      show: true,
+      message: "Deleting Question",
+    });
+
     const res = await axios.post("/api/faculty/remove_objective", {
       oq_id: mcqs[index].oq_id,
     });
+
     if (res.status === 200) {
+      setLoading({
+        show: false,
+        message: "",
+      });
       const newMCQs = [...mcqs];
       newMCQs.splice(index, 1);
       setMCQs(newMCQs);
@@ -183,6 +228,7 @@ const MCQTable = ({
   return (
     <div className="flex font-poppins flex-col items-center p-6">
       <h1 className="text-2xl font-bold">MCQ Question</h1>
+      <Spinner show={loading.show} message={loading.message} />
       <table className="w-full mt-6 text-left table-collapse">
         <thead>
           <tr>

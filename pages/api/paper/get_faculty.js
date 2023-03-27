@@ -12,17 +12,19 @@ const handler = async (req, res) => {
         },
       },
       select: {
+        pa_number: true,
         name: true,
         email: true,
         level: true,
+        rank: true,
         faculty_id: true,
-        department: true,
+        position: true,
       },
     });
     res.status(200).json(faculty);
   } catch (err) {
     throw new Error(err.message);
   }
-}
+};
 
 export default handler;

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import Loader from "../Loader";
 import {
   convertDateTimeToStrings,
   getPaperDateTime,
@@ -14,6 +15,7 @@ export default function ViewContainer() {
   const { data: session, status } = useSession();
   const [paperDetails, setPaperDetails] = useState({});
   const [student, setStudent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(
     () => () => {
@@ -49,9 +51,14 @@ export default function ViewContainer() {
               router.push(`/student`);
             }
           }
+          setLoading(false);
         });
     }
   }, [student, paper]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="pr-10   pl-7 font-poppins w-full ">

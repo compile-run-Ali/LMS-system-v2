@@ -16,13 +16,26 @@ const handler = async (req, res) => {
             marks: true,
             long_question: true,
             parent_question: true,
+            questionnumber: true,
+            parent_sq_id: true,
+            child_question: {
+              select: {
+                sq_id: true,
+                question: true,
+                marks: true,
+                long_question: true,
+                parent_question: true,
+                questionnumber: true,
+                parent_sq_id: true,
+              },
+            },
           },
         },
       },
     });
     res.status(200).json(paper.subjective_questions);
   } catch (err) {
-    throw new Error(err.message);
+    console.log(err);
   }
 };
 

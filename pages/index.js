@@ -8,28 +8,28 @@ import { useSession } from "next-auth/react";
 import DashboardComponent from "@/components/DashboardComponent/DashboardComponent";
 import { useRouter } from "next/router";
 import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
+import Loader from "@/components/Loader";
 
 export default function Home() {
   const router = useRouter();
   const [facultyLogin, setFacultyLogin] = useState(false);
   const session = useSession();
   useEffect(() => {
+    console.log(session);
     if (session.status === "authenticated") {
       session.data.user.role === "student"
         ? router.push("/student")
-        : router.push("/faculty");
+        : session.data.user.level === 5 ? router.push("/admin") : router.push("/faculty")
     }
   }, [session]);
 
-  if (session.status === "authenticated") {
+
+  if (session.status === "loading" || session.status === "authenticated") {
     return (
-      <BaseLayout title={"Dashboard"}>
-        <DashboardLayout>
-          <DashboardComponent />
-        </DashboardLayout>
-      </BaseLayout>
-    );
+      <Loader />
+    )
   }
+
   return (
     <BaseLayout title={"Login"}>
       <LoginTopbar

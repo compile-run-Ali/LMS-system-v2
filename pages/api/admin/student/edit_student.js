@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
-import {IncomingForm} from "formidable"
-import mv from "mv"
+import { IncomingForm } from "formidable";
+import mv from "mv";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 export const config = {
   api: {
@@ -12,12 +12,12 @@ export const config = {
 
 const handler = async (req, res) => {
   const data = await new Promise((resolve, reject) => {
-    const form = new IncomingForm({multiples: true})
+    const form = new IncomingForm({ multiples: true });
     form.parse(req, async (err, fields, files) => {
-      console.log(fields.p_number)
+      console.log(fields.p_number);
       if (err) {
-        console.error(err)
-        return reject(err)
+        console.error(err);
+        return reject(err);
       }
       try {
         const studentData = {
@@ -26,62 +26,68 @@ const handler = async (req, res) => {
           phone_number: fields.phone_number,
           cgpa: Number(fields.cgpa),
           DOB: new Date(fields.DOB),
-        }
+        };
 
         if (files.profile_picture) {
-          studentData.profile_picture = files.profile_picture.originalFilename
+          studentData.profile_picture = files.profile_picture.originalFilename;
 
           // Move the uploaded file to the specified directory
-          const oldPath = files.profile_picture.filepath
-          const newPath = `./public/uploads/${files.profile_picture.originalFilename}`
+          const oldPath = files.profile_picture.filepath;
+          const newPath = `./public/uploads/${files.profile_picture.originalFilename}`;
 
           mv(oldPath, newPath, function (err) {
             if (err) {
-              console.error(err)
-              return reject(err)
+              console.error(err);
+              return reject(err);
             }
 
-            prisma.student.update({
+            prisma.student
+              .update({
+                where: {
+                  p_number: fields.p_number,
+                },
+                data: studentData,
+                select: {
+                  p_number: true,
+                  name: true,
+                  email: true,
+                  phone_number: true,
+                  cgpa: true,
+                  DOB: true,
+                  rank: true,
+                  profile_picture: true,
+                },
+              })
+              .then(resolve)
+              .catch(reject);
+          });
+        } else {
+          prisma.student
+            .update({
               where: {
                 p_number: fields.p_number,
               },
               data: studentData,
               select: {
-                p_number: true, 
+                p_number: true,
                 name: true,
                 email: true,
                 phone_number: true,
+                rank: true,
                 cgpa: true,
                 DOB: true,
-                profile_picture: true,
               },
-
-            }).then(resolve).catch(reject)
-          })
-        }
-        else {
-          prisma.student.update({
-            where: {
-              p_number: fields.p_number,
-            },
-            data: studentData,
-            select: {
-              p_number: true,
-              name: true,
-              email: true,
-              phone_number: true,
-              cgpa: true,
-              DOB: true,
-            },
-          }).then(resolve).catch(reject)
+            })
+            .then(resolve)
+            .catch(reject);
         }
       } catch (err) {
-        console.error(err)
-        return reject(err)
+        console.error(err);
+        return reject(err);
       }
-    })
-  })
-  res.status(200).json(data)
+    });
+  });
+  res.status(200).json(data);
   // const prisma = new PrismaClient();
   // try {
   //   // Edit Student Details

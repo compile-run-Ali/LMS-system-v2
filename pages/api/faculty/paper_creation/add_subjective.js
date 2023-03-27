@@ -25,10 +25,10 @@ const handler = async (req, res) => {
 
       updatedSQ = newSQ;
       // Update parent question and add child question to its "child_question" array
-      if (req.body.parent_question) {
+      if (req.body.parent_sq_id) {
         await prisma.subjectiveQuestion.update({
           where: {
-            sq_id: req.body.parent_question,
+            sq_id: req.body.parent_sq_id,
           },
           data: {
             child_question: {
@@ -42,7 +42,7 @@ const handler = async (req, res) => {
             question: true,
             marks: true,
             long_question: true,
-            parent_question: true,
+            parent_sq_id: true,
             questionnumber: true,
             child_question: true,
           },
@@ -52,7 +52,10 @@ const handler = async (req, res) => {
       return updatedSQ;
     });
 
-    res.status(200).json(result);
+    res.status(200).json({
+      ...result,
+      parent_sq_id: req.body.parent_sq_id,
+    });
   } catch (err) {
     console.log(err);
   }

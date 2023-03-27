@@ -7,7 +7,7 @@ const AttempContainer = ({ question, isStudent }) => {
   const { p_number } = router.query;
   const [givenmarks, setGivenmarks] = useState(question.marksobtained);
   const [changed, setChanged] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState(true);
   const markQuestion = async () => {
     await axios
       .post("/api/paper/marking/mark_question", {
@@ -44,9 +44,9 @@ const AttempContainer = ({ question, isStudent }) => {
               )}
             </label>
             <textarea
-              className="border border-gray-300 bg-gray-300 rounded-md p-2 w-full "
+              className="border border-gray-300 bg-gray-300 rounded-md p-2 w-full text-gray-700 "
+              value={question.answer || ""}
               disabled
-              placeholder={question.answer}
               rows={question.long_question ? 10 : 2}
             />
             <div className="w-full flex justify-end text-white">

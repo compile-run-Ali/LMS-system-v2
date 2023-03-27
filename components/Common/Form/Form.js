@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Input from "./Input";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Spinner from "@/components/Loader/Spinner";
 
 export default function Form({
   setActive,
@@ -11,28 +12,50 @@ export default function Form({
   setFreeFlowGlobal,
 }) {
   const router = useRouter();
+  const [loading, setLoading] = useState({
+    show: false,
+    message: "",
+  });
   const [edit, setEdit] = useState(examDetails ? true : false);
-  const [paperName, setPaperName] = useState(
-    edit ? examDetails.paper_name : ""
-  );
+  const [paperName, setPaperName] = useState("");
+  const [paperDuration, setPaperDuration] = useState(180);
+  const [weightage, setWeightage] = useState("");
+  const [dateOfExam, setDateOfExam] = useState(null);
+  const [paperTime, setPaperTime] = useState("09:00");
+  const [freeflow, setFreeflow] = useState(false);
+  const [review, setReview] = useState(false);
 
-  const [paperDuration, setPaperDuration] = useState(
-    edit ? Number(examDetails.duration) : 180
-  );
-  const [weightage, setWeightage] = useState(edit ? examDetails.weightage : "");
-
-  const [dateOfExam, setDateOfExam] = useState(
-    edit ? new Date(examDetails.date).toISOString().substr(0, 10) : ""
-  );
-  const [paperTime, setPaperTime] = useState(
-    edit ? new Date(examDetails.date).toISOString().substr(11, 5) : "09:00"
-  );
-  const [freeflow, setFreeflow] = useState(
-    edit ? examDetails.freeflow === "true" : false
-  );
-  const [review, setReview] = useState(
-    edit ? examDetails.review === "true" : false
-  );
+  useEffect(() => {
+    if (edit) {
+      setLoading({
+        show: true,
+        message: "Loading Exam Details",
+      });
+      axios.post("/api/faculty/get_exam", {
+        paper_id: examDetails.paper_id,
+      })
+        .then((res) => {
+          setPaperName(res.data.paper_name);
+          setPaperDuration(res.data.duration);
+          setWeightage(res.data.weightage);
+          setDateOfExam(new Date(res.data.date).toISOString().substr(0, 10));
+          setPaperTime(new Date(res.data.date).toISOString().substr(11, 5));
+          setFreeflow(res.data.freeflow);
+          setReview(res.data.review);
+          setLoading({
+            show: false,
+            message: "",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading({
+            show: false,
+            message: "",
+          });
+        });
+    }
+  }, [edit]);
 
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
@@ -74,14 +97,17 @@ export default function Form({
     const timeString = examTime;
     return dateString + "T" + timeString + "Z";
   };
-  
+
   const submitForm = async (e) => {
     e.preventDefault();
     if (paperName === "" || dateOfExam === "") {
       alert("Please fill all the fields");
       return;
     }
-
+    setLoading({
+      show: true,
+      message: edit ? "Updating Paper Details" : "Creating Paper",
+    });
 
     const res = await axios.post(
       `/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
@@ -98,6 +124,10 @@ export default function Form({
       }
     );
     if (res) {
+      setLoading({
+        show: false,
+        message: "",
+      });
       console.log("paper made ", res.data);
     }
 
@@ -107,23 +137,17 @@ export default function Form({
 
   const setEditTrue = () => {
     setEdit(true);
-    setPaperName(examDetails.paper_name);
-    setPaperDuration(Number(examDetails.duration));
-    setWeightage(examDetails.weightage);
-    setDateOfExam(new Date(examDetails.date).toISOString().substr(0, 10));
-    setPaperTime(new Date(examDetails.date).toISOString().substr(11, 5));
-    setFreeflow(examDetails.freeflow === "true");
-    setReview(examDetails.review === "true");
   };
 
   useEffect(() => {
-    if (Object.keys(router.query).length > 1) {
+    if (Object.keys(router.query).length > 0) {
       setEditTrue();
     }
   }, [examDetails]);
 
   return (
     <form>
+      <Spinner show={loading.show} message={loading.message} />
       <div className="w-full grid grid-cols-2 pr-10 gap-x-5 mt-10 font-poppins">
         <Input
           text={"Paper Name"}
@@ -191,6 +215,7 @@ export default function Form({
       <div className="mt-10 w-full pr-10 flex justify-end gap-x-5">
         <button
           type="button"
+          onClick={() => router.push("/")}
           className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
         >
           Cancel
@@ -198,7 +223,7 @@ export default function Form({
         <button
           type="submit"
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-          onClick={submitForm}
+          onClick={(e) => submitForm(e)}
         >
           Proceed
         </button>

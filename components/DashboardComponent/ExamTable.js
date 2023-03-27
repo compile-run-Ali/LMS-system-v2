@@ -13,7 +13,11 @@ const ExamTable = ({ exams_data }) => {
     const currentDate = new Date();
     const updatedExams = exams_data.map((exam) => {
       const examDate = new Date(exam.date);
-      if (examDate < currentDate && exam.status !== "Closed" && exam.status !== "Marked") {
+      if (
+        examDate < currentDate &&
+        exam.status !== "Closed" &&
+        exam.status !== "Marked"
+      ) {
         return axios
           .put(`/api/faculty/update_exam_status`, {
             paper_id: exam.paper_id,
@@ -42,14 +46,13 @@ const ExamTable = ({ exams_data }) => {
       const closedExam = updatedExams.find((exam) => exam.status === "Closed");
 
       if (closedExam) {
-        console.log("closed exam: ", closedExam);
         axios
           .post(`/api/faculty/generate_notification`, {
-            notification: closedExam.paper_name + " has been closed",
+            notification: closedExam.paper_name + " has been closed.",
             faculty_id: session.user.id,
           })
           .then((response) => {
-            console.log("Notification sent successfully");
+            console.log(response.data);
           })
           .catch((error) => {
             console.log(error);
@@ -62,7 +65,13 @@ const ExamTable = ({ exams_data }) => {
     router.push(`/faculty/exam_details/${paper_id}`);
   };
 
-  console.log(exams);
+  if (!exams_data || (exams_data && exams_data.length === 0)) {
+    return (
+      <div className="flex justify-center items-center w-full h-full">
+        <h1 className="text-2xl font-poppins font-bold">No Exams Found</h1>
+      </div>
+    );
+  }
 
   return (
     <table className="table-auto w-full mt-10 font-poppins text-left px-5">

@@ -44,7 +44,6 @@ const handler = async (req, res) => {
             select: {
               faculty_id: true,
               name: true,
-              department: true,
             },
           },
         },

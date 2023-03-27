@@ -9,14 +9,12 @@ const handler = async (req, res) => {
         course_code: true,
         course_name: true,
         credit_hours: true,
-        department: true,
         faculty: {
           select: {
             faculty: {
               select: {
                 faculty_id: true,
                 name: true,
-                department: true
               }
             }
           }
@@ -31,7 +29,6 @@ const handler = async (req, res) => {
         course_code: course.course_code,
         course_name: course.course_name,
         credit_hours: course.credit_hours,
-        department: course.department,
         faculty: faculty
       }
     })

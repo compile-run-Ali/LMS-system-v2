@@ -19,7 +19,10 @@ const MarkPaper = ({
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    if (objectiveMarks && subjectiveMarks) {
+    if (
+      (objectiveMarks || objectiveMarks === 0) &&
+      (subjectiveMarks || subjectiveMarks === 0)
+    ) {
       setObtainedMarks(objectiveMarks + subjectiveMarks);
     }
   }, [objectiveMarks, subjectiveMarks]);
@@ -47,6 +50,7 @@ const MarkPaper = ({
       .then((res) => {
         if (res) {
           console.log("status updated successfully", res.data);
+          router.push(`/faculty/mark_exam/${exam_id}`);
         }
       })
       .catch((err) => {
@@ -76,6 +80,7 @@ const MarkPaper = ({
       return answer ? total + answer.marksobtained : total;
     }, 0);
 
+    console.log("objective marks", objectiveAnswers);
     setObjectiveMarks(marks);
   };
 
@@ -103,22 +108,22 @@ const MarkPaper = ({
       {!isStudent && (
         <div>
           <button
-            className="p-2 w-32 bg-blue-900 text-white rounded-lg"
+            className="p-2 w-32 bg-blue-900 text-white rounded-lg mr-4"
+            onClick={() => {
+              router.reload();
+            }}
+          >
+            Set Marks
+          </button>
+          <button
+            className="px-6 py-2 bg-blue-900 text-white rounded-lg"
             onClick={() => {
               setSaved(true);
               updateStatus();
             }}
           >
-            {saved ? <>Saved</> : <>Save Marks</>}
+            {saved ? <>Saving...</> : <>Save and Proceed</>}
           </button>
-          <Link
-            href="/faculty/mark_exam/[exam_id]"
-            as={`/faculty/mark_exam/${exam_id}`}
-          >
-            <button className="p-2 bg-yellow-500 text-white rounded-lg ml-4">
-              Back to Results
-            </button>
-          </Link>
         </div>
       )}
     </div>

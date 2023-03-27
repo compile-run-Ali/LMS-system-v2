@@ -23,7 +23,7 @@ const ExamTable = ({ exams_data }) => {
         exam.paper_type === "Objective" ? "objective" : "subjective"
       }`,
       query: {
-        ...exam,
+        paper_id: exam.paper_id,
       },
     });
   };

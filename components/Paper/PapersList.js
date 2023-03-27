@@ -36,12 +36,11 @@ export default function PapersList({ papers, status }) {
           studentId: session.user.id,
         },
       });
+      console.log("attempt status fetched successfully", res.data);
       setAttemptStatus(res.data);
     };
     getAttemptStatus();
   }, [session]);
-
-  console.log("attemptStatus", attemptStatus);
 
   const getRow = (paper) => {
     const { start, end } = getPaperDateTime(paper.date, paper.duration);

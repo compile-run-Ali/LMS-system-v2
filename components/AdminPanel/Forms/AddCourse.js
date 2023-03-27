@@ -10,9 +10,6 @@ const AddCourse = () => {
   const [creditHours, setCreditHours] = useState(
     edit ? router.query.credit_hours : ""
   );
-  const [department, setDepartment] = useState(
-    edit ? router.query.department : ""
-  );
   const [courseCode, setCourseCode] = useState(
     edit ? router.query.course_code : ""
   );
@@ -22,12 +19,10 @@ const AddCourse = () => {
     await addCourse({
       name,
       credit_hours: creditHours,
-      department,
       course_code: courseCode,
     });
     setName("");
     setCreditHours("");
-    setDepartment("");
     setCourseCode("");
   };
 
@@ -77,16 +72,6 @@ const AddCourse = () => {
             type="text"
             value={creditHours}
             onChange={(event) => setCreditHours(event.target.value)}
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <Input
-            text="Department"
-            id="department"
-            type="text"
-            value={department}
-            onChange={(event) => setDepartment(event.target.value)}
           />
         </div>
         <div className="flex items-center justify-between">

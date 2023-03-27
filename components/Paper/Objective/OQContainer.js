@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import CountdownTimer from "../CountdownTimer";
 import SubmitModal from "../SubmitModal";
 import Loader from "@/components/Loader";
+import Spinner from "@/components/Loader/Spinner";
 
 export default function OQContainer({
   question,
@@ -17,7 +18,8 @@ export default function OQContainer({
 }) {
   const router = useRouter();
   const { paper } = router.query;
-  const { data: session, status } = useSession();
+  const session = useSession();
+
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [multipleAllowed, setMultipleAllowed] = useState(false);
@@ -26,8 +28,16 @@ export default function OQContainer({
   const [numSelected, setNumSelected] = useState(0);
   const [loading, setLoading] = useState(true);
   const [changed, setChanged] = useState(false);
+  const [savingAnswer, setSavingAnswer] = useState({
+    show: false,
+    message: "",
+  });
 
   const saveAnswer = () => {
+    setSavingAnswer({
+      show: true,
+      message: "Saving answer...",
+    });
     const score = markAnswer(
       question.correct_answer,
       selectedAnswer.join(","),
@@ -36,13 +46,17 @@ export default function OQContainer({
     // mark answer right here
     axios
       .post(`/api/student/paper/oq/add_answer`, {
-        p_number: session.user.id,
+        p_number: session.data.user.id,
         oq_id: question.oq_id,
         answer: selectedAnswer.join(","),
         marks: score,
       })
       .then((res) => {
         console.log("answer added successfully ", res.data);
+        setSavingAnswer({
+          show: false,
+          message: "",
+        });
       })
       .catch((err) => {
         console.log("error ", err.message);
@@ -94,6 +108,14 @@ export default function OQContainer({
       JSON.parse(localStorage.getItem("papers"))[paper].flags
     );
   };
+
+  useEffect(() => {
+    if (changed) {
+      saveAnswer();
+    }
+  }, [selectedAnswer]);
+
+
   useEffect(() => {
     // correctanswer will be a string in form a1,a2
     // selectedanswer will be a string in form a1,a2
@@ -103,7 +125,7 @@ export default function OQContainer({
       axios
         .get("/api/student/paper/oq/get_answer", {
           params: {
-            p_number: session.user.id,
+            p_number: session.data.user.id,
             oq_id: question.oq_id,
           },
         })
@@ -142,6 +164,7 @@ export default function OQContainer({
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 w-full">
+      <Spinner show={savingAnswer.show} message={savingAnswer.message} />
       {question ? (
         <>
           <div className="relative">
@@ -248,17 +271,6 @@ export default function OQContainer({
                 {flags.includes(String(currentQuestion)) ? "Remove" : "Review"}
               </button>
             )}
-            <button
-              className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
-                ${
-                  saved || !changed
-                    ? "bg-green-600"
-                    : "bg-white hover:bg-zinc-300"
-                }`}
-              onClick={saveAnswer}
-            >
-              {saved || !changed ? "Saved" : "Save"}
-            </button>
             {currentQuestion < totalQuestions - 1 ? (
               <button
                 className="bg-white hover:bg-zinc-300 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"

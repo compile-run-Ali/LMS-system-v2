@@ -60,7 +60,7 @@ const AssignedTable = ({ course_data }) => {
       <tbody>
         {courseData.map((course, index) => (
           <tr key={index} className="bg-white">
-            <td className=" px-4 py-2">{`${course.course_code} - ${course.course_name} (${course.department})`}</td>
+            <td className=" px-4 py-2">{`${course.course_code} - ${course.course_name}`}</td>
             <td className=" px-4 py-2">
               {handleMultipleFaculty(course.faculty)}
             </td>

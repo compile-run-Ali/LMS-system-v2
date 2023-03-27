@@ -18,6 +18,8 @@ export default function Register() {
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [rank, setRank] = useState("");
+  const ranks = ["2nd Lt", "Lt", "Capt", "Maj"];
 
   useEffect(() => {
     axios
@@ -51,7 +53,8 @@ export default function Register() {
       !dob ||
       !phoneNumber ||
       !password ||
-      !cPassword
+      !cPassword ||
+      !rank
     ) {
       return alert("Please fill all fields");
     }
@@ -77,7 +80,7 @@ export default function Register() {
     formData.append("password", password);
     formData.append("course_code", selectedCourse);
     formData.append("profile_picture", profilePicture);
-      
+    formData.append("rank", rank);
 
     axios
       .post(`/api/admin/student/add_student`, formData, {
@@ -95,6 +98,7 @@ export default function Register() {
           })
           .then((res) => {
             console.log("course added successfully", res.data);
+            router.push("/");
           })
           .catch((err) =>
             console.log("Error in registering student to course", err)
@@ -102,7 +106,6 @@ export default function Register() {
       })
       .catch((err) => console.log("Error in registering student", err));
 
-    router.push("/");
   };
 
   return (
@@ -119,10 +122,10 @@ export default function Register() {
               <div className="grid grid-cols-2 gap-5">
                 <div className="form-group mb-5">
                   <label
-                    htmlFor="PA number"
+                    htmlFor="Army number"
                     className="text-blue-900 font-medium text-sm"
                   >
-                    PA Number
+                    Army Number
                   </label>
                   <input
                     value={paNumber}
@@ -133,7 +136,7 @@ export default function Register() {
                 bg-white bg-clip-padding border border-solid border-gray-300
                   rounded transition ease-in-out m-0
               focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                    id="PA number"
+                    id="Army number"
                     aria-describedby="emailHelp123"
                   />
                 </div>
@@ -238,7 +241,7 @@ export default function Register() {
                   />
                 </div>
 
-                <div className="form-group mb-6">
+                <div className="form-group mb-3">
                   <label
                     htmlFor="Courses"
                     className="text-blue-900 font-medium text-sm"
@@ -266,6 +269,31 @@ export default function Register() {
                     ))}
                   </select>
                 </div>
+              </div>
+              <div className="mb-3">
+                <label
+                  htmlFor="Rank"
+                  className="text-blue-900 font-medium text-sm"
+                >
+                  Rank
+                </label>
+
+                <select
+                  className="form-control block w-full px-3 py-1.5 text-sm font-normal text-gray-700 
+                  bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
+                  focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                  id="Courses"
+                  onChange={(e) => {
+                    setRank(e.target.value);
+                  }}
+                >
+                  <option value={""}>Select a rank</option>
+                  {ranks?.map((rank) => (
+                    <option key={rank} value={rank}>
+                      {rank}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="grid grid-cols-2 gap-5">

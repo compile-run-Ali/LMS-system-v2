@@ -19,6 +19,7 @@ model Student {
   cgpa            Float
   email           String
   DOB             DateTime
+  rank            String?
   profile_picture String?
 
   courses            SRC[]
@@ -42,7 +43,6 @@ model Course {
 
   course_name  String
   credit_hours Int
-  department   String
 
   students SRC[]
   faculty  FTC[]
@@ -53,11 +53,13 @@ model Course {
 model Faculty {
   faculty_id String @id @default(uuid())
 
+  pa_number       String?    @unique
   name            String
   password        String
   level           Int
-  email           String
-  department      String
+  position        String?
+  rank            String?
+  email           String  @unique
   phone_number    String
   profile_picture String?
 
@@ -107,6 +109,7 @@ model Paper {
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]
+  ie_questions         IeQuestion[]
 
   PaperComment PaperComment[]
   attempts     SPA[]
@@ -160,6 +163,16 @@ model ObjectiveQuestion {
   student_attempst SOA[]
 }
 
+model IeQuestion {
+  ie_id String @id @default(uuid())
+
+  fileName String
+  fileUrl  String
+
+  paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+  paper_id String
+}
+
 //Student Objective Question Attempt
 model SOA {
   soa_id String @id @default(uuid())
@@ -196,11 +209,13 @@ model Notification {
 }
 
 model SPA {
-  spaId         String  @id @default(uuid())
-  studentId     String
-  paperId       String
-  status        String? @default("Not Attempted")
-  obtainedMarks Float   @default(0)
+  spaId          String  @id @default(uuid())
+  studentId      String
+  paperId        String
+  status         String? @default("Not Attempted")
+  obtainedMarks  Float   @default(0)
+  studentComment String? @default("")
+  teacherComment String? @default("")
 
   student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
   paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)

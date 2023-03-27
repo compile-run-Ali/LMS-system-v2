@@ -36,7 +36,7 @@ export default function StudentDashboard({ session }) {
     const studentexams = await axios.get(`/api/student/paper/${index}`);
     console.log("papers are ", studentexams.data);
     const approvedPapers = studentexams.data.filter(
-      (paper) => paper.status === "Approved"
+      (paper) => paper.status !== "Draft"
     );
 
     // categorize papers here
@@ -89,7 +89,7 @@ export default function StudentDashboard({ session }) {
         </Link>
         <div className="text-lg">{student?.email}</div>
       </div>
-      { papers.map(
+      {papers.map(
         (paper) =>
           paper.papers.length > 0 && (
             <div key={paper.title}>

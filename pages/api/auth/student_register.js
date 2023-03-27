@@ -21,6 +21,7 @@ const handler = async (req, res) => {
                   email,
                   cgpa,
                   DOB,
+                  rank,
                   password: hash
                 }
             });

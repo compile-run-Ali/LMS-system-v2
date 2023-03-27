@@ -6,6 +6,7 @@ import MCQTable from "../CreateObjective/ObjectiveExam";
 import Exam from "../Exam/Exam";
 import axios from "axios";
 import SubjectiveExam from "../CreateSubjective/SubjectiveExam";
+import IeExam from "../CreateIE/IeExam";
 
 const wizardItemsObjective = [
   {
@@ -44,23 +45,25 @@ const wizardItemsSubjective = [
 export default function CreateExam({ paperType }) {
   const router = useRouter();
 
-  const [examDetails, setExamDetails] = useState(
-    Object.keys(router.query).length > 1 ? router.query : null
-  );
+  const [examDetails, setExamDetails] = useState(null);
   const [active, setActive] = useState(1);
   const [paperId, setPaperId] = useState(
-    examDetails ? examDetails.paper_id : 0
+    Object.keys(router.query).length > 0 ? router.query.paper_id : 0
   );
   const [exam, setExam] = useState();
   const [mcqs, setMCQs] = useState([]);
   const [subjectives, setSubjectives] = useState([]);
   const [freeFlowGlobal, setFreeFlowGlobal] = useState(false);
+  const [ieFiles, setIeFiles] = useState([]);
 
   useEffect(() => {
     if (router.isReady) {
       console.log("router is ready");
+      setPaperId(
+        Object.keys(router.query).length > 0 ? router.query.paper_id : 0
+      );
       setExamDetails(
-        Object.keys(router.query).length > 1 ? router.query : null
+        Object.keys(router.query).length > 0 ? router.query : null
       );
     }
   }, [router]);
@@ -72,6 +75,8 @@ export default function CreateExam({ paperType }) {
     setExam(res.data);
   };
 
+  console.log("paper id is", paperId);
+
   const fetchObjectives = async () => {
     const res = await axios.post("/api/faculty/get_objective", {
       paper_id: paperId,
@@ -79,23 +84,44 @@ export default function CreateExam({ paperType }) {
     setMCQs(res.data);
   };
 
-  const fetchSubjectives = async () => {
-    const res = await axios.post("/api/faculty/get_subjective", {
-      paper_id: paperId,
+  const fetchIeFiles = async () => {
+    const res = await axios.get(`/api/faculty/get_ie_files`, {
+      params: {
+        paperId: paperId,
+      },
     });
-    setSubjectives(res.data);
+    setIeFiles(res.data);
+  };
+
+  const fetchSubjectives = async () => {
+    await axios
+      .post("/api/faculty/get_subjective", {
+        paper_id: paperId,
+      })
+      .then((res) => {
+        const allQuestion = res.data;
+        setSubjectives(res.data.filter((question) => !question.parent_sq_id));
+        // console.log("allQuestion", res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
-    if (paperId !== 0 && !exam) {
+    if (paperId && !exam) {
+      console.log("paper id is", paperId, "fetching exam");
       fetchExam();
     }
-    if (paperType === "Objective" && paperId !== 0) {
+    if (paperType === "Objective" && paperId) {
       fetchObjectives();
     }
-    if (paperType === "Subjective/Objective" && paperId !== 0) {
+    if (paperType === "Subjective/Objective" && paperId) {
       fetchObjectives();
       fetchSubjectives();
+    }
+    if (paperType === "IE" && paperId) {
+      fetchIeFiles();
     }
   }, [paperId, exam, paperType]);
 
@@ -103,6 +129,7 @@ export default function CreateExam({ paperType }) {
     <div className="w-full pl-6 mt-2">
       <Wizard
         active={active}
+        setActive={setActive}
         items={
           paperType === "Subjective/Objective"
             ? wizardItemsSubjective
@@ -118,7 +145,7 @@ export default function CreateExam({ paperType }) {
           setFreeFlowGlobal={setFreeFlowGlobal}
         />
       )}
-      {active === 2 && paperId !== 0 && (
+      {active === 2 && paperId !== 0 && paperType !== "IE" && (
         <div className="mt-10">
           <MCQTable
             exam={exam}
@@ -130,7 +157,28 @@ export default function CreateExam({ paperType }) {
           />
         </div>
       )}
+      {active === 2 && paperId !== 0 && paperType === "IE" && (
+        <div className="mt-10">
+          <IeExam
+            paperId={paperId}
+            setActive={setActive}
+            exam={exam}
+            ieFiles={ieFiles}
+          />
+        </div>
+      )}
       {active === 3 && paperId !== 0 && paperType === "Objective" && (
+        <div className="mt-10">
+          <Exam
+            exam={exam}
+            objectiveQuestions={mcqs}
+            subjectiveQuestions={subjectives}
+            isEdit={true}
+            setActive={setActive}
+          />
+        </div>
+      )}
+      {active === 3 && paperId !== 0 && paperType === "IE" && (
         <div className="mt-10">
           <Exam
             exam={exam}

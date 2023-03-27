@@ -15,18 +15,42 @@ export default function Index() {
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
-    axios.get("/api/admin/faculty/get_faculty").then((res) => {
-      setFacultyData(res.data);
-      setLoading(false);
-    });
-    const courses = await axios.get("/api/admin/course/get_courses");
-    const student = await axios.get("/api/admin/student/get_student");
+    axios
+      .get("/api/admin/faculty/get_faculty")
+      .then((res) => {
+        setFacultyData(res.data);
+        setLoading(false);
+      })
+      .catch((facultyError) => {
+        console.log(
+          "error in api: /api/admin/faculty/get_faculty",
+          facultyError
+        );
+      });
 
-    const exams = await axios.get("/api/admin/paper/get_exams");
+    try {
+      const courses = await axios.get("/api/admin/course/get_courses");
+      setCoursesData(courses.data);
+    } catch (coursesError) {
+      console.log("error in api: /api/admin/course/get_courses", coursesError);
+    }
 
-    setCoursesData(courses.data);
-    setStudentData(student.data);
-    setExamsData(exams.data);
+    try {
+      const student = await axios.get("/api/admin/student/get_student");
+      setStudentData(student.data);
+    } catch (studentError) {
+      console.log(
+        "error in api: /api/admin/student/get_students",
+        studentError
+      );
+    }
+
+    try {
+      const exams = await axios.get("/api/admin/paper/get_exams");
+      setExamsData(exams.data);
+    } catch (examsError) {
+      console.log("error in api: /api/admin/paper/get_exams", examsError);
+    }
   };
 
   useEffect(() => {
