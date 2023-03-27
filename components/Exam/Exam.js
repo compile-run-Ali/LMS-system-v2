@@ -31,6 +31,11 @@ export default function Exam({
   useEffect(() => {
     setAccess(() => {
       if (session.status === "authenticated") {
+
+        if (session.data.user.role === "faculty" && session.data.user.level === 5) {
+          return true;
+        }
+
         if (exam.status === "Pending Approval") {
           return exam.examofficer.faculty_id === session.data.user.id;
         } else if (exam.status === "Approved") {

@@ -65,6 +65,7 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
       </thead>
       <tbody>
         {facultyData.map((facultyMember, index) => (
+          facultyMember.level !== 5 &&
           <tr key={index} className="bg-white">
             <td className=" px-4 py-2">{facultyMember.pa_number}</td>
             <td className=" px-4 py-2">{facultyMember.name}</td>
@@ -91,6 +92,7 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
               </button>
             </td>
           </tr>
+          
         ))}
       </tbody>
     </table>

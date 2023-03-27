@@ -17,7 +17,7 @@ export default function Home() {
     if (session.status === "authenticated") {
       session.data.user.role === "student"
         ? router.push("/student")
-        : router.push("/faculty");
+        : session.data.user.level === 5 ? router.push("/admin") : router.push("/faculty")
     }
   }, [session]);
 
