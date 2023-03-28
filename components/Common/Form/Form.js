@@ -31,9 +31,10 @@ export default function Form({
         show: true,
         message: "Loading Exam Details",
       });
-      axios.post("/api/faculty/get_exam", {
-        paper_id: examDetails.paper_id,
-      })
+      axios
+        .post("/api/faculty/get_exam", {
+          paper_id: examDetails.paper_id,
+        })
         .then((res) => {
           setPaperName(res.data.paper_name);
           setPaperDuration(res.data.duration);
@@ -140,7 +141,7 @@ export default function Form({
   };
 
   useEffect(() => {
-    if (Object.keys(router.query).length > 0) {
+    if (Object.keys(router.query).length > 1) {
       setEditTrue();
     }
   }, [examDetails]);

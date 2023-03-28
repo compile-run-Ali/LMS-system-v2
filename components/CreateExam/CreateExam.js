@@ -48,7 +48,7 @@ export default function CreateExam({ paperType }) {
   const [examDetails, setExamDetails] = useState(null);
   const [active, setActive] = useState(1);
   const [paperId, setPaperId] = useState(
-    Object.keys(router.query).length > 0 ? router.query.paper_id : 0
+    Object.keys(router.query).length > 1 ? router.query.paper_id : 0
   );
   const [exam, setExam] = useState();
   const [mcqs, setMCQs] = useState([]);
@@ -60,10 +60,10 @@ export default function CreateExam({ paperType }) {
     if (router.isReady) {
       console.log("router is ready");
       setPaperId(
-        Object.keys(router.query).length > 0 ? router.query.paper_id : 0
+        Object.keys(router.query).length > 1 ? router.query.paper_id : 0
       );
       setExamDetails(
-        Object.keys(router.query).length > 0 ? router.query : null
+        Object.keys(router.query).length > 1 ? router.query : null
       );
     }
   }, [router]);
@@ -75,7 +75,6 @@ export default function CreateExam({ paperType }) {
     setExam(res.data);
   };
 
-  console.log("paper id is", paperId);
 
   const fetchObjectives = async () => {
     const res = await axios.post("/api/faculty/get_objective", {
