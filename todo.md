@@ -157,8 +157,8 @@ If not page should automatically scroll down to the right area when "Create new 
 
 ### New
 <!-- Move Rank Field up -->
-Move Monogram down and remove blur if possible
-Give Free typing option in "Previous Courses field
+<!-- Move Monogram down and remove blur if possible -->
+<!-- Give Free typing option in "Previous Courses field -->
 Paper Duration Behaviour
 Exam Settings not being retained (review page is retaining)
 Admin ID paper status change behaviour (lock student attempt) Lock free flow answers.

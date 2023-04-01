@@ -23,6 +23,7 @@ export default function Register() {
   const inputClasses =
     "form-control block w-full px-3 py-1.5 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-blue-900 focus:bg-white focus:border-blue-600 focus:outline-none";
 
+  console.log(inputs);
   useEffect(() => {
     axios
       .get("/api/admin/course/get_courses")
@@ -239,7 +240,7 @@ export default function Register() {
 
                   <select
                     className={inputClasses}
-                    id="Courses"
+                    id="Prev-Courses"
                     onChange={(e) => {
                       setSelectedCourse(e.target.value);
                     }}
@@ -324,7 +325,7 @@ export default function Register() {
         </div>
 
         <div className=" !font-poppins w-1/2 h-full rounded-tr-lg rounded-br-lg shadow-lg blue-div bg-blue-900">
-          <div className="w-full h-full backdrop-blur-sm">
+          <div className="w-full h-full">
             <div className="pt-16 px-5">
               <label
                 className="block mb-2 text-sm font-medium text-white"
@@ -352,20 +353,19 @@ export default function Register() {
                   Previous Courses
                 </span>
                 {inputs.map((input, index) => (
-                  <div key={index} className="flex px-5  mt-3 gap-x-5">
+                  <div key={index} className="flex px-5 mt-3 gap-x-5">
                     <div className="w-full">
                       <label className="text-white text-sm font-medium">
                         Course
                       </label>
-                      <select
-                        className=" focus:outline-none bg-white active:outline-none outline-blue-800 p-1.5 rounded-md w-full "
+                      <input
+                        type="text"
+                        className="focus:outline-none bg-white active:outline-none outline-blue-800 px-2 py-1.5 rounded-md w-full"
+                        placeholder="Enter course name"
                         onChange={(event) => handleChange(index, event)}
-                      >
-                        <option className="">Select course</option>
-                        <option className="">Staff College</option>
-                        <option className="">Defense Economy</option>
-                      </select>
+                      />
                     </div>
+
                     <div className="w-full">
                       <label className="text-white text-sm font-medium">
                         Grade

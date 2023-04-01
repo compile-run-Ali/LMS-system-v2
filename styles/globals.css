@@ -108,13 +108,13 @@ input::file-selector-button {
 }
 
 
-.blue-div{
+.blue-div {
   background-image: url('/logo.png');
   background-size: contain;
   background-repeat: no-repeat;
-  background-position: center;
-
+  background-position: center 70%;
 }
+
 
 @media (prefers-color-scheme: dark) {
   html {
