@@ -3,6 +3,7 @@ import Link from "next/link";
 import axios from "axios";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useRouter } from "next/router";
+import Spinner from "../Loader/Spinner";
 
 export default function Register() {
   const router = useRouter();
@@ -19,11 +20,14 @@ export default function Register() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
   const [rank, setRank] = useState("");
+  const [loading, setLoading] = useState({
+    show: false,
+    message: "",
+  });
   const ranks = ["2nd Lt", "Lt", "Capt", "Maj"];
   const inputClasses =
     "form-control block w-full px-3 py-1.5 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-blue-900 focus:bg-white focus:border-blue-600 focus:outline-none";
 
-  console.log(inputs);
   useEffect(() => {
     axios
       .get("/api/admin/course/get_courses")
@@ -61,6 +65,11 @@ export default function Register() {
     ) {
       return alert("Please fill all fields");
     }
+
+    setLoading({
+      show: true,
+      message: "Registering student...",
+    });
 
     const student = {
       p_number: paNumber,
@@ -101,6 +110,10 @@ export default function Register() {
           })
           .then((res) => {
             console.log("course added successfully", res.data);
+            setLoading({
+              show: false,
+              message: "",
+            });
             router.push("/");
           })
           .catch((err) =>
@@ -118,6 +131,7 @@ export default function Register() {
 
   return (
     <div className="w-full h-screen flex justify-center items-center">
+      <Spinner show={loading.show} message={loading.message} />
       <div className="w-3/4 h-[90%] flex">
         <div className="w-1/2 font-poppins">
           <div className="block p-6 rounded-tl-lg rounded-bl-lg shadow-lg bg-white h-full">
