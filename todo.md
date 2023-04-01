@@ -164,9 +164,9 @@ Exam Settings not being retained (review page is retaining)
 Admin ID paper status change behaviour (lock student attempt) Lock free flow answers.
 Inverted Commas and font change for comment text in same line. Change "Mark Exam" to "Evaluate"
 Lock Evaluate Key untill exam is attempted by atleast 1 student
-Change "brigadier General" to "Brigadier" in Rank select Drop Down
-Same PA should not be used twice. Add check
-faculty PA# is not updating after edit from Admin pannel
+<!-- Change "brigadier General" to "Brigadier" in Rank select Drop Down -->
+<!-- Same PA should not be used twice. Add check -->
+<!-- faculty PA# is not updating after edit from Admin panel -->
 Subjective Questions numbering is not retaining
 Default Objective timing
 part # to be changed to a and b?

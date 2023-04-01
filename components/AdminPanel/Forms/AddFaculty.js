@@ -51,7 +51,7 @@ const AddFaculty = () => {
     "Major",
     "Lieutenant Colonel",
     "Colonel",
-    "Brigadier General",
+    "Brigadier",
     "Major General",
     "Lieutenant General",
   ];
@@ -116,7 +116,7 @@ const AddFaculty = () => {
       }
     );
     if (edited_faculty.status === 200) {
-      router.push("/admin");
+      // router.push("/admin");
     }
   };
 

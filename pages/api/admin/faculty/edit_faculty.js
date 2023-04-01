@@ -20,6 +20,7 @@ const handler = async (req, res) => {
       }
       try {
         const facultyData = {
+          pa_number: fields.pa_number,
           name: fields.name,
           email: fields.email,
           phone_number: fields.phone_number,
