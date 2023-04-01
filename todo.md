@@ -174,6 +174,6 @@ Include Exam name in notifications, Exam Reviw and comment section.
 Paper Duration Behaviour paper duration should count from when the student opens the exam. Not from the start time. Single Click Logic for objectives to be rewritten.
 Faculty PA # edit (field is working but when faculty ID details are dited from Admin panel it doesn't update faculty PA #) Total Marks in Exam Table
 Back Keys missing
-same PA should not be used twice
+<!-- same PA should not be used twice -->
 ### Others
 1 If two same options are made, then remove duplicate option

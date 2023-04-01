@@ -107,7 +107,13 @@ export default function Register() {
             console.log("Error in registering student to course", err)
           );
       })
-      .catch((err) => console.log("Error in registering student", err));
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          alert("Student with that Army Number already exists.");
+        } else {
+          console.error(error);
+        }
+      });
   };
 
   return (

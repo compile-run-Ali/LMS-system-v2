@@ -100,8 +100,14 @@ export default function AddStudent() {
             console.log("Error in registering student to course", err)
           );
       })
-      .catch((err) => console.log("Error in registering student", err));
-    router.push("/admin");
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          alert("Student with that Army Number already exists.");
+        } else {
+          console.error(error);
+        }
+      });
+    // router.push("/admin");
   };
 
   const editStudent = async (student) => {
