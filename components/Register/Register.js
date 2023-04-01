@@ -20,6 +20,8 @@ export default function Register() {
   const [profilePicture, setProfilePicture] = useState(null);
   const [rank, setRank] = useState("");
   const ranks = ["2nd Lt", "Lt", "Capt", "Maj"];
+  const inputClasses =
+    "form-control block w-full px-3 py-1.5 text-sm font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-blue-900 focus:bg-white focus:border-blue-600 focus:outline-none";
 
   useEffect(() => {
     axios
@@ -105,7 +107,6 @@ export default function Register() {
           );
       })
       .catch((err) => console.log("Error in registering student", err));
-
   };
 
   return (
@@ -118,9 +119,9 @@ export default function Register() {
                 Register yourself
               </h1>
             </div>
-            <form>
+            <form className="space-y-3">
               <div className="grid grid-cols-2 gap-5">
-                <div className="form-group mb-5">
+                <div className="form-group">
                   <label
                     htmlFor="Army number"
                     className="text-blue-900 font-medium text-sm"
@@ -131,16 +132,12 @@ export default function Register() {
                     value={paNumber}
                     onChange={(e) => setPaNumber(e.target.value)}
                     type="text"
-                    className="form-control block
-                  w-full px-3 py-1.5 text-sm font-normal text-gray-700
-                bg-white bg-clip-padding border border-solid border-gray-300
-                  rounded transition ease-in-out m-0
-              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    className={inputClasses}
                     id="Army number"
                     aria-describedby="emailHelp123"
                   />
                 </div>
-                <div className="form-group mb-5">
+                <div className="form-group">
                   <label
                     htmlFor="Full Name"
                     className="text-blue-900 font-medium text-sm"
@@ -151,28 +148,38 @@ export default function Register() {
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     type="text"
-                    className="form-control
-              block
-              w-full
-              px-3
-              py-1.5
-              text-sm
-              font-normal
-              text-blue-900
-              bg-white bg-clip-padding
-              border border-solid border-gray-300
-              rounded
-              transition
-              ease-in-out
-              m-0
-              focus:text-blue-900 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    className={inputClasses}
                     id="Full Name"
                     aria-describedby="emailHelp123"
                   />
                 </div>
               </div>
 
-              <div className="form-group mb-5 grid grid-cols-2 gap-5">
+              <div className="">
+                <label
+                  htmlFor="Rank"
+                  className="text-blue-900 font-medium text-sm"
+                >
+                  Rank
+                </label>
+
+                <select
+                  className={inputClasses}
+                  id="Courses"
+                  onChange={(e) => {
+                    setRank(e.target.value);
+                  }}
+                >
+                  <option value={""}>Select a rank</option>
+                  {ranks?.map((rank) => (
+                    <option key={rank} value={rank}>
+                      {rank}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group grid grid-cols-2 gap-5">
                 <div>
                   <label
                     htmlFor="Email"
@@ -184,20 +191,7 @@ export default function Register() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     type="email"
-                    className="form-control block
-                  w-full
-                  px-3
-                  py-1.5
-                  text-sm
-                  font-normal
-                  text-gray-700
-                  bg-white bg-clip-padding
-                  border border-solid border-gray-300
-                  rounded
-                  transition
-                  ease-in-out
-                  m-0
-                  focus:text-blue-900 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    className={inputClasses}
                     id="Email"
                   />
                 </div>
@@ -212,17 +206,14 @@ export default function Register() {
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     type="text"
-                    className="form-control block
-                  w-full px-3 py-1.5 text-sm font-normal text-gray-700
-                bg-white bg-clip-padding border border-solid border-gray-300
-                  rounded transition ease-in-out m-0
-              focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    className={inputClasses}
                     id="Phone number"
                   />
                 </div>
               </div>
+
               <div className="grid grid-cols-2 gap-5">
-                <div className="form-group mb-5">
+                <div className="form-group">
                   <label
                     htmlFor="Password"
                     className="text-blue-900 font-medium text-sm"
@@ -233,15 +224,12 @@ export default function Register() {
                     value={dob}
                     onChange={(e) => setDob(e.target.value)}
                     type="date"
-                    className="form-control block w-full px-3 py-1.5 text-sm font-normal
-                    text-gray-700 bg-white bg-clip-padding border border-solid 
-                    border-gray-300 rounded transition ease-in-out m-0 
-                    focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none dateSelectorColor"
+                    className={inputClasses + " dateSelectorColor"}
                     id="dob"
                   />
                 </div>
 
-                <div className="form-group mb-3">
+                <div className="form-group">
                   <label
                     htmlFor="Courses"
                     className="text-blue-900 font-medium text-sm"
@@ -250,9 +238,7 @@ export default function Register() {
                   </label>
 
                   <select
-                    className="form-control block w-full px-3 py-1.5 text-sm font-normal text-gray-700 
-                  bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
-                  focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    className={inputClasses}
                     id="Courses"
                     onChange={(e) => {
                       setSelectedCourse(e.target.value);
@@ -270,34 +256,9 @@ export default function Register() {
                   </select>
                 </div>
               </div>
-              <div className="mb-3">
-                <label
-                  htmlFor="Rank"
-                  className="text-blue-900 font-medium text-sm"
-                >
-                  Rank
-                </label>
-
-                <select
-                  className="form-control block w-full px-3 py-1.5 text-sm font-normal text-gray-700 
-                  bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
-                  focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                  id="Courses"
-                  onChange={(e) => {
-                    setRank(e.target.value);
-                  }}
-                >
-                  <option value={""}>Select a rank</option>
-                  {ranks?.map((rank) => (
-                    <option key={rank} value={rank}>
-                      {rank}
-                    </option>
-                  ))}
-                </select>
-              </div>
 
               <div className="grid grid-cols-2 gap-5">
-                <div className="form-group mb-6">
+                <div className="form-group">
                   <label
                     htmlFor="Password"
                     className="text-blue-900 font-medium text-sm"
@@ -308,20 +269,7 @@ export default function Register() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     type="password"
-                    className="form-control block
-            w-full
-            px-3
-            py-1.5
-            text-sm
-            font-normal
-            text-gray-700
-            bg-white bg-clip-padding
-            border border-solid border-gray-300
-            rounded
-            transition
-            ease-in-out
-            m-0
-            focus:text-gray-700  focus:bg-white focus:border-blue-600 focus:outline-none"
+                    className={inputClasses}
                     id="Password"
                   />
                 </div>
@@ -336,15 +284,7 @@ export default function Register() {
                     value={cPassword}
                     onChange={(e) => setCPassword(e.target.value)}
                     type="password"
-                    className="form-control block
-                      w-full px-3 py-1.5 text-sm font-normal
-                      text-gray-700
-                      bg-white bg-clip-padding
-                      border border-solid border-gray-300
-                      rounded
-                      transition
-                      ease-in-out m-0
-                      focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+                    className={inputClasses}
                     id="cPassword"
                   />
                 </div>
@@ -357,10 +297,8 @@ export default function Register() {
 
               <button
                 type="submit"
-                className=" w-full px-6 py-2.5 bg-blue-900 text-white font-medium text-xs
-                  uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700
-                  focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-700 active:shadow-lg 
-                  transition  duration-150 ease-in-out"
+                className=" w-full px-6 py-2.5 bg-blue-900 text-white font-medium text-xs uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700
+                  focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-700 active:shadow-lg transition duration-150 ease-in-out"
                 onClick={(e) => {
                   e.preventDefault();
                   if (password === cPassword) {

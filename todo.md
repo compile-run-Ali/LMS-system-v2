@@ -153,3 +153,27 @@ If not page should automatically scroll down to the right area when "Create new 
 32 Add 'Course Strength" field and a cap for max # of students to be registered in each course.
 33 Add Index # field instead of CGPA
 34 Add "Save as Draft" or "Submit to" key in Admin panel
+
+
+### New
+<!-- Move Rank Field up -->
+Move Monogram down and remove blur if possible
+Give Free typing option in "Previous Courses field
+Paper Duration Behaviour
+Exam Settings not being retained (review page is retaining)
+Admin ID paper status change behaviour (lock student attempt) Lock free flow answers.
+Inverted Commas and font change for comment text in same line. Change "Mark Exam" to "Evaluate"
+Lock Evaluate Key untill exam is attempted by atleast 1 student
+Change "brigadier General" to "Brigadier" in Rank select Drop Down
+Same PA should not be used twice. Add check
+faculty PA# is not updating after edit from Admin pannel
+Subjective Questions numbering is not retaining
+Default Objective timing
+part # to be changed to a and b?
+Include Exam name in notifications, Exam Reviw and comment section.
+Paper Duration Behaviour paper duration should count from when the student opens the exam. Not from the start time. Single Click Logic for objectives to be rewritten.
+Faculty PA # edit (field is working but when faculty ID details are dited from Admin panel it doesn't update faculty PA #) Total Marks in Exam Table
+Back Keys missing
+same PA should not be used twice
+### Others
+1 If two same options are made, then remove duplicate option
