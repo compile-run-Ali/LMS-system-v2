@@ -53,7 +53,7 @@ model Course {
 model Faculty {
   faculty_id String @id @default(uuid())
 
-  pa_number       String?    @unique
+  pa_number       String? @unique
   name            String
   password        String
   level           Int
@@ -106,6 +106,7 @@ model Paper {
   duration    Int
   weightage   Int?
   status      String         @default("Draft")
+  total_marks Int            @default(0)
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]
@@ -184,6 +185,7 @@ model SOA {
   student  Student @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
 
   answer        String
+  is_attempted  Boolean @default(false)
   marksobtained Float
 }
 
@@ -209,13 +211,16 @@ model Notification {
 }
 
 model SPA {
-  spaId          String  @id @default(uuid())
-  studentId      String
-  paperId        String
-  status         String? @default("Not Attempted")
-  obtainedMarks  Float   @default(0)
-  studentComment String? @default("")
-  teacherComment String? @default("")
+  spaId           String  @id @default(uuid())
+  studentId       String
+  paperId         String
+  status          String? @default("Not Attempted")
+  timeStarted     String?
+  timeCompleted   String?
+  currentQuestion Int     @default(1)
+  obtainedMarks   Float   @default(0)
+  studentComment  String? @default("")
+  teacherComment  String? @default("")
 
   student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
   paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)

@@ -7,7 +7,7 @@ const handler = async (req, res) => {
   try {
     const SPA = await prisma.sPA.findMany({
       where: {
-        studentId: req.body.studentId,
+        studentId: req.query.studentId,
       },
       select: {
         paperId: true,

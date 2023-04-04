@@ -1,28 +1,28 @@
-// add answer of studednt to the question
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-
-export default async function handler(req, res) {
+ export default async function handler(req, res) {
   try {
+    console.log("received body", req.body);
     const existingSOA = await prisma.sOA.findUnique({
       where: {
         soa_id: req.body.p_number + req.body.oq_id,
       },
     });
-
-    if (existingSOA) {
+     if (existingSOA) {
+      console.log("updatedSOA");
       const updatedSOA = await prisma.sOA.update({
         where: {
           soa_id: existingSOA.soa_id,
         },
         data: {
           answer: req.body.answer,
+          is_attempted: req.body.is_attempted,
           marksobtained: req.body.marks,
         },
       });
-
       res.status(200).json(updatedSOA);
     } else {
+      console.log("newSOA");
       const newSOA = await prisma.sOA.create({
         data: {
           soa_id: req.body.p_number + req.body.oq_id,
@@ -30,13 +30,17 @@ export default async function handler(req, res) {
           oq_id: req.body.oq_id,
           answer: req.body.answer,
           marksobtained: req.body.marks,
-
+          is_attempted: req.body.is_attempted,
         },
       });
-
-      res.status(200).json(newSOA);
+       res.status(200).json(newSOA);
     }
   } catch (err) {
-    throw new Error(err.message);
+    if (err.code === "P2002") {
+      // If the error is due to a duplicate primary key, send a 400 Bad Request response
+      res.status(400).json({ error: "Record with the specified key already exists." });
+    } else {
+      throw new Error(err.message);
+    }
   }
 }

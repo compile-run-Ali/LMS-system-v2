@@ -28,12 +28,27 @@ export default function OQContainer({
   const [numSelected, setNumSelected] = useState(0);
   const [loading, setLoading] = useState(true);
   const [changed, setChanged] = useState(false);
+  const [attempted, setAttempted] = useState(false);
   const [savingAnswer, setSavingAnswer] = useState({
     show: false,
     message: "",
   });
-
   const saveAnswer = () => {
+    console.log("SAVING ANSWER", currentQuestion);
+    const attemptDone =
+      numSelected === question.correct_answer.split(",").length;
+
+    console.log(
+      "selectedAnswer",
+      selectedAnswer,
+      "correctAnswers",
+      correctAnswers,
+      "attempted? ",
+      attemptDone,
+      "state of attempt",
+      attempted
+    );
+
     setSavingAnswer({
       show: true,
       message: "Saving answer...",
@@ -47,21 +62,30 @@ export default function OQContainer({
     axios
       .post(`/api/student/paper/oq/add_answer`, {
         p_number: session.data.user.id,
+        current: currentQuestion,
         oq_id: question.oq_id,
         answer: selectedAnswer.join(","),
         marks: score,
+        is_attempted: attemptDone,
       })
       .then((res) => {
         console.log("answer added successfully ", res.data);
+        setAttempted(attemptDone);
         setSavingAnswer({
           show: false,
           message: "",
         });
+        if (!freeFlow && attemptDone) {
+          if (currentQuestion < totalQuestions) {
+            setCurrentQuestion(currentQuestion + 1);
+          }
+        }
       })
       .catch((err) => {
         console.log("error ", err.message);
       });
     setSaved(true);
+    setChanged(false);
   };
 
   const markAnswer = (correct, answered, marks) => {
@@ -110,11 +134,11 @@ export default function OQContainer({
   };
 
   useEffect(() => {
+    console.log("CHANGED IS", changed);
     if (changed) {
       saveAnswer();
     }
   }, [selectedAnswer]);
-
 
   useEffect(() => {
     // correctanswer will be a string in form a1,a2
@@ -131,10 +155,26 @@ export default function OQContainer({
         })
         .then((res) => {
           if (res.data) {
-            setSelectedAnswer(res.data.answer.split(","));
-            console.log("answer already exists", res.data);
-            setNumSelected(res.data.answer?.split(",").length || 0);
+            const fetchedAnswer =
+              res.data.answer.split(",")[0] === ""
+                ? []
+                : res.data.answer.split(",");
+            setSelectedAnswer(fetchedAnswer);
+            console.log("exists ", fetchedAnswer);
+            setNumSelected(
+              res.data.answer.split(",")[0] === "" ? 0 : fetchedAnswer.length
+            );
+            setAttempted(
+              res.data.answer.split(",")[0] === ""
+                ? false
+                : res.data.answer.split(",").length ===
+                    question.correct_answer.split(",").length
+            );
           } else {
+            setAttempted(false);
+            console.log(
+              "answer does not exist, setting selectedAnswer to empty array"
+            );
             setNumSelected(0);
             setSelectedAnswer([]);
           }
@@ -149,14 +189,14 @@ export default function OQContainer({
       const answers = question.correct_answer?.split(",") || [];
       setCorrectAnswers(answers);
       if (answers.length > 1) {
-        console.log("multiple allowed");
         setMultipleAllowed(true);
       } else {
-        console.log("multiple not allowed");
         setMultipleAllowed(false);
       }
     }
   }, [question]);
+
+  console.log("state of attempt", attempted);
 
   if (loading) {
     return <Loader />;
@@ -184,7 +224,11 @@ export default function OQContainer({
               {question.answers?.split(",").map((answer, index) => (
                 <div
                   key={index}
-                  className={`w-full flex my-3 rounded-lg p-4 bg-white text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 `}
+                  className={`w-full flex my-3 rounded-lg p-4 text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 
+                    ${
+                      attempted ? "bg-gray-200 pointer-events-none" : "bg-white"
+                    }
+                  `}
                   onClick={() => {
                     setChanged(selectedAnswer.includes(answer) ? false : true);
                     setSaved(selectedAnswer.includes(answer) ? true : false);
@@ -234,25 +278,21 @@ export default function OQContainer({
           </div>
           <div
             className={`
-            flex mt-16 text-black mx-auto justify-between
-            ${freeFlow ? "w-full" : "w-1/2"}
+            flex mt-16 text-black mx-auto  bg-slate-300
+            ${freeFlow ? "w-full justify-between" : "w-1/2 justify-center"}
           `}
           >
             {freeFlow && (
               <button
                 className={
-                  (currentQuestion > 0
+                  (currentQuestion > 0 
                     ? "bg-white hover:bg-zinc-300"
                     : "bg-gray-400 cursor-not-allowed") +
                   " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 }
                 onClick={() => {
-                  if (selectedAnswer.length === 0 || saved || !changed) {
-                    currentQuestion > 0 &&
-                      setCurrentQuestion(currentQuestion - 1);
-                  } else {
-                    alert("Please save your answer before proceeding");
-                  }
+                  currentQuestion > 0 &&
+                    setCurrentQuestion(currentQuestion - 1);
                 }}
               >
                 Previous
@@ -275,12 +315,7 @@ export default function OQContainer({
               <button
                 className="bg-white hover:bg-zinc-300 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 onClick={() => {
-                  // if opt not selected OR saved
-                  if (selectedAnswer.length === 0 || saved || !changed) {
-                    setCurrentQuestion(currentQuestion + 1);
-                  } else {
-                    alert("Please save your answer before proceeding");
-                  }
+                  setCurrentQuestion(currentQuestion + 1);
                 }}
               >
                 Next
