@@ -66,7 +66,6 @@ save marks in subjective marking takes previous marks, not currently changed mar
 - clear all console logs
 
 ### New
-
 <!-- 1 Delete Faculty feature not working -->
 <!-- 2 Admin cannot remove Assigned faculty. -->
 <!-- 3 Option to remove assigned faculty -->
@@ -116,7 +115,6 @@ if student attempted, and exam not marked, then marks obtained should be "unmark
 infinte loop error in log when multiple answers checkbox is checked in create objective answers
 data retaining issue when allow multiple edit
 
-
 ### New
 <!-- 1 Option select button should automatically save sudents response. There should be no need for a separate "Save" key. -->
 2 Approve Key to be given at faculty home page for approving papers with each line of paper in pending approval status. Faculty should have the option to approve without opening the paper. (For Comndant and Cl only)
@@ -153,8 +151,6 @@ If not page should automatically scroll down to the right area when "Create new 
 32 Add 'Course Strength" field and a cap for max # of students to be registered in each course.
 33 Add Index # field instead of CGPA
 34 Add "Save as Draft" or "Submit to" key in Admin panel
-
-
 ### New
 <!-- Move Rank Field up -->
 <!-- Move Monogram down and remove blur if possible -->
@@ -162,7 +158,7 @@ If not page should automatically scroll down to the right area when "Create new 
 Paper Duration Behaviour
 Exam Settings not being retained (review page is retaining)
 Admin ID paper status change behaviour (lock student attempt) Lock free flow answers.
-Inverted Commas and font change for comment text in same line. Change "Mark Exam" to "Evaluate"
+<!-- Inverted Commas and font change for comment text in same line. Change "Mark Exam" to "Evaluate" -->
 Lock Evaluate Key untill exam is attempted by atleast 1 student
 <!-- Change "brigadier General" to "Brigadier" in Rank select Drop Down -->
 <!-- Same PA should not be used twice. Add check -->
@@ -175,5 +171,30 @@ Paper Duration Behaviour paper duration should count from when the student opens
 Faculty PA # edit (field is working but when faculty ID details are dited from Admin panel it doesn't update faculty PA #) Total Marks in Exam Table
 Back Keys missing
 <!-- same PA should not be used twice -->
+
+### 3 April Meeting
+- one click will send student to next mcq
+  - 2 clicks in multiple
+
+- once option selected, cant be changed in freeflow
+
+- start timer when student starts the paper, attempt window
+
+- level 3 & 4 dont need create exam button
+- Approve button in exam table
+
+### Admin use cases
+Retain paper status and owner         (case when only details are changed)
+Retain paper status but change owner  (change owner, status remains pending approval)
+Change both status and owner          (change status to drafts, remove owner)
+
+### Student attempt
+- status is "Attempted" when student attempts
+- status is "Incomplete Submission" when time ends
+- status is "Submitted" when he submits
+- status is "Marked" when faculty marks his paper
+
+Lock result status for entire paper, give button to faculty
+
 ### Others
 1 If two same options are made, then remove duplicate option

@@ -475,7 +475,7 @@ export default function Exam({
               router.push("/faculty/mark_exam/" + exam.paper_id);
             }}
           >
-            Mark Exam
+            Evaluate
           </button>
         </div>
       </div>

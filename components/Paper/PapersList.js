@@ -97,7 +97,6 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
   const endDate = convertDateTimeToStrings(end);
   const isLive = status === "Live Papers";
   const isPast = status === "Past Papers";
-  console.log("attempt status is ", attemptStatus);
   return (
     <>
       <td className="px-4 py-2">{paper.paper_name}</td>

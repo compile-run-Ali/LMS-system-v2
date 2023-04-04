@@ -45,7 +45,6 @@ export default function PaperContainer({ startOfPage }) {
   const [flags, setFlags] = useState([]);
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
-  //excelData
   const [excelData, setExcelData] = useState([]);
 
   useEffect(() => {
@@ -58,9 +57,6 @@ export default function PaperContainer({ startOfPage }) {
   }, [paper]);
 
   useEffect(() => () => {
-    if (session) {
-      const timeToSess = (new Date() - startOfPage) / 1000;
-    }
     if (session.status === "authenticated") {
       setStudent(session.data.user.id);
     }
@@ -88,17 +84,6 @@ export default function PaperContainer({ startOfPage }) {
   };
 
   useEffect(() => {
-    const useEffectTimeEnter = (new Date() - startOfPage) / 1000;
-    console.log(
-      "Iteration number: ",
-      count + 1,
-      "\nTime to enter useEffect: ",
-      useEffectTimeEnter.toFixed(3),
-      "seconds\n Paper is: ",
-      paper,
-      "\nStudent is: ",
-      student
-    );
 
     setCount(count + 1);
 
