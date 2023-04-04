@@ -22,7 +22,7 @@ export default function SQContainer({
   const [saved, setSaved] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [changed, setChanged] = useState(false);
-  const [savingAnswer, setSavingAnswer] = useState({
+  const [loading, setLoading] = useState({
     show: false,
     message: "",
   });
@@ -32,7 +32,7 @@ export default function SQContainer({
       alert("Your answer is empty. Please type anything to continue.");
       return;
     }
-    setSavingAnswer({ show: true, message: "Saving answer..." });
+    setLoading({ show: true, message: "Saving answer..." });
 
     for (let question_id in answers) {
       axios
@@ -43,7 +43,7 @@ export default function SQContainer({
         })
         .then((res) => {
           setSaved(true);
-          setSavingAnswer({ show: false, message: "" });
+          setLoading({ show: false, message: "" });
           console.log("answer added successfully ", res.data);
         })
         .catch((err) => {
@@ -76,6 +76,10 @@ export default function SQContainer({
           question.child_question.map((child) => child.sq_id) || [];
       }
 
+      setLoading({
+        show: true,
+        message: "Loading Answer",
+      });
       axios
         .get("/api/student/paper/sq/get_answer", {
           params: {
@@ -84,6 +88,7 @@ export default function SQContainer({
           },
         })
         .then((res) => {
+          setLoading({ show: false, message: "" });
           if (hasChild) {
             const answers = {};
             res.data.forEach((answer) => {
@@ -114,7 +119,7 @@ export default function SQContainer({
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl text-white">
-      <Spinner show={savingAnswer.show} message={savingAnswer.message} />
+      <Spinner show={loading.show} message={loading.message} />
       {question ? (
         <>
           <div>
