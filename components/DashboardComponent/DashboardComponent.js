@@ -69,20 +69,6 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
         </select>
       </div>
 
-      {paperapproval_data !== undefined &&
-        paperapproval_data !== null &&
-        paperapproval_data.length > 0 && (
-          <div className="pr-10 pl-5 mt-10">
-            <h1 className="text-2xl font-poppins font-bold">To Approve:</h1>
-            <ExamTable
-              exams_data={paperapproval.filter(
-                (paper) => paper.status === "Pending Approval"
-              )}
-            />
-          </div>
-        )}
-
-
       {courses.length > 0 && (
         <div>
           <div className="flex w-full justify-end pr-10 font-poppins">
@@ -94,7 +80,24 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
             </button>
           </div>
           <Modal open={open} setOpen={setOpen} courseCode={selectedCourse} />
+        </div>
+      )}
 
+      {paperapproval_data !== undefined &&
+        paperapproval_data !== null &&
+        paperapproval_data.length > 0 && (
+          <div className="pr-10 pl-5 my-10">
+            <h1 className="text-2xl font-poppins font-bold">To Approve:</h1>
+            <ExamTable
+              exams_data={paperapproval.filter(
+                (paper) => paper.status === "Pending Approval"
+              )}
+            />
+          </div>
+        )}
+
+      {courses.length > 0 && (
+        <div>
           <div className="pr-10 pl-5">
             <h1 className="text-2xl font-poppins font-bold">
               All Exams of your Course
@@ -103,8 +106,6 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
