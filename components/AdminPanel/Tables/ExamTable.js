@@ -13,17 +13,13 @@ const ExamTable = ({ exams_data }) => {
     setExams(exams_data);
   }, [exams_data]);
 
-  const handleExamAssign = (exam) => {
-    console.log(exam);
-  };
-
   const handleExamEdit = (exam) => {
     router.push({
       pathname: `/faculty/create_exam/${
         exam.paper_type === "Objective" ? "objective" : "subjective"
       }`,
       query: {
-        ...exam
+        ...exam,
       },
     });
   };
@@ -51,21 +47,12 @@ const ExamTable = ({ exams_data }) => {
           <th className="px-4 py-2">Exams</th>
           <th className="px-4 py-2"></th>
           <th className="px-4 py-2"></th>
-          <th className="px-4 py-2"></th>
         </tr>
       </thead>
       <tbody>
         {exams.map((exam, index) => (
           <tr key={index} className="bg-white ">
             <td className=" px-4 py-3">{`${exam.paper_name} -  ${exam.course.course_name} (${exam.course.course_code})`}</td>
-            <td>
-              <button
-                onClick={() => handleExamAssign(exam)}
-                className="text-green-500 hover:text-white hover:bg-green-500 p-2 rounded-md"
-              >
-                <FaExchangeAlt />
-              </button>
-            </td>
             <td>
               <button
                 onClick={() => handleExamEdit(exam)}
