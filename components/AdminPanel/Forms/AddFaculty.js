@@ -116,7 +116,7 @@ const AddFaculty = () => {
       }
     );
     if (edited_faculty.status === 200) {
-      // router.push("/admin");
+      router.push("/admin");
     }
   };
 
