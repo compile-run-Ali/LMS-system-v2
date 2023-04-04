@@ -29,6 +29,7 @@ const ExamTable = ({ exams_data }) => {
   };
 
   const handleExamDelete = (exam) => {
+    // delete modal to be added
     console.log(exam.paper_id);
     axios
       .post("/api/admin/paper/delete_exam", {
