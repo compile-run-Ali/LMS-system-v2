@@ -8,6 +8,7 @@ import NotificationDropdown from "./NotificationDropdown";
 import axios from "axios";
 import ClickAwayListener from "react-click-away-listener";
 import { useRouter } from "next/router";
+import { IoArrowBackSharp } from "react-icons/io5";
 
 export default function Topbar({ admin }) {
   const router = useRouter();
@@ -20,6 +21,8 @@ export default function Topbar({ admin }) {
       callbackUrl: "/",
     });
   };
+
+  console.log("u r at", router.pathname);
 
   useEffect(() => {
     if (session.status === "authenticated") {
@@ -40,6 +43,16 @@ export default function Topbar({ admin }) {
     <div>
       <div className="flex items-center justify-between mr-10 h-[110px]">
         <div className="flex">
+          {router.pathname !== "/faculty" &&
+            router.pathname !== "/admin" &&
+            router.pathname !== "/student" && (
+              <div
+                className="cursor-pointer my-auto"
+                onClick={() => router.back()}
+              >
+                <IoArrowBackSharp className="text-3xl text-blue-900 inline" />
+              </div>
+            )}
           <div className="logo cursor-pointer" onClick={() => router.push("/")}>
             <Image src="/logo.png" width={100} height={100} alt="logo" />
           </div>
