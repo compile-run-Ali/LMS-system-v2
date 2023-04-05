@@ -64,6 +64,20 @@ export default function Exam({
     setComments(res.data);
   };
 
+  const showSpinner = () => {
+    setLoading({
+      show: true,
+      message: "Saving...",
+    });
+  };
+
+  const hideSpinner = () => {
+    setLoading({
+      show: false,
+      message: "",
+    });
+  };
+
   const addFiveHoursToISOString = (dateString) => {
     const date = new Date(dateString);
     date.setHours(date.getHours() + 5);
@@ -123,10 +137,11 @@ export default function Exam({
       });
       console.log("added comment");
       generateNotification();
-      router.push("/");
+      // router.push("/");
     } catch (err) {
       console.log("error", err);
     }
+    hideSpinner();
   }
 
   const submitExam = async () => {
@@ -135,6 +150,7 @@ export default function Exam({
       return;
     }
 
+    showSpinner();
     if (exam.examofficer !== null) {
       console.log("exam officer EXISTS");
       const editPaperApprovalData = {
@@ -177,6 +193,7 @@ export default function Exam({
   };
 
   const saveDraft = async () => {
+    showSpinner();
     const approveExam = await axios.post("/api/faculty/edit_paperapproval", {
       paper_id: exam.paper_id,
       examofficer: null,
@@ -189,6 +206,7 @@ export default function Exam({
       });
       router.push("/");
     }
+    hideSpinner();
   };
 
   const sendBack = async () => {

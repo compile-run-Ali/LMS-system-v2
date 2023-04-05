@@ -89,6 +89,7 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
           <div className="pr-10 pl-5 my-10">
             <h1 className="text-2xl font-poppins font-bold">To Approve:</h1>
             <ExamTable
+              approve_row={true}
               exams_data={paperapproval.filter(
                 (paper) => paper.status === "Pending Approval"
               )}

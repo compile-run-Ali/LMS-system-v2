@@ -3,8 +3,9 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 import { useSession } from "next-auth/react";
+import { MdCheckCircle, MdEdit } from "react-icons/md";
 
-const ExamTable = ({ exams_data }) => {
+const ExamTable = ({ exams_data, approve_row }) => {
   const router = useRouter();
   const [exams, setExams] = useState([]);
   const { data: session, status } = useSession();
@@ -61,6 +62,44 @@ const ExamTable = ({ exams_data }) => {
     });
   }, [exams_data]);
 
+  const approveExam = (examId) => {
+    axios
+      .put(`/api/faculty/update_exam_status`, {
+        paper_id: examId,
+        status: "Approved",
+      })
+      .then((response) => {
+        console.log("exam id is", examId);
+        addComment({
+          comment: `Exam Approved by ${session.user.name}`,
+          faculty_id: session.user.id,
+          paper_id: examId,
+        });
+        router.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const addComment = (comment) => {
+    if (session.user) {
+      const res = axios
+        .post("/api/faculty/add_comment", {
+          paper_id: comment.paper_id,
+          comment: comment.comment,
+          faculty_id: session.user.id,
+        })
+        .then((response) => {
+          console.log("Comment added successfully");
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   const handleExamClick = (paper_id) => {
     router.push(`/faculty/exam_details/${paper_id}`);
   };
@@ -84,14 +123,15 @@ const ExamTable = ({ exams_data }) => {
           <th className="px-4 py-2">Time</th>
           <th className="px-4 py-2">Total Marks</th>
           <th className="px-4 py-2">Status</th>
+          {approve_row && <th className="px-4 py-2">Approve</th>}
+          <th className="px-4 py-2">Edit</th>
         </tr>
       </thead>
       <tbody>
         {exams.map((exam, index) => (
           <tr
             key={exam.paper_id}
-            className={`cursor-pointer bg-gray-${index % 2 === 0 ? 100 : 200}`}
-            onClick={() => handleExamClick(exam.paper_id)}
+            className={`bg-gray-${index % 2 === 0 ? 100 : 200}`}
           >
             <td className="border px-4 py-2">{exam.paper_name}</td>
             <td className="border px-4 py-2">{exam.paper_type}</td>
@@ -104,6 +144,26 @@ const ExamTable = ({ exams_data }) => {
             </td>
             <td className="border px-4 py-2">{exam.weightage}</td>
             <td className="border px-4 py-2">{exam.status}</td>
+            {approve_row && (
+              <td className="border px-4 py-2 z-10 w-full text-center">
+                <button
+                  className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md mx-auto"
+                  onClick={() => {
+                    approveExam(exam.paper_id);
+                  }}
+                >
+                  <MdCheckCircle />
+                </button>
+              </td>
+            )}
+            <td className="border px-4 py-2 z-10">
+              <button
+                className="bg-yellow-400 hover:bg-yellow-500 text-white p-2 rounded-md text-center"
+                onClick={() => handleExamClick(exam.paper_id)}
+              >
+                <MdEdit />
+              </button>
+            </td>
           </tr>
         ))}
       </tbody>
