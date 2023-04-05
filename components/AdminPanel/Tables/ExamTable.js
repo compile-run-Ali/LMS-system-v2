@@ -6,7 +6,7 @@ import axios from "axios";
 import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 import Spinner from "@/components/Loader/Spinner";
 
-const ExamTable = ({ exams_data }) => {
+const ExamTable = ({ exams_data, faculty }) => {
   const router = useRouter();
 
   const [exams, setExams] = useState([]);
@@ -30,6 +30,8 @@ const ExamTable = ({ exams_data }) => {
       },
     });
   };
+
+  console.log(exams);
 
   const handleExamDelete = (exam) => {
     setLoading({
@@ -55,6 +57,11 @@ const ExamTable = ({ exams_data }) => {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const getExamOfficer = (findId) => {
+    let examOfficer = faculty.find((faculty) => faculty.faculty_id === findId);
+    return examOfficer.name;
   };
 
   return (
@@ -89,7 +96,12 @@ const ExamTable = ({ exams_data }) => {
                 <td className=" px-4 py-3">
                   {convertDateTimeToStrings(exam.date)}
                 </td>
-                <td className=" px-4 py-3">{exam.status}</td>
+                <td className=" px-4 py-3">
+                  {exam.status}{" "}
+                  {exam.status === "Pending Approval" && (
+                    <>from {getExamOfficer(exam.examofficer.faculty_id)}</>
+                  )}{" "}
+                </td>
                 <td>
                   <button
                     onClick={() => handleExamEdit(exam)}

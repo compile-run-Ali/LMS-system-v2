@@ -54,7 +54,7 @@ export default function AdminPanel({
             courses={courses}
             setCourses={setCourses}
             faculty={faculty}
-          />
+            />
         </div>
       )}
       {active === "Assigned" && (
@@ -64,7 +64,10 @@ export default function AdminPanel({
       )}
       {active === "Exams" && (
         <div>
-          <ExamTable exams_data={exams} />
+          <ExamTable exams_data={exams}
+          faculty={faculty}
+
+          />
         </div>
       )}
     </div>

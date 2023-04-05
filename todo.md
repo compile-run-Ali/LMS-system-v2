@@ -207,6 +207,6 @@ pending approval show name of exam officer
 approve button in faculty table of pending approval
 add loader in "exam" component
 distinguish between system generated and faculty comment
-
+change part number to part alphabet, and system should generate part alphabet itself
 ### Others
 1 If two same options are made, then remove duplicate option
