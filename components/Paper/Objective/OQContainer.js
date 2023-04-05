@@ -82,7 +82,7 @@ export default function OQContainer({
         }
       })
       .catch((err) => {
-        console.log("error ", err.message);
+        console.log("error in adding answer", err.message);
       });
     setSaved(true);
     setChanged(false);
@@ -182,7 +182,7 @@ export default function OQContainer({
           setLoading(false);
         })
         .catch((err) => {
-          console.log("error", err.message);
+          console.log("error in getting answer", err.message);
         });
       // set freeFlow to NOT
       setSelectedAnswer([]);
@@ -278,48 +278,54 @@ export default function OQContainer({
           </div>
           <div
             className={`
-            flex mt-16 text-black mx-auto  bg-slate-300
+            flex mt-16 text-black mx-auto
             ${freeFlow ? "w-full justify-between" : "w-1/2 justify-center"}
           `}
           >
             {freeFlow && (
-              <button
-                className={
-                  (currentQuestion > 0 
-                    ? "bg-white hover:bg-zinc-300"
-                    : "bg-gray-400 cursor-not-allowed") +
-                  " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
-                }
-                onClick={() => {
-                  currentQuestion > 0 &&
-                    setCurrentQuestion(currentQuestion - 1);
-                }}
-              >
-                Previous
-              </button>
-            )}
-            {freeFlow && (
-              <button
-                className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
-                ${
-                  flags.includes(String(currentQuestion))
-                    ? "bg-yellow-400 hover:bg-yellow-500"
-                    : "bg-white hover:bg-zinc-300"
-                }`}
-                onClick={() => flagQuestion(String(currentQuestion))}
-              >
-                {flags.includes(String(currentQuestion)) ? "Remove" : "Review"}
-              </button>
+              <>
+                <button
+                  className={
+                    (currentQuestion > 0
+                      ? "bg-white hover:bg-zinc-300"
+                      : "bg-gray-400 cursor-not-allowed") +
+                    " px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
+                  }
+                  onClick={() => {
+                    currentQuestion > 0 &&
+                      setCurrentQuestion(currentQuestion - 1);
+                  }}
+                >
+                  Previous
+                </button>
+                <button
+                  className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
+              ${
+                flags.includes(String(currentQuestion))
+                  ? "bg-yellow-400 hover:bg-yellow-500"
+                  : "bg-white hover:bg-zinc-300"
+              }`}
+                  onClick={() => flagQuestion(String(currentQuestion))}
+                >
+                  {flags.includes(String(currentQuestion))
+                    ? "Remove"
+                    : "Review"}
+                </button>
+              </>
             )}
             {currentQuestion < totalQuestions - 1 ? (
-              <button
-                className="bg-white hover:bg-zinc-300 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
-                onClick={() => {
-                  setCurrentQuestion(currentQuestion + 1);
-                }}
-              >
-                Next
-              </button>
+              <>
+                {freeFlow && (
+                  <button
+                    className="bg-white hover:bg-zinc-300 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
+                    onClick={() => {
+                      setCurrentQuestion(currentQuestion + 1);
+                    }}
+                  >
+                    Next
+                  </button>
+                )}
+              </>
             ) : (
               <button
                 className="bg-green-500 hover:bg-green-600 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
