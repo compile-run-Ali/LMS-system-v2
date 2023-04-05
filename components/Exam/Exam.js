@@ -465,7 +465,7 @@ export default function Exam({
                       ))}
                   </select>
                 </div>
-                <div className="flex justify-end gap-x-5 bg-slate-500">
+                <div className="flex justify-end gap-x-5">
                   {setActive && (
                     <div className="mt-10 mb-10">
                       <button
