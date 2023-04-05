@@ -55,7 +55,8 @@ const MCQTable = ({
         exam.paper_type === "Objective" ? "objective" : "subjective"
       }`,
       query: {
-        ...exam,
+        paper_id: exam.paper_id,
+        is_edit: true,
       },
     });
   };

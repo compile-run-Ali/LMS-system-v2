@@ -109,7 +109,6 @@ export default function CreateExam({ paperType }) {
 
   useEffect(() => {
     if (paperId && !exam) {
-      console.log("paper id is", paperId, "fetching exam");
       fetchExam();
     }
     if (paperType === "Objective" && paperId) {

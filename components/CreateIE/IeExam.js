@@ -8,8 +8,8 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
   const router = useRouter();
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
-  
-  console.log(ieFiles)
+
+  console.log(ieFiles);
 
   const handleFileUpload = (e) => {
     const newFile = e.target.files[0];
@@ -27,7 +27,8 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
     router.push({
       pathname: `/faculty/create_exam/ie`,
       query: {
-        ...exam,
+        paper_id: exam.paper_id,
+        is_edit: true,
       },
     });
   };
@@ -58,30 +59,28 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
     }
   };
 
-
   return (
     <div>
       <div className="flex flex-wrap gap-4">
-      <table className="w-full mt-6 text-left table-collapse">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">SR#</th>
-            <th className="px-4 py-2">File</th>
-            <th className="px-4 py-2">url</th>
-
-          </tr>
-        </thead>
-        <tbody>
-          {ieFiles.length > 0 &&
-          ieFiles.map((IE, index) => (
-            <tr key={index} className="border-t">
-              <td className="px-4 py-2">{index + 1}</td>
-              <td className="px-4 py-2">{IE.fileName}</td>
-              <td className="px-4 py-2">{IE.url}</td>
+        <table className="w-full mt-6 text-left table-collapse">
+          <thead>
+            <tr>
+              <th className="px-4 py-2">SR#</th>
+              <th className="px-4 py-2">File</th>
+              <th className="px-4 py-2">url</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {ieFiles.length > 0 &&
+              ieFiles.map((IE, index) => (
+                <tr key={index} className="border-t">
+                  <td className="px-4 py-2">{index + 1}</td>
+                  <td className="px-4 py-2">{IE.fileName}</td>
+                  <td className="px-4 py-2">{IE.url}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
         {files.map((file, index) => (
           <div key={index} className="flex items-center">
             <p>{file.name}</p>

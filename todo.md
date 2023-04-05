@@ -184,9 +184,9 @@ Back Keys missing
 - Approve button in exam table
 
 ### Admin use cases
-Retain paper status and owner         (case when only details are changed)
+<!-- Retain paper status and owner         (case when only details are changed) -->
 Retain paper status but change owner  (change owner, status remains pending approval)
-Change both status and owner          (change status to drafts, remove owner)
+<!-- Change both status and owner          (change status to drafts, remove owner) -->
 
 ### Student attempt
 - status is "Attempted" when student attempts

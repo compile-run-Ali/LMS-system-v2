@@ -109,7 +109,7 @@ export default function Form({
       show: true,
       message: edit ? "Updating Paper Details" : "Creating Paper",
     });
-    
+
     const res = await axios.post(
       `/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
       {

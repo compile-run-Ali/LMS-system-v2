@@ -31,8 +31,10 @@ export default function Exam({
   useEffect(() => {
     setAccess(() => {
       if (session.status === "authenticated") {
-
-        if (session.data.user.role === "faculty" && session.data.user.level === 5) {
+        if (
+          session.data.user.role === "faculty" &&
+          session.data.user.level === 5
+        ) {
           return true;
         }
 
@@ -51,7 +53,6 @@ export default function Exam({
     const res = await axios.post("/api/paper/get_comments", {
       paper_id: exam.paper_id,
     });
-    console.log("paper comments", res.data);
 
     // sort comment by date and time
     res.data.sort((a, b) => {
@@ -96,29 +97,17 @@ export default function Exam({
         exam.paper_type === "Objective" ? "objective" : "subjective"
       }`,
       query: {
-        ...exam,
+        paper_id: exam.paper_id,
+        is_edit: true,
       },
     });
   };
 
-  const submitExam = async () => {
-    if (!selectedFaculty) {
-      alert("Please select a faculty to mark to");
-      return;
-    }
-
-    setLoading({
-      show: true,
-      message: "Submitting Exam...",
-    });
-    const submitExam = await axios.post("/api/faculty/submit_exam", {
-      paper_id: exam.paper_id,
-      faculty_id: selectedFaculty,
-      level: faculty.filter(
-        (faculty) => faculty.faculty_id === selectedFaculty
-      )[0].level,
-    });
-    if (submitExam.status === 200) {
+  async function submitExamOrEditPaperApproval(apiEndpoint, data) {
+    try {
+      console.log(`calling ${apiEndpoint}`);
+      const response = await axios.post(apiEndpoint, data);
+      console.log(`${apiEndpoint} called`);
       setLoading({
         show: false,
         message: "",
@@ -132,8 +121,43 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
+      console.log("added comment");
       generateNotification();
-      router.push("/faculty");
+      router.push("/");
+    } catch (err) {
+      console.log("error", err);
+    }
+  }
+
+  const submitExam = async () => {
+    if (!selectedFaculty) {
+      alert("Please select a faculty to mark to");
+      return;
+    }
+
+    if (exam.examofficer !== null) {
+      console.log("exam officer EXISTS");
+      const editPaperApprovalData = {
+        paper_id: exam.paper_id,
+        examofficer: selectedFaculty,
+        level: faculty.filter(
+          (faculty) => faculty.faculty_id === selectedFaculty
+        )[0].level,
+      };
+      submitExamOrEditPaperApproval(
+        "/api/faculty/edit_paperapproval",
+        editPaperApprovalData
+      );
+    } else {
+      console.log("exam officer DOES NOT exist");
+      const submitExamData = {
+        paper_id: exam.paper_id,
+        faculty_id: selectedFaculty,
+        level: faculty.filter(
+          (faculty) => faculty.faculty_id === selectedFaculty
+        )[0].level,
+      };
+      submitExamOrEditPaperApproval("/api/faculty/submit_exam", submitExamData);
     }
   };
 
@@ -148,7 +172,22 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
-      router.push("/faculty");
+      router.push("/");
+    }
+  };
+
+  const saveDraft = async () => {
+    const approveExam = await axios.post("/api/faculty/edit_paperapproval", {
+      paper_id: exam.paper_id,
+      examofficer: null,
+    });
+    if (approveExam.status === 200) {
+      addComment({
+        comment: `Exam saved as draft by ${session.data.user.name}`,
+        faculty_id: session.data.user.id,
+        paper_id: exam.paper_id,
+      });
+      router.push("/");
     }
   };
 
@@ -163,7 +202,7 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
-      router.push("/faculty");
+      router.push("/");
     }
   };
 
@@ -190,7 +229,7 @@ export default function Exam({
       });
       console.log("Exam Sent Forward");
       generateNotification();
-      router.push("/faculty");
+      router.push("/");
     }
   };
 
@@ -353,7 +392,7 @@ export default function Exam({
             </div>
 
             {exam.examofficer?.faculty_id === session.data.user.id ? (
-              <div>
+              <div className="">
                 <div className="flex justify-end">
                   <div className="mt-10 mb-10">
                     <select
@@ -426,7 +465,7 @@ export default function Exam({
                       ))}
                   </select>
                 </div>
-                <div className="flex justify-end gap-x-5">
+                <div className="flex justify-end gap-x-5 bg-slate-500">
                   {setActive && (
                     <div className="mt-10 mb-10">
                       <button
@@ -445,13 +484,13 @@ export default function Exam({
                       type="submit"
                       className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
                       onClick={() => {
-                        router.push("/faculty");
+                        saveDraft();
                       }}
                     >
                       Save Draft
                     </button>
                   </div>
-                  <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
+                  <div className="mt-10 flex justify-end mb-10">
                     <button
                       type="submit"
                       className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
@@ -462,6 +501,18 @@ export default function Exam({
                       Mark To
                     </button>
                   </div>
+                  {session.data.user.level === 5 && (
+                    <div className="mt-10 flex justify-end mb-10">
+                      <button
+                        className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8 transition-all"
+                        onClick={() => {
+                          router.push("/");
+                        }}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

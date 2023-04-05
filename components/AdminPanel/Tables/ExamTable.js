@@ -20,7 +20,8 @@ const ExamTable = ({ exams_data }) => {
         exam.paper_type === "Objective" ? "objective" : "subjective"
       }`,
       query: {
-        ...exam,
+        paper_id: exam.paper_id,
+        is_edit: true,
       },
     });
   };
@@ -56,39 +57,40 @@ const ExamTable = ({ exams_data }) => {
         </tr>
       </thead>
       <tbody>
-        {exams.sort(
-          (a, b) =>
-            - new Date(a.date).getTime() + new Date(b.date).getTime()
-        ).map((exam, index) => (
-          <tr key={index} className="bg-white ">
-            <td className=" px-4 py-3">{exam.paper_name}</td>
-            <td className=" px-4 py-3">{exam.course.course_name}</td>
-            <td className=" px-4 py-3">{exam.paper_type}</td>
-            <td className=" px-4 py-3">
-              {convertDateTimeToStrings(exam.date, true)}
-            </td>
-            <td className=" px-4 py-3">
-              {convertDateTimeToStrings(exam.date)}
-            </td>
-            <td className=" px-4 py-3">{exam.status}</td>
-            <td>
-              <button
-                onClick={() => handleExamEdit(exam)}
-                className="hover:bg-blue-800 text-blue-800 hover:text-white p-2 rounded-md transition-colors "
-              >
-                <MdEdit />
-              </button>
-            </td>
-            <td>
-              <button
-                onClick={() => handleExamDelete(exam)}
-                className="text-red-600 p-2 hover:text-white hover:bg-red-600 rounded-md transition-colors"
-              >
-                <MdDelete />
-              </button>
-            </td>
-          </tr>
-        ))}
+        {exams
+          .sort(
+            (a, b) => -new Date(a.date).getTime() + new Date(b.date).getTime()
+          )
+          .map((exam, index) => (
+            <tr key={index} className="bg-white ">
+              <td className=" px-4 py-3">{exam.paper_name}</td>
+              <td className=" px-4 py-3">{exam.course.course_name}</td>
+              <td className=" px-4 py-3">{exam.paper_type}</td>
+              <td className=" px-4 py-3">
+                {convertDateTimeToStrings(exam.date, true)}
+              </td>
+              <td className=" px-4 py-3">
+                {convertDateTimeToStrings(exam.date)}
+              </td>
+              <td className=" px-4 py-3">{exam.status}</td>
+              <td>
+                <button
+                  onClick={() => handleExamEdit(exam)}
+                  className="hover:bg-blue-800 text-blue-800 hover:text-white p-2 rounded-md transition-colors "
+                >
+                  <MdEdit />
+                </button>
+              </td>
+              <td>
+                <button
+                  onClick={() => handleExamDelete(exam)}
+                  className="text-red-600 p-2 hover:text-white hover:bg-red-600 rounded-md transition-colors"
+                >
+                  <MdDelete />
+                </button>
+              </td>
+            </tr>
+          ))}
       </tbody>
     </table>
   );
