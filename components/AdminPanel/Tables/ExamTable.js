@@ -3,6 +3,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { FaExchangeAlt } from "react-icons/fa";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 
 const ExamTable = ({ exams_data }) => {
   const router = useRouter();
@@ -44,15 +45,32 @@ const ExamTable = ({ exams_data }) => {
     <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
       <thead>
         <tr className="bg-blue-800 rounded-md text-white">
-          <th className="px-4 py-2">Exams</th>
+          <th className="px-4 py-2">Exam Name</th>
+          <th className="px-4 py-2">Course</th>
+          <th className="px-4 py-2">Type</th>
+          <th className="px-4 py-2">Date</th>
+          <th className="px-4 py-2">Time</th>
+          <th className="px-4 py-2">Status</th>
           <th className="px-4 py-2"></th>
           <th className="px-4 py-2"></th>
         </tr>
       </thead>
       <tbody>
-        {exams.map((exam, index) => (
+        {exams.sort(
+          (a, b) =>
+            - new Date(a.date).getTime() + new Date(b.date).getTime()
+        ).map((exam, index) => (
           <tr key={index} className="bg-white ">
-            <td className=" px-4 py-3">{`${exam.paper_name} -  ${exam.course.course_name} (${exam.course.course_code})`}</td>
+            <td className=" px-4 py-3">{exam.paper_name}</td>
+            <td className=" px-4 py-3">{exam.course.course_name}</td>
+            <td className=" px-4 py-3">{exam.paper_type}</td>
+            <td className=" px-4 py-3">
+              {convertDateTimeToStrings(exam.date, true)}
+            </td>
+            <td className=" px-4 py-3">
+              {convertDateTimeToStrings(exam.date)}
+            </td>
+            <td className=" px-4 py-3">{exam.status}</td>
             <td>
               <button
                 onClick={() => handleExamEdit(exam)}
