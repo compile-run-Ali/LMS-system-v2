@@ -18,6 +18,7 @@ const handler = async (req, res) => {
                 },
                 comment: true,
                 time: true,
+                user_generated: true,
             },
         });
         res.status(200).json(paperComments);

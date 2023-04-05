@@ -190,13 +190,14 @@ model SOA {
 }
 
 model PaperComment {
-  pc_id      String   @id @default(uuid())
-  paper      Paper    @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
-  paper_id   String
-  faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
-  faculty_id String
-  comment    String
-  time       DateTime @default(now())
+  pc_id          String   @id @default(uuid())
+  paper          Paper    @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+  paper_id       String
+  faculty        Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
+  faculty_id     String
+  comment        String
+  user_generated Boolean  @default(false)
+  time           DateTime @default(now())
 }
 
 model Notification {

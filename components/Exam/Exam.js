@@ -261,12 +261,13 @@ export default function Exam({
     }
   };
 
-  const addComment = async ({ comment }) => {
+  const addComment = async ({ comment }, userGenerated = false) => {
     if (session.status === "authenticated") {
       const res = await axios.post("/api/faculty/add_comment", {
         paper_id: exam.paper_id,
         comment: comment,
         faculty_id: session.data.user.id,
+        user_generated: userGenerated,
       });
 
       if (res.status === 200) {
@@ -358,8 +359,13 @@ export default function Exam({
                   className="flex justify-between mb-5 pb-4 border-b border-gray-600 border-opacity-20"
                 >
                   <div className=" flex flex-col justify-center">
-                    <span className="text-[#212121] font-medium">
+                    <span className={`
+                        text-[#212121] font-medium
+                        ${comment.user_generated && "italic"}
+                    `}>
+                      {comment.user_generated && "\""}
                       {comment.comment}
+                      {comment.user_generated && "\""}
                     </span>
                     <span className="text-sm mt-2 text-[#828282]">
                       By {comment.faculty?.name}
@@ -402,7 +408,7 @@ export default function Exam({
                     alert("Please enter a comment");
                     return;
                   }
-                  addComment({ comment });
+                  addComment({ comment }, true);
                 }}
               >
                 Add Comment
