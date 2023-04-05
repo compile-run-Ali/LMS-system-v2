@@ -196,5 +196,17 @@ Retain paper status but change owner  (change owner, status remains pending appr
 
 Lock result status for entire paper, give button to faculty
 
+see personal details
+enter old password
+change new password
+remove photo field in admin edit faculty, but give it in faculty edit themself
+
+
+show total marks in exam tables of faculty
+pending approval show name of exam officer
+approve button in faculty table of pending approval
+add loader in "exam" component
+distinguish between system generated and faculty comment
+
 ### Others
 1 If two same options are made, then remove duplicate option
