@@ -80,7 +80,6 @@ const MarkPaper = ({
       return answer ? total + answer.marksobtained : total;
     }, 0);
 
-    console.log("objective marks", objectiveAnswers);
     setObjectiveMarks(marks);
   };
 

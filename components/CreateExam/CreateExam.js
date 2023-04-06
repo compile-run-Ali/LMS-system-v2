@@ -125,9 +125,13 @@ export default function CreateExam({ paperType }) {
 
   return (
     <div className="w-full pl-6 mt-2">
+      {
+        
+      }
       <Wizard
         active={active}
         setActive={setActive}
+        paperName={exam?.paper_name}
         items={
           paperType === "Subjective/Objective"
             ? wizardItemsSubjective

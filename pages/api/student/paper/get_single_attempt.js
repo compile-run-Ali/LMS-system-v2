@@ -4,13 +4,11 @@ import { PrismaClient } from "@prisma/client";
 
 export default async function handler(req, res) {
   const prisma = new PrismaClient();
-  console.log("req.query ", req.query);
-  const { studentId, paperId } = req.query;
+  const {  p_number,  paper_id } = req.query;
   try {
-    const spa = await prisma.sPA.findFirst({
+    const spa = await prisma.sPA.findUnique({
       where: {
-        studentId,
-        paperId,
+        spaId: p_number + paper_id,
       },
     });
 
