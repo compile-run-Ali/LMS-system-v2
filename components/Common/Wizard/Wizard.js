@@ -2,9 +2,9 @@ import React from "react";
 
 export default function Wizard({ active, setActive, items, paperName }) {
   return (
-    <div className=" font-cabin flex items-center border-b border-primary-black border-opacity-20 w-full max-w-6xl ">
+    <div className=" font-cabin flex items-center border-b border-primary-black border-opacity-20 w-fit px-6">
       {paperName && (
-        <div className="p-6 border-r-primary-black border-opacity-20 border-r font-medium text-primary-black text-xl">
+        <div className="p-6 pl-0 border-r-primary-black border-opacity-20 border-r font-medium text-primary-black text-xl">
           {paperName}
         </div>
       )}
@@ -13,7 +13,7 @@ export default function Wizard({ active, setActive, items, paperName }) {
           key={item.id}
           onClick={() => setActive(item.id)}
           className={`w-fit flex py-6 px-6 mx-2 cursor-pointer ${
-            active === item.id ? "border-b-2 border-[#FEC703]" : ""
+            active === item.id ? "border-b-4 border-[#FEC703]" : ""
           }`}
         >
           <div

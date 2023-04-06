@@ -46,6 +46,7 @@ export default function PaperContainer({ startOfPage }) {
   const [loading, setLoading] = useState(true);
   const [count, setCount] = useState(0);
   const [excelData, setExcelData] = useState([]);
+  const [paperStartTime, setPaperStartTime] = useState(null);
 
   useEffect(() => {
     if (paper) {
@@ -84,7 +85,6 @@ export default function PaperContainer({ startOfPage }) {
   };
 
   useEffect(() => {
-
     setCount(count + 1);
 
     if (student && paper) {
@@ -105,6 +105,7 @@ export default function PaperContainer({ startOfPage }) {
         setObjectiveCount(papers[paper].objectiveCount || 0);
         setFlags(papers[paper].flags || []);
         setPaperDetails(papers[paper]);
+        setPaperStartTime(papers[paper].startTime);
       } else {
         // do below logic
         console.log(
@@ -112,8 +113,6 @@ export default function PaperContainer({ startOfPage }) {
         );
 
         // get paper details
-
-
         axios
           .get(`/api/paper/${paper}`)
           .then((res) => {
@@ -172,45 +171,45 @@ export default function PaperContainer({ startOfPage }) {
                   });
               }
               if (currentPaper.paper_type === "IE") {
-                axios.get(`/api/faculty/get_ie_files`, {
-                  params: {
-                    paperId: paper,
-                  },
-                })
+                axios
+                  .get(`/api/faculty/get_ie_files`, {
+                    params: {
+                      paperId: paper,
+                    },
+                  })
                   .then((res) => {
                     console.log("time taken to get ie", res.data);
-              
+
                     // Make second API call using response of first
                     //extract file urls from response
-                    console.log("Response from first API call", res.data)
+                    console.log("Response from first API call", res.data);
                     //loop through the data array and make a post request for each file url
                     res.data.ie_questions.forEach((file) => {
-                      axios.post(`/api/faculty/read_file`, {
-                        fileUrl: file.fileUrl
-                      })
-                      .then((res) => {
-                        console.log("Response from second API call", res.data)
-                        //loop through the res.data and if the data is filled, excelData
-                        res.data.forEach((data) => {
-                          if (data) {
-                            setExcelData(excelData => [...excelData, data])
-                          }
+                      axios
+                        .post(`/api/faculty/read_file`, {
+                          fileUrl: file.fileUrl,
                         })
-                        
-
-                      })
-                      .catch((error) => {
-                        console.error("Error in second API call", error);
-                      });
-                    })
-            
+                        .then((res) => {
+                          console.log(
+                            "Response from second API call",
+                            res.data
+                          );
+                          //loop through the res.data and if the data is filled, excelData
+                          res.data.forEach((data) => {
+                            if (data) {
+                              setExcelData((excelData) => [...excelData, data]);
+                            }
+                          });
+                        })
+                        .catch((error) => {
+                          console.error("Error in second API call", error);
+                        });
+                    });
                   })
                   .catch((error) => {
                     console.error("Error in first API call", error);
                   });
               }
-              
-
             }
             // if paper is not live, push back to papers list
             else {
@@ -222,11 +221,17 @@ export default function PaperContainer({ startOfPage }) {
           });
 
         //update spa status to Attempted
+        const startTime = new Date();
+        // get gmt offset in hours, and add that in startTime
+        const gmtOffset = new Date().getTimezoneOffset() 
+        startTime.setMinutes(startTime.getMinutes() - gmtOffset);
+
         axios
           .post(`/api/student/paper/update_attempt_status`, {
             studentId: session.data.user.id,
             paperId: paper,
             status: "Attempted",
+            timeStarted: startTime.toISOString(),
           })
           .then((res) => {
             console.log("updated attempt status ", res.data);
@@ -234,6 +239,7 @@ export default function PaperContainer({ startOfPage }) {
           .catch((err) => {
             console.log("error updating attempt status", err);
           });
+        
       }
     }
   }, [paper, student]);
@@ -245,7 +251,8 @@ export default function PaperContainer({ startOfPage }) {
   return (
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">
-        {currentQuestion === questions.length && paperDetails.paper_type!=="IE" ? (
+        {currentQuestion === questions.length &&
+        paperDetails.paper_type !== "IE" ? (
           <Submitted />
         ) : paperDetails.paper_type === "Objective" ? (
           <OQContainer
@@ -282,13 +289,11 @@ export default function PaperContainer({ startOfPage }) {
             )}
           </>
         ) : (
-          <IEContainer 
-          excelData={excelData}
-          />
+          <IEContainer excelData={excelData} />
         )}
       </div>
       <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
-        <Timer paper={paperDetails} />
+        <Timer paper={paperDetails} paperStartTime={paperStartTime} />
         {(paperDetails.freeflow ||
           (paperDetails.paper_type !== "Objective" &&
             currentQuestion >= objectiveCount)) &&

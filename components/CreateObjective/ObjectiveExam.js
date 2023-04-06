@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { MdDelete, MdEdit, MdCancel } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { ImCross } from "react-icons/im";
 
 import Input from "../Common/Form/Input";
@@ -152,12 +152,15 @@ const MCQTable = ({
   };
 
   const handleEditMCQ = (index) => () => {
-    if (editing || adding) return;
-
-    setEditing(true);
-    setAdding(false);
-    setIndex(index);
-    setCurrentMCQ(mcqs[index]);
+    if (!editing && !adding) {
+      setEditing(true);
+      setIndex(index);
+      setCurrentMCQ(mcqs[index]);
+    } else {
+      alert(
+        "Please save or cancel the current edit or add operation before editing another question."
+      );
+    }
   };
 
   const handleUpdateMCQ = async (index) => {
@@ -282,14 +285,22 @@ const MCQTable = ({
       </table>
       <div className="w-full flex justify-center mt-10">
         <button
-          onClick={() => !adding && !editing && setAdding(true)}
+          onClick={() => {
+            if (!adding && !editing) {
+              setAdding(true);
+            } else {
+              alert(
+                "Please save or cancel the current edit or add operation before editing another question."
+              );
+            }
+          }}
           className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
         >
           Add MCQ
         </button>
       </div>
       {(editing || adding) && (
-        <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl transition-all">
+        <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl ">
           <div className="flex justify-between">
             <h2 className="text-xl font-bold mb-4">
               {editing ? "Edit" : "Add"} MCQ

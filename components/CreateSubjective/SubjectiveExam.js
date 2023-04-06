@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import Input from "../Common/Form/Input";
 import axios from "axios";
+import { ImCross } from "react-icons/im";
 import Spinner from "../Loader/Spinner";
 
 const SubjectiveExam = ({
@@ -178,23 +179,15 @@ const SubjectiveExam = ({
 
   const handleEditMCQ = (question) => () => {
     console.log(editing, "is editing");
-    if (editing) {
-      console.log("editing is true");
-      setCurrentQuestion({
-        sq_id: "",
-        question: "",
-        parent_sq_id: "",
-        marks: 1,
-        long_question: longQuestion,
-        questionnumber: subjectivesLocal.length + 1,
-      });
-      setEditing(false);
-    } else {
+    if (!editing && !adding) {
       setEditing(true);
       setCurrentQuestion(question);
       setPreviousParent(question.parent_sq_id);
+    } else {
+      alert(
+        "Please save or cancel the current edit or add operation before editing another question."
+      );
     }
-    setAdding(false);
   };
 
   console.log("cuurent is", currentQuestion);
@@ -506,8 +499,13 @@ const SubjectiveExam = ({
       <div className="w-full flex justify-center mt-10">
         <button
           onClick={() => {
-            setAdding(true);
-            setEditing(false);
+            if (!editing && !adding) {
+              setAdding(true);
+            } else {
+              alert(
+                "Please save or cancel the current edit or add operation before editing another question."
+              );
+            }
           }}
           className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
         >
@@ -515,10 +513,30 @@ const SubjectiveExam = ({
         </button>
       </div>
       {(editing || adding) && (
-        <div className="w-full mt-6">
-          <h2 className="text-xl font-bold mb-4">
-            {editing ? "Edit" : "Add"} Subjective Question
-          </h2>
+        <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl mb-10">
+          <div className="w-full justify-between flex">
+            <h2 className="text-xl font-bold mb-4">
+              {editing ? "Edit" : "Add"} Subjective Question
+            </h2>
+            <div className="rounded-full text-white bg-red-500 my-auto flex justify-between items-center p-2 cursor-pointer">
+              <button
+                onClick={() => {
+                  setEditing(false);
+                  setAdding(false);
+                  setCurrentQuestion({
+                    sq_id: "",
+                    question: "",
+                    parent_sq_id: "",
+                    marks: 1,
+                    long_question: longQuestion,
+                    questionnumber: subjectivesLocal.length + 1,
+                  });
+                }}
+              >
+                <ImCross />
+              </button>
+            </div>
+          </div>
 
           <div className="mb-4">
             <Input

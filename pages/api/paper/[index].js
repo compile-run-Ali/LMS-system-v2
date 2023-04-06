@@ -25,6 +25,7 @@ const handle = async (req, res) => {
         paper_type: true,
         review: true,
         weightage: true,
+        
         objective_questions: {
           select: {
             oq_id: true,

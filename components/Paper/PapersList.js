@@ -36,7 +36,7 @@ export default function PapersList({ papers, status }) {
 
   useEffect(() => {
     const newUpdatedPapers = sortedPapers.map((paper) => {
-      console.log(attemptStatus);
+      // console.log(attemptStatus);
       const attempt = attemptStatus.find(
         (attempt) => attempt.paperId === paper.paper_id
       );
@@ -48,7 +48,7 @@ export default function PapersList({ papers, status }) {
       }
     });
 
-    console.log("newUpdatedPapers", newUpdatedPapers);
+    // console.log("newUpdatedPapers", newUpdatedPapers);
     setUpdatedPapers(newUpdatedPapers);
   }, [attemptStatus]);
 

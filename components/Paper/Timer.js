@@ -15,6 +15,7 @@ export default function Timer({ paper }) {
   const [timeLeft, setTimeLeft] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
+  const [startTimeString, setStartTimeString] = useState('');
 
   const clearPaperFromLocal = () => {
     const papers = JSON.parse(localStorage.getItem("papers")) || {};
@@ -42,10 +43,40 @@ export default function Timer({ paper }) {
   };
 
   useEffect(() => {
-    if (paper.date) {
+    if (session?.user?.id && paper.paper_id) {
+      axios
+        .get("/api/student/paper/get_single_attempt", {
+          params: {
+            p_number: session.user.id,
+            paper_id: paper.paper_id,
+          },
+        })
+        .then((res) => {
+          const paperStartTime = res.data.timeStarted;
+          if (paperStartTime) {
+            setStartTimeString(paperStartTime);
+            setStartTime(
+              convertDateTimeToStrings(
+                getPaperDateTime(paperStartTime, paper.duration).start
+              )
+            );
+            setEndTime(
+              convertDateTimeToStrings(
+                getPaperDateTime(paperStartTime, paper.duration).end
+              )
+            );
+          }
+        });
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (startTimeString) {
       const interval = setInterval(() => {
         setTimeLeft(
-          getRemainingTime(getPaperDateTime(paper.date, paper.duration).end)
+          getRemainingTime(
+            getPaperDateTime(startTimeString, paper.duration).end
+          )
         );
         if (timeLeft === "00:00:00") {
           clearPaperFromLocal();
@@ -57,21 +88,6 @@ export default function Timer({ paper }) {
       return () => clearInterval(interval);
     }
   });
-
-  useEffect(() => {
-    if (paper.date) {
-      setStartTime(
-        convertDateTimeToStrings(
-          getPaperDateTime(paper.date, paper.duration).start
-        )
-      );
-      setEndTime(
-        convertDateTimeToStrings(
-          getPaperDateTime(paper.date, paper.duration).end
-        )
-      );
-    }
-  }, [paper]);
 
   return (
     <div className="flex flex-col justify-center text-lg">
