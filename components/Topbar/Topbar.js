@@ -22,8 +22,6 @@ export default function Topbar({ admin }) {
     });
   };
 
-  console.log("u r at", router.pathname);
-
   useEffect(() => {
     if (session.status === "authenticated") {
       getNotifications();

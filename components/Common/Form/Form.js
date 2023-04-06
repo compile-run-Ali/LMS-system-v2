@@ -21,7 +21,9 @@ export default function Form({
   const [paperDuration, setPaperDuration] = useState(180);
   const [weightage, setWeightage] = useState("");
   const [dateOfExam, setDateOfExam] = useState(null);
-  const [paperTime, setPaperTime] = useState("09:00");
+  const [paperTime, setPaperTime] = useState(
+    router.query.is_edit === "true" ? null : "09:00"
+  );
   const [freeflow, setFreeflow] = useState(false);
   const [review, setReview] = useState(false);
 
