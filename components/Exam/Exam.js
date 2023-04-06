@@ -137,7 +137,7 @@ export default function Exam({
       });
       console.log("added comment");
       generateNotification();
-      // router.push("/");
+      router.push("/");
     } catch (err) {
       console.log("error", err);
     }

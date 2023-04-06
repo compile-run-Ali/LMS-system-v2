@@ -145,7 +145,7 @@ const ExamTable = ({ exams_data, approve_row }) => {
             <td className="border px-4 py-2">{exam.weightage}</td>
             <td className="border px-4 py-2">{exam.status}</td>
             {approve_row && (
-              <td className="border px-4 py-2 z-10 w-full text-center">
+              <td className="border px-4 py-2 z-10 text-center">
                 <button
                   className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md mx-auto"
                   onClick={() => {
