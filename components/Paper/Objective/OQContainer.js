@@ -82,7 +82,7 @@ export default function OQContainer({
         }
       })
       .catch((err) => {
-        console.log("error in adding answer", err.message);
+        console.log("error in adding answer", err);
       });
     setSaved(true);
     setChanged(false);

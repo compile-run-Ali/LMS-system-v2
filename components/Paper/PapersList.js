@@ -106,7 +106,7 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
           !attemptStatus ? (
             <Link
               href={`/paper/attempt/${paper.paper_id}`}
-              className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded`}
+              className={`bg-blue-800 hover:bg-blue-700 cursor-pointer text-white py-2 px-4 rounded`}
             >
               <button>Attempt</button>
             </Link>
@@ -119,7 +119,7 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
           paper.review ? (
             <Link
               href={`/paper/review/${paper.paper_id}`}
-              className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
+              className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white py-2 px-4 rounded"
             >
               <button>Review</button>
             </Link>
@@ -131,7 +131,7 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
         ) : (
           <Link
             href={`/paper/view/${paper.paper_id}`}
-            className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
+            className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white py-2 px-4 rounded"
           >
             <button>View</button>
           </Link>
