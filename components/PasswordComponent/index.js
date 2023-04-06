@@ -36,7 +36,16 @@ const PasswordComponent = () => {
       })
       .then((res) => {
         console.log("Password Changed Successfully", res.data);
-        router.push("/");
+        console.log("data is", res.data?.notMatch);
+        if (res.data?.notMatch) {
+          setLoading({
+            show: false,
+            message: "",
+          });
+          alert("Old Password does not match");
+        } else {
+          router.push("/");
+        }
       })
       .catch((err) => {
         console.log("Error in change_password", err);

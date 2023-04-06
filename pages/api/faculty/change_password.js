@@ -41,6 +41,10 @@ export default async function handler(req, res) {
             password: newHash,
           },
         });
+      } else {
+        res
+          .status(200)
+          .json({ message: "Old Password does not match", notMatch: true });
       }
     }
 
