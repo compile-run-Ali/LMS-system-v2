@@ -15,6 +15,7 @@ const AddFaculty = () => {
   const [email, setEmail] = useState("");
   const [position, setPosition] = useState("");
   const [password, setPassword] = useState("");
+  const [cPassword, setCPassword] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
   const [rank, setRank] = useState("");
   const [loading, setLoading] = useState({
@@ -98,7 +99,13 @@ const AddFaculty = () => {
 
     // if pnumber is not a number give alert
     if (isNaN(pa_number)) {
-      alert("PA Number should be a number");
+      alert("PA Number should be a number.");
+      return;
+    }
+
+    // if password and confirm password do not match give alert
+    if (password !== cPassword) {
+      alert("Password and Confirm Password do not match.");
       return;
     }
 
@@ -170,8 +177,9 @@ const AddFaculty = () => {
   return (
     <form onSubmit={handleSubmit} className="px-4">
       <Spinner show={loading.show} message={loading.message} />
+      heehlkeqfbjka
       <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
-        <div className="mb-4 col-span-2">
+        <div className="mb-4">
           <Input
             text="Name"
             type="text"
@@ -211,18 +219,7 @@ const AddFaculty = () => {
             disabled={selfEdit === "true"}
           />
         </div>
-        {!selfEdit && !adminEdit && (
-          <div className="mb-4">
-            <Input
-              text="Password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-              disabled={selfEdit === "true"}
-            />
-          </div>
-        )}
+
         <div className="mt-5">
           <label className="block mb-2 text-primary-black" htmlFor="rank_input">
             Rank
@@ -277,8 +274,29 @@ const AddFaculty = () => {
             ))}
           </select>
         </div>
-        {selfEdit && (
-          <div className="font-poppins mt-4">
+        {!selfEdit && !adminEdit && (
+          <>
+            <div className="mb-4">
+              <Input
+                text="Password"
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <Input
+                text="Confirm Password"
+                type="password"
+                value={cPassword}
+                onChange={(event) => setCPassword(event.target.value)}
+                required
+              />
+            </div>
+          </>
+        )}
+        {/* <div className="font-poppins mt-4">
             <label
               className="block mb-2  text-primary-black"
               htmlFor="file_input"
@@ -299,10 +317,8 @@ const AddFaculty = () => {
             >
               SVG, PNG, JPG or GIF (MAX. 800x400px).
             </p>
-          </div>
-        )}
+          </div> */}
       </div>
-
       <div className="flex justify-left ml-6 ">
         <button
           className="bg-blue-800 hover:bg-blue-700 text-lg mt-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
@@ -321,7 +337,7 @@ const AddFaculty = () => {
                 query: {
                   faculty_id: router.query.faculty_id,
                   recovery: adminEdit,
-                  name:router.query.name,
+                  name: router.query.name,
                 },
               });
             }}
