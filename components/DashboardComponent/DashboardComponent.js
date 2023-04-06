@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import ExamTable from "./ExamTable";
 import Modal from "./Subcomponents/Modal";
 
-export default function DashboardComponent({ exams_data, paperapproval_data }) {
+export default function DashboardComponent({
+  exams_data,
+  paperapproval_data,
+  level,
+}) {
   const [open, setOpen] = useState(false);
   const [exams, setExams] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -68,8 +72,7 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
           )}
         </select>
       </div>
-
-      {courses.length > 0 && (
+      {courses.length > 0 && level < 3 && (
         <div>
           <div className="flex w-full justify-end pr-10 font-poppins">
             <button
@@ -82,7 +85,6 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
           <Modal open={open} setOpen={setOpen} courseCode={selectedCourse} />
         </div>
       )}
-
       {paperapproval_data !== undefined &&
         paperapproval_data !== null &&
         paperapproval_data.length > 0 && (
@@ -96,7 +98,6 @@ export default function DashboardComponent({ exams_data, paperapproval_data }) {
             />
           </div>
         )}
-
       {courses.length > 0 && (
         <div>
           <div className="pr-10 pl-5">

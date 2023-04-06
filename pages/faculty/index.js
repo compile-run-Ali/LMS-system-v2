@@ -42,6 +42,7 @@ export default function Dashboard() {
           <DashboardComponent
             exams_data={exams}
             paperapproval_data={paperapproval}
+            level={session.data.user.level}
           />
         )}
       </DashboardLayout>
