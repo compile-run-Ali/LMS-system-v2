@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit, MdCancel } from "react-icons/md";
+import { ImCross } from "react-icons/im";
+
 import Input from "../Common/Form/Input";
 import MultiSelectDropdown from "./MultiSelect";
 import { useRouter } from "next/router";
@@ -144,13 +146,15 @@ const MCQTable = ({
       options: ["", "", "", ""],
       correct_answer: "",
       marks: 1,
-      timeAllowed: 60,
+      timeAllowed: currentMCQ.timeAllowed || 60,
     });
     setAdding(false);
   };
 
   const handleEditMCQ = (index) => () => {
-    setEditing(!editing);
+    if (editing || adding) return;
+
+    setEditing(true);
     setAdding(false);
     setIndex(index);
     setCurrentMCQ(mcqs[index]);
@@ -194,10 +198,10 @@ const MCQTable = ({
       setObjectiveQuestions(newMCQs);
       setCurrentMCQ({
         question: "",
-        options: [],
+        options: ["", "", "", ""],
         correct_answer: "",
         marks: 1,
-        timeAllowed: 60,
+        timeAllowed: currentMCQ.timeAllowed || 60,
       });
       setEditing(false);
       setIndex(null);
@@ -278,17 +282,36 @@ const MCQTable = ({
       </table>
       <div className="w-full flex justify-center mt-10">
         <button
-          onClick={() => setAdding(true)}
+          onClick={() => !adding && !editing && setAdding(true)}
           className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
         >
           Add MCQ
         </button>
       </div>
       {(editing || adding) && (
-        <div className="w-full mt-6">
-          <h2 className="text-xl font-bold mb-4">
-            {editing ? "Edit" : "Add"} MCQ
-          </h2>
+        <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl transition-all">
+          <div className="flex justify-between">
+            <h2 className="text-xl font-bold mb-4">
+              {editing ? "Edit" : "Add"} MCQ
+            </h2>
+            <div className="rounded-full text-white bg-red-500 my-auto flex justify-between items-center p-2 cursor-pointer">
+              <button
+                onClick={() => {
+                  setEditing(false);
+                  setAdding(false);
+                  setCurrentMCQ({
+                    question: "",
+                    options: ["", "", "", ""],
+                    correct_answer: "",
+                    marks: 1,
+                    timeAllowed: currentMCQ.timeAllowed || 60,
+                  });
+                }}
+              >
+                <ImCross />
+              </button>
+            </div>
+          </div>
 
           <div className="mb-4">
             <Input

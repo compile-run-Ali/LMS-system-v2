@@ -58,7 +58,6 @@ export default function CreateExam({ paperType }) {
 
   useEffect(() => {
     if (router.isReady) {
-      console.log("router is ready");
       setPaperId(
         Object.keys(router.query).length > 1 ? router.query.paper_id : 0
       );
