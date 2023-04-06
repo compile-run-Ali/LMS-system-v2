@@ -69,7 +69,14 @@ const configuration = {
       session.user.name = token.name;
       session.user.image = token.user.profile_picture;
       session.user.role = token.user.role;
-      session.user.level = token.user.level;
+      if (token.user.faculty_id) {
+        session.user.level = token.user.level;
+        session.user.phone_number = token.user.phone_number;
+        session.user.position = token.user.position;
+        session.user.rank = token.user.rank;
+        session.user.pa_number = token.user.pa_number;
+
+      }
       session.user.id = token.user.faculty_id
         ? token.user.faculty_id
         : token.user.p_number

@@ -3,12 +3,14 @@ import BaseLayout from "@/components/BaseLayout/BaseLayout";
 import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
 import React from "react";
 
-export default function add_faculty() {
+const Profile = () => {
   return (
-    <BaseLayout title={"Add Faculty"}>
+    <BaseLayout title={"Profile"}>
       <DashboardLayout>
         <AddFaculty />
       </DashboardLayout>
     </BaseLayout>
   );
-}
+};
+
+export default Profile;

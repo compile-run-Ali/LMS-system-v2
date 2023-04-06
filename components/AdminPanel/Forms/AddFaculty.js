@@ -1,23 +1,60 @@
 import Input from "@/components/Common/Form/Input";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { headers } from "@/next.config";
+import Spinner from "@/components/Loader/Spinner";
 
 const AddFaculty = () => {
   const router = useRouter();
-  const [edit, setEdit] = useState(router.query.faculty_id ? true : false);
-  const [name, setName] = useState(edit ? router.query.name : "");
-  const [phoneNumber, setPhoneNumber] = useState(
-    edit ? router.query.phone_number : ""
-  );
-  const [pa_number, setPaNumber] = useState(edit ? router.query.pa_number : "");
-  const [level, setLevel] = useState(edit ? router.query.level : "");
-  const [email, setEmail] = useState(edit ? router.query.email : "");
-  const [position, setPosition] = useState(edit ? router.query.position : "");
-  const [password, setPassword] = useState(edit ? router.query.password : "");
+  const [adminEdit, setAdminEdit] = useState(router.query.adminEdit);
+  const [selfEdit, setSelfEdit] = useState(router.query.selfEdit);
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [pa_number, setPaNumber] = useState("");
+  const [level, setLevel] = useState("");
+  const [email, setEmail] = useState("");
+  const [position, setPosition] = useState("");
+  const [password, setPassword] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
-  const [rank, setRank] = useState(edit ? router.query.rank : "");
+  const [rank, setRank] = useState("");
+  const [loading, setLoading] = useState({
+    show: false,
+    message: "",
+  });
+
+  useEffect(() => {
+    if (router.isReady) {
+      setAdminEdit(router.query.adminEdit);
+      setSelfEdit(router.query.selfEdit);
+
+      if (router.query.adminEdit || router.query.selfEdit) {
+        setLoading({
+          show: true,
+          message: "Loading Data...",
+        });
+        axios
+          .post("/api/admin/faculty/get_faculty_by_id", {
+            faculty_id: router.query.faculty_id,
+          })
+          .then((res) => {
+            setName(res.data.name);
+            setPhoneNumber(res.data.phone_number);
+            setPaNumber(res.data.pa_number);
+            setLevel(res.data.level);
+            setEmail(res.data.email);
+            setPosition(res.data.position);
+            setRank(res.data.rank);
+            setLoading({
+              show: false,
+              message: "",
+            });
+          })
+          .catch((err) => console.log("error in get_faculty_by_id", err));
+      }
+    } else {
+      console.log("router is not ready");
+    }
+  }, [router]);
 
   const levels = [
     {
@@ -76,7 +113,7 @@ const AddFaculty = () => {
     formData.append("rank", rank);
     formData.append("profile_picture", profilePicture);
 
-    if (edit) {
+    if (adminEdit) {
       formData.append("faculty_id", router.query.faculty_id);
       editFaculty(formData);
     } else {
@@ -89,39 +126,50 @@ const AddFaculty = () => {
   };
 
   const addFaculty = async (faculty) => {
-    const new_faculty = await axios.post(
-      `/api/admin/faculty/add_faculty`,
-      faculty,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+    try {
+      const new_faculty = await axios.post(
+        `/api/admin/faculty/add_faculty`,
+        faculty,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (new_faculty.status === 200 && !new_faculty.data.emailExists) {
+        router.push("/admin");
       }
-    );
-    if (new_faculty.status === 200 && !new_faculty.data.emailExists) {
-      router.push("/admin");
-    } else {
-      alert("Email already exists");
+    } catch (error) {
+      alert(
+        "Another faculty member with this email or PA number already exists."
+      );
     }
   };
 
   const editFaculty = async (faculty) => {
-    const edited_faculty = await axios.post(
-      `/api/admin/faculty/edit_faculty`,
-      faculty,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+    try {
+      const edited_faculty = await axios.post(
+        `/api/admin/faculty/edit_faculty`,
+        faculty,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (edited_faculty.status === 200) {
+        router.push("/admin");
       }
-    );
-    if (edited_faculty.status === 200) {
-      router.push("/admin");
+    } catch (error) {
+      alert(
+        "Another faculty member with this email or PA number already exists."
+      );
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="px-4">
+      <Spinner show={loading.show} message={loading.message} />
       <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
         <div className="mb-4 col-span-2">
           <Input
@@ -130,6 +178,7 @@ const AddFaculty = () => {
             value={name}
             onChange={(event) => setName(event.target.value)}
             required
+            disabled={selfEdit === "true"}
           />
         </div>
         <div className="mb-4 ">
@@ -139,6 +188,7 @@ const AddFaculty = () => {
             value={pa_number}
             onChange={(event) => setPaNumber(event.target.value)}
             required
+            disabled={selfEdit === "true"}
           />
         </div>
         <div className="mb-4">
@@ -148,6 +198,7 @@ const AddFaculty = () => {
             value={phoneNumber}
             onChange={(event) => setPhoneNumber(event.target.value)}
             required
+            disabled={selfEdit === "true"}
           />
         </div>
         <div className="mb-4">
@@ -157,17 +208,21 @@ const AddFaculty = () => {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
+            disabled={selfEdit === "true"}
           />
         </div>
-        <div className="mb-4">
-          <Input
-            text="Password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
-        </div>
+        {!selfEdit && !adminEdit && (
+          <div className="mb-4">
+            <Input
+              text="Password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              disabled={selfEdit === "true"}
+            />
+          </div>
+        )}
         <div className="mt-5">
           <label className="block mb-2 text-primary-black" htmlFor="rank_input">
             Rank
@@ -178,6 +233,7 @@ const AddFaculty = () => {
             aria-describedby="rank_input_help"
             id="rank_input"
             value={rank}
+            disabled={selfEdit === "true"}
             onChange={(event) => {
               setRank(event.target.value);
             }}
@@ -198,7 +254,8 @@ const AddFaculty = () => {
             Level
           </label>
           <select
-          required
+            required
+            disabled={selfEdit === "true"}
             className="block w-full text-sm text-gray-900 px-2 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
             aria-describedby="level_input_help"
             id="level_input"
@@ -220,35 +277,58 @@ const AddFaculty = () => {
             ))}
           </select>
         </div>
-
-        <div className="font-poppins mt-4">
-          <label
-            className="block mb-2  text-primary-black"
-            htmlFor="file_input"
-          >
-            Upload Profile Pic
-          </label>
-          <input
-            className="block w-full text-sm text-gray-900 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
-            aria-describedby="file_input_help"
-            id="file_input"
-            type="file"
-            accept="image/png, image/gif, image/jpeg"
-            onChange={handleFileChange}
-          />
-          <p className="mt-1 pl-1 text-sm text-black-100 " id="file_input_help">
-            SVG, PNG, JPG or GIF (MAX. 800x400px).
-          </p>
-        </div>
+        {selfEdit && (
+          <div className="font-poppins mt-4">
+            <label
+              className="block mb-2  text-primary-black"
+              htmlFor="file_input"
+            >
+              Upload Profile Pic
+            </label>
+            <input
+              className="block w-full text-sm text-gray-900 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
+              aria-describedby="file_input_help"
+              id="file_input"
+              type="file"
+              accept="image/png, image/gif, image/jpeg"
+              onChange={handleFileChange}
+            />
+            <p
+              className="mt-1 pl-1 text-sm text-black-100 "
+              id="file_input_help"
+            >
+              SVG, PNG, JPG or GIF (MAX. 800x400px).
+            </p>
+          </div>
+        )}
       </div>
 
-      <div className="flex justify-left ml-10 ">
+      <div className="flex justify-left ml-6 ">
         <button
           className="bg-blue-800 hover:bg-blue-700 text-lg mt-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
           type="submit"
         >
-          {edit ? "Edit Faculty" : "Add Faculty"}
+          {selfEdit ? "Save Photo" : adminEdit ? "Edit Faculty" : "Add Faculty"}
         </button>
+
+        {(selfEdit || adminEdit) && (
+          <button
+            className="bg-red-800 hover:bg-red-700 text-lg mt-4 ml-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
+            type="button"
+            onClick={() => {
+              router.push({
+                pathname: "/faculty/change_password",
+                query: {
+                  faculty_id: router.query.faculty_id,
+                  recovery: adminEdit,
+                  name:router.query.name,
+                },
+              });
+            }}
+          >
+            {adminEdit ? "Recover Password" : "Change Password"}
+          </button>
+        )}
       </div>
     </form>
   );

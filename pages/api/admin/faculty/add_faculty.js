@@ -22,17 +22,17 @@ const handler = async (req, res) => {
       }
 
       try {
-        const existingFaculty = await prisma.faculty.findUnique({
-          where: {
-            email: fields.email,
-          },
-        });
+        // const existingFaculty = await prisma.faculty.findUnique({
+        //   where: {
+        //     email: fields.email,
+        //   },
+        // });
 
-        if (existingFaculty) {
-          res.json({
-            emailExists: true,
-          });
-        }
+        // if (existingFaculty) {
+        //   res.json({
+        //     emailExists: true,
+        //   });
+        // }
 
         const hash = await bcrypt.hash(fields.password, 0);
         const facultyData = {

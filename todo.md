@@ -197,8 +197,7 @@ Retain paper status but change owner  (change owner, status remains pending appr
 Lock result status for entire paper, give button to faculty
 
 see personal details
-enter old password
-change new password
+enter old password, change new password
 remove photo field in admin edit faculty, but give it in faculty edit themself
 
 
