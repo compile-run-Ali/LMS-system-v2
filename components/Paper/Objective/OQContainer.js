@@ -221,7 +221,7 @@ export default function OQContainer({
               {currentQuestion + 1 + ". " + question.question}
             </p>
             <div className="flex justify-between mt-6 flex-col">
-              {question.answers?.split(",").map((answer, index) => (
+              {question.answers?.split(",").sort(() => Math.random() - 0.5).map((answer, index) => (
                 <div
                   key={index}
                   className={`w-full flex my-3 rounded-lg p-4 text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 
