@@ -63,9 +63,9 @@ const CourseTable = ({
       <tbody>
         {coursesData.map((course, index) => (
           <tr key={index} className="bg-white">
-            <td className="border px-4 py-2">{course.course_name}</td>
-            <td className="border px-4 py-2">{course.course_code}</td>
-            <td className="border px-4 py-2">{course.credit_hours}</td>
+            <td className="px-4 py-2">{course.course_name}</td>
+            <td className="px-4 py-2">{course.course_code}</td>
+            <td className="px-4 py-2">{course.credit_hours}</td>
             <td className="px-4 py-2">
               <button
                 onClick={() => {

@@ -35,10 +35,10 @@ export default function StudentTable({
       <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
         <thead>
           <tr className="bg-blue-800 rounded-md text-white">
+            <th className="px-4 py-2">Sr. #</th>
             <th className="px-4 py-2">Army Number</th>
             <th className="px-4 py-2">Name</th>
             <th className="px-4 py-2">Phone Number</th>
-            <th className="px-4 py-2">CGPA</th>
             <th className="px-4 py-2">Email</th>
             <th className="px-4 py-2">DOB</th>
             <th className="px-4 py-2"></th>
@@ -48,6 +48,7 @@ export default function StudentTable({
         <tbody>
           {students.map((student, index) => (
             <tr key={index} className="bg-white">
+              <td className=" px-4 py-2">{index+1}</td>
               <td className=" px-4 py-2">
                 <Link key={student.p_number} href={`/student/profile`}>
                   {student.p_number}
@@ -55,7 +56,6 @@ export default function StudentTable({
               </td>
               <td className=" px-4 py-2">{student.name}</td>
               <td className=" px-4 py-2">{student.phone_number}</td>
-              <td className=" px-4 py-2">{student.cgpa}</td>
               <td className=" px-4 py-2">{student.email}</td>
               <td className=" px-4 py-2">
                 {new Date(student.DOB).toDateString()}
