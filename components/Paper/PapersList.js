@@ -15,8 +15,6 @@ export default function PapersList({ papers, status }) {
   const isPast = status === "Past Papers";
   const { data: session } = useSession();
 
-
-
   useEffect(() => {
     const newSortedPapers = papers.sort(
       (a, b) => Date.parse(a.date) - Date.parse(b.date)
@@ -34,33 +32,25 @@ export default function PapersList({ papers, status }) {
       setAttemptStatus(res.data);
     };
     getAttemptStatus();
-
   }, [session]);
 
   useEffect(() => {
     const newUpdatedPapers = sortedPapers.map((paper) => {
-      console.log(attemptStatus)
+      console.log(attemptStatus);
       const attempt = attemptStatus.find(
         (attempt) => attempt.paperId === paper.paper_id
       );
-
 
       if (attempt) {
         return { ...paper, attemptStatus: true };
       } else {
         return { ...paper, attemptStatus: false };
       }
-
-      
     });
 
     console.log("newUpdatedPapers", newUpdatedPapers);
     setUpdatedPapers(newUpdatedPapers);
   }, [attemptStatus]);
-
-
-
-
 
   return (
     <div>
@@ -76,11 +66,15 @@ export default function PapersList({ papers, status }) {
           </tr>
         </thead>
         <tbody>
-          {updatedPapers.map((paper,index) => {
+          {updatedPapers.map((paper, index) => {
             return (
               // add Link tag to live papers only and those with attempt status empty
               <tr key={paper.paper_id}>
-                <PaperRow paper={paper} attemptStatus={paper.attemptStatus} status={status} />
+                <PaperRow
+                  paper={paper}
+                  attemptStatus={paper.attemptStatus}
+                  status={status}
+                />
               </tr>
             );
           })}
@@ -109,27 +103,25 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
         {/* if paper is past and review is allowed, show review button, else show review not allowed button */}
         {/* else show view button */}
         {isLive ? (
-          !attemptStatus ?
-            (
-              <Link
+          !attemptStatus ? (
+            <Link
               href={`/paper/attempt/${paper.paper_id}`}
               className={`bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded`}
             >
-              Attempt
+              <button>Attempt</button>
             </Link>
-             
-            ) : (
-              <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
-                Attempted
-              </button>
-            )
+          ) : (
+            <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
+              Attempted
+            </button>
+          )
         ) : isPast ? (
           paper.review ? (
             <Link
               href={`/paper/review/${paper.paper_id}`}
               className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
             >
-              Review
+              <button>Review</button>
             </Link>
           ) : (
             <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
@@ -141,11 +133,10 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
             href={`/paper/view/${paper.paper_id}`}
             className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded"
           >
-            View
+            <button>View</button>
           </Link>
         )}
       </td>
     </>
   );
 };
-

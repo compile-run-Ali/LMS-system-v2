@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
- export default async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     console.log("received body", req.body);
     const existingSOA = await prisma.sOA.findUnique({
@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
         soa_id: req.body.p_number + req.body.oq_id,
       },
     });
-     if (existingSOA) {
+    if (existingSOA) {
       console.log("updatedSOA");
       const updatedSOA = await prisma.sOA.update({
         where: {
@@ -33,14 +33,19 @@ const prisma = new PrismaClient();
           is_attempted: req.body.is_attempted,
         },
       });
-       res.status(200).json(newSOA);
+      res.status(200).json(newSOA);
     }
   } catch (err) {
     if (err.code === "P2002") {
       // If the error is due to a duplicate primary key, send a 400 Bad Request response
-      res.status(400).json({ error: "Record with the specified key already exists." });
+      res
+        .status(400)
+        .json({ error: "Record with the specified key already exists." });
     } else {
-      throw new Error(err.message);
+      // Otherwise, send a 500 Internal Server Error response
+      res
+        .status(500)
+        .json({ error: "An unexpected error occurred.", details: err.message });
     }
   }
 }
