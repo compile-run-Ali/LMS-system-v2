@@ -30,10 +30,20 @@ export default async function handler(req, res) {
           oq_id: req.body.oq_id,
           answer: req.body.answer,
           marksobtained: req.body.marks,
-          // is_attempted: req.body.is_attempted,
         },
       });
-      res.status(200).json(newSOA);
+
+      if (newSOA) {
+        const addAttempt = await prisma.sOA.update({
+          where: {
+            soa_id: req.body.p_number + req.body.oq_id,
+          },
+          data: {
+            is_attempted: req.body.is_attempted,
+          },
+        });
+        res.status(200).json(addAttempt);
+      }
     }
   } catch (err) {
     if (err.code === "P2002") {

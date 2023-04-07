@@ -10,6 +10,12 @@ export default async function handler(req, res) {
       where: {
         soa_id: req.query.p_number + req.query.oq_id,
       },
+      select: {
+        answer: true,
+        oq_id: true,
+        marksobtained: true,
+        is_attempted: true,
+      },
     });
 
     if (existingSOA) {
