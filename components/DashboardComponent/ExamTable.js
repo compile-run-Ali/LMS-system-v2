@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
+import {
+  convertDateTimeToStrings,
+  compareDateTime,
+} from "@/lib/TimeCalculations";
 import { useSession } from "next-auth/react";
 import { MdCheckCircle, MdEdit } from "react-icons/md";
 
@@ -14,11 +17,7 @@ const ExamTable = ({ exams_data, approve_row }) => {
     const currentDate = new Date();
     const updatedExams = exams_data.map((exam) => {
       const examDate = new Date(exam.date);
-      if (
-        examDate < currentDate &&
-        exam.status !== "Closed" &&
-        exam.status !== "Marked"
-      ) {
+      if (compareDateTime(examDate) === "past" && exam.status === "Approved") {
         return axios
           .put(`/api/faculty/update_exam_status`, {
             paper_id: exam.paper_id,

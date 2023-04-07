@@ -89,7 +89,8 @@ const StudentsTable = ({ students_data, exam_id, exam }) => {
       if (
         isAllMarked &&
         !isNoneAttempted &&
-        (exam.status !== "Marked" || exam.status !== "Result Locked")
+        exam.status !== "Marked" &&
+        exam.status !== "Result Locked"
       ) {
         /*
           If all students are marked and none of them are not attempted,
@@ -125,7 +126,7 @@ const StudentsTable = ({ students_data, exam_id, exam }) => {
         <thead>
           <tr className="bg-white text-black text-3xl font-normal font-sans">
             <th colSpan={5} className="px-4 py-2 text-center remove-col">
-              {exam.paper_name} Class Result
+              {exam.course.course_name} --- {exam.paper_name}
             </th>
           </tr>
           <tr className="bg-blue-800 text-white font-medium ">
@@ -237,12 +238,12 @@ const StudentsTable = ({ students_data, exam_id, exam }) => {
               changeStatusTo("Result Locked");
             } else if (
               exam.paper_type === "Objective" &&
-              exam.status === "Approved"
+              (exam.status === "Approved" || exam.status === "Closed")
             ) {
               changeStatusTo("Result Locked");
             } else {
               alert(
-                "You can't lock the result of this exam. Please mark the exam first. If the exam is objective type, you can lock the result only after the exam is approved."
+                "You can't lock the result of this exam. Please mark the exam first. If the exam is objective type, you can lock the result only after student attempt it."
               );
             }
           }}
