@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         },
         data: {
           answer: req.body.answer,
-          is_attempted: req.body.is_attempted,
+          // is_attempted: req.body.is_attempted,
           marksobtained: req.body.marks,
         },
       });
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
           oq_id: req.body.oq_id,
           answer: req.body.answer,
           marksobtained: req.body.marks,
-          is_attempted: req.body.is_attempted,
+          // is_attempted: req.body.is_attempted,
         },
       });
       res.status(200).json(newSOA);
