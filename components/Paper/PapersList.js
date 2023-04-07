@@ -116,7 +116,7 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
             </button>
           )
         ) : isPast ? (
-          paper.review ? (
+          paper.review && paper.status !== "Result Locked" ? (
             <Link
               href={`/paper/review/${paper.paper_id}`}
               className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white py-2 px-4 rounded"
