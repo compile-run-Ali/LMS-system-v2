@@ -28,9 +28,11 @@ export default function Exam({
   const [selectedFaculty, setSelectedFaculty] = useState();
   const [access, setAccess] = useState(null);
 
+  console.log("Exam", exam);
+
   useEffect(() => {
     setAccess(() => {
-      if (session.status === "authenticated") {
+      if (session.status === "authenticated" && exam !== undefined) {
         if (
           session.data.user.role === "faculty" &&
           session.data.user.level === 5
@@ -50,19 +52,43 @@ export default function Exam({
   }, [session]);
 
   const getComments = async () => {
-    const res = await axios.post("/api/paper/get_comments", {
-      paper_id: exam.paper_id,
-    });
+    if (exam !== undefined) {
+      const res = await axios.post("/api/paper/get_comments", {
+        paper_id: exam.paper_id,
+      });
 
-    // sort comment by date and time
-    res.data.sort((a, b) => {
-      const dateA = new Date(a.time);
-      const dateB = new Date(b.time);
-      return dateA - dateB;
-    });
+      // sort comment by date and time
+      res.data.sort((a, b) => {
+        const dateA = new Date(a.time);
+        const dateB = new Date(b.time);
+        return dateA - dateB;
+      });
 
-    setComments(res.data);
+      setComments(res.data);
+    }
   };
+
+  const getFaculty = async () => {
+    const res = await axios.get("/api/paper/get_faculty");
+    setFaculty(
+      res.data.filter(
+        (faculty) => faculty.faculty_id !== session?.data?.user.id
+      )
+    );
+  };
+
+  useEffect(() => {
+    if (!comments) {
+      getComments();
+    }
+    if (edit) {
+      getFaculty();
+    }
+  }, []);
+
+  if (!exam) {
+    return <div>Exam not found</div>;
+  }
 
   const showSpinner = () => {
     setLoading({
@@ -83,24 +109,6 @@ export default function Exam({
     date.setHours(date.getHours() + 5);
     return date.toISOString();
   };
-
-  const getFaculty = async () => {
-    const res = await axios.get("/api/paper/get_faculty");
-    setFaculty(
-      res.data.filter(
-        (faculty) => faculty.faculty_id !== session?.data?.user.id
-      )
-    );
-  };
-
-  useEffect(() => {
-    if (!comments) {
-      getComments();
-    }
-    if (edit) {
-      getFaculty();
-    }
-  }, []);
 
   const editExam = () => {
     if (setActive) {
@@ -193,7 +201,7 @@ export default function Exam({
   };
 
   const saveDraft = async () => {
-    showSpinner();
+    // showSpinner();
     const approveExam = await axios.post("/api/faculty/edit_paperapproval", {
       paper_id: exam.paper_id,
       examofficer: null,
@@ -359,13 +367,15 @@ export default function Exam({
                   className="flex justify-between mb-5 pb-4 border-b border-gray-600 border-opacity-20"
                 >
                   <div className=" flex flex-col justify-center">
-                    <span className={`
+                    <span
+                      className={`
                         text-[#212121] font-medium
                         ${comment.user_generated && "italic"}
-                    `}>
-                      {comment.user_generated && "\""}
+                    `}
+                    >
+                      {comment.user_generated && '"'}
                       {comment.comment}
-                      {comment.user_generated && "\""}
+                      {comment.user_generated && '"'}
                     </span>
                     <span className="text-sm mt-2 text-[#828282]">
                       By {comment.faculty?.name}
