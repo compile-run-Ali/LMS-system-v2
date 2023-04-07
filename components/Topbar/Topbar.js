@@ -10,7 +10,7 @@ import ClickAwayListener from "react-click-away-listener";
 import { useRouter } from "next/router";
 import { IoArrowBackSharp } from "react-icons/io5";
 
-export default function Topbar({ admin }) {
+export default function Topbar() {
   const router = useRouter();
   const [showNotification, setShowNotification] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -112,31 +112,32 @@ export default function Topbar({ admin }) {
       {dropdown && (
         <div className="flex justify-end mr-10">
           <div className="dropdown absolute -mt-8 space-y-2">
+            {((session.data.user?.role === "faculty" &&
+              session.data.user?.level < 5) ||
+              session.data.user?.role === "student") && (
+              <div
+                onClick={() => {
+                  console.log(session.data.user);
+                  const user = session.data?.user || {};
+                  router.push({
+                    pathname: `/${session.data.user?.role}/profile`,
+                    query: {
+                      selfEdit: true,
+                      faculty_id: session.data.user.id,
+                    },
+                  });
+                }}
+                className="flex items-center justify-center gap-3 rounded-lg bg-slate-100 px-10 py-2 font-poppins text-red-600 font-medium cursor-pointer"
+              >
+                See Profile
+              </div>
+            )}
             <div
               onClick={logout}
               className="flex items-center justify-center gap-3 rounded-lg bg-slate-100 px-10 py-2 font-poppins text-red-600 font-medium cursor-pointer "
             >
               Logout
             </div>
-            {session.data.user?.role === "faculty" &&
-              session.data.user?.level < 5 && (
-                <div
-                  onClick={() => {
-                    console.log(session.data.user);
-                    const user = session.data?.user || {};
-                    router.push({
-                      pathname: "/faculty/profile",
-                      query: {
-                        selfEdit: true,
-                        faculty_id: session.data.user.id,
-                      },
-                    });
-                  }}
-                  className="flex items-center justify-center gap-3 rounded-lg bg-slate-100 px-10 py-2 font-poppins text-red-600 font-medium cursor-pointer"
-                >
-                  See Profile
-                </div>
-              )}
           </div>
         </div>
       )}

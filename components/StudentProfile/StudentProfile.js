@@ -19,7 +19,7 @@ export default function StudentProfile({ student }) {
               <strong>Phone Number:</strong> {student.phone_number}
             </p>
             <p className="mb-2">
-              <strong>CGPA:</strong> {student.cgpa}
+              <strong>Rank:</strong> {student.rank}
             </p>
             <p className="mb-2">
               <strong>Date of Birth:</strong>{" "}

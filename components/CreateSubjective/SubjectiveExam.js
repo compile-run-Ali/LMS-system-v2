@@ -190,8 +190,6 @@ const SubjectiveExam = ({
     }
   };
 
-  console.log("cuurent is", currentQuestion);
-
   const handleUpdateMCQ = async (question) => {
     // variable to check if now has parent
     const isValid = validateQuestionData();
