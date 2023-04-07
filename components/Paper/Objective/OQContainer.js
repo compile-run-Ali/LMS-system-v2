@@ -20,6 +20,7 @@ export default function OQContainer({
   const { paper } = router.query;
   const session = useSession();
 
+  const [answers, setAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [multipleAllowed, setMultipleAllowed] = useState(false);
@@ -34,31 +35,21 @@ export default function OQContainer({
     message: "",
   });
   const saveAnswer = () => {
-    console.log("SAVING ANSWER", currentQuestion);
     const attemptDone =
       numSelected === question.correct_answer.split(",").length;
-
-    console.log(
-      "selectedAnswer",
-      selectedAnswer,
-      "correctAnswers",
-      correctAnswers,
-      "attempted? ",
-      attemptDone,
-      "state of attempt",
-      attempted
-    );
 
     setSavingAnswer({
       show: true,
       message: "Saving answer...",
     });
+
+    // mark answer right here
     const score = markAnswer(
       question.correct_answer,
       selectedAnswer.join(","),
       question.marks
     );
-    // mark answer right here
+
     axios
       .post(`/api/student/paper/oq/add_answer`, {
         p_number: session.data.user.id,
@@ -127,14 +118,9 @@ export default function OQContainer({
     const papers = JSON.parse(localStorage.getItem("papers"));
     papers[paper].flags = f;
     localStorage.setItem("papers", JSON.stringify(papers));
-    console.log(
-      "flagged",
-      JSON.parse(localStorage.getItem("papers"))[paper].flags
-    );
   };
 
   useEffect(() => {
-    console.log("CHANGED IS", changed);
     if (changed) {
       saveAnswer();
     }
@@ -146,6 +132,8 @@ export default function OQContainer({
     // convert correctAnswer into an array
     if (question) {
       setLoading(true);
+      setAnswers(question.answers.split(",").sort(() => Math.random() - 0.5));
+
       axios
         .get("/api/student/paper/oq/get_answer", {
           params: {
@@ -155,12 +143,15 @@ export default function OQContainer({
         })
         .then((res) => {
           if (res.data) {
+            console.log(
+              "answer exists, setting selectedAnswer to fetched answer",
+              res.data
+            );
             const fetchedAnswer =
               res.data.answer.split(",")[0] === ""
                 ? []
                 : res.data.answer.split(",");
             setSelectedAnswer(fetchedAnswer);
-            console.log("exists ", fetchedAnswer);
             setNumSelected(
               res.data.answer.split(",")[0] === "" ? 0 : fetchedAnswer.length
             );
@@ -172,9 +163,6 @@ export default function OQContainer({
             );
           } else {
             setAttempted(false);
-            console.log(
-              "answer does not exist, setting selectedAnswer to empty array"
-            );
             setNumSelected(0);
             setSelectedAnswer([]);
           }
@@ -195,8 +183,6 @@ export default function OQContainer({
       }
     }
   }, [question]);
-
-  console.log("state of attempt", attempted);
 
   if (loading) {
     return <Loader />;
@@ -221,59 +207,62 @@ export default function OQContainer({
               {currentQuestion + 1 + ". " + question.question}
             </p>
             <div className="flex justify-between mt-6 flex-col">
-              {question.answers?.split(",").sort(() => Math.random() - 0.5).map((answer, index) => (
-                <div
-                  key={index}
-                  className={`w-full flex my-3 rounded-lg p-4 text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 
+              {answers
+                .map((answer, index) => (
+                  <div
+                    key={index}
+                    className={`w-full flex my-3 rounded-lg p-4 text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 
                     ${
                       attempted ? "bg-gray-200 pointer-events-none" : "bg-white"
                     }
                   `}
-                  onClick={() => {
-                    setChanged(selectedAnswer.includes(answer) ? false : true);
-                    setSaved(selectedAnswer.includes(answer) ? true : false);
-                    const input = document.querySelector(
-                      `input[value='${answer}']`
-                    );
-                    if (!multipleAllowed) {
-                      setSelectedAnswer([answer]);
-                      setNumSelected(1);
-                      input.checked = true; // check the checkbox
-                    } else {
-                      if (selectedAnswer.includes(answer)) {
-                        setSelectedAnswer(
-                          selectedAnswer.filter((a) => a !== answer)
-                        );
-                        setNumSelected(numSelected - 1);
-                        input.checked = false;
+                    onClick={() => {
+                      setChanged(
+                        selectedAnswer.includes(answer) ? false : true
+                      );
+                      setSaved(selectedAnswer.includes(answer) ? true : false);
+                      const input = document.querySelector(
+                        `input[value='${answer}']`
+                      );
+                      if (!multipleAllowed) {
+                        setSelectedAnswer([answer]);
+                        setNumSelected(1);
+                        input.checked = true; // check the checkbox
                       } else {
-                        if (numSelected < correctAnswers.length) {
-                          setSelectedAnswer([...selectedAnswer, answer]);
-                          setNumSelected(numSelected + 1);
-                          input.checked = true;
+                        if (selectedAnswer.includes(answer)) {
+                          setSelectedAnswer(
+                            selectedAnswer.filter((a) => a !== answer)
+                          );
+                          setNumSelected(numSelected - 1);
+                          input.checked = false;
                         } else {
-                          // remove first element of selectAnswer, and add this option
-                          setSelectedAnswer([
-                            ...selectedAnswer.slice(1),
-                            answer,
-                          ]);
-                          input.checked = true;
+                          if (numSelected < correctAnswers.length) {
+                            setSelectedAnswer([...selectedAnswer, answer]);
+                            setNumSelected(numSelected + 1);
+                            input.checked = true;
+                          } else {
+                            // remove first element of selectAnswer, and add this option
+                            setSelectedAnswer([
+                              ...selectedAnswer.slice(1),
+                              answer,
+                            ]);
+                            input.checked = true;
+                          }
                         }
                       }
-                    }
-                  }}
-                >
-                  <input
-                    type={multipleAllowed ? "checkbox" : "radio"}
-                    name="answer"
-                    value={answer}
-                    className="mr-4 accent-blue-700"
-                    checked={selectedAnswer.includes(answer)} // set the checked attribute
-                    readOnly // disable user input on this element
-                  />
-                  <span>{answer}</span>
-                </div>
-              ))}
+                    }}
+                  >
+                    <input
+                      type={multipleAllowed ? "checkbox" : "radio"}
+                      name="answer"
+                      value={answer}
+                      className="mr-4 accent-blue-700"
+                      checked={selectedAnswer.includes(answer)} // set the checked attribute
+                      readOnly // disable user input on this element
+                    />
+                    <span>{answer}</span>
+                  </div>
+                ))}
             </div>
           </div>
           <div
