@@ -31,8 +31,6 @@ const ExamTable = ({ exams_data, faculty }) => {
     });
   };
 
-  console.log(exams);
-
   const handleExamDelete = (exam) => {
     setLoading({
       show: true,
