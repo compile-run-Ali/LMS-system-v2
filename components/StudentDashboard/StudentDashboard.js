@@ -12,12 +12,7 @@ export default function StudentDashboard({ session }) {
   const [livePapers, setLivePapers] = useState([]);
   const [upcomingPapers, setUpcomingPapers] = useState([]);
 
-
   const papers = [
-    {
-      title: "Past Papers",
-      papers: pastPapers,
-    },
     {
       title: "Live Papers",
       papers: livePapers,
@@ -25,6 +20,10 @@ export default function StudentDashboard({ session }) {
     {
       title: "Upcoming Papers",
       papers: upcomingPapers,
+    },
+    {
+      title: "Past Papers",
+      papers: pastPapers,
     },
   ];
 
@@ -35,7 +34,6 @@ export default function StudentDashboard({ session }) {
 
   const getStudentAndSetPapers = async () => {
     const studentexams = await axios.get(`/api/student/paper/${index}`);
-    console.log("papers are ", studentexams.data);
     const approvedPapers = studentexams.data.filter(
       (paper) => paper.status !== "Draft"
     );

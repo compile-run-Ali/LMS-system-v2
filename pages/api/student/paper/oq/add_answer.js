@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         },
         data: {
           answer: req.body.answer,
-          // is_attempted: req.body.is_attempted,
+          is_attempted: req.body.is_attempted,
           marksobtained: req.body.marks,
         },
       });

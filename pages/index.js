@@ -15,7 +15,6 @@ export default function Home() {
   const [facultyLogin, setFacultyLogin] = useState(false);
   const session = useSession();
   useEffect(() => {
-    console.log(session);
     if (session.status === "authenticated") {
       session.data.user.role === "student"
         ? router.push("/student")

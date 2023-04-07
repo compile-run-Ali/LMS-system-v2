@@ -11,9 +11,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (session.status === "authenticated") {
-      console.log(session);
-    }
-    else{
+    } else {
       router.push("/");
     }
   }, [session]);
