@@ -14,7 +14,6 @@ export default async function handler(req, res) {
       },
     });
     if (!course) {
-      console.log("course_code not found");
       return res.status(404).json("Course not found");
     }
 
@@ -25,8 +24,8 @@ export default async function handler(req, res) {
       },
     });
     res.status(200).json(papers);
-  } catch(err) {
+  } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "Server Error" });
+    res.status(500).json(err);
   }
 }

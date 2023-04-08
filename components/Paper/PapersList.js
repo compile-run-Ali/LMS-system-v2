@@ -140,10 +140,7 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
             </button>
           )
         ) : (
-          <Link
-            href={`/paper/view/${paper.paper_id}`}
-            className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded"
-          >
+          <Link href={`/paper/view/${paper.paper_id}`}>
             <button className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded">
               <IoMdEye className="inline" />
             </button>
