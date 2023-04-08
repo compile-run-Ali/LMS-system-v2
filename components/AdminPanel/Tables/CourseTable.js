@@ -28,24 +28,12 @@ const CourseTable = ({
     router.push({
       pathname: "/admin/add_course",
       query: {
-        course_id: coursesData[index].course_id,
         course_name: coursesData[index].course_name,
         course_code: coursesData[index].course_code,
         credit_hours: coursesData[index].credit_hours,
+        max_students: coursesData[index].max_students,
       },
     });
-  };
-
-  const handleDeleteMCQ = async (index) => {
-    // Implement this
-    const deletedCourse = await axios.post("/api/admin/course/remove_course", {
-      course_code: courses[index].course_code,
-    });
-    if (deletedCourse.status === 200) {
-      const newCourses = [...coursesData];
-      newCourses.splice(index, 1);
-      setCoursesData(newCourses);
-    }
   };
 
   return (
@@ -55,6 +43,8 @@ const CourseTable = ({
           <th className="px-4 py-2">Name</th>
           <th className="px-4 py-2">Course Code</th>
           <th className="px-4 py-2">Credit Hours</th>
+          <th className="px-4 py-2">Enrolled Students</th>
+          <th className="px-4 py-2">Max Students</th>
           <th className="px-4 py-2"></th>
           <th className="px-4 py-2"></th>
           <th className="px-4 py-2"></th>
@@ -66,6 +56,8 @@ const CourseTable = ({
             <td className="px-4 py-2">{course.course_name}</td>
             <td className="px-4 py-2">{course.course_code}</td>
             <td className="px-4 py-2">{course.credit_hours}</td>
+            <td className="px-4 py-2">{course.student_count}</td>
+            <td className="px-4 py-2">{course.max_students}</td>
             <td className="px-4 py-2">
               <button
                 onClick={() => {

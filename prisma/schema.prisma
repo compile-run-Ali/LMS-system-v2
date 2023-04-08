@@ -43,6 +43,7 @@ model Course {
 
   course_name  String
   credit_hours Int
+  max_students Int?
 
   students SRC[]
   faculty  FTC[]

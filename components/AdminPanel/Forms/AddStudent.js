@@ -47,6 +47,13 @@ export default function AddStudent() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const course = courses.find(
+      (course) => course.course_code === selectedCourse
+    );
+    if (course.student_count === course.max_students) {
+      return alert("Course is full");
+    }
+
     const formData = new FormData();
     formData.append("p_number", pNumber);
     formData.append("name", name);
@@ -67,15 +74,6 @@ export default function AddStudent() {
     } else {
       addStudent(formData);
     }
-
-    // setPNumber("");
-    // setName("");
-    // setPhoneNumber("");
-    // setCgpa("");
-    // setDob("");
-    // setEmail("");
-    // setPassword("");
-    // setProfilePicture(null);
   };
 
   const addStudent = async (student) => {

@@ -13,6 +13,9 @@ const AddCourse = () => {
   const [courseCode, setCourseCode] = useState(
     edit ? router.query.course_code : ""
   );
+  const [maxStudents, setMaxStudents] = useState(
+    edit ? router.query.max_students : 50
+  );
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -20,6 +23,7 @@ const AddCourse = () => {
       name,
       credit_hours: creditHours,
       course_code: courseCode,
+      max_students: maxStudents,
     });
     setName("");
     setCreditHours("");
@@ -63,6 +67,17 @@ const AddCourse = () => {
             value={name}
             onChange={(event) => setName(event.target.value)}
             required
+          />
+        </div>{" "}
+        <div className="mb-4">
+          <Input
+            text="Max Students"
+            id="max-students"
+            type="number"
+            required={true}
+            min={0}
+            value={maxStudents}
+            onChange={(event) => setMaxStudents(event.target.value)}
           />
         </div>
         <div className="mb-4">

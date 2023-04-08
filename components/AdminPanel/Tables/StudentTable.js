@@ -48,12 +48,8 @@ export default function StudentTable({
         <tbody>
           {students.map((student, index) => (
             <tr key={index} className="bg-white">
-              <td className=" px-4 py-2">{index+1}</td>
-              <td className=" px-4 py-2">
-                <Link key={student.p_number} href={`/student/profile`}>
-                  {student.p_number}
-                </Link>
-              </td>
+              <td className=" px-4 py-2">{index + 1}</td>
+              <td className=" px-4 py-2">{student.p_number}</td>
               <td className=" px-4 py-2">{student.name}</td>
               <td className=" px-4 py-2">{student.phone_number}</td>
               <td className=" px-4 py-2">{student.email}</td>

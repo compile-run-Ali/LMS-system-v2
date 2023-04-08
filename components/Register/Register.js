@@ -33,8 +33,9 @@ export default function Register() {
       .get("/api/admin/course/get_courses")
       .then((res) => {
         setCourses(res.data);
+        console.log("courses fetched successfully", res.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log("Error in get_courses", err));
   }, []);
 
   const addInput = () => {
@@ -64,6 +65,13 @@ export default function Register() {
       !rank
     ) {
       return alert("Please fill all fields");
+    }
+
+    const course = courses.find(
+      (course) => course.course_code === selectedCourse
+    );
+    if (course.student_count === course.max_students) {
+      return alert("Course is full");
     }
 
     setLoading({
