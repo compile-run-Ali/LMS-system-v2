@@ -94,19 +94,21 @@ model PaperApproval {
 }
 
 model Paper {
-  paper_id    String         @id @default(uuid())
-  paper_name  String
-  course      Course?        @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
-  course_code String?
-  paper_type  String
-  examofficer PaperApproval?
-  freeflow    Boolean?
-  review      Boolean        @default(false)
-  date        String
-  duration    Int
-  weightage   Int?
-  status      String         @default("Draft")
-  total_marks Int            @default(0)
+  paper_id         String         @id @default(uuid())
+  paper_name       String
+  course           Course?        @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
+  course_code      String?
+  paper_type       String
+  examofficer      PaperApproval?
+  freeflow         Boolean?
+  review           Boolean        @default(false)
+  date             String
+  duration         Int
+  weightage        Int?
+  status           String         @default("Draft")
+  total_marks      Int            @default(0)
+  objective_marks  Int            @default(0)
+  subjective_marks Int            @default(0)
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]

@@ -154,7 +154,7 @@ const ExamTable = ({ exams_data, approve_row }) => {
             <td className="border px-4 py-2">
               {convertDateTimeToStrings(exam.date)}
             </td>
-            <td className="border px-4 py-2">{exam.weightage}</td>
+            <td className="border px-4 py-2">{exam.total_marks}</td>
             <td className="border px-4 py-2">{exam.status}</td>
             {approve_row && (
               <td className="border px-4 py-2 z-10 text-center">

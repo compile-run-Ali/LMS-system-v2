@@ -10,6 +10,7 @@ import Spinner from "../Loader/Spinner";
 
 const MCQTable = ({
   exam,
+  setExam,
   paperId,
   setActive,
   objective_questions,
@@ -233,6 +234,43 @@ const MCQTable = ({
     }
   };
 
+  const updateMarks = () => {
+    const totalMarks = mcqs.reduce((total, mcq) => total + mcq.marks, 0);
+    if (totalMarks !== exam.objective_marks) {
+      setLoading({
+        show: true,
+        message: "Saving...",
+      });
+
+      axios
+        .post("/api/paper/update_total_marks", {
+          paper_id: exam.paper_id,
+          add_marks: totalMarks,
+          is_objective: true,
+        })
+        .then((res) => {
+          console.log("Marks added in total ", res.data.total_marks);
+
+          setExam({
+            ...exam,
+            total_marks: res.data.total_marks,
+            objective_marks: res.data.objective_marks,
+          });
+          setActive(3);
+
+          setLoading({
+            show: false,
+            message: "",
+          });
+        })
+        .catch((err) => {
+          console.log("Error in update_total_marks", err);
+        });
+    } else {
+      setActive(3);
+    }
+  };
+
   return (
     <div className="flex font-poppins flex-col items-center p-6">
       <h1 className="text-2xl font-bold">MCQ Question</h1>
@@ -446,7 +484,9 @@ const MCQTable = ({
         <button
           type="submit"
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-          onClick={() => setActive(3)}
+          onClick={() => {
+            updateMarks();
+          }}
         >
           Save and Proceed
         </button>

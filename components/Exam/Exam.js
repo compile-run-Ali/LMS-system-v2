@@ -359,6 +359,11 @@ export default function Exam({
               <span className=" font-medium">Exam Duration:</span>
               <span className="ml-2">{exam.duration}</span>
             </div>
+
+            <div className="pl-20">
+              <span className=" font-medium">Total Marks:</span>
+              <span className="ml-2">{exam.total_marks}</span>
+            </div>
           </div>
           {(exam.paper_type === "Objective" ||
             exam.paper_type === "Subjective/Objective") && (

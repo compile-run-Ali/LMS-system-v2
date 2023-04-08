@@ -148,6 +148,7 @@ export default function CreateExam({ paperType }) {
         <div className="mt-10">
           <MCQTable
             exam={exam}
+            setExam={setExam}
             paperId={paperId}
             setActive={setActive}
             objective_questions={mcqs}
@@ -193,7 +194,9 @@ export default function CreateExam({ paperType }) {
         paperType === "Subjective/Objective" && (
           <div className="mt-10">
             <SubjectiveExam
-              paperId={paperId}
+              exam={exam}
+            setExam={setExam}
+            paperId={paperId}
               setActive={setActive}
               subjective_questions={subjectives}
               setSubjectiveQuestions={setSubjectives}

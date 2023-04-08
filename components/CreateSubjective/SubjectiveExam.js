@@ -6,6 +6,8 @@ import { ImCross } from "react-icons/im";
 import Spinner from "../Loader/Spinner";
 
 const SubjectiveExam = ({
+  exam,
+  setExam,
   paperId,
   setActive,
   subjective_questions,
@@ -414,6 +416,45 @@ const SubjectiveExam = ({
     }
   };
 
+  const updateMarks = () => {
+    const totalMarks = subjectivesLocal.reduce(
+      (total, subjectives) => total + subjectives.marks,
+      0
+    );
+    if (totalMarks !== exam.subjective_marks) {
+      setLoading({
+        show: true,
+        message: "Saving...",
+      });
+
+      axios
+        .post("/api/paper/update_total_marks", {
+          paper_id: exam.paper_id,
+          add_marks: totalMarks,
+        })
+        .then((res) => {
+          console.log("Marks added in total ", res.data.total_marks);
+
+          setExam({
+            ...exam,
+            subjective_marks: res.data.subjective_marks,
+            total_marks: res.data.total_marks,
+          });
+
+          setLoading({
+            show: false,
+            message: "",
+          });
+          setActive(4);
+        })
+        .catch((err) => {
+          console.log("Error in update_total_marks", err);
+        });
+    } else {
+      setActive(4);
+    }
+  };
+
   return (
     <div className="flex font-poppins flex-col items-center p-6">
       <Spinner show={loading.show} message={loading.message} />
@@ -528,7 +569,7 @@ const SubjectiveExam = ({
         </button>
       </div>
       {(editing || adding) && (
-        <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl mb-10">
+        <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl">
           <div className="w-full justify-between flex">
             <h2 className="text-xl font-bold mb-4">
               {editing ? "Edit" : "Add"} Subjective Question
@@ -647,7 +688,7 @@ const SubjectiveExam = ({
           )}
         </div>
       )}
-      <div className=" w-full pr-10 flex justify-end gap-x-5">
+      <div className=" w-full pr-10 flex justify-end gap-x-5 mt-10">
         <button
           type="button"
           className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
@@ -679,7 +720,9 @@ const SubjectiveExam = ({
               }
             });
 
-            if (allowProceed) setActive(4);
+            if (allowProceed) {
+              updateMarks();
+            }
           }}
         >
           Save and Proceed
