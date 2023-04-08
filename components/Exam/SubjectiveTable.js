@@ -15,10 +15,22 @@ const SubjectiveTable = ({ subjective_questions = [] }) => {
       </div>
     );
   }
-  console.log(
-    'subjective_questions',
-    subjective_questions
-  );
+  console.log("subjective_questions", subjective_questions);
+
+  function integerToAlphabet(num) {
+    let alphabet = "abcdefghijklmnopqrstuvwxyz";
+    let result = "";
+
+    // check if num is within the range of the alphabet
+    if (num <= 0 || num > 26) {
+      return "Invalid input";
+    }
+
+    // convert the integer to its respective alphabet
+    result = alphabet.charAt(num - 1);
+
+    return result;
+  }
 
   return (
     <div className="w-full font-poppins mt-10 rounded-lg">
@@ -33,30 +45,34 @@ const SubjectiveTable = ({ subjective_questions = [] }) => {
           </tr>
         </thead>
         <tbody>
-          {subjectives?.sort((a, b) => a.questionnumber - b.questionnumber).map((question, index) => (
-            <React.Fragment key={question.sq_id}>
-              <tr key={index} className="text-center">
-                <td className=" px-4 py-2">{question.questionnumber}</td>
-                <th className=" px-4 py-2"></th>
-                <td className=" px-4 py-2">{question.question}</td>
-                <td className=" px-4 py-2">
-                  {question.parent_question?.question}
-                </td>
-                <td className=" px-4 py-2">{question.marks}</td>
-              </tr>
-              {question.child_question?.sort((a, b) => a.questionnumber - b.questionnumber).map((child, index) => (
-                <tr key={child.sq_id} className="text-center">
+          {subjectives
+            ?.sort((a, b) => a.questionnumber - b.questionnumber)
+            .map((question, index) => (
+              <React.Fragment key={question.sq_id}>
+                <tr key={index} className="text-center">
+                  <td className=" px-4 py-2">{question.questionnumber}</td>
                   <th className=" px-4 py-2"></th>
-                  <td className=" px-4 py-2">{child.questionnumber}</td>
-                  <td className=" px-4 py-2">{child.question}</td>
+                  <td className=" px-4 py-2">{question.question}</td>
                   <td className=" px-4 py-2">
-                    {question.question}
+                    {question.parent_question?.question}
                   </td>
-                  <td className=" px-4 py-2">{child.marks}</td>
+                  <td className=" px-4 py-2">{question.marks}</td>
                 </tr>
-              ))}
-            </React.Fragment>
-          ))}
+                {question.child_question
+                  ?.sort((a, b) => a.questionnumber - b.questionnumber)
+                  .map((child, index) => (
+                    <tr key={child.sq_id} className="text-center">
+                      <th className=" px-4 py-2"></th>
+                      <td className=" px-4 py-2">
+                        {integerToAlphabet(child.questionnumber)}
+                      </td>
+                      <td className=" px-4 py-2">{child.question}</td>
+                      <td className=" px-4 py-2">{question.question}</td>
+                      <td className=" px-4 py-2">{child.marks}</td>
+                    </tr>
+                  ))}
+              </React.Fragment>
+            ))}
         </tbody>
       </table>
     </div>

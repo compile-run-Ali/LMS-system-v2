@@ -358,6 +358,21 @@ const SubjectiveExam = ({
       });
   };
 
+  function integerToAlphabet(num) {
+    let alphabet = "abcdefghijklmnopqrstuvwxyz";
+    let result = "";
+
+    // check if num is within the range of the alphabet
+    if (num <= 0 || num > 26) {
+      return "Invalid input";
+    }
+
+    // convert the integer to its respective alphabet
+    result = alphabet.charAt(num - 1);
+
+    return result;
+  }
+
   const handleDeleteSubjective = async (sq_id, parent, isChild = false) => {
     setLoading({
       show: true,
@@ -466,7 +481,9 @@ const SubjectiveExam = ({
                     }`}
                   >
                     <td className="pl-2"></td>
-                    <td className="pl-2">{child.questionnumber}</td>
+                    <td className="pl-2">
+                      {integerToAlphabet(child.questionnumber)}
+                    </td>
                     <td className="px-4 py-1">{child.question}</td>
                     <td className="px-4 py-1">{subjective.question}</td>
                     <td className="px-4 py-1">{child.marks}</td>

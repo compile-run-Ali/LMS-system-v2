@@ -63,6 +63,21 @@ export default function SQContainer({
     localStorage.setItem("papers", JSON.stringify(papers));
   };
 
+  function integerToAlphabet(num) {
+    let alphabet = "abcdefghijklmnopqrstuvwxyz";
+    let result = "";
+
+    // check if num is within the range of the alphabet
+    if (num <= 0 || num > 26) {
+      return "Invalid input";
+    }
+
+    // convert the integer to its respective alphabet
+    result = alphabet.charAt(num - 1);
+
+    return result;
+  }
+
   useEffect(() => {
     if (question) {
       const hasChild = question.child_question.length > 0;
@@ -138,7 +153,7 @@ export default function SQContainer({
                       <div className="text-xl">
                         <div className="flex justify-between items-center ">
                           <p>
-                            {childQuestion.questionnumber +
+                            {integerToAlphabet(childQuestion.questionnumber) +
                               ". " +
                               childQuestion.question}
                           </p>
