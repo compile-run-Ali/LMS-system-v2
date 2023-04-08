@@ -37,11 +37,10 @@ const handler = async (req, res) => {
         faculty: faculty,
       };
     });
- 
-
     res.status(200).json(formattedCourse);
   } catch (err) {
-    throw new Error(err.message);
+    console.log(err);
+    res.status(500).json(err);
   }
 };
 
