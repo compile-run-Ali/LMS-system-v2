@@ -7,6 +7,7 @@ import {
 } from "@/lib/TimeCalculations";
 import { useSession } from "next-auth/react";
 import { MdCheckCircle, MdEdit } from "react-icons/md";
+import { IoMdEye } from "react-icons/io";
 
 const ExamTable = ({ exams_data, approve_row }) => {
   const router = useRouter();
@@ -61,7 +62,19 @@ const ExamTable = ({ exams_data, approve_row }) => {
     });
   }, [exams_data]);
 
-  const approveExam = (examId) => {
+  const isPaperDatePast = (examDate) => {
+    const date = new Date(examDate);
+    const today = new Date();
+    // get gmt offset in minutes and add in today
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    return date < today;
+  };
+
+  const approveExam = (examId, date) => {
+    if (isPaperDatePast(date)) {
+      alert("Exam date is in the past. Please change the date and try again.");
+      return;
+    }
     axios
       .put(`/api/faculty/update_exam_status`, {
         paper_id: examId,
@@ -148,7 +161,7 @@ const ExamTable = ({ exams_data, approve_row }) => {
                 <button
                   className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md mx-auto"
                   onClick={() => {
-                    approveExam(exam.paper_id);
+                    approveExam(exam.paper_id, exam.date);
                   }}
                 >
                   <MdCheckCircle />
@@ -157,10 +170,10 @@ const ExamTable = ({ exams_data, approve_row }) => {
             )}
             <td className="border px-4 py-2 z-10">
               <button
-                className="bg-yellow-400 hover:bg-yellow-500 text-white p-2 rounded-md text-center"
+                className="bg-blue-800 hover:bg-blue-700 text-white p-2 rounded-md text-center"
                 onClick={() => handleExamClick(exam.paper_id)}
               >
-                <MdEdit />
+                <IoMdEye />
               </button>
             </td>
           </tr>

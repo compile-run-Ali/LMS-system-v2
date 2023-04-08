@@ -74,7 +74,6 @@ export default function CreateExam({ paperType }) {
     setExam(res.data);
   };
 
-
   const fetchObjectives = async () => {
     const res = await axios.post("/api/faculty/get_objective", {
       paper_id: paperId,
@@ -124,9 +123,7 @@ export default function CreateExam({ paperType }) {
 
   return (
     <div className="w-full pl-6 mt-2">
-      {
-        
-      }
+      {}
       <Wizard
         active={active}
         setActive={setActive}
@@ -142,6 +139,7 @@ export default function CreateExam({ paperType }) {
           setActive={setActive}
           setPaperId={setPaperId}
           examDetails={examDetails}
+          setExam={setExam}
           paperType={paperType}
           setFreeFlowGlobal={setFreeFlowGlobal}
         />

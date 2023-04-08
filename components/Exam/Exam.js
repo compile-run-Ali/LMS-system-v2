@@ -24,7 +24,7 @@ export default function Exam({
   const [edit, setEdit] = useState(isEdit);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
-  const [faculty, setFaculty] = useState();
+  const [faculties, setFaculties] = useState();
   const [selectedFaculty, setSelectedFaculty] = useState();
   const [access, setAccess] = useState(null);
 
@@ -39,7 +39,7 @@ export default function Exam({
         }
 
         if (exam.status === "Pending Approval") {
-          return exam.examofficer.faculty_id === session.data.user.id;
+          return exam.examofficer?.faculty_id === session.data.user.id;
         } else if (exam.status === "Approved") {
           return false;
         } else if (exam.status === "Draft") {
@@ -68,7 +68,7 @@ export default function Exam({
 
   const getFaculty = async () => {
     const res = await axios.get("/api/paper/get_faculty");
-    setFaculty(
+    setFaculties(
       res.data.filter(
         (faculty) => faculty.faculty_id !== session?.data?.user.id
       )
@@ -87,6 +87,14 @@ export default function Exam({
   if (!exam) {
     return <div>Exam not found</div>;
   }
+
+  const isPaperDatePast = () => {
+    const date = new Date(exam.date);
+    const today = new Date();
+    // get gmt offset in minutes and add in today
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    return date < today;
+  };
 
   const showSpinner = () => {
     setLoading({
@@ -135,8 +143,9 @@ export default function Exam({
 
       addComment({
         comment: `Exam Submitted by ${session.data.user.name} to ${
-          faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
-            .name
+          faculties.filter(
+            (faculty) => faculty.faculty_id === selectedFaculty
+          )[0].name
         }`,
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
@@ -155,6 +164,10 @@ export default function Exam({
       alert("Please select a faculty to mark to");
       return;
     }
+    if (isPaperDatePast()) {
+      alert("Exam date is in the past. Please change the date and try again.");
+      return;
+    }
 
     showSpinner();
     if (exam.examofficer !== null) {
@@ -162,7 +175,7 @@ export default function Exam({
       const editPaperApprovalData = {
         paper_id: exam.paper_id,
         examofficer: selectedFaculty,
-        level: faculty.filter(
+        level: faculties.filter(
           (faculty) => faculty.faculty_id === selectedFaculty
         )[0].level,
       };
@@ -175,7 +188,7 @@ export default function Exam({
       const submitExamData = {
         paper_id: exam.paper_id,
         faculty_id: selectedFaculty,
-        level: faculty.filter(
+        level: faculties.filter(
           (faculty) => faculty.faculty_id === selectedFaculty
         )[0].level,
       };
@@ -184,6 +197,11 @@ export default function Exam({
   };
 
   const approve = async () => {
+    if (isPaperDatePast()) {
+      alert("Exam date is in the past. Please change the date and try again.");
+      return;
+    }
+
     const approveExam = await axios.post("/api/faculty/update_exam_status", {
       paper_id: exam.paper_id,
       status: "Approved",
@@ -235,18 +253,23 @@ export default function Exam({
       alert("Please select a faculty to send to");
       return;
     }
+    if (isPaperDatePast()) {
+      alert("Exam date is in the past. Please change the date and try again.");
+      return;
+    }
     const sendForward = await axios.post("/api/faculty/edit_paperapproval", {
       paper_id: exam.paper_id,
       examofficer: selectedFaculty,
-      level: faculty.filter(
+      level: faculties.filter(
         (faculty) => faculty.faculty_id === selectedFaculty
       )[0].level,
     });
     if (sendForward.status === 200) {
       addComment({
         comment: `Exam Sent Forward by ${session.data.user.name} to ${
-          faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
-            .name
+          faculties.filter(
+            (faculty) => faculty.faculty_id === selectedFaculty
+          )[0].name
         }`,
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
@@ -432,13 +455,18 @@ export default function Exam({
                       onChange={handleSelectedFaculty}
                     >
                       <option value="">Mark to</option>
-                      {faculty &&
-                        faculty.map((faculty) => (
-                          <option
-                            key={faculty.faculty_id}
-                            value={faculty.faculty_id}
-                          >{`${faculty.name}`}</option>
-                        ))}
+                      {faculties &&
+                        faculties
+                          .filter(
+                            (faculty) =>
+                              faculty.level === 3 || faculty.level === 4
+                          )
+                          .map((faculty) => (
+                            <option
+                              key={faculty.faculty_id}
+                              value={faculty.faculty_id}
+                            >{`${faculty.name}`}</option>
+                          ))}
                     </select>
                   </div>
                 </div>
@@ -472,6 +500,7 @@ export default function Exam({
                         className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
                         onClick={() => {
                           approve();
+                          //here
                         }}
                       >
                         Approve
@@ -488,13 +517,18 @@ export default function Exam({
                     onChange={handleSelectedFaculty}
                   >
                     <option value="">Mark to</option>
-                    {faculty &&
-                      faculty.map((faculty) => (
-                        <option
-                          key={faculty.faculty_id}
-                          value={faculty.faculty_id}
-                        >{`${faculty.name}`}</option>
-                      ))}
+                    {faculties &&
+                      faculties
+                        .filter(
+                          (faculty) =>
+                            faculty.level === 3 || faculty.level === 4
+                        )
+                        .map((faculty) => (
+                          <option
+                            key={faculty.faculty_id}
+                            value={faculty.faculty_id}
+                          >{`${faculty.name}`}</option>
+                        ))}
                   </select>
                 </div>
                 <div className="flex justify-end gap-x-5">
@@ -528,6 +562,7 @@ export default function Exam({
                       className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
                       onClick={() => {
                         submitExam();
+                        //here
                       }}
                     >
                       Mark To

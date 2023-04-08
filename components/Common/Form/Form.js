@@ -10,6 +10,7 @@ export default function Form({
   examDetails,
   paperType,
   setFreeFlowGlobal,
+  setExam,
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState({
@@ -131,8 +132,13 @@ export default function Form({
         show: false,
         message: "",
       });
+      setExam((prevExam) => ({
+        ...prevExam,
+        ...res.data,
+      }));
       console.log("paper made ", res.data);
     }
+    
 
     setPaperId(res.data.paper_id);
     setActive(2);
