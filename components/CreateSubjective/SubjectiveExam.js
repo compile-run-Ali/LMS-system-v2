@@ -70,15 +70,15 @@ const SubjectiveExam = ({
         (subjective) => subjective.sq_id === currentQuestion.parent_sq_id
       );
       if (!parentOfAdded.child_question) parentOfAdded.child_question = [];
-      const partNumberExists = parentOfAdded.child_question.find(
-        (subjective) =>
-          subjective.questionnumber === currentQuestion.questionnumber &&
-          subjective.sq_id !== currentQuestion.sq_id
-      );
-      if (partNumberExists) {
-        alert("Part number already exists");
-        return false;
-      }
+      // const partNumberExists = parentOfAdded.child_question.find(
+      //   (subjective) =>
+      //     subjective.questionnumber === currentQuestion.questionnumber &&
+      //     subjective.sq_id !== currentQuestion.sq_id
+      // );
+      // if (partNumberExists) {
+      //   alert("Part number already exists");
+      //   return false;
+      // }
       // also check that child question marks cant exceed parent question marks
       let totalMarks = 0;
       parentOfAdded.child_question.forEach((child) => {
@@ -106,7 +106,27 @@ const SubjectiveExam = ({
     return true;
   };
 
+  console.log(subjectivesLocal.length);
   const handleAddMCQ = async () => {
+    let nextsibling;
+    if (currentQuestion.parent_sq_id) {
+      const parentOfAdded = subjectivesLocal.find(
+        (subjective) => subjective.sq_id === currentQuestion.parent_sq_id
+      );
+      const siblings = parentOfAdded.child_question || [];
+      siblings.sort((a, b) => a.questionnumber - b.questionnumber);
+
+      nextsibling = 1; // start with the smallest positive integer
+
+      for (const sibling of siblings) {
+        if (sibling.questionnumber === nextsibling) {
+          nextsibling++; // increment nextNum if num is present in the array
+        }
+      }
+
+      console.log("nextsibling", nextsibling);
+    }
+
     // validate data
     const isValid = validateQuestionData();
     if (!isValid) return;
@@ -125,7 +145,9 @@ const SubjectiveExam = ({
         parent_sq_id: currentQuestion.parent_sq_id,
         long_question: currentQuestion.long_question,
         marks: currentQuestion.marks,
-        questionnumber: currentQuestion.questionnumber,
+        questionnumber: currentQuestion.parent_sq_id
+          ? nextsibling
+          : currentQuestion.questionnumber,
       }
     );
     if (newSubjective.status === 200) {
@@ -348,7 +370,7 @@ const SubjectiveExam = ({
           parent_sq_id: "",
           marks: 1,
           long_question: false,
-          questionnumber: 1,
+          questionnumber: subjectivesLocal.length + 1,
         });
 
         setEditing(false);
@@ -513,41 +535,47 @@ const SubjectiveExam = ({
                     </button>
                   </td>
                 </tr>
-                {subjective.child_question?.map((child, index) => (
-                  <tr
-                    key={child.sq_id}
-                    className={`border-x ${
-                      index === subjective.child_question.length - 1 &&
-                      "border-b"
-                    }`}
-                  >
-                    <td className="pl-2"></td>
-                    <td className="pl-2">
-                      {integerToAlphabet(child.questionnumber)}
-                    </td>
-                    <td className="px-4 py-1">{child.question}</td>
-                    <td className="px-4 py-1">{subjective.question}</td>
-                    <td className="px-4 py-1">{child.marks}</td>
-                    <td className="px-4 py-1">
-                      <button
-                        onClick={handleEditMCQ(child)}
-                        className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
-                      >
-                        <MdEdit />
-                      </button>
-                    </td>
-                    <td className="px-4 py-2">
-                      <button
-                        onClick={() => {
-                          handleDeleteSubjective(child.sq_id, subjective, true);
-                        }}
-                        className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
-                      >
-                        <MdDelete />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {subjective.child_question
+                  ?.sort((a, b) => a.questionnumber - b.questionnumber)
+                  .map((child, index) => (
+                    <tr
+                      key={child.sq_id}
+                      className={`border-x ${
+                        index === subjective.child_question.length - 1 &&
+                        "border-b"
+                      }`}
+                    >
+                      <td className="pl-2"></td>
+                      <td className="pl-2">
+                        {integerToAlphabet(child.questionnumber)}
+                      </td>
+                      <td className="px-4 py-1">{child.question}</td>
+                      <td className="px-4 py-1">{subjective.question}</td>
+                      <td className="px-4 py-1">{child.marks}</td>
+                      <td className="px-4 py-1">
+                        <button
+                          onClick={handleEditMCQ(child)}
+                          className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
+                        >
+                          <MdEdit />
+                        </button>
+                      </td>
+                      <td className="px-4 py-2">
+                        <button
+                          onClick={() => {
+                            handleDeleteSubjective(
+                              child.sq_id,
+                              subjective,
+                              true
+                            );
+                          }}
+                          className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
+                        >
+                          <MdDelete />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </React.Fragment>
             ))}
         </tbody>
@@ -574,21 +602,22 @@ const SubjectiveExam = ({
             <h2 className="text-xl font-bold mb-4">
               {editing ? "Edit" : "Add"} Subjective Question
             </h2>
-            <div className="rounded-full text-white bg-red-500 my-auto flex justify-between items-center p-2 cursor-pointer">
-              <button
-                onClick={() => {
-                  setEditing(false);
-                  setAdding(false);
-                  setCurrentQuestion({
-                    sq_id: "",
-                    question: "",
-                    parent_sq_id: "",
-                    marks: 1,
-                    long_question: longQuestion,
-                    questionnumber: subjectivesLocal.length + 1,
-                  });
-                }}
-              >
+            <div
+              onClick={() => {
+                setEditing(false);
+                setAdding(false);
+                setCurrentQuestion({
+                  sq_id: "",
+                  question: "",
+                  parent_sq_id: "",
+                  marks: 1,
+                  long_question: longQuestion,
+                  questionnumber: subjectivesLocal.length + 1,
+                });
+              }}
+              className="rounded-full text-white bg-red-500 my-auto flex justify-between items-center p-2 cursor-pointer"
+            >
+              <button>
                 <ImCross />
               </button>
             </div>
@@ -640,21 +669,24 @@ const SubjectiveExam = ({
                 })
               }
             />
-            <Input
-              // if parent exists the question number will be called part number other wise, question number
-              text={
-                currentQuestion.parent_sq_id ? "Part Number" : "Question Number"
-              }
-              type={"number"}
-              required
-              min={1}
-              value={
-                currentQuestion.parent_sq_id
-                  ? 1
-                  : currentQuestion.questionnumber
-              }
-              onChange={handleQuestionNumberChange}
-            />
+            {!currentQuestion.parent_sq_id && (
+              <Input
+                // if parent exists the question number will be called part number other wise, question number
+                text={
+                  currentQuestion.parent_sq_id
+                    ? "Part Number"
+                    : "Question Number"
+                }
+                type={"number"}
+                required
+                min={1}
+                value={
+                  currentQuestion.questionnumber
+                  // abc
+                }
+                onChange={handleQuestionNumberChange}
+              />
+            )}
           </div>
           <div className="flex items-center gap-x-3 ml-2">
             <label className="block">Long Question?</label>
