@@ -1,10 +1,12 @@
 import React, { Fragment } from "react";
+import Image from "next/image";
 
 export default function StudentProfile({ student }) {
+  console.log(student);
   return (
     <>
       {student ? (
-        <div className="max-w-md mx-auto bg-white shadow-lg overflow-hidden font-poppins">
+        <div className="max-w-lg mx-auto bg-white shadow-lg overflow-hidden font-poppins relative">
           <h1 className="text-2xl font-bold text-white p-4 bg-blue-700">
             Student Details
           </h1>
@@ -25,6 +27,15 @@ export default function StudentProfile({ student }) {
               <strong>Date of Birth:</strong>{" "}
               {new Date(student.DOB).toDateString()}
             </p>
+          </div>
+
+          <div className="w-40 aspect-square rounded-full border border-blue-900 absolute top-[76px] right-6">
+            <Image
+              src={`/uploads/${student.image ? student.image : "noface.jpeg"}`}
+              fill
+              className="rounded-full object-cover object-center"
+              alt="user"
+            />
           </div>
         </div>
       ) : (
