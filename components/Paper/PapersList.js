@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { IoMdEye, IoMdEyeOff } from "react-icons/io";
+import { TfiPencilAlt } from "react-icons/tfi";
 import {
   getPaperDateTime,
   convertDateTimeToStrings,
@@ -11,8 +13,6 @@ export default function PapersList({ papers, status }) {
   const [sortedPapers, setSortedPapers] = useState([]);
   const [attemptStatus, setAttemptStatus] = useState([]);
   const [updatedPapers, setUpdatedPapers] = useState([]);
-  const isLive = status === "Live Papers";
-  const isPast = status === "Past Papers";
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -57,12 +57,13 @@ export default function PapersList({ papers, status }) {
       <table className="table-auto rounded-md mt-2 mb-4 font-poppins w-full text-left">
         <thead>
           <tr className="bg-blue-800 rounded-md text-white">
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Type</th>
-            <th className="px-4 py-2">Date</th>
-            <th className="px-4 py-2">Start Time</th>
-            <th className="px-4 py-2">End Time</th>
-            <th className="px-4 py-2"></th>
+            <th className="border px-4 py-2">Name</th>
+            <th className="border px-4 py-2">Type</th>
+            <th className="border px-4 py-2">Date</th>
+            <th className="border px-4 py-2">Start Time</th>
+            <th className="border px-4 py-2">Duration</th>
+            <th className="border px-4 py-2">Status</th>
+            <th className="border px-4 py-2 text-center">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -88,27 +89,32 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
   const { start, end } = getPaperDateTime(paper.date, paper.duration);
   const startDate = convertDateTimeToStrings(start, true);
   const startTime = convertDateTimeToStrings(start);
-  const endDate = convertDateTimeToStrings(end);
   const isLive = status === "Live Papers";
   const isPast = status === "Past Papers";
   return (
     <>
-      <td className="px-4 py-2">{paper.paper_name}</td>
-      <td className="px-4 py-2">{paper.paper_type}</td>
-      <td className="px-4 py-2">{startDate}</td>
-      <td className="px-4 py-2">{startTime}</td>
-      <td className="px-4 py-2">{endDate}</td>
-      <td className="px-4 py-2">
+      <td className="border px-4 py-2">{paper.paper_name}</td>
+      <td className="border px-4 py-2">{paper.paper_type}</td>
+      <td className="border px-4 py-2">{startDate}</td>
+      <td className="border px-4 py-2">{startTime}</td>
+      <td className="border px-4 py-2">{paper.duration} mins</td>
+      <td className="border px-4 py-2">
+        {paper.status === "Approved"
+          ? "Live"
+          : paper.status === "Closed"
+          ? "Marking"
+          : paper.status}
+      </td>
+      <td className="border px-4 py-2 text-center">
         {/* if paper is live and is submitted, show submitted button, else show attempt button */}
         {/* if paper is past and review is allowed, show review button, else show review not allowed button */}
         {/* else show view button */}
         {isLive ? (
           !attemptStatus ? (
-            <Link
-              href={`/paper/attempt/${paper.paper_id}`}
-              className={`bg-blue-800 hover:bg-blue-700 cursor-pointer text-white py-2 px-4 rounded`}
-            >
-              Attempt
+            <Link href={`/paper/attempt/${paper.paper_id}`}>
+              <button className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded">
+                Attempt
+              </button>
             </Link>
           ) : (
             <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
@@ -116,24 +122,31 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
             </button>
           )
         ) : isPast ? (
-          paper.review && paper.status !== "Result Locked" ? (
-            <Link
-              href={`/paper/review/${paper.paper_id}`}
-              className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white py-2 px-4 rounded"
-            >
-              Review
+          paper.review && paper.status === "Marked" ? (
+            <Link href={`/paper/review/${paper.paper_id}`}>
+              <button className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded">
+                <IoMdEye className="inline" />
+              </button>
             </Link>
+          ) : paper.review &&
+            paper.status !== "Marked" &&
+            paper.status !== "Result Locked" ? (
+            <button className="bg-yellow-500 text-white p-2 rounded cursor-not-allowed">
+              <TfiPencilAlt className="inline" />
+            </button>
           ) : (
-            <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
-              Review Not Allowed
+            <button className="bg-gray-400 text-white p-2 rounded cursor-not-allowed">
+              <IoMdEyeOff className="inline" />
             </button>
           )
         ) : (
           <Link
             href={`/paper/view/${paper.paper_id}`}
-            className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white py-2 px-4 rounded"
+            className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded"
           >
-            View
+            <button className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded">
+              <IoMdEye className="inline" />
+            </button>
           </Link>
         )}
       </td>
