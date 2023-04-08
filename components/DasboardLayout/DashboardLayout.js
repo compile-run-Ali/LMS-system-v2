@@ -13,7 +13,7 @@ export default function DashboardLayout({ admin, children }) {
   };
 
   return (
-    <div className="w-full min-h-screen">
+    <div className="w-full min-h-screen pb-20">
       <div
         className={`hidden md:flex w-[270px] ${
           Styles.sideBar

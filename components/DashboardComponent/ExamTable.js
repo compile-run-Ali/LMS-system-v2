@@ -125,7 +125,7 @@ const ExamTable = ({ exams_data, approve_row }) => {
   }
 
   return (
-    <table className="table-auto w-full mt-10 font-poppins text-left px-5">
+    <table className="table-auto w-full mt-2 font-poppins text-left px-5">
       <thead>
         <tr className="bg-blue-800 text-white font-medium ">
           <th className="px-4 py-2">Exam Name</th>

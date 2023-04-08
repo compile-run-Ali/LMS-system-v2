@@ -85,26 +85,43 @@ export default function DashboardComponent({
           <Modal open={open} setOpen={setOpen} courseCode={selectedCourse} />
         </div>
       )}
-      {paperapproval_data !== undefined &&
-        paperapproval_data !== null &&
-        paperapproval_data.length > 0 && (
-          <div className="pr-10 pl-5 my-10">
-            <h1 className="text-2xl font-poppins font-bold">To Approve:</h1>
-            <ExamTable
-              approve_row={true}
-              exams_data={paperapproval.filter(
-                (paper) => paper.status === "Pending Approval"
-              )}
-            />
-          </div>
-        )}
+      {paperapproval_data && paperapproval_data.length > 0 && (
+        <div className="pr-10 pl-5 my-10">
+          <h1 className="text-2xl font-poppins font-bold">To Approve:</h1>
+          <ExamTable
+            approve_row={true}
+            exams_data={paperapproval.filter(
+              (paper) => paper.status === "Pending Approval"
+            )}
+          />
+        </div>
+      )}
       {courses.length > 0 && (
         <div>
           <div className="pr-10 pl-5">
             <h1 className="text-2xl font-poppins font-bold">
-              All Exams of your Course
+              Previous Exams of {selectedCourse}
             </h1>
-            <ExamTable exams_data={exams} setExamsData={setExams} />
+            <ExamTable
+              exams_data={exams.filter(
+                (paper) =>
+                  paper.status === "Pending Approval" ||
+                  paper.status === "Draft"
+              )}
+            />
+          </div>
+
+          <div className="pr-10 pl-5 mt-10">
+            <h1 className="text-2xl font-poppins font-bold">
+              Open Exams of {selectedCourse}
+            </h1>
+            <ExamTable
+              exams_data={exams.filter(
+                (paper) =>
+                  paper.status !== "Pending Approval" &&
+                  paper.status !== "Draft"
+              )}
+            />
           </div>
         </div>
       )}
