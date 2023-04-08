@@ -11,7 +11,13 @@ export default function Wizard({ active, setActive, items, paperName }) {
       {items.map((item) => (
         <div
           key={item.id}
-          onClick={() => setActive(item.id)}
+          onClick={() => {
+            if (active >= item.id) {
+              setActive(item.id);
+            } else {
+              alert("Please save current information to proceed.");
+            }
+          }}
           className={`w-fit flex py-6 px-6 mx-2 cursor-pointer ${
             active === item.id ? "border-b-4 border-[#FEC703]" : ""
           }`}

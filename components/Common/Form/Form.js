@@ -138,7 +138,6 @@ export default function Form({
       }));
       console.log("paper made ", res.data);
     }
-    
 
     setPaperId(res.data.paper_id);
     setActive(2);
@@ -234,7 +233,7 @@ export default function Form({
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
           onClick={(e) => submitForm(e)}
         >
-          Proceed
+          Save and Proceed
         </button>
       </div>
     </form>

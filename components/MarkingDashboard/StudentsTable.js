@@ -109,7 +109,7 @@ const StudentsTable = ({ students_data, exam_id, exam }) => {
 
   if (noneAttempted) {
     return (
-      <div className="flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center mt-8">
         <h1 className="text-2xl font-poppins font-bold">
           No student has attempted this exam
         </h1>

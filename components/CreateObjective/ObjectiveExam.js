@@ -448,7 +448,7 @@ const MCQTable = ({
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
           onClick={() => setActive(3)}
         >
-          Proceed
+          Save and Proceed
         </button>
       </div>
     </div>

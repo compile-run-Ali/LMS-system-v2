@@ -665,7 +665,7 @@ const SubjectiveExam = ({
             if (allowProceed) setActive(4);
           }}
         >
-          Proceed
+          Save and Proceed
         </button>
       </div>
     </div>
