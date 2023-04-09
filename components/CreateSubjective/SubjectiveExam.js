@@ -186,7 +186,7 @@ const SubjectiveExam = ({
         parent_sq_id: "",
         marks: 1,
         long_question: longQuestion,
-        questionnumber: prevLength + 2,
+        questionnumber: prevLength + 1,
       });
       setAdding(false);
     } else {
