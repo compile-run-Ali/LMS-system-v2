@@ -5,12 +5,15 @@ import Courses from "./Subcomponents/Courses";
 import Faculty from "./Subcomponents/Faculty";
 import Tabs from "./Subcomponents/Tabs";
 import AssignedTable from "./Tables/AssignedTable";
+import Loader from "../Loader";
 
 export default function AdminPanel({
   faculty_data,
   courses_data,
   exams_data,
   student_data,
+  loading,
+  error,
 }) {
   const [faculty, setFaculty] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -38,37 +41,57 @@ export default function AdminPanel({
       <Tabs active={active} setActive={setActive} />
 
       {active === "Faculty" && (
-        <div>
-          <Faculty faculty={faculty} setFaculty={setFaculty} />
-        </div>
+        <>
+          {loading.faculty ? (
+            <Loader />
+          ) : (
+            <Faculty faculty={faculty} setFaculty={setFaculty} />
+          )}
+        </>
       )}
+
       {active === "Students" && (
-        <div>
-          <Students students={students} setStudents={setStudents} />
-        </div>
+        <>
+          {loading.student ? (
+            <Loader />
+          ) : (
+            <Students students={students} setStudents={setStudents} />
+          )}
+        </>
       )}
 
       {active === "Courses" && (
-        <div>
-          <Courses
-            courses={courses}
-            setCourses={setCourses}
-            faculty={faculty}
+        <>
+          {loading.courses ? (
+            <Loader />
+          ) : (
+            <Courses
+              courses={courses}
+              setCourses={setCourses}
+              faculty={faculty}
             />
-        </div>
+          )}
+        </>
       )}
-      {active === "Assigned" && (
-        <div>
-          <AssignedTable course_data={courses} />
-        </div>
-      )}
-      {active === "Exams" && (
-        <div>
-          <ExamTable exams_data={exams}
-          faculty={faculty}
 
-          />
-        </div>
+      {active === "Assigned" && (
+        <>
+          {loading.courses ? (
+            <Loader />
+          ) : (
+            <AssignedTable course_data={courses} />
+          )}
+        </>
+      )}
+
+      {active === "Exams" && (
+        <>
+          {loading.exams ? (
+            <Loader />
+          ) : (
+            <ExamTable exams_data={exams} faculty={faculty} />
+          )}
+        </>
       )}
     </div>
   );

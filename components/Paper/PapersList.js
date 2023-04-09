@@ -101,7 +101,7 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
         {paper.status === "Approved"
           ? "Live"
           : paper.status === "Closed"
-          ? "Marking"
+          ? "Marking in Progress"
           : paper.status}
       </td>
       <td className="border px-4 py-2 text-center">

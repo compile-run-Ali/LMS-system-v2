@@ -22,10 +22,13 @@ const ExamTable = ({ exams_data, approve_row }) => {
         return axios
           .put(`/api/faculty/update_exam_status`, {
             paper_id: exam.paper_id,
-            status: "Closed",
+            status: exam.paper_type === "Objective" ? "Marked" : "Closed",
           })
           .then((response) => {
-            return { ...exam, status: "Closed" };
+            return {
+              ...exam,
+              status: exam.paper_type === "Objective" ? "Marked" : "Closed",
+            };
           })
           .catch((error) => {
             console.log(error);
