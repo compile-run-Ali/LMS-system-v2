@@ -177,7 +177,6 @@ const AddFaculty = () => {
   return (
     <form onSubmit={handleSubmit} className="px-4">
       <Spinner show={loading.show} message={loading.message} />
-      heehlkeqfbjka
       <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
         <div className="mb-4">
           <Input
