@@ -39,7 +39,7 @@ export default function Topbar() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mr-10 h-[110px]">
+      <div className="flex items-center justify-between mx-10 h-[110px]">
         <div className="flex">
           {router.pathname !== "/faculty" &&
             router.pathname !== "/admin" &&
@@ -51,7 +51,7 @@ export default function Topbar() {
                 <IoArrowBackSharp className="text-3xl text-blue-900 inline" />
               </div>
             )}
-          <div className="logo cursor-pointer" onClick={() => router.push("/")}>
+          <div className="cursor-pointer" onClick={() => router.push("/")}>
             <Image src="/logo.png" width={100} height={100} alt="logo" />
           </div>
         </div>
