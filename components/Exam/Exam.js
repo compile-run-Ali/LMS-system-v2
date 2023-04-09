@@ -492,14 +492,13 @@ export default function Exam({
                       Mark To
                     </button>
                   </div>
-                  {exam.examofficer?.level > 2 && (
+                  {exam.examofficer?.level > 1 && (
                     <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
                       <button
                         type="submit"
                         className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
                         onClick={() => {
                           approve();
-                          //here
                         }}
                       >
                         Approve
@@ -572,10 +571,11 @@ export default function Exam({
                       <button
                         className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8 transition-all"
                         onClick={() => {
-                          router.push("/");
+                          // router.push("/");
+                          approve();
                         }}
                       >
-                        Save
+                        Save and Approve
                       </button>
                     </div>
                   )}
