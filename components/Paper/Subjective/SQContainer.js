@@ -32,7 +32,7 @@ export default function SQContainer({
       alert("Your answer is empty. Please type anything to continue.");
       return;
     }
-    setLoading({ show: true, message: "Saving answer..." });
+    setLoading({ show: true, message: "Saving Answer..." });
 
     for (let question_id in answers) {
       axios
@@ -48,6 +48,9 @@ export default function SQContainer({
         })
         .catch((err) => {
           console.log("error ", err.message);
+          setLoading({
+            error: "Error in Saving Answer.",
+          });
         });
     }
   };
@@ -92,8 +95,7 @@ export default function SQContainer({
       }
 
       setLoading({
-        show: true,
-        message: "Loading Answer",
+        message: "Loading Answer...",
       });
       axios
         .get("/api/student/paper/sq/get_answer", {
@@ -103,7 +105,7 @@ export default function SQContainer({
           },
         })
         .then((res) => {
-          setLoading({ show: false, message: "" });
+          setLoading({});
           if (hasChild) {
             const answers = {};
             res.data.forEach((answer) => {
@@ -120,6 +122,9 @@ export default function SQContainer({
         })
         .catch((err) => {
           console.log(err);
+          setLoading({
+            error: "Error in Loading Answer.",
+          });
         });
     }
   }, [question]);
@@ -134,7 +139,7 @@ export default function SQContainer({
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl text-white">
-      <Spinner show={loading.show} message={loading.message} />
+      <Spinner loading={loading} />
       {question ? (
         <>
           <div>

@@ -38,10 +38,7 @@ const PasswordComponent = () => {
         console.log("Password Changed Successfully", res.data);
         console.log("data is", res.data?.notMatch);
         if (res.data?.notMatch) {
-          setLoading({
-            show: false,
-            message: "",
-          });
+          setLoading({});
           alert("Old Password does not match");
         } else {
           router.push("/");
@@ -50,8 +47,7 @@ const PasswordComponent = () => {
       .catch((err) => {
         console.log("Error in change_password", err);
         setLoading({
-          show: false,
-          message: "",
+          error: "Error in Changing Password",
         });
       });
     // axios to change password
@@ -66,7 +62,7 @@ const PasswordComponent = () => {
 
   return (
     <div>
-      <Spinner show={loading.show} message={loading.message} />
+      <Spinner loading={loading} />
       <h1 className="text-2xl font-medium text-center">
         {recovery ? <>Set a new password for {name}</> : "Change your password"}
       </h1>

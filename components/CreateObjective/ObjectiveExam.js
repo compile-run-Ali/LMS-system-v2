@@ -17,10 +17,7 @@ const MCQTable = ({
   setObjectiveQuestions,
   freeFlow,
 }) => {
-  const [loading, setLoading] = useState({
-    show: false,
-    message: "",
-  });
+  const [loading, setLoading] = useState({});
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
   const [mcqs, setMCQs] = useState(
@@ -119,37 +116,43 @@ const MCQTable = ({
     }
 
     setLoading({
-      show: true,
       message: "Adding Question",
     });
 
-    const newMCQ = await axios.post(
-      "/api/faculty/paper_creation/add_objective",
-      {
-        paper_id: paperId,
-        question: currentMCQ.question,
-        answers: currentMCQ.options.toString(),
-        correct_answer: currentMCQ.correct_answer,
-        marks: currentMCQ.marks,
+    try {
+      const newMCQ = await axios.post(
+        "/api/faculty/paper_creation/add_objective",
+        {
+          paper_id: paperId,
+          question: currentMCQ.question,
+          answers: currentMCQ.options.toString(),
+          correct_answer: currentMCQ.correct_answer,
+          marks: currentMCQ.marks,
+          timeAllowed: currentMCQ.timeAllowed || 60,
+        }
+      );
+      setLoading({
+        show: false,
+        message: "",
+      });
+      newMCQ.data.options = newMCQ.data.answers.split(",");
+      setMultipleOptions(false);
+      setMCQs([...mcqs, newMCQ.data]);
+      setObjectiveQuestions([...mcqs, newMCQ.data]);
+      setCurrentMCQ({
+        question: "",
+        options: ["", "", "", ""],
+        correct_answer: "",
+        marks: 1,
         timeAllowed: currentMCQ.timeAllowed || 60,
-      }
-    );
-    setLoading({
-      show: false,
-      message: "",
-    });
-    newMCQ.data.options = newMCQ.data.answers.split(",");
-    setMultipleOptions(false);
-    setMCQs([...mcqs, newMCQ.data]);
-    setObjectiveQuestions([...mcqs, newMCQ.data]);
-    setCurrentMCQ({
-      question: "",
-      options: ["", "", "", ""],
-      correct_answer: "",
-      marks: 1,
-      timeAllowed: currentMCQ.timeAllowed || 60,
-    });
-    setAdding(false);
+      });
+      setAdding(false);
+    } catch (err) {
+      console.log(err);
+      setLoading({
+        error: "Error in Adding Question.",
+      });
+    }
   };
 
   const handleEditMCQ = (index) => () => {
@@ -178,7 +181,6 @@ const MCQTable = ({
     }
 
     setLoading({
-      show: true,
       message: "Updating Question",
     });
     const newMCQ = await axios.post("/api/faculty/edit_objective", {
@@ -192,10 +194,7 @@ const MCQTable = ({
     });
 
     if (newMCQ.status === 200) {
-      setLoading({
-        show: false,
-        message: "",
-      });
+      setLoading({});
       const newMCQs = [...mcqs];
       newMCQs[index] = currentMCQ;
       setMCQs(newMCQs);
@@ -209,12 +208,15 @@ const MCQTable = ({
       });
       setEditing(false);
       setIndex(null);
+    } else {
+      setLoading({
+        error: "Error in Updating Question.",
+      });
     }
   };
 
   const handleDeleteMCQ = async (index) => {
     setLoading({
-      show: true,
       message: "Deleting Question",
     });
 
@@ -223,14 +225,15 @@ const MCQTable = ({
     });
 
     if (res.status === 200) {
-      setLoading({
-        show: false,
-        message: "",
-      });
+      setLoading({});
       const newMCQs = [...mcqs];
       newMCQs.splice(index, 1);
       setMCQs(newMCQs);
       setObjectiveQuestions(newMCQs);
+    } else {
+      setLoading({
+        error: "Error in Deleting Question.",
+      });
     }
   };
 
@@ -238,7 +241,6 @@ const MCQTable = ({
     const totalMarks = mcqs.reduce((total, mcq) => total + mcq.marks, 0);
     if (totalMarks !== exam.objective_marks) {
       setLoading({
-        show: true,
         message: "Saving...",
       });
 
@@ -258,13 +260,13 @@ const MCQTable = ({
           });
           setActive(3);
 
-          setLoading({
-            show: false,
-            message: "",
-          });
+          setLoading({});
         })
         .catch((err) => {
           console.log("Error in update_total_marks", err);
+          setLoading({
+            error: "Error in Saving.",
+          });
         });
     } else {
       setActive(3);
@@ -274,7 +276,7 @@ const MCQTable = ({
   return (
     <div className="flex font-poppins flex-col items-center p-6">
       <h1 className="text-2xl font-bold">MCQ Question</h1>
-      <Spinner show={loading.show} message={loading.message} />
+      <Spinner loading={loading} />
       <table className="w-full mt-6 text-left table-collapse">
         <thead>
           <tr>

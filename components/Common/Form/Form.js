@@ -13,10 +13,7 @@ export default function Form({
   setExam,
 }) {
   const router = useRouter();
-  const [loading, setLoading] = useState({
-    show: false,
-    message: "",
-  });
+  const [loading, setLoading] = useState({});
   const [edit, setEdit] = useState(examDetails ? true : false);
   const [paperName, setPaperName] = useState("");
   const [paperDuration, setPaperDuration] = useState(180);
@@ -31,8 +28,7 @@ export default function Form({
   useEffect(() => {
     if (edit) {
       setLoading({
-        show: true,
-        message: "Loading Exam Details",
+        message: "Loading Exam Details...",
       });
       axios
         .post("/api/faculty/get_exam", {
@@ -46,16 +42,12 @@ export default function Form({
           setPaperTime(new Date(res.data.date).toISOString().substr(11, 5));
           setFreeflow(res.data.freeflow);
           setReview(res.data.review);
-          setLoading({
-            show: false,
-            message: "",
-          });
+          setLoading({});
         })
         .catch((err) => {
           console.log(err);
           setLoading({
-            show: false,
-            message: "",
+            error: "Error in Loading Exam Details.",
           });
         });
     }
@@ -109,38 +101,43 @@ export default function Form({
       return;
     }
     setLoading({
-      show: true,
       message: edit ? "Updating Paper Details" : "Creating Paper",
     });
 
-    const res = await axios.post(
-      `/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
-      {
-        paper_id: examDetails ? examDetails.paper_id : null,
-        course_code: router.query.course_code ? router.query.course_code : null,
-        paper_name: paperName,
-        date: formatDate(dateOfExam, paperTime),
-        duration: paperDuration,
-        weightage: parseInt(weightage),
-        paper_type: paperType,
-        freeflow: freeflow,
-        review: review,
-      }
-    );
-    if (res) {
-      setLoading({
-        show: false,
-        message: "",
-      });
-      setExam((prevExam) => ({
-        ...prevExam,
-        ...res.data,
-      }));
-      console.log("paper made ", res.data);
-    }
+    try {
+      const res = await axios.post(
+        `/api/faculty/paper_creation/${edit ? "edit_paper" : "new_paper"}`,
+        {
+          paper_id: examDetails ? examDetails.paper_id : null,
+          course_code: router.query.course_code
+            ? router.query.course_code
+            : null,
+          paper_name: paperName,
+          date: formatDate(dateOfExam, paperTime),
+          duration: paperDuration,
+          weightage: parseInt(weightage),
+          paper_type: paperType,
+          freeflow: freeflow,
+          review: review,
+        }
+      );
+      if (res.status === 200) {
+        setLoading({});
+        setExam((prevExam) => ({
+          ...prevExam,
+          ...res.data,
+        }));
+        console.log("paper made ", res.data);
 
-    setPaperId(res.data.paper_id);
-    setActive(2);
+        setPaperId(res.data.paper_id);
+        setActive(2);
+      }
+    } catch (err) {
+      console.log(err);
+      setLoading({
+        error: "Error in Creating Paper",
+      });
+    }
   };
 
   const setEditTrue = () => {
@@ -155,7 +152,7 @@ export default function Form({
 
   return (
     <form>
-      <Spinner show={loading.show} message={loading.message} />
+      <Spinner loading={loading} />
       <div className="w-full grid grid-cols-2 pr-10 gap-x-5 mt-10 font-poppins">
         <Input
           text={"Paper Name"}

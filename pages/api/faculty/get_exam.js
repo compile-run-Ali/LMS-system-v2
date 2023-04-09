@@ -30,7 +30,7 @@ const handler = async (req, res) => {
     });
     res.status(200).json(paper);
   } catch (err) {
-    throw new Error(err.message);
+    res.status(500).json({ err });
   }
 };
 

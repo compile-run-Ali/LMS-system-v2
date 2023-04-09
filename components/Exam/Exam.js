@@ -17,10 +17,7 @@ export default function Exam({
   const session = useSession();
   const router = useRouter();
 
-  const [loading, setLoading] = useState({
-    show: false,
-    message: "",
-  });
+  const [loading, setLoading] = useState({});
   const [edit, setEdit] = useState(isEdit);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
@@ -98,16 +95,12 @@ export default function Exam({
 
   const showSpinner = () => {
     setLoading({
-      show: true,
       message: "Saving...",
     });
   };
 
   const hideSpinner = () => {
-    setLoading({
-      show: false,
-      message: "",
-    });
+    setLoading({});
   };
 
   const addFiveHoursToISOString = (dateString) => {
@@ -136,10 +129,7 @@ export default function Exam({
       console.log(`calling ${apiEndpoint}`);
       const response = await axios.post(apiEndpoint, data);
       console.log(`${apiEndpoint} called`);
-      setLoading({
-        show: false,
-        message: "",
-      });
+      setLoading({});
 
       addComment({
         comment: `Exam Submitted by ${session.data.user.name} to ${
@@ -217,7 +207,7 @@ export default function Exam({
   };
 
   const saveDraft = async () => {
-    // showSpinner();
+    showSpinner();
     const approveExam = await axios.post("/api/faculty/edit_paperapproval", {
       paper_id: exam.paper_id,
       examofficer: null,
@@ -229,6 +219,10 @@ export default function Exam({
         paper_id: exam.paper_id,
       });
       router.push("/");
+    } else {
+      setLoading({
+        error: "Error saving draft",
+      });
     }
     hideSpinner();
   };
@@ -313,7 +307,7 @@ export default function Exam({
 
   return (
     <>
-      <Spinner show={loading.show} message={loading.message} />
+      <Spinner loading={loading} />
       <div className="pr-10 pl-7 font-poppins w-full ">
         <div className="bg-gray-100 bg-opacity-50 pt-10 rounded-md">
           {access && (

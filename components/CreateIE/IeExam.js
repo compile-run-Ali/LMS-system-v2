@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
   const router = useRouter();
   const [files, setFiles] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState({});
 
   console.log(ieFiles);
 
@@ -35,7 +35,9 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
 
   const handleUpload = async () => {
     try {
-      setLoading(true);
+      setLoading({
+        message: "Uploading Exam...",
+      });
       const formData = new FormData();
       files.forEach((file) => {
         formData.append("files", file);
@@ -51,16 +53,20 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
         }
       );
       console.log(res);
-      setLoading(false);
+      setLoading({});
       setFiles([]);
     } catch (error) {
       console.error(error);
-      setLoading(false);
+      setLoading({
+        error: "Error in Uploading Exam",
+      });
     }
   };
 
   return (
     <div>
+      <Spinner loading={loading} />
+
       <div className="flex flex-wrap gap-4">
         <table className="w-full mt-6 text-left table-collapse">
           <thead>
@@ -95,9 +101,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
         onClick={handleUpload}
         disabled={files.length === 0 || loading}
         className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
-      >
-        {loading ? <Spinner /> : "Upload"}
-      </button>
+      ></button>
       <div className="mt-10 w-full pr-10 flex justify-end gap-x-5">
         <button
           type="button"

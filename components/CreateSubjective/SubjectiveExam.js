@@ -13,10 +13,7 @@ const SubjectiveExam = ({
   subjective_questions,
   setSubjectiveQuestions,
 }) => {
-  const [loading, setLoading] = useState({
-    show: false,
-    message: "",
-  });
+  const [loading, setLoading] = useState({});
   const [subjectivesLocal, setSubjectivesLocal] =
     useState(subjective_questions);
   const [previousParent, setPreviousParent] = useState(null);
@@ -132,7 +129,6 @@ const SubjectiveExam = ({
     if (!isValid) return;
 
     setLoading({
-      show: true,
       message: "Adding Question...",
     });
 
@@ -151,10 +147,7 @@ const SubjectiveExam = ({
       }
     );
     if (newSubjective.status === 200) {
-      setLoading({
-        show: false,
-        message: "",
-      });
+      setLoading({});
       let updatedSubjectiveQuestions = [];
       // make sure to sort the newly added question according to questionnumber
       if (isChild) {
@@ -219,7 +212,6 @@ const SubjectiveExam = ({
     const isValid = validateQuestionData();
     if (!isValid) return;
     setLoading({
-      show: true,
       message: "Updating Question...",
     });
     const nowHasParent = question.parent_sq_id ? true : false;
@@ -236,10 +228,7 @@ const SubjectiveExam = ({
         marks: currentQuestion.marks,
       })
       .then((res) => {
-        setLoading({
-          show: false,
-          message: "",
-        });
+        setLoading({});
         // case 1: previously had parent, now no parent
         // case 2: previously had no parent, now no parent
         // case 3: previously had no parent, now has parent
@@ -378,6 +367,9 @@ const SubjectiveExam = ({
       })
 
       .catch((err) => {
+        setLoading({
+          error: "Error updating question.",
+        });
         console.log("Error updating question", err);
       });
   };
@@ -399,7 +391,6 @@ const SubjectiveExam = ({
 
   const handleDeleteSubjective = async (sq_id, parent, isChild = false) => {
     setLoading({
-      show: true,
       message: "Deleting Question...",
     });
     const deletedSubjective = await axios.post(
@@ -409,10 +400,7 @@ const SubjectiveExam = ({
       }
     );
     if (deletedSubjective.status === 200) {
-      setLoading({
-        show: false,
-        message: "",
-      });
+      setLoading({});
       if (isChild) {
         // we have parent of deleted question, access the parent question, and delete its child from there
         const newMCQs = [...subjectivesLocal];
@@ -445,7 +433,6 @@ const SubjectiveExam = ({
     );
     if (totalMarks !== exam.subjective_marks) {
       setLoading({
-        show: true,
         message: "Saving...",
       });
 
@@ -463,13 +450,13 @@ const SubjectiveExam = ({
             total_marks: res.data.total_marks,
           });
 
-          setLoading({
-            show: false,
-            message: "",
-          });
+          setLoading({});
           setActive(4);
         })
         .catch((err) => {
+          setLoading({
+            error: "Error in Saving.",
+          });
           console.log("Error in update_total_marks", err);
         });
     } else {
@@ -479,7 +466,7 @@ const SubjectiveExam = ({
 
   return (
     <div className="flex font-poppins flex-col items-center p-6">
-      <Spinner show={loading.show} message={loading.message} />
+      <Spinner loading={loading} />
 
       <h1 className="text-2xl font-bold">Subjective Question</h1>
 

@@ -18,10 +18,7 @@ const AddFaculty = () => {
   const [cPassword, setCPassword] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
   const [rank, setRank] = useState("");
-  const [loading, setLoading] = useState({
-    show: false,
-    message: "",
-  });
+  const [loading, setLoading] = useState({});
 
   useEffect(() => {
     if (router.isReady) {
@@ -30,7 +27,6 @@ const AddFaculty = () => {
 
       if (router.query.adminEdit || router.query.selfEdit) {
         setLoading({
-          show: true,
           message: "Loading Data...",
         });
         axios
@@ -46,11 +42,15 @@ const AddFaculty = () => {
             setPosition(res.data.position);
             setRank(res.data.rank);
             setLoading({
-              show: false,
               message: "",
             });
           })
-          .catch((err) => console.log("error in get_faculty_by_id", err));
+          .catch((err) => {
+            setLoading({
+              error: "Error in loading faculty data.",
+            });
+            console.log("error in get_faculty_by_id", err);
+          });
       }
     } else {
       console.log("router is not ready");
@@ -176,7 +176,7 @@ const AddFaculty = () => {
 
   return (
     <form onSubmit={handleSubmit} className="px-4">
-      <Spinner show={loading.show} message={loading.message} />
+      <Spinner loading={loading} />
       <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
         <div className="mb-4">
           <Input

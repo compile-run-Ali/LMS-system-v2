@@ -30,16 +30,12 @@ export default function OQContainer({
   const [loading, setLoading] = useState(true);
   const [changed, setChanged] = useState(false);
   const [attempted, setAttempted] = useState(false);
-  const [savingAnswer, setSavingAnswer] = useState({
-    show: false,
-    message: "",
-  });
+  const [savingAnswer, setSavingAnswer] = useState({});
   const saveAnswer = () => {
     const attemptDone =
       numSelected === question.correct_answer.split(",").length;
 
     setSavingAnswer({
-      show: true,
       message: "Saving answer...",
     });
 
@@ -63,7 +59,6 @@ export default function OQContainer({
         console.log("answer added successfully ", res.data);
         setAttempted(attemptDone);
         setSavingAnswer({
-          show: false,
           message: "",
         });
         if (!freeFlow && attemptDone) {
@@ -74,6 +69,9 @@ export default function OQContainer({
       })
       .catch((err) => {
         console.log("error in adding answer", err);
+        setSavingAnswer({
+          error: "Error in Saving Answer.",
+        });
       });
     setSaved(true);
     setChanged(false);
@@ -190,7 +188,7 @@ export default function OQContainer({
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 w-full">
-      <Spinner show={savingAnswer.show} message={savingAnswer.message} />
+      <Spinner loading={savingAnswer} />
       {question ? (
         <>
           <div className="relative">
@@ -207,62 +205,59 @@ export default function OQContainer({
               {currentQuestion + 1 + ". " + question.question}
             </p>
             <div className="flex justify-between mt-6 flex-col">
-              {answers
-                .map((answer, index) => (
-                  <div
-                    key={index}
-                    className={`w-full flex my-3 rounded-lg p-4 text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 
+              {answers.map((answer, index) => (
+                <div
+                  key={index}
+                  className={`w-full flex my-3 rounded-lg p-4 text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 
                     ${
                       attempted ? "bg-gray-200 pointer-events-none" : "bg-white"
                     }
                   `}
-                    onClick={() => {
-                      setChanged(
-                        selectedAnswer.includes(answer) ? false : true
-                      );
-                      setSaved(selectedAnswer.includes(answer) ? true : false);
-                      const input = document.querySelector(
-                        `input[value='${answer}']`
-                      );
-                      if (!multipleAllowed) {
-                        setSelectedAnswer([answer]);
-                        setNumSelected(1);
-                        input.checked = true; // check the checkbox
+                  onClick={() => {
+                    setChanged(selectedAnswer.includes(answer) ? false : true);
+                    setSaved(selectedAnswer.includes(answer) ? true : false);
+                    const input = document.querySelector(
+                      `input[value='${answer}']`
+                    );
+                    if (!multipleAllowed) {
+                      setSelectedAnswer([answer]);
+                      setNumSelected(1);
+                      input.checked = true; // check the checkbox
+                    } else {
+                      if (selectedAnswer.includes(answer)) {
+                        setSelectedAnswer(
+                          selectedAnswer.filter((a) => a !== answer)
+                        );
+                        setNumSelected(numSelected - 1);
+                        input.checked = false;
                       } else {
-                        if (selectedAnswer.includes(answer)) {
-                          setSelectedAnswer(
-                            selectedAnswer.filter((a) => a !== answer)
-                          );
-                          setNumSelected(numSelected - 1);
-                          input.checked = false;
+                        if (numSelected < correctAnswers.length) {
+                          setSelectedAnswer([...selectedAnswer, answer]);
+                          setNumSelected(numSelected + 1);
+                          input.checked = true;
                         } else {
-                          if (numSelected < correctAnswers.length) {
-                            setSelectedAnswer([...selectedAnswer, answer]);
-                            setNumSelected(numSelected + 1);
-                            input.checked = true;
-                          } else {
-                            // remove first element of selectAnswer, and add this option
-                            setSelectedAnswer([
-                              ...selectedAnswer.slice(1),
-                              answer,
-                            ]);
-                            input.checked = true;
-                          }
+                          // remove first element of selectAnswer, and add this option
+                          setSelectedAnswer([
+                            ...selectedAnswer.slice(1),
+                            answer,
+                          ]);
+                          input.checked = true;
                         }
                       }
-                    }}
-                  >
-                    <input
-                      type={multipleAllowed ? "checkbox" : "radio"}
-                      name="answer"
-                      value={answer}
-                      className="mr-4 accent-blue-700"
-                      checked={selectedAnswer.includes(answer)} // set the checked attribute
-                      readOnly // disable user input on this element
-                    />
-                    <span>{answer}</span>
-                  </div>
-                ))}
+                    }
+                  }}
+                >
+                  <input
+                    type={multipleAllowed ? "checkbox" : "radio"}
+                    name="answer"
+                    value={answer}
+                    className="mr-4 accent-blue-700"
+                    checked={selectedAnswer.includes(answer)} // set the checked attribute
+                    readOnly // disable user input on this element
+                  />
+                  <span>{answer}</span>
+                </div>
+              ))}
             </div>
           </div>
           <div

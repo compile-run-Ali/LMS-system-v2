@@ -10,10 +10,7 @@ const ExamTable = ({ exams_data, faculty }) => {
   const router = useRouter();
 
   const [exams, setExams] = useState([]);
-  const [loading, setLoading] = useState({
-    show: false,
-    message: "",
-  });
+  const [loading, setLoading] = useState({});
 
   useEffect(() => {
     setExams(exams_data);
@@ -33,7 +30,6 @@ const ExamTable = ({ exams_data, faculty }) => {
 
   const handleExamDelete = (exam) => {
     setLoading({
-      show: true,
       message: "Deleting Exam...",
     });
     // delete modal to be added
@@ -46,13 +42,12 @@ const ExamTable = ({ exams_data, faculty }) => {
         console.log(res);
         // router.reload();
         setLoading({
-          show: false,
-          message: "",
         });
         console.log("Exam Deleted Successfully", exams);
         setExams(exams.filter((exam) => exam.paper_id !== res.data.paper_id));
       })
       .catch((err) => {
+        setLoading({ error: "Error in deleting exam." });
         console.log(err);
       });
   };
@@ -64,7 +59,9 @@ const ExamTable = ({ exams_data, faculty }) => {
 
   return (
     <>
-      <Spinner show={loading.show} message={loading.message} />
+      <Spinner 
+        loading={loading}
+       />
       <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
         <thead>
           <tr className="bg-blue-800 rounded-md text-white">
