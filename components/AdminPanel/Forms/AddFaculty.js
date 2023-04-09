@@ -319,12 +319,14 @@ const AddFaculty = () => {
           </div> */}
       </div>
       <div className="flex justify-left ml-6 ">
-        <button
-          className="bg-blue-800 hover:bg-blue-700 text-lg mt-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
-          type="submit"
-        >
-          {selfEdit ? "Save Photo" : adminEdit ? "Edit Faculty" : "Add Faculty"}
-        </button>
+        {!selfEdit && (
+          <button
+            className="bg-blue-800 hover:bg-blue-700 text-lg mt-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
+            type="submit"
+          >
+            {adminEdit ? "Edit Faculty" : "Add Faculty"}
+          </button>
+        )}
 
         {(selfEdit || adminEdit) && (
           <button
