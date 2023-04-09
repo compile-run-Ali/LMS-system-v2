@@ -40,8 +40,7 @@ export default function PapersList({ papers, status }) {
       const attempt = attemptStatus.find(
         (attempt) => attempt.paperId === paper.paper_id
       );
-
-      if (attempt) {
+      if (attempt?.status === "Submitted" || attempt?.status === "Incomplete Submission") {
         return { ...paper, attemptStatus: true };
       } else {
         return { ...paper, attemptStatus: false };

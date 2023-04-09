@@ -14,7 +14,7 @@ export default function DashboardLayout({ admin, children }) {
 
   return (
     <div className="w-full min-h-screen pb-20">
-      <div
+      {/* <div
         className={`hidden md:flex w-[270px] ${
           Styles.sideBar
         } ease-in-out duration-300 ${
@@ -35,12 +35,10 @@ export default function DashboardLayout({ admin, children }) {
           </div>
         </div>
         <Sidebar fullSidebar={showSidebar} />
-      </div>
+      </div> */}
 
       <div
-        className={`w-full md:w-[calc(100%-270px)] md:ml-[270px] ease-in-out duration-300 ${
-          showSidebar ? " translate-x-0" : "-translate-x-[100px]"
-        }`}
+        className={`w-full`}
       >
         <Topbar admin />
         {children}
