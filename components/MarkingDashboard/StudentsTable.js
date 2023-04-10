@@ -138,7 +138,8 @@ const StudentsTable = ({ students_data, exam_id, exam: examDetails }) => {
         <thead>
           <tr className="bg-white text-black text-3xl font-normal font-sans">
             <th colSpan={5} className="px-4 py-2 text-center remove-col">
-              {exam.course.course_name} --- {exam.paper_name}
+              {exam.course.course_name} --- {exam.paper_name} (
+              <span className="text-red-600">{exam.status}</span>)
             </th>
           </tr>
           <tr className="bg-blue-800 text-white font-medium ">
@@ -153,7 +154,7 @@ const StudentsTable = ({ students_data, exam_id, exam: examDetails }) => {
           {students.map((student, index) => (
             <tr
               key={student.p_number}
-              className={`cursor-pointer h-12 bg-gray-${
+              className={`h-12 bg-gray-${
                 index % 2 === 0 ? 100 : 200
               }`}
             >
