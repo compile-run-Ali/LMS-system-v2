@@ -14,7 +14,7 @@ export default function PaperDetails({
   const [studentStatus, setStudentStatus] = useState({
     status: "Not Attempted",
   });
-  const [name, setName] = useState("Name");
+  const [name, setName] = useState("Loading Name...");
 
   useEffect(() => {
     setPaper(initialPaper);
