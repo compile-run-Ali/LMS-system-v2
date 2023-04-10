@@ -11,6 +11,9 @@ const handler = async (req, res) => {
       data: {
         status: req.body.status,
       },
+      include: {
+        course: true,
+      },
     });
 
     res.status(200).json(paper);

@@ -3,13 +3,16 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import Spinner from "../Loader/Spinner";
 
-const StudentsTable = ({ students_data, exam_id, exam }) => {
+const StudentsTable = ({ students_data, exam_id, exam: examDetails }) => {
   const [students, setStudents] = useState([]);
   const [classAverage, setClassAverage] = useState(null);
   const [highestMarks, setHighestMarks] = useState(null);
   const [marked, setMarked] = useState(false);
   const [noneAttempted, setNoneAttempted] = useState(false);
+  const [loading, setLoading] = useState({});
+  const [exam, setExam] = useState(examDetails);
 
   const handleExport = () => {
     // Get a reference to the table element
@@ -32,17 +35,25 @@ const StudentsTable = ({ students_data, exam_id, exam }) => {
     XLSX.writeFile(workbook, `Result ${exam?.paper_name}.xlsx`);
   };
 
-  const changeStatusTo = (status) => {
+  const changeStatusTo = (status, isLocked) => {
     console.log("Changing status to ", status);
+    setLoading({ message: isLocked ? "Locking Result..." : "" });
     axios
       .put(`/api/faculty/update_exam_status`, {
         paper_id: exam_id,
         status: status,
       })
       .then((response) => {
-        console.log("Exam status updated successfully");
+        setLoading({});
+        console.log("Exam status updated successfully", response.data);
+        setExam(response.data);
       })
       .catch((error) => {
+        setLoading({
+          error: isLocked
+            ? "Error while locking result. Please try again later"
+            : "An unexpected error occured.",
+        });
         console.log(error);
       });
   };
@@ -119,6 +130,7 @@ const StudentsTable = ({ students_data, exam_id, exam }) => {
 
   return (
     <div>
+      <Spinner loading={loading} />
       <table
         id="my-table"
         className="table-auto w-full mt-10 font-poppins text-left "
@@ -232,15 +244,25 @@ const StudentsTable = ({ students_data, exam_id, exam }) => {
           Export to Excel
         </button>
         <button
-          className={`bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded`}
+          className={`
+          ${
+            exam.status === "Result Locked"
+              ? "bg-gray-400 p cursor-not-allowed"
+              : "bg-blue-800 hover:bg-blue-700"
+          }
+          
+          
+          text-white py-2 text-sm px-2 rounded`}
           onClick={() => {
             if (exam.status === "Marked") {
-              changeStatusTo("Result Locked");
+              changeStatusTo("Result Locked", true);
             } else if (
               exam.paper_type === "Objective" &&
               (exam.status === "Approved" || exam.status === "Closed")
             ) {
-              changeStatusTo("Result Locked");
+              changeStatusTo("Result Locked", true);
+            } else if (exam.status === "Result Locked") {
+              alert("Result is already locked");
             } else {
               alert(
                 "You can't lock the result of this exam. Please mark the exam first. If the exam is objective type, you can lock the result only after student attempt it."
@@ -248,7 +270,7 @@ const StudentsTable = ({ students_data, exam_id, exam }) => {
             }
           }}
         >
-          Lock Result
+          {exam.status === "Result Locked" ? "Result Locked" : "Lock Result"}
         </button>
       </div>
     </div>
