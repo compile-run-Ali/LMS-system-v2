@@ -204,6 +204,7 @@ change part number to part alphabet, and system should generate part alphabet it
 
 
 
-lock result not working
-lock result button should be "result locked" if result is locked
-review marking 
+<!-- lock result not working -->
+<!-- lock result button should be "result locked" if result is locked -->
+<!-- review marking  -->
+student name and pnumber more prominnent in marking dashboard
