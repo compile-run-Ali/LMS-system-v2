@@ -10,7 +10,9 @@ export default function PaperDetails({
   studentId,
 }) {
   const [paper, setPaper] = useState(initialPaper);
-  const [studentStatus, setStudentStatus] = useState("Not Attempted");
+  const [studentStatus, setStudentStatus] = useState({
+    status: "Not Attempted",
+  });
 
   useEffect(() => {
     setPaper(initialPaper);
@@ -30,11 +32,12 @@ export default function PaperDetails({
         ) {
           setStudentStatus(
             res.data.filter((attempt) => attempt.paperId === paper.paper_id)[0]
-              .status
           );
         }
       });
   };
+
+  console.log(studentStatus);
 
   useEffect(() => {
     if (studentId) {
@@ -82,10 +85,6 @@ export default function PaperDetails({
                   {paper.review ? "Yes" : "No"}
                 </td>
               </tr>
-              <tr className="bg-blue-900 text-white">
-                <th className="border px-4 py-2">Weightage</th>
-                <td className="border px-4 py-2">{paper.weightage}</td>
-              </tr>
             </>
           )}
           <tr className="bg-blue-900 text-white">
@@ -94,16 +93,28 @@ export default function PaperDetails({
           </tr>
           <tr className="bg-blue-900 text-white">
             <th className="border px-4 py-2">Start Time</th>
-            <td className="border px-4 py-2">{start}</td>
+            <td className="border px-4 py-2">
+              {studentStatus.timeStarted
+                ? convertDateTimeToStrings(studentStatus.timeStarted, false) +
+                  ", " +
+                  convertDateTimeToStrings(studentStatus.timeStarted, true)
+                : start}
+            </td>
           </tr>
           <tr className="bg-blue-900 text-white">
             <th className="border px-4 py-2">End Time</th>
-            <td className="border px-4 py-2">{end}</td>
+            <td className="border px-4 py-2">
+              {studentStatus.timeCompleted
+                ? convertDateTimeToStrings(studentStatus.timeCompleted, false) +
+                  ", " +
+                  convertDateTimeToStrings(studentStatus.timeCompleted, true)
+                : end}
+            </td>
           </tr>
           {studentId && (
             <tr className="bg-blue-900 text-white">
               <th className="border px-4 py-2">Attempt Status</th>
-              <td className="border px-4 py-2">{studentStatus}</td>
+              <td className="border px-4 py-2">{studentStatus.status}</td>
             </tr>
           )}
         </thead>

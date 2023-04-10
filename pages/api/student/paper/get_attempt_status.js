@@ -13,6 +13,9 @@ const handler = async (req, res) => {
         paperId: true,
         status: true,
         obtainedMarks: true,
+        timeCompleted: true,
+        timeStarted: true,
+        
       },
     });
     res.status(200).json(SPA);

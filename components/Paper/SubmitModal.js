@@ -17,11 +17,18 @@ export default function SubmitModal({
   const paperDetails = JSON.parse(localStorage.getItem("papers"))[paper];
 
   const updateAttempt = () => {
+
+     //update spa status to Attempted
+     const timeCompleted = new Date();
+     // get gmt offset in hours, and add that in startTime
+     const gmtOffset = new Date().getTimezoneOffset();
+     timeCompleted.setMinutes(timeCompleted.getMinutes() - gmtOffset);
     axios
       .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.user.id,
         paperId: paper,
         status: "Submitted",
+        timeCompleted: timeCompleted.toISOString(),
       })
       .then((res) => {
         console.log("attempt created successfully ", res.data);

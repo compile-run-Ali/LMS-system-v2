@@ -15,7 +15,7 @@ export default function Timer({ paper }) {
   const [timeLeft, setTimeLeft] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-  const [startTimeString, setStartTimeString] = useState('');
+  const [startTimeString, setStartTimeString] = useState("");
 
   const clearPaperFromLocal = () => {
     const papers = JSON.parse(localStorage.getItem("papers")) || {};
@@ -28,11 +28,17 @@ export default function Timer({ paper }) {
   };
 
   const updateStatus = () => {
+    //update spa status to Attempted
+    const timeCompleted = new Date();
+    // get gmt offset in hours, and add that in startTime
+    const gmtOffset = new Date().getTimezoneOffset();
+    timeCompleted.setMinutes(timeCompleted.getMinutes() - gmtOffset);
     axios
       .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.user.id,
         paperId: paper.paper_id,
         status: "Incomplete Submission",
+        timeCompleted: timeCompleted.toISOString(),
       })
       .then((res) => {
         console.log("updated attempt status ", res.data);

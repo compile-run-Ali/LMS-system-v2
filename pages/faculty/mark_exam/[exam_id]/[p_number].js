@@ -57,7 +57,6 @@ const Index = () => {
         if (paperDetails.paper_type !== "Objective") {
           setSubjectiveQuestions(res.data.subjective_questions);
         }
-        console.log("paper details fetched successfully", res.data);
       })
       .catch((err) => {
         console.log("error in fetching paper details", err.message);

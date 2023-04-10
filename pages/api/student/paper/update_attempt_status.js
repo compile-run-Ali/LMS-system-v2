@@ -12,6 +12,7 @@ export default async function handler(req, res) {
       studentComment,
       teacherComment,
       timeStarted,
+      timeCompleted,
     } = req.body;
 
     // find an existing record with the provided id
@@ -49,6 +50,9 @@ export default async function handler(req, res) {
             ? teacherComment
             : existingSPA.teacherComment,
         timeStarted: timeStarted ? timeStarted : existingSPA.timeStarted,
+        timeCompleted: timeCompleted
+          ? timeCompleted
+          : existingSPA.timeCompleted,
       },
     });
 
