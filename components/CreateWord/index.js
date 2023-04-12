@@ -3,7 +3,7 @@ import UploadInstructions from "./UploadInstructions";
 import axios from "axios";
 import Spinner from "../Loader/Spinner";
 import { saveAs } from "file-saver";
-import { FaFileDownload } from "react-icons/fa";
+import { FaFileUpload, FaFileDownload } from "react-icons/fa";
 
 function WordExam({
   paperId,
@@ -61,9 +61,11 @@ function WordExam({
       <div className="flex space-x-4">
         <label
           htmlFor="file-upload"
-          className="cursor-pointer inline-flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-white hover:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring-blue-300"
+          className="cursor-pointer inline-flex items-center px-6 py-2.5 bg-green-600 border border-transparent rounded-md font-semibold text-white 
+          hover:bg-green-700 focus:outline-none focus:border-green-700 focus:ring-green-300"
         >
-          Choose file
+          Upload File
+          <FaFileUpload className="ml-2 inline" />
         </label>
         <input
           id="file-upload"
@@ -73,10 +75,10 @@ function WordExam({
         />
 
         <button
-          className="cursor-pointer flex items-center px-4 py-2 bg-blue-800 border border-transparent rounded-md font-semibold text-white hover:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring-blue-300"
+          className="cursor-pointer flex items-center px-6 py-2.5 bg-blue-800 border border-transparent rounded-md font-semibold text-white hover:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring-blue-300"
           onClick={downloadDoc}
         >
-          Doc File
+          Download File
           <FaFileDownload className="ml-2 inline" />
         </button>
       </div>
@@ -112,7 +114,7 @@ function WordExam({
       ) : (
         <div>
           <p className="text-lg mt-4">
-            Please upload a file to see the preview of the questions.
+            Please upload a file to preview the questions.
           </p>
         </div>
       )}

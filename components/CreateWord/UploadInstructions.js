@@ -13,7 +13,8 @@ function UploadInstructions() {
         onClick={toggleAccordion}
       >
         <h2 className="text-xl font-medium inline">
-          Instructions to upload file
+          {isOpen ? "Hide " : "Show "}
+          Instructions
         </h2>
         <MdChevronRight
           className={`h-6 w-6 transform transition-transform inline ${
