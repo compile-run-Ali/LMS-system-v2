@@ -19,7 +19,13 @@ const ExamTable = ({ exams_data, faculty }) => {
   const handleExamEdit = (exam) => {
     router.push({
       pathname: `/faculty/create_exam/${
-        exam.paper_type === "Objective" ? "objective" : "subjective"
+        exam.paper_type === "Objective"
+          ? "objective"
+          : exam.paper_type === "Subjective/Objective"
+          ? "subjective"
+          : exam.paper_type === "I.E"
+          ? "ie"
+          : "word"
       }`,
       query: {
         paper_id: exam.paper_id,
@@ -41,8 +47,7 @@ const ExamTable = ({ exams_data, faculty }) => {
       .then((res) => {
         console.log(res);
         // router.reload();
-        setLoading({
-        });
+        setLoading({});
         console.log("Exam Deleted Successfully", exams);
         setExams(exams.filter((exam) => exam.paper_id !== res.data.paper_id));
       })
@@ -59,9 +64,7 @@ const ExamTable = ({ exams_data, faculty }) => {
 
   return (
     <>
-      <Spinner 
-        loading={loading}
-       />
+      <Spinner loading={loading} />
       <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
         <thead>
           <tr className="bg-blue-800 rounded-md text-white">
