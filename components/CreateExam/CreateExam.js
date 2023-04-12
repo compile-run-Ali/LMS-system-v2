@@ -7,7 +7,7 @@ import Exam from "../Exam/Exam";
 import axios from "axios";
 import SubjectiveExam from "../CreateSubjective/SubjectiveExam";
 import IeExam from "../CreateIE/IeExam";
-import UploadForm from "../CreateWord";
+import WordExam from "../CreateWord";
 
 const wizardItemsObjective = [
   {
@@ -68,7 +68,6 @@ export default function CreateExam({ paperType }) {
     }
   }, [router]);
 
-
   const fetchExam = async () => {
     const res = await axios.post("/api/faculty/get_exam", {
       paper_id: paperId,
@@ -111,7 +110,7 @@ export default function CreateExam({ paperType }) {
     if (paperId && !exam) {
       fetchExam();
     }
-    if (paperType === "Objective" && paperId) {
+    if ((paperType === "Objective" || paperType === "Word") && paperId) {
       fetchObjectives();
     }
     if (paperType === "Subjective/Objective" && paperId) {
@@ -178,7 +177,12 @@ export default function CreateExam({ paperType }) {
 
       {active === 2 && paperType === "Word" && (
         <div className="mt-10">
-          <UploadForm paperId={paperId} setActive={setActive} exam={exam} />
+          <WordExam
+            paperId={paperId}
+            setActive={setActive}
+            objectiveQuestions={mcqs}
+            setObjectiveQuestions={setMCQs}
+          />
         </div>
       )}
 
