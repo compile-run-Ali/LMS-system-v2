@@ -115,7 +115,13 @@ export default function Exam({
     }
     router.push({
       pathname: `/faculty/create_exam/${
-        exam.paper_type === "Objective" ? "objective" : "subjective"
+        exam.paper_type === "Objective"
+          ? "objective"
+          : exam.paper_type === "Subjective/Objective"
+          ? "subjective"
+          : exam.paper_type === "I.E"
+          ? "ie"
+          : "word"
       }`,
       query: {
         paper_id: exam.paper_id,

@@ -96,7 +96,15 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
           </div>
         ))}
       </div>
-      <input type="file" onChange={handleFileUpload} multiple />
+      <label class="ml-2 inline-flex items-center justify-center px-4 py-2 bg-blue-800 text-white font-medium rounded cursor-pointer">
+        <span>Choose files</span>
+        <input
+          type="file"
+          class="hidden"
+          onChange={handleFileUpload}
+          multiple
+        />
+      </label>
       <button
         onClick={handleUpload}
         disabled={files.length === 0 || loading}
