@@ -7,6 +7,7 @@ import { FaFileUpload, FaFileDownload } from "react-icons/fa";
 
 function WordExam({
   paperId,
+  setExam,
   setActive,
   objectiveQuestions = [],
   setObjectiveQuestions,
@@ -40,6 +41,11 @@ function WordExam({
         setObjectiveQuestions(res.data);
         setActive(3);
         setLoading({});
+        setExam((prev) => ({
+          ...prev,
+          total_marks: questions.length,
+          objective_marks: questions.length,
+        }));
       })
       .catch((err) => {
         setLoading({

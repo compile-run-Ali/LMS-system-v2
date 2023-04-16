@@ -13,6 +13,16 @@ export default async function handler(req, res) {
       },
     });
 
+    await prisma.paper.update({
+      where: {
+        paper_id: paperId,
+      },
+      data: {
+        total_marks: questions.length,
+        objective_marks: questions.length,
+      },
+    });
+
     // Create new questions for the given paperId
     const objectiveQuestions = await Promise.all(
       questions.map(async (question) => {

@@ -179,6 +179,7 @@ export default function CreateExam({ paperType }) {
         <div className="mt-10">
           <WordExam
             paperId={paperId}
+            setExam={setExam}
             setActive={setActive}
             objectiveQuestions={mcqs}
             setObjectiveQuestions={setMCQs}
