@@ -123,8 +123,8 @@ export default function AddStudent() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="px-4 font-poppins">
-      <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
+    <form onSubmit={handleSubmit} className="font-poppins px-14">
+      <div className="py-4 grid grid-cols-2 gap-x-8">
         <div className="mb-4">
           <Input
             text="Army Number"
@@ -252,7 +252,7 @@ export default function AddStudent() {
           type="submit"
           className="bg-blue-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
         >
-          Add Student
+          {edit ? "Edit" : "Add"} Student
         </button>
       </div>
     </form>

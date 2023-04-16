@@ -41,6 +41,7 @@ export default function StudentTable({
             <th className="px-4 py-2">Phone Number</th>
             <th className="px-4 py-2">Email</th>
             <th className="px-4 py-2">DOB</th>
+            <th className="px-4 py-2">Rank</th>
             <th className="px-4 py-2"></th>
             <th className="px-4 py-2"></th>
           </tr>
@@ -53,6 +54,7 @@ export default function StudentTable({
               <td className=" px-4 py-2">{student.name}</td>
               <td className=" px-4 py-2">{student.phone_number}</td>
               <td className=" px-4 py-2">{student.email}</td>
+              <td className=" px-4 py-2">{student.rank}</td>
               <td className=" px-4 py-2">
                 {new Date(student.DOB).toDateString()}
               </td>
