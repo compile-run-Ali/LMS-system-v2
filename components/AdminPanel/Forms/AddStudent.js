@@ -25,6 +25,7 @@ export default function AddStudent() {
   const [selectedCourse, setSelectedCourse] = useState(
     courseObject ? courseObject.course.course_code : null
   );
+  const previousCourse = courseObject ? courseObject.course.course_code : null;
   const [courses, setCourses] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
   const [rank, setRank] = useState(router.query.rank ? router.query.rank : "");
@@ -51,7 +52,7 @@ export default function AddStudent() {
       (course) => course.course_code === selectedCourse
     );
     if (course.student_count === course.max_students) {
-      return alert("Course is full");
+      if (previousCourse !== selectedCourse) return alert("Course is full");
     }
 
     const formData = new FormData();
