@@ -524,7 +524,7 @@ export default function Exam({
                       faculties
                         .filter(
                           (faculty) =>
-                            faculty.level === 3 || faculty.level === 4
+                          faculty.level === 2 ||faculty.level === 3 || faculty.level === 4
                         )
                         .map((faculty) => (
                           <option
