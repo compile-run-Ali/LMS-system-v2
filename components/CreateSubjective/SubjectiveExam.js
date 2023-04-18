@@ -207,8 +207,6 @@ const SubjectiveExam = ({
     }
   };
 
-  console.log("subjectivesLocal", subjectivesLocal);
-
   const handleUpdateMCQ = async (question) => {
     // variable to check if now has parent
     const isValid = validateQuestionData();
