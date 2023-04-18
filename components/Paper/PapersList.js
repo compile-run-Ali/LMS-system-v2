@@ -40,7 +40,7 @@ export default function PapersList({ papers, status }) {
       const attempt = attemptStatus.find(
         (attempt) => attempt.paperId === paper.paper_id
       );
-      if (attempt?.status === "Attempted") {
+      if (!attempt || attempt?.status === "Attempted") {
         return { ...paper, attemptStatus: false };
       } else {
         return { ...paper, attemptStatus: true };
@@ -98,8 +98,10 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
       <td className="border px-4 py-2">{startTime}</td>
       <td className="border px-4 py-2">{paper.duration} mins</td>
       <td className="border px-4 py-2">
-        {paper.status === "Approved"
+        {paper.status === "Approved" && isLive
           ? "Live"
+          : paper.status === "Approved" && !isLive && !isPast
+          ? "Upcoming"
           : paper.status === "Closed"
           ? "Marking"
           : paper.status}

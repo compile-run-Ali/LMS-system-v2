@@ -114,7 +114,7 @@ export default function SQContainer({
             setAnswers(answers);
           } else {
             setAnswers({
-              [question.sq_id]: res.data[0]?.answer,
+              [question.sq_id]: res.data[0]?.answer || "",
             });
           }
 

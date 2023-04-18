@@ -22,6 +22,7 @@ const handler = async (req, res) => {
                 freeflow: true,
                 status: true,
                 total_marks: true,
+                course: true,
               },
             },
           },
