@@ -103,7 +103,6 @@ const SubjectiveExam = ({
     return true;
   };
 
-  console.log(subjectivesLocal.length);
   const handleAddMCQ = async () => {
     let nextsibling;
     if (currentQuestion.parent_sq_id) {
@@ -177,6 +176,7 @@ const SubjectiveExam = ({
       }
 
       const prevLength = subjectivesLocal.length;
+      console.log("prevLength", prevLength);
 
       setSubjectivesLocal(updatedSubjectiveQuestions);
       setSubjectiveQuestions(updatedSubjectiveQuestions);
@@ -186,7 +186,7 @@ const SubjectiveExam = ({
         parent_sq_id: "",
         marks: 1,
         long_question: longQuestion,
-        questionnumber: prevLength + 1,
+        questionnumber: isChild ? prevLength + 1 : prevLength + 2,
       });
       setAdding(false);
     } else {
@@ -206,6 +206,8 @@ const SubjectiveExam = ({
       );
     }
   };
+
+  console.log("subjectivesLocal", subjectivesLocal);
 
   const handleUpdateMCQ = async (question) => {
     // variable to check if now has parent
@@ -423,6 +425,16 @@ const SubjectiveExam = ({
         setSubjectivesLocal(newMCQs);
         setSubjectiveQuestions(newMCQs);
       }
+      setCurrentQuestion({
+        sq_id: "",
+        question: "",
+        parent_sq_id: "",
+        marks: 1,
+        long_question: false,
+        questionnumber: isChild
+          ? subjectivesLocal.length + 1
+          : subjectivesLocal.length,
+      });
     }
   };
 
