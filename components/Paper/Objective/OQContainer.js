@@ -62,7 +62,13 @@ export default function OQContainer({
           message: "",
         });
         if (!freeFlow && attemptDone) {
-          if (currentQuestion < totalQuestions) {
+          if (currentQuestion + 1 < totalQuestions) {
+            console.log(
+              "current question",
+              currentQuestion,
+              "total questions",
+              totalQuestions
+            );
             setCurrentQuestion(currentQuestion + 1);
           }
         }

@@ -145,7 +145,7 @@ export default function PaperContainer({ startOfPage }) {
                 });
 
               // if paper is not objective
-              if (currentPaper.paper_type !== "Objective") {
+              if (currentPaper.paper_type === "Subjective/Objective") {
                 // get subjective questions
                 axios
                   .get(`/api/student/paper/sq/${paper}`)
@@ -223,7 +223,7 @@ export default function PaperContainer({ startOfPage }) {
         //update spa status to Attempted
         const startTime = new Date();
         // get gmt offset in hours, and add that in startTime
-        const gmtOffset = new Date().getTimezoneOffset() 
+        const gmtOffset = new Date().getTimezoneOffset();
         startTime.setMinutes(startTime.getMinutes() - gmtOffset);
 
         axios
@@ -239,7 +239,6 @@ export default function PaperContainer({ startOfPage }) {
           .catch((err) => {
             console.log("error updating attempt status", err);
           });
-        
       }
     }
   }, [paper, student]);
@@ -248,13 +247,16 @@ export default function PaperContainer({ startOfPage }) {
     return <Loader />;
   }
 
+  console.log();
+
   return (
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">
         {currentQuestion === questions.length &&
         paperDetails.paper_type !== "IE" ? (
           <Submitted />
-        ) : paperDetails.paper_type === "Objective" ? (
+        ) : paperDetails.paper_type === "Objective" ||
+          paperDetails.paper_type === "Word" ? (
           <OQContainer
             question={questions[currentQuestion]}
             totalQuestions={questions.length}
