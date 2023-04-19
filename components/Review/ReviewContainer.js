@@ -28,11 +28,13 @@ export default function ReviewContainer() {
   }, [session]);
 
   const fetchObjectiveAttempts = async () => {
-    let question = objectiveQuestions.map((question) => question.oq_id);
+    let questions = objectiveQuestions.map((question) => question.oq_id);
     const res = await axios.post(`/api/student/paper/oq/get_questions`, {
-      p_number: student,
-      question: question,
+      p_number: p_number,
+      questions: questions,
     });
+
+    console.log("objective attempts fetched successfully", res.data);
 
     setObjectiveAnswers(res.data);
   };

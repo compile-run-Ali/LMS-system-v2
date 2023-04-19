@@ -13,8 +13,8 @@ const MarkPaper = ({
   const router = useRouter();
   const { p_number, exam_id } = router.query;
   const [obtainedMarks, setObtainedMarks] = useState(0);
-  const [objectiveMarks, setObjectiveMarks] = useState(null);
-  const [subjectiveMarks, setSubjectiveMarks] = useState(null);
+  const [objectiveMarks, setObjectiveMarks] = useState(0);
+  const [subjectiveMarks, setSubjectiveMarks] = useState(0);
   const [totalMarks, setTotalMarks] = useState(0);
   const [saved, setSaved] = useState(false);
 
