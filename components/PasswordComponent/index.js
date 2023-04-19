@@ -61,7 +61,7 @@ const PasswordComponent = () => {
   }, [router]);
 
   return (
-    <div>
+    <div className="p-10 mx-auto max-w-xl bg-slate-100 rounded-lg shadow-lg">
       <Spinner loading={loading} />
       <h1 className="text-2xl font-medium text-center">
         {recovery ? <>Set a new password for {name}</> : "Change your password"}
