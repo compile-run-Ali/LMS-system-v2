@@ -14,8 +14,6 @@ const ShareModal = ({ showModal, setShowModal, exam }) => {
   const session = useSession();
   const user = session.data.user;
 
-  console.log("SELECTED", selectedFacultyIds);
-
   useEffect(() => {
     axios
       .get("/api/admin/faculty/get_faculty")
@@ -61,7 +59,7 @@ const ShareModal = ({ showModal, setShowModal, exam }) => {
         setShowModal(false);
       })
       .catch((err) => {
-        console.log(err.message);
+        console.log("error in sharing result", err);
         setLoading({
           error: "An error occured.",
         });
