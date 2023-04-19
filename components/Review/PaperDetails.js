@@ -53,8 +53,6 @@ export default function PaperDetails({
       });
   };
 
-  console.log(studentStatus);
-
   useEffect(() => {
     if (studentId) {
       getStudentDetails();
