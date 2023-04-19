@@ -52,6 +52,11 @@ const StudentsTable = ({
     #last-row {
      background-color: #a9a9a9;
     }
+
+    .flx {
+      display: flex;
+      justify-content: space-between;
+    }
     
     @media print {
       body * {
@@ -280,25 +285,27 @@ const StudentsTable = ({
 
           {marked && (
             <>
-              <tr
-                id="last-row"
-                className={
-                  students_data.length % 2 ? "bg-gray-200" : "bg-gray-100"
-                }
-              >
-                <td className="px-4 py-2 border-b border-l border-gray-300">
-                  Class Average
+              <tr id="last-row" className={"bg-gray-300"}>
+                <td className="px-4 py-2 border border-gray-500">
+                  <div className="flx flex justify-between">
+                    <p>Class Average: </p>
+                    <p>{classAverage}</p>
+                  </div>
                 </td>
-                <td className="px-4 py-2 border-b  border-r border-gray-300 text-right">
-                  {classAverage}
+                <td className="px-4 py-2 border border-gray-500">
+                  <div className="flx flex justify-between">
+                    <p>Highest Marks: </p>
+                    <p>{highestMarks}</p>
+                  </div>
                 </td>
-                <td className="px-4 py-2 border-b border-gray-300">
-                  Highest Marks
+                <td className="px-4 py-2 border  border-gray-500">
+                  <div className="flx flex justify-between">
+                    <p>Total Marks: </p>
+                    <p>{exam.total_marks}</p>
+                  </div>
                 </td>
-                <td className="px-4 py-2 border-b  border-r border-gray-300 text-right">
-                  {highestMarks}
-                </td>
-                <td className="px-4 py-2 border-b border-r border-gray-300"></td>
+                <td className="px-4 py-2 border border-r-0 border-gray-500"></td>
+                <td className="px-4 py-2 border border-l-0  border-gray-500"></td>
               </tr>
             </>
           )}
