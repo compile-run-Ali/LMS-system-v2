@@ -69,12 +69,18 @@ export default function AssignFacultyModal({
                       className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]"
                     >
                       <option value="">Select Faculty Member</option>
-                      {faculty.map((faculty, index) => (
-                        <option
-                          key={index}
-                          value={faculty.faculty_id}
-                        >{`${faculty.name}`}</option>
-                      ))}
+                      {faculty
+                        .filter(
+                          (faculty) =>
+                            faculty.level !== 5 && faculty.level !== 0
+                        )
+                        .sort((a, b) => a.level - b.level)
+                        .map((faculty, index) => (
+                          <option
+                            key={index}
+                            value={faculty.faculty_id}
+                          >{`${faculty.name}`}</option>
+                        ))}
                     </select>
                   </div>
                 </div>

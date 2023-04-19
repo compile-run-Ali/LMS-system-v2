@@ -42,7 +42,6 @@ const CourseTable = ({
         <tr className="bg-blue-800 rounded-md text-white">
           <th className="px-4 py-2">Name</th>
           <th className="px-4 py-2">Course Code</th>
-          <th className="px-4 py-2">Credit Hours</th>
           <th className="px-4 py-2">Enrolled Students</th>
           <th className="px-4 py-2">Max Students</th>
           <th className="px-4 py-2"></th>
@@ -55,7 +54,6 @@ const CourseTable = ({
           <tr key={index} className="bg-white">
             <td className="px-4 py-2">{course.course_name}</td>
             <td className="px-4 py-2">{course.course_code}</td>
-            <td className="px-4 py-2">{course.credit_hours}</td>
             <td className="px-4 py-2">{course.student_count}</td>
             <td className="px-4 py-2">{course.max_students}</td>
             <td className="px-4 py-2">
