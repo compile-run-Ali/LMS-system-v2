@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ExamTable from "./ExamTable";
 import Modal from "./Subcomponents/Modal";
+import { useSession } from "next-auth/react";
 
 export default function DashboardComponent({
   exams_data,
@@ -12,6 +13,8 @@ export default function DashboardComponent({
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [paperapproval, setPaperApproval] = useState([]);
+  const session = useSession();
+  const facultyId = session.data.user.id;
 
   useEffect(() => {
     if (
@@ -53,6 +56,8 @@ export default function DashboardComponent({
     setExams(course.course.paper);
   };
 
+  console.log("exams", exams);
+
   return (
     <div>
       <div className="ml-6">
@@ -62,11 +67,15 @@ export default function DashboardComponent({
           onChange={handleCourseChange}
         >
           {courses && courses.length > 0 ? (
-            courses.map((course, index) => (
-              <option key={index} value={course.course.course_code}>
-                {course.course.course_code} - {course.course.course_name}
-              </option>
-            ))
+            courses
+              .sort((a, b) =>
+                a.course.course_name.localeCompare(b.course.course_name)
+              )
+              .map((course, index) => (
+                <option key={index} value={course.course.course_code}>
+                  {course.course.course_code} - {course.course.course_name}
+                </option>
+              ))
           ) : (
             <option value="">No Courses</option>
           )}
@@ -98,15 +107,15 @@ export default function DashboardComponent({
       )}
       {courses.length > 0 && (
         <div>
-          <div className="pr-10 pl-5">
+          <div className="pr-10 pl-5 ">
             <h1 className="text-2xl font-poppins font-bold">
               Previous Exams of {selectedCourse}
             </h1>
             <ExamTable
               exams_data={exams.filter(
                 (paper) =>
-                  paper.status === "Pending Approval" ||
-                  paper.status === "Draft"
+                  paper.status !== "Pending Approval" &&
+                  paper.status !== "Draft"
               )}
             />
           </div>
@@ -118,8 +127,9 @@ export default function DashboardComponent({
             <ExamTable
               exams_data={exams.filter(
                 (paper) =>
-                  paper.status !== "Pending Approval" &&
-                  paper.status !== "Draft"
+                  (facultyId !== paper.examofficer?.faculty_id &&
+                    paper.status === "Pending Approval") ||
+                  paper.status === "Draft"
               )}
             />
           </div>
