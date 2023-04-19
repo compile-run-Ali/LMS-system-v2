@@ -58,7 +58,7 @@ const ExamTable = ({ exams_data, faculty }) => {
 
   const getExamOfficer = (findId) => {
     let examOfficer = faculty.find((faculty) => faculty.faculty_id === findId);
-    return examOfficer.name;
+    return examOfficer?.name;
   };
 
   return (
@@ -96,7 +96,7 @@ const ExamTable = ({ exams_data, faculty }) => {
                 <td className=" px-4 py-3">
                   {exam.status}{" "}
                   {exam.status === "Pending Approval" && (
-                    <>from {getExamOfficer(exam.examofficer.faculty_id)}</>
+                    <>from {getExamOfficer(exam.examofficer?.faculty_id)}</>
                   )}{" "}
                 </td>
                 <td>
