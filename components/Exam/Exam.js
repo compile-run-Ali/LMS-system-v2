@@ -365,7 +365,7 @@ export default function Exam({
               <span className="ml-2">{exam.total_marks}</span>
             </div>
           </div>
-          {(exam.paper_type !== "IE") && (
+          {exam.paper_type !== "IE" && (
             <div className="bg-gray-100 py-5 mt-5 px-5 border-b border-slate-400 border-opacity-50">
               <Accordion
                 questions={objectiveQuestions}
@@ -463,7 +463,9 @@ export default function Exam({
                         faculties
                           .filter(
                             (faculty) =>
-                            faculty.level === 2 ||faculty.level === 3 || faculty.level === 4
+                              faculty.level === 2 ||
+                              faculty.level === 3 ||
+                              faculty.level === 4
                           )
                           .map((faculty) => (
                             <option
@@ -524,7 +526,9 @@ export default function Exam({
                       faculties
                         .filter(
                           (faculty) =>
-                          faculty.level === 2 ||faculty.level === 3 || faculty.level === 4
+                            faculty.level === 2 ||
+                            faculty.level === 3 ||
+                            faculty.level === 4
                         )
                         .map((faculty) => (
                           <option
@@ -541,7 +545,9 @@ export default function Exam({
                         type="submit"
                         className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
                         onClick={() => {
-                          setActive(exam.paper_type === "Subjective/Objective" ? 3 : 2);
+                          setActive(
+                            exam.paper_type === "Subjective/Objective" ? 3 : 2
+                          );
                         }}
                       >
                         Back
@@ -589,17 +595,18 @@ export default function Exam({
             )}
           </div>
         )}
-
-        <div className="mt-10 pr-10 flex justify-start gap-x-5 mb-10">
-          <button
-            className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-            onClick={() => {
-              router.push("/faculty/mark_exam/" + exam.paper_id);
-            }}
-          >
-            Evaluate
-          </button>
-        </div>
+        {(session.data.user.level === 1 || session.data.user.level === 2|| session.data.user.level === 5) && (
+          <div className="mt-10 pr-10 flex justify-start gap-x-5 mb-10">
+            <button
+              className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+              onClick={() => {
+                router.push("/faculty/mark_exam/" + exam.paper_id);
+              }}
+            >
+              Evaluate
+            </button>
+          </div>
+        )}
       </div>
     </>
   );
