@@ -30,7 +30,7 @@ export default function ReviewContainer() {
   const fetchObjectiveAttempts = async () => {
     let questions = objectiveQuestions.map((question) => question.oq_id);
     const res = await axios.post(`/api/student/paper/oq/get_questions`, {
-      p_number: p_number,
+      p_number: session.user.id,
       questions: questions,
     });
 
