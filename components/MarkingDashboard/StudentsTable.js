@@ -4,6 +4,9 @@ import Link from "next/link";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import Spinner from "../Loader/Spinner";
+import { MdLock, MdShare, MdDownload } from "react-icons/md";
+import ShareModal from "./ShareModal";
+import { useSession } from "next-auth/react";
 
 const StudentsTable = ({
   students_data,
@@ -18,6 +21,9 @@ const StudentsTable = ({
   const [noneAttempted, setNoneAttempted] = useState(false);
   const [loading, setLoading] = useState({});
   const [exam, setExam] = useState(examDetails);
+  const [showShareModal, setShowShareModal] = useState(false);
+  const session = useSession();
+  const user = session.data.user;
 
   const handlePrint = () => {
     const printContents = document.getElementById("my-table").outerHTML;
@@ -253,7 +259,7 @@ const StudentsTable = ({
                   : "Not Marked"}
               </td>
               <td
-                className={`px-4 py-2 border ${
+                className={`px-4 py-2 border w-[15%] text-center ${
                   index === students_data.length - 1 &&
                   "border-b-gray-300 border-b"
                 }`}
@@ -275,7 +281,7 @@ const StudentsTable = ({
           {marked && (
             <>
               <tr
-              id="last-row"
+                id="last-row"
                 className={
                   students_data.length % 2 ? "bg-gray-200" : "bg-gray-100"
                 }
@@ -300,11 +306,24 @@ const StudentsTable = ({
       </table>
       {!isPrinter && (
         <div className="flex justify-end py-4 space-x-4">
+          {exam.status === "Result Locked" && user.level === 1 && (
+            <button
+              className={`bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded`}
+              onClick={() => {
+                setShowShareModal(true);
+              }}
+            >
+              Share Result
+              <MdShare className="ml-2 mb-0.5 inline" />
+            </button>
+          )}
+
           <button
             className={`bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded`}
             onClick={handleExport}
           >
             Export to Excel
+            <MdDownload className="ml-2 mb-0.5 inline" />
           </button>
           <button
             className={`
@@ -334,6 +353,8 @@ const StudentsTable = ({
             }}
           >
             {exam.status === "Result Locked" ? "Result Locked" : "Lock Result"}
+
+            <MdLock className="ml-2 mb-0.5 inline" />
           </button>
         </div>
       )}
@@ -347,6 +368,11 @@ const StudentsTable = ({
           </button>
         </div>
       )}
+      <ShareModal
+        showModal={showShareModal}
+        setShowModal={setShowShareModal}
+        exam={exam}
+      />
     </div>
   );
 };

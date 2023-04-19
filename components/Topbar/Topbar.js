@@ -26,7 +26,7 @@ export default function Topbar() {
     if (session.status === "authenticated") {
       getNotifications();
     }
-  }, []);
+  }, [session.status]);
 
   const getNotifications = async () => {
     // get notifications from api for the logged in user
@@ -75,7 +75,10 @@ export default function Topbar() {
 
               {showNotification && (
                 <div className="fixed right-[180px] max-h-[300px] w-80">
-                  <NotificationDropdown notifications={notifications} />
+                  <NotificationDropdown
+                    notifications={notifications}
+                    setNotifications={setNotifications}
+                  />
                 </div>
               )}
             </div>

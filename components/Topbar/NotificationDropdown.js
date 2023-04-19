@@ -1,10 +1,17 @@
 import { getNotificationTime } from "@/utils/NotificationTime";
 import axios from "axios";
-import React from "react";
-import { IoMdMailOpen, IoMdMailUnread } from "react-icons/io";
+import React, { useState } from "react";
+import { IoMdMailOpen, IoMdMailUnread, IoMdEye } from "react-icons/io";
+import { MdDelete } from "react-icons/md";
+import { useRouter } from "next/router";
 
-export default function NotificationDropdown({ notifications }) {
-  console.log(notifications, "notifications");
+export default function NotificationDropdown({
+  notifications,
+  setNotifications,
+}) {
+  const router = useRouter();
+
+  console.log(notifications);
 
   const markAsRead = async (id) => {
     const res = await axios.post("/api/faculty/markNotificationRead", {
@@ -17,35 +24,53 @@ export default function NotificationDropdown({ notifications }) {
   return (
     <div className=" w-full h-full mt-2 bg-white rounded-md shadow-lg z-20 ">
       <div className="">
-        {notifications.map((notification, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between px-4 py-3 border-b hover:bg-gray-100 -mx-2"
-            // onClick={() => markAsRead(notification.notification_id)}
-          >
-            <p className="text-gray-600 text-sm mx-2 flex items-end">
-              <span
-                className="font-semibold font-poppins text-red-600"
-                href="#"
-              >
-                {notification.notification}
-              </span>
-              <span className="ml-2 text-xs mb-1 text-gray-400">
-                {getNotificationTime(notification.time)}
-              </span>
-            </p>
-            <p className="mr-2 mt-1">
-              {notification.read ? (
-                <IoMdMailOpen className="ml-2 text-xs mb-1 text-gray-400" />
-              ) : (
-                <IoMdMailUnread
-                  className="ml-2 text-xs mb-1 text-gray-400 cursor-pointer"
-                  onClick={() => markAsRead(notification.notification_id)}
-                />
+        {notifications
+          .sort((a, b) => new Date(b.time) - new Date(a.time))
+          .map((notification, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between px-4 py-3 border-b hover:bg-gray-100 -mx-2"
+              // onClick={() => markAsRead(notification.notification_id)}
+            >
+              <p className="text-gray-600 text-sm mx-2 flex items-end">
+                <span className="font-poppins text-black" href="#">
+                  {notification.notification}
+                </span>
+                <span className="ml-2 text-xs mb-1 text-gray-400">
+                  {getNotificationTime(notification.time)}
+                </span>
+              </p>
+              {notification.exam_id && (
+                <p>
+                  <IoMdEye
+                    className="ml-2 text-lg mb-0.5 text-blue-700 cursor-pointer"
+                    onClick={() => {
+                      router.push(`/faculty/mark_exam/${notification.exam_id}`);
+                    }}
+                  />
+                </p>
               )}
-            </p>
-          </div>
-        ))}
+              <p className="mr-2 mt-1">
+                {notification.read ? (
+                  <IoMdMailOpen className="ml-2 text-xs mb-1 text-gray-400" />
+                ) : (
+                  <MdDelete
+                    className="ml-2 text mb-1 text-red-600 cursor-pointer"
+                    onClick={() => {
+                      markAsRead(notification.notification_id);
+                      setNotifications(
+                        notifications.filter(
+                          (item) =>
+                            item.notification_id !==
+                            notification.notification_id
+                        )
+                      );
+                    }}
+                  />
+                )}
+              </p>
+            </div>
+          ))}
       </div>
 
       {notifications.length === 0 && (
