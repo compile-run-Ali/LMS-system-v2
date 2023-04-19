@@ -324,7 +324,7 @@ const AddFaculty = () => {
             className="bg-blue-800 hover:bg-blue-700 text-lg mt-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
             type="submit"
           >
-            {adminEdit ? "Edit Faculty" : "Add Faculty"}
+            {adminEdit ? "Save" : "Add Faculty"}
           </button>
         )}
 
