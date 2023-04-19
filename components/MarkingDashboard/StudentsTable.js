@@ -5,7 +5,12 @@ import axios from "axios";
 import * as XLSX from "xlsx";
 import Spinner from "../Loader/Spinner";
 
-const StudentsTable = ({ students_data, exam_id, exam: examDetails }) => {
+const StudentsTable = ({
+  students_data,
+  exam_id,
+  exam: examDetails,
+  isPrinter = false,
+}) => {
   const [students, setStudents] = useState([]);
   const [classAverage, setClassAverage] = useState(null);
   const [highestMarks, setHighestMarks] = useState(null);
@@ -13,6 +18,63 @@ const StudentsTable = ({ students_data, exam_id, exam: examDetails }) => {
   const [noneAttempted, setNoneAttempted] = useState(false);
   const [loading, setLoading] = useState({});
   const [exam, setExam] = useState(examDetails);
+
+  const handlePrint = () => {
+    const printContents = document.getElementById("my-table").outerHTML;
+    const printWindow = window.open("", "Print");
+    const styles = `
+    <style>
+    #my-table td,th {
+    border: 1px solid gray;
+    padding-left: 1rem/* 16px */;
+    padding-right: 1rem/* 16px */;
+    padding-top: 0.5rem/* 8px */;
+    padding-bottom: 0.5rem/* 8px */;
+    }
+    
+    #my-table thead tr:first-child th {
+      font-size: 24px;
+      line-height: 32px;
+    }
+
+    #second-row {
+      background-color: #1d4ed8;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    #last-row {
+     background-color: #a9a9a9;
+    }
+    
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #my-table, #my-table * {
+        visibility: visible;
+      }
+      #my-table {
+        position: absolute;
+        border-spacing: 0px;
+        left: 0;
+        top: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        width: 100%;
+        table-layout: auto;
+      }
+    }
+  </style>
+  
+    `;
+
+    printWindow.document.write(styles);
+    printWindow.document.write(printContents);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
 
   const handleExport = () => {
     // Get a reference to the table element
@@ -142,7 +204,7 @@ const StudentsTable = ({ students_data, exam_id, exam: examDetails }) => {
               <span className="text-red-600">{exam.status}</span>)
             </th>
           </tr>
-          <tr className="bg-blue-800 text-white font-medium ">
+          <tr id="second-row" className="bg-blue-800 text-white font-medium ">
             <th className="px-4 py-2">Army Number</th>
             <th className="px-4 py-2">Student Name</th>
             <th className="px-4 py-2">Status</th>
@@ -154,9 +216,7 @@ const StudentsTable = ({ students_data, exam_id, exam: examDetails }) => {
           {students.map((student, index) => (
             <tr
               key={student.p_number}
-              className={`h-12 bg-gray-${
-                index % 2 === 0 ? 100 : 200
-              }`}
+              className={`h-12 bg-gray-${index % 2 === 0 ? 100 : 200}`}
             >
               <td
                 className={`px-4 py-2 border ${
@@ -215,6 +275,7 @@ const StudentsTable = ({ students_data, exam_id, exam: examDetails }) => {
           {marked && (
             <>
               <tr
+              id="last-row"
                 className={
                   students_data.length % 2 ? "bg-gray-200" : "bg-gray-100"
                 }
@@ -237,15 +298,16 @@ const StudentsTable = ({ students_data, exam_id, exam: examDetails }) => {
           )}
         </tbody>
       </table>
-      <div className="flex justify-end py-4 space-x-4">
-        <button
-          className={`bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded`}
-          onClick={handleExport}
-        >
-          Export to Excel
-        </button>
-        <button
-          className={`
+      {!isPrinter && (
+        <div className="flex justify-end py-4 space-x-4">
+          <button
+            className={`bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded`}
+            onClick={handleExport}
+          >
+            Export to Excel
+          </button>
+          <button
+            className={`
           ${
             exam.status === "Result Locked"
               ? "bg-gray-400 p cursor-not-allowed"
@@ -254,26 +316,37 @@ const StudentsTable = ({ students_data, exam_id, exam: examDetails }) => {
           
           
           text-white py-2 text-sm px-2 rounded`}
-          onClick={() => {
-            if (exam.status === "Marked") {
-              changeStatusTo("Result Locked", true);
-            } else if (
-              exam.paper_type === "Objective" &&
-              (exam.status === "Approved" || exam.status === "Closed")
-            ) {
-              changeStatusTo("Result Locked", true);
-            } else if (exam.status === "Result Locked") {
-              alert("Result is already locked");
-            } else {
-              alert(
-                "You can't lock the result of this exam. Please mark the exam first. If the exam is objective type, you can lock the result only after student attempt it."
-              );
-            }
-          }}
-        >
-          {exam.status === "Result Locked" ? "Result Locked" : "Lock Result"}
-        </button>
-      </div>
+            onClick={() => {
+              if (exam.status === "Marked") {
+                changeStatusTo("Result Locked", true);
+              } else if (
+                exam.paper_type === "Objective" &&
+                (exam.status === "Approved" || exam.status === "Closed")
+              ) {
+                changeStatusTo("Result Locked", true);
+              } else if (exam.status === "Result Locked") {
+                alert("Result is already locked");
+              } else {
+                alert(
+                  "You can't lock the result of this exam. Please mark the exam first. If the exam is objective type, you can lock the result only after student attempt it."
+                );
+              }
+            }}
+          >
+            {exam.status === "Result Locked" ? "Result Locked" : "Lock Result"}
+          </button>
+        </div>
+      )}
+      {isPrinter && (
+        <div className="flex justify-end py-4">
+          <button
+            className={`bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded`}
+            onClick={handlePrint}
+          >
+            Print Result
+          </button>
+        </div>
+      )}
     </div>
   );
 };

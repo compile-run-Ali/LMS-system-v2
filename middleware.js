@@ -6,7 +6,7 @@ export default withAuth(
     const path = req.nextUrl.pathname;
     const user = req.nextauth.token.user;
 
-    if (user.level === 0 && path !== "/faculty/print_results") {
+    if (user.level === 0 && !path.startsWith("/faculty/print_results")) {
       return NextResponse.rewrite(new URL("/faculty/print_results", req.url));
     }
 
@@ -17,7 +17,6 @@ export default withAuth(
 
     if (path.startsWith("/admin") && user.role === "faculty") {
       // faculty level 0 can only access /faculty/print_results
-      
     }
 
     if (path.startsWith("/admin") && user.level !== 5) {
@@ -31,8 +30,6 @@ export default withAuth(
     if (path.startsWith("/faculty") && user.role !== "faculty") {
       return NextResponse.rewrite(new URL("/", req.url));
     }
-
-   
   },
   {
     callbacks: {
