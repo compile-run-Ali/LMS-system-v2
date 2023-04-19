@@ -9,7 +9,7 @@ const Table = ({ exams }) => {
     exams[0]
   );
   return (
-    <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
+    <table className="table-auto rounded-md font-poppins w-full text-left">
       <thead>
         <tr className="bg-blue-800 rounded-md text-white">
           <th className="px-4 py-2 border">Sr No.</th>

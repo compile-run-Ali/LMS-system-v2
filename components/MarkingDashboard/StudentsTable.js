@@ -286,26 +286,26 @@ const StudentsTable = ({
           {marked && (
             <>
               <tr id="last-row" className={"bg-gray-300"}>
-                <td className="px-4 py-2 border border-gray-500">
+                <td className="px-4 py-2 border-l border-gray-500">
                   <div className="flx flex justify-between">
                     <p>Class Average: </p>
                     <p>{classAverage}</p>
                   </div>
                 </td>
-                <td className="px-4 py-2 border border-gray-500">
+                <td className="px-4 py-2 border-l border-gray-500">
                   <div className="flx flex justify-between">
                     <p>Highest Marks: </p>
                     <p>{highestMarks}</p>
                   </div>
                 </td>
-                <td className="px-4 py-2 border  border-gray-500">
+                <td className="px-4 py-2 border-l border-gray-500">
                   <div className="flx flex justify-between">
                     <p>Total Marks: </p>
                     <p>{exam.total_marks}</p>
                   </div>
                 </td>
-                <td className="px-4 py-2 border border-r-0 border-gray-500"></td>
-                <td className="px-4 py-2 border border-l-0  border-gray-500"></td>
+                <td className="px-4 py-2 border-l border-gray-500"></td>
+                <td className="px-4 py-2"></td>
               </tr>
             </>
           )}

@@ -33,6 +33,7 @@ const G2OfficerDashboard = () => {
   return (
     <div className="px-10">
       <Spinner loading={spinning} />
+      <div className="text-4xl mt-10 mb-4 font-poppins">Print Results</div>
       <Table exams={exams} />
     </div>
   );
