@@ -282,6 +282,11 @@ export default function Form({
                 </option>
               ))}
             </select>
+            <p className="bg-slate-100 rounded-lg text-red-600 mt-4 px-4 py-2">
+              <span className="text-black mr-1">Note: </span>Make sure to
+              carefully select the course of this exam as it can not be changed
+              later.
+            </p>
           </div>
         )}
 
@@ -313,7 +318,7 @@ export default function Form({
         >
           Cancel
         </button>
-        {level === 5 && (
+        {level === 5 && !copy && (
           <button
             type="button"
             className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
