@@ -16,15 +16,20 @@ export default function DashboardComponent({
   const session = useSession();
   const facultyId = session.data.user.id;
 
+  console.log("selected ", selectedCourse);
+
   useEffect(() => {
     if (
       exams_data !== undefined &&
       exams_data !== null &&
       exams_data.length > 0
     ) {
-      setCourses(exams_data);
-      setSelectedCourse(exams_data[0].course.course_code);
-      setExams(exams_data[0].course.paper);
+      const sortedExams = exams_data.sort((a, b) =>
+        a.course.course_name.localeCompare(b.course.course_name)
+      );
+      setCourses(sortedExams);
+      setSelectedCourse(sortedExams[0].course.course_code);
+      setExams(sortedExams[0].course.paper);
     }
     if (
       paperapproval_data !== undefined &&
@@ -112,6 +117,7 @@ export default function DashboardComponent({
               Previous Exams of {selectedCourse}
             </h1>
             <ExamTable
+            isPrevious={true}
               exams_data={exams.filter(
                 (paper) =>
                   paper.status !== "Pending Approval" &&
@@ -120,19 +126,21 @@ export default function DashboardComponent({
             />
           </div>
 
-          <div className="pr-10 pl-5 mt-10">
-            <h1 className="text-2xl font-poppins font-bold">
-              Open Exams of {selectedCourse}
-            </h1>
-            <ExamTable
-              exams_data={exams.filter(
-                (paper) =>
-                  (facultyId !== paper.examofficer?.faculty_id &&
-                    paper.status === "Pending Approval") ||
-                  paper.status === "Draft"
-              )}
-            />
-          </div>
+          {level < 3 && (
+            <div className="pr-10 pl-5 mt-10">
+              <h1 className="text-2xl font-poppins font-bold">
+                Open Exams of {selectedCourse}
+              </h1>
+              <ExamTable
+                exams_data={exams.filter(
+                  (paper) =>
+                    (facultyId !== paper.examofficer?.faculty_id &&
+                      paper.status === "Pending Approval") ||
+                    paper.status === "Draft"
+                )}
+              />
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -59,7 +59,7 @@ export default function PapersList({ papers, status }) {
             <th className="border px-4 py-2">Name</th>
             <th className="border px-4 py-2">Type</th>
             <th className="border px-4 py-2">Date</th>
-            <th className="border px-4 py-2">Start Time</th>
+            <th className="border px-4 py-2">Live Time</th>
             <th className="border px-4 py-2">Duration</th>
             <th className="border px-4 py-2">Status</th>
             <th className="border px-4 py-2 text-center">Action</th>

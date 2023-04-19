@@ -190,7 +190,7 @@ export default function Form({
         />
 
         <Input
-          text={"Paper Start Time"}
+          text={"Paper Live Time"}
           required={true}
           type={"time"}
           onChange={handlePaperTime}

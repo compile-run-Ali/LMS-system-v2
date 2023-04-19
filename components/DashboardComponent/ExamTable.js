@@ -9,13 +9,12 @@ import { useSession } from "next-auth/react";
 import { MdCheckCircle, MdEdit } from "react-icons/md";
 import { IoMdEye } from "react-icons/io";
 
-const ExamTable = ({ exams_data, approve_row }) => {
+const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
   const router = useRouter();
   const [exams, setExams] = useState([]);
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    const currentDate = new Date();
     const updatedExams = exams_data.map((exam) => {
       const examDate = new Date(exam.date);
       if (compareDateTime(examDate) === "past" && exam.status === "Approved") {
@@ -139,7 +138,7 @@ const ExamTable = ({ exams_data, approve_row }) => {
           <th className="px-4 py-2">Total Marks</th>
           <th className="px-4 py-2">Status</th>
           {approve_row && <th className="px-4 py-2">Approve</th>}
-          <th className="px-4 py-2">Edit</th>
+          <th className="px-4 py-2">{isPrevious ? "View" : "Edit"}</th>
         </tr>
       </thead>
       <tbody>
