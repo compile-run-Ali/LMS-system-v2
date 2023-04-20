@@ -16,8 +16,6 @@ export default function DashboardComponent({
   const session = useSession();
   const facultyId = session.data.user.id;
 
-  console.log("selected ", selectedCourse);
-
   useEffect(() => {
     if (
       exams_data !== undefined &&
@@ -60,8 +58,6 @@ export default function DashboardComponent({
     );
     setExams(course.course.paper);
   };
-
-  console.log("exams", exams);
 
   return (
     <div>
@@ -117,7 +113,7 @@ export default function DashboardComponent({
               Previous Exams of {selectedCourse}
             </h1>
             <ExamTable
-            isPrevious={true}
+              isPrevious={true}
               exams_data={exams.filter(
                 (paper) =>
                   paper.status !== "Pending Approval" &&

@@ -69,7 +69,11 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
     const today = new Date();
     // get gmt offset in minutes and add in today
     today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-    return date < today;
+    return (
+      date.getDate() < today.getDate() ||
+      date.getMonth() < today.getMonth() ||
+      date.getFullYear() < today.getFullYear()
+    );
   };
 
   const approveExam = (examId, date) => {

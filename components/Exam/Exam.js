@@ -85,12 +85,16 @@ export default function Exam({
     return <div>Exam not found</div>;
   }
 
-  const isPaperDatePast = () => {
-    const date = new Date(exam.date);
+  const isPaperDateNotToday = () => {
+    const paperDate = new Date(exam.date);
     const today = new Date();
     // get gmt offset in minutes and add in today
     today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-    return date < today;
+    return (
+      paperDate.getDate() < today.getDate() ||
+      paperDate.getMonth() < today.getMonth() ||
+      paperDate.getFullYear() < today.getFullYear()
+    );
   };
 
   const showSpinner = () => {
@@ -160,7 +164,7 @@ export default function Exam({
       alert("Please select a faculty to mark to");
       return;
     }
-    if (isPaperDatePast()) {
+    if (isPaperDateNotToday()) {
       alert("Exam date is in the past. Please change the date and try again.");
       return;
     }
@@ -193,7 +197,7 @@ export default function Exam({
   };
 
   const approve = async () => {
-    if (isPaperDatePast()) {
+    if (isPaperDateNotToday()) {
       alert("Exam date is in the past. Please change the date and try again.");
       return;
     }
@@ -253,10 +257,11 @@ export default function Exam({
       alert("Please select a faculty to send to");
       return;
     }
-    if (isPaperDatePast()) {
+    if (isPaperDateNotToday()) {
       alert("Exam date is in the past. Please change the date and try again.");
       return;
     }
+
     const sendForward = await axios.post("/api/faculty/edit_paperapproval", {
       paper_id: exam.paper_id,
       examofficer: selectedFaculty,
@@ -595,8 +600,7 @@ export default function Exam({
             )}
           </div>
         )}
-        {(session.data.user.level === 1 ||
-          session.data.user.level === 5) &&
+        {(session.data.user.level === 1 || session.data.user.level === 5) &&
           exam.status !== "Draft" &&
           exam.status !== "Pending Approval" && (
             <div className="mt-10 pr-10 flex justify-start gap-x-5 mb-10">
