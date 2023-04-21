@@ -468,7 +468,6 @@ export default function Exam({
                         faculties
                           .filter(
                             (faculty) =>
-                              faculty.level === 2 ||
                               faculty.level === 3 ||
                               faculty.level === 4
                           )
@@ -531,7 +530,6 @@ export default function Exam({
                       faculties
                         .filter(
                           (faculty) =>
-                            faculty.level === 2 ||
                             faculty.level === 3 ||
                             faculty.level === 4
                         )
