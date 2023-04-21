@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Input from "@/components/Common/Form/Input";
+import Spinner from "@/components/Loader/Spinner";
+
 const AddCourse = () => {
   const router = useRouter();
-
+  const [loading, setLoading] = useState({});
   const [edit, setEdit] = useState(router.query.course_code ? true : false);
   const [name, setName] = useState(edit ? router.query.course_name : "");
   const [creditHours, setCreditHours] = useState(
@@ -31,20 +33,25 @@ const AddCourse = () => {
   };
 
   const addCourse = async (course) => {
-    const new_course = await axios.post(
-      `/api/admin/course/${edit ? "edit_course" : "add_courses"}`,
-      {
+    setLoading({ message: "Saving..." });
+    axios
+      .post(`/api/admin/course/${edit ? "edit_course" : "add_courses"}`, {
         course_code: edit ? router.query.course_code : null,
         ...course,
-      }
-    );
-    if (new_course.status === 200) {
-      router.push("/admin");
-    }
+      })
+      .then((res) => {
+        setLoading(false);
+        router.push("/admin/courses");
+      })
+      .catch((err) => {
+        setLoading({ error: "Error in saving course." });
+        console.log("Error in add/edit course", err);
+      });
   };
 
   return (
     <div className="flex justify-center ">
+      <Spinner loading={loading} />
       <form
         onSubmit={handleSubmit}
         className=" bg-white py-6 rounded-lg shadow-xl w-2/3 px-10 "
@@ -80,7 +87,7 @@ const AddCourse = () => {
             onChange={(event) => setMaxStudents(event.target.value)}
           />
         </div>
-     {/*    <div className="mb-4">
+        {/*    <div className="mb-4">
           <Input
             text="Credit Hours"
             id="credit-hours"
