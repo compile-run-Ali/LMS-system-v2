@@ -71,7 +71,14 @@ export default function Topbar() {
               </div>
             )}
           <div className="cursor-pointer" onClick={() => router.push("/")}>
-            <Image src="/logo.png" width={100} height={100} alt="logo" />
+            <Image
+              src="/logo.png"
+              width={100}
+              height={100}
+              alt="logo"
+              priority="loading"
+              className="w-auto h-auto"
+            />
           </div>
         </div>
         <div className="flex items-center gap-3">
