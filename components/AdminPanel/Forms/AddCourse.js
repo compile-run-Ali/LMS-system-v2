@@ -80,7 +80,7 @@ const AddCourse = () => {
             onChange={(event) => setMaxStudents(event.target.value)}
           />
         </div>
-        <div className="mb-4">
+     {/*    <div className="mb-4">
           <Input
             text="Credit Hours"
             id="credit-hours"
@@ -88,7 +88,7 @@ const AddCourse = () => {
             value={creditHours}
             onChange={(event) => setCreditHours(event.target.value)}
           />
-        </div>
+        </div> */}
         <div className="flex items-center justify-between">
           <button
             className=" font-poppins mt-8 bg-blue-800 hover:bg-blue-700 text-white font-semibold py-2 px-8 rounded focus:outline-none focus:shadow-outline"

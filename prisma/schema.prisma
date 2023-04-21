@@ -208,7 +208,7 @@ model Notification {
 
   notification String
 
-  exam_id     String?
+  exam_id    String   @default("")
   time       DateTime @default(now())
   read       Boolean  @default(false)
   faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
