@@ -21,8 +21,8 @@ const handler = async (req, res) => {
     });
     res.status(200).json(unread_notifications);
   } catch (err) {
-    console.log("Error in faculty/get_notifications.js: " + err.message);
-    throw new Error(err.message);
+    console.log("Error in faculty/get_notifications.js: " + err);
+    res.status(500).json("Error in faculty/get_notifications.js: " + err);
   }
 };
 

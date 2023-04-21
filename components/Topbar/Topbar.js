@@ -36,11 +36,16 @@ export default function Topbar() {
 
   const getNotifications = async () => {
     // get notifications from api for the logged in user
-    const res = await axios.post("/api/faculty/get_notifications", {
-      faculty_id: session.data.user.id,
-    });
-
-    setNotifications(res.data);
+    axios
+      .post("/api/faculty/get_notifications", {
+        faculty_id: session.data.user.id,
+      })
+      .then((res) => {
+        setNotifications(res.data);
+      })
+      .catch((err) => {
+        console.log("Error in get_notifications", err);
+      });
   };
 
   const handleProfile = () => {
