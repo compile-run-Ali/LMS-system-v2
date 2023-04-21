@@ -44,7 +44,7 @@ const AssignedTable = ({ course_data }) => {
         <tr className="bg-blue-800 rounded-md text-white">
           <th className="px-4 py-2 border border-gray-600">Course</th>
           <th className="px-4 py-2 border border-gray-600">Assigned to:</th>
-          <th className="px-4 py-2 border border-gray-600"></th>
+          <th className="px-4 py-2 border border-gray-600 w-[-20">Unassign</th>
         </tr>
       </thead>
       <tbody>
@@ -62,7 +62,7 @@ const AssignedTable = ({ course_data }) => {
                   : "No faculty assigned"}
               </ul>
             </td>
-            <td className="border border-gray-600">
+            <td className="w-20 border border-gray-600 text-center">
               <button
                 onClick={() => {
                   setOpenedIndex(index);
