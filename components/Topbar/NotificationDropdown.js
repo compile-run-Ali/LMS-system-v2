@@ -11,14 +11,10 @@ export default function NotificationDropdown({
 }) {
   const router = useRouter();
 
-  console.log(notifications);
-
   const markAsRead = async (id) => {
     const res = await axios.post("/api/faculty/markNotificationRead", {
       notification_id: id,
     });
-
-    console.log(res, "res");
   };
 
   return (

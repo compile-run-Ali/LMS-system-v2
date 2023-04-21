@@ -132,7 +132,6 @@ const StudentsTable = ({
   };
 
   useEffect(() => {
-    console.log(students_data);
     if (students_data) {
       setStudents(students_data);
 

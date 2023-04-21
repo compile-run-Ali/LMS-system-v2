@@ -48,7 +48,14 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
       <Spinner loading={loading} />
       <div className="w-2/3 lg:w-2/3 h-[90%] flex flex-col bg-blue-900 border border-slate-300 shadow-xl">
         <div className="flex justify-center">
-          <Image src="/logo.png" width={300} height={300} alt="logo" />
+          <Image
+            src="/logo.png"
+            width={300}
+            height={300}
+            alt="logo"
+            priority="loading"
+            className="w-auto h-auto"
+          />
         </div>
         <div className="h-1/5 text-4xl text-center mt-2 font-medium  text-white">
           <h1>ASC e-Exam System</h1>
