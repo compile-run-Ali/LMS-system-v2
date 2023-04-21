@@ -10,17 +10,18 @@ const handler = async (req, res) => {
         read: false,
       },
       select: {
-        notification_id,
-        notification,
-        exam_id,
-        faculty,
-        faculty_id,
-        read,
-        time,
+        notification_id: true,
+        notification: true,
+        exam_id: true,
+        faculty: true,
+        faculty_id: true,
+        read: true,
+        time: true,
       },
     });
     res.status(200).json(unread_notifications);
   } catch (err) {
+    console.log("Error in faculty/get_notifications.js: " + err.message);
     throw new Error(err.message);
   }
 };
