@@ -88,16 +88,16 @@ const ExamTable = ({ exams_data, faculty }) => {
             )
             .map((exam, index) => (
               <tr key={index} className="bg-white ">
-                <td className=" px-4 py-3">{exam.paper_name}</td>
-                <td className=" px-4 py-3">{exam.course.course_name}</td>
-                <td className=" px-4 py-3">{exam.paper_type}</td>
-                <td className=" px-4 py-3">
+                <td className="border border-gray-500 px-4 py-3">{exam.paper_name}</td>
+                <td className="border border-gray-500 px-4 py-3">{exam.course.course_name}</td>
+                <td className="border border-gray-500 px-4 py-3">{exam.paper_type}</td>
+                <td className="border border-gray-500 px-4 py-3">
                   {convertDateTimeToStrings(exam.date, true)}
                 </td>
-                <td className=" px-4 py-3">
+                <td className="border border-gray-500 px-4 py-3">
                   {convertDateTimeToStrings(exam.date)}
                 </td>
-                <td className=" px-4 py-3">
+                <td className="border border-gray-500 px-4 py-3">
                   {exam.status}{" "}
                   {exam.status === "Pending Approval" && (
                     <>from {getExamOfficer(exam.examofficer?.faculty_id)}</>
