@@ -46,6 +46,16 @@ const MCQTable = ({
     }
   }, [objective_questions]);
 
+  useEffect(() => {
+    if (
+      currentMCQ.correct_answer &&
+      currentMCQ.correct_answer.split(",").length > 1
+    ) {
+      const hasMultiple = currentMCQ.correct_answer.split(",").length > 1;
+      setMultipleOptions(true);
+    }
+  }, [currentMCQ]);
+
   const router = useRouter();
 
   const editExam = () => {
@@ -76,10 +86,6 @@ const MCQTable = ({
     const newOptions = [...currentMCQ.options];
     newOptions[index] = e.target.value.replace(/,/g, " ");
     setCurrentMCQ({ ...currentMCQ, options: newOptions });
-  };
-
-  const handleMultipleCorrectOptionChange = (val) => {
-    setCurrentMCQ({ ...currentMCQ, correct_answer: val });
   };
 
   const handleCorrectOptionChange = (e) => {
@@ -168,7 +174,6 @@ const MCQTable = ({
   };
 
   const handleUpdateMCQ = async (index) => {
-    console.log(currentMCQ);
     if (
       currentMCQ.question === "" ||
       currentMCQ.options.includes("") ||
@@ -196,9 +201,15 @@ const MCQTable = ({
     if (newMCQ.status === 200) {
       setLoading({});
       const newMCQs = [...mcqs];
-      newMCQs[index] = currentMCQ;
+      const newWithOptions = {
+        options: newMCQ.data.answers.split(","),
+        ...newMCQ.data,
+      };
+      newMCQs[index] = newWithOptions;
+
       setMCQs(newMCQs);
       setObjectiveQuestions(newMCQs);
+      setMultipleOptions(false);
       setCurrentMCQ({
         question: "",
         options: ["", "", "", ""],
@@ -295,7 +306,13 @@ const MCQTable = ({
             <tr key={index} className="border-t">
               <td className="px-4 py-2">{index + 1}</td>
               <td className="px-4 py-2">{mcq.question}</td>
-              <td className="px-4 py-2">{mcq.options.join(",")}</td>
+              <td className="px-4 py-2">
+                <ol className="list-[lower-alpha] list-inside">
+                  {mcq.options?.map((option, index) => (
+                    <li key={index}>{option}</li>
+                  ))}
+                </ol>
+              </td>
               <td className="px-4 py-2">{mcq.correct_answer}</td>
               <td className="px-4 py-2">{mcq.marks}</td>
               {freeFlow ? null : (
@@ -404,6 +421,7 @@ const MCQTable = ({
             <label className="block">Allow Multiple Correct Options</label>
             <input
               type="checkbox"
+              checked={multipleOptions}
               className="accent-slate-100"
               onChange={handleMultipleOptionsChange}
             />
@@ -414,7 +432,8 @@ const MCQTable = ({
               {multipleOptions ? (
                 <MultiSelectDropdown
                   options={currentMCQ.options}
-                  onChange={handleMultipleCorrectOptionChange}
+                  setCurrentMCQ={setCurrentMCQ}
+                  selected={currentMCQ.correct_answer}
                 />
               ) : (
                 <select
@@ -439,6 +458,7 @@ const MCQTable = ({
               text={"Marks"}
               type={"number"}
               required
+              min={1}
               value={currentMCQ.marks}
               onChange={handleMarksChange}
             />

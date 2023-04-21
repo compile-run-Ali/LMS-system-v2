@@ -12,6 +12,8 @@ const handler = async (req, res) => {
         correct_answer: req.body.correct_answer,
         answers: req.body.answers,
         marks: req.body.marks,
+        timeAllowed: req.body.timeAllowed,
+        
       },
     });
     res.status(200).json(updatedOQ);

@@ -41,7 +41,7 @@ const AddCourse = () => {
       })
       .then((res) => {
         setLoading(false);
-        router.push("/admin/courses");
+        router.push("/admin");
       })
       .catch((err) => {
         setLoading({ error: "Error in saving course." });
