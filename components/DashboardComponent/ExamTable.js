@@ -141,8 +141,8 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
           <th className="px-4 py-2">Time</th>
           <th className="px-4 py-2">Total Marks</th>
           <th className="px-4 py-2">Status</th>
-          {approve_row && <th className="px-4 py-2">Approve</th>}
-          <th className="px-4 py-2">{isPrevious ? "View" : "Edit"}</th>
+          {approve_row && <th className="px-4 py-2 w-20 text-center">Approve</th>}
+          <th className="px-4 py-2 w-20 text-center">{isPrevious ? "View" : "Edit"}</th>
         </tr>
       </thead>
       <tbody>
@@ -163,7 +163,7 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
             <td className="border px-4 py-2">{exam.total_marks}</td>
             <td className="border px-4 py-2">{exam.status}</td>
             {approve_row && (
-              <td className="border px-4 py-2 z-10 text-center">
+              <td className="border px-4 py-2 z-10 text-center w-20">
                 <button
                   className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md mx-auto"
                   onClick={() => {
@@ -174,12 +174,12 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
                 </button>
               </td>
             )}
-            <td className="border px-4 py-2 z-10">
+            <td className="border px-4 py-2 z-10 text-center w-20">
               <button
                 className="bg-blue-800 hover:bg-blue-700 text-white p-2 rounded-md text-center"
                 onClick={() => handleExamClick(exam.paper_id)}
               >
-                <IoMdEye />
+                {isPrevious ? <IoMdEye /> : <MdEdit />}
               </button>
             </td>
           </tr>

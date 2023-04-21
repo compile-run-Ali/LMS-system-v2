@@ -208,3 +208,9 @@ change part number to part alphabet, and system should generate part alphabet it
 <!-- lock result button should be "result locked" if result is locked -->
 <!-- review marking  -->
 student name and pnumber more prominnent in marking dashboard
+
+
+lowest marks
+highlight lowest and highest
+share exam api
+
