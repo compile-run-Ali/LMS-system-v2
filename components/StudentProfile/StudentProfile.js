@@ -1,8 +1,21 @@
 import React, { Fragment } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 export default function StudentProfile({ student }) {
-  console.log(student);
+  const router = useRouter();
+
+  const handleChangePassword = () => {
+    router.push({
+      pathname: "/change_password",
+      query: {
+        student_id: student.id,
+        recovery: false,
+        name: student.name,
+      },
+    });
+  };
+
   return (
     <>
       {student ? (
@@ -26,6 +39,12 @@ export default function StudentProfile({ student }) {
             <p className="mb-2">
               <strong>Date of Birth:</strong>{" "}
               {new Date(student.DOB).toDateString()}
+            </p>
+            <p
+              className="mb-2 underline font-bold cursor-pointer"
+              onClick={handleChangePassword}
+            >
+              Change password
             </p>
           </div>
 

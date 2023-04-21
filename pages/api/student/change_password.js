@@ -11,9 +11,9 @@ export default async function handler(req, res) {
   try {
     if (recovery) {
       // change password
-      const faculty = await prisma.faculty.update({
+      const student = await prisma.student.update({
         where: {
-          faculty_id: id,
+          p_number: id,
         },
         data: {
           password: newHash,
@@ -22,19 +22,19 @@ export default async function handler(req, res) {
     } else {
       // check if old password matches current encrypted password
 
-      const faculty = await prisma.faculty.findUnique({
+      const student = await prisma.student.findUnique({
         where: {
-          faculty_id: id,
+          p_number: id,
         },
       });
 
-      const match = await bcrypt.compare(oldPassword, faculty.password);
+      const match = await bcrypt.compare(oldPassword, student.password);
 
       if (match) {
         // change password
-        const faculty = await prisma.faculty.update({
+        const student = await prisma.student.update({
           where: {
-            faculty_id: id,
+            p_number: id,
           },
           data: {
             password: newHash,
@@ -49,6 +49,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ message: "Password Changed Successfully" });
   } catch (error) {
+    console.log("Error in change_password", error);
     res.status(500).json({ message: "Error in change_password", error: error });
   }
 }

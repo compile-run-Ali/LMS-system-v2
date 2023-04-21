@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 import Input from "../Common/Form/Input";
 import axios from "axios";
 import Spinner from "../Loader/Spinner";
@@ -16,6 +15,7 @@ const PasswordComponent = () => {
     show: false,
     message: "",
   });
+  const isStudent = router?.query?.student_id ? true : false;
 
   const changePassword = async () => {
     console.log(router.query);
@@ -28,19 +28,19 @@ const PasswordComponent = () => {
       message: "Changing Password...",
     });
     axios
-      .post("/api/faculty/change_password", {
+      .post(`/api/${isStudent ? "student" : "faculty"}/change_password`, {
         oldPassword,
         newPassword,
         recovery,
-        faculty_id: router.query.faculty_id,
+        id: isStudent ? router.query.student_id : router.query.faculty_id,
       })
       .then((res) => {
-        console.log("Password Changed Successfully", res.data);
         console.log("data is", res.data?.notMatch);
         if (res.data?.notMatch) {
           setLoading({});
           alert("Old Password does not match");
         } else {
+          console.log("Password Changed Successfully", res.data);
           router.push("/");
         }
       })
@@ -50,7 +50,6 @@ const PasswordComponent = () => {
           error: "Error in Changing Password",
         });
       });
-    // axios to change password
   };
 
   useEffect(() => {

@@ -79,8 +79,12 @@ const AddFaculty = () => {
       level: 2,
     },
     {
-      title: "Inst",
+      title: "Instructor",
       level: 1,
+    },
+    {
+      title: "G2 Officer",
+      level: 0,
     },
   ];
 
@@ -318,10 +322,10 @@ const AddFaculty = () => {
             </p>
           </div> */}
       </div>
-      <div className="flex justify-left ml-6 ">
+      <div className="flex justify-left ml-10 mt-10 ">
         {!selfEdit && (
           <button
-            className="bg-blue-800 hover:bg-blue-700 text-lg mt-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
+            className="bg-blue-800 hover:bg-blue-700 text-lg mt-4 mr-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
             type="submit"
           >
             {adminEdit ? "Save" : "Add Faculty"}
@@ -330,11 +334,11 @@ const AddFaculty = () => {
 
         {(selfEdit || adminEdit) && (
           <button
-            className="bg-red-800 hover:bg-red-700 text-lg mt-4 ml-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
+            className="bg-red-800 hover:bg-red-700 text-lg mt-4 font-poppins text-white font-semibold py-2 px-10 rounded focus:outline-none focus:shadow-outline "
             type="button"
             onClick={() => {
               router.push({
-                pathname: "/faculty/change_password",
+                pathname: "/change_password",
                 query: {
                   faculty_id: router.query.faculty_id,
                   recovery: adminEdit,

@@ -37,6 +37,25 @@ export default function Topbar() {
     setNotifications(res.data);
   };
 
+  const handleProfile = () => {
+    console.log(session.data.user);
+    const user = session.data?.user || {};
+    const query =
+      user?.role === "faculty"
+        ? {
+            faculty_id: user.id,
+            selfEdit: true,
+          }
+        : {
+            student_id: user.id,
+            selfEdit: true,
+          };
+    router.push({
+      pathname: `/${user?.role}/profile`,
+      query: query,
+    });
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mx-10 h-[110px]">
@@ -89,8 +108,7 @@ export default function Topbar() {
                 <Image
                   src={`/uploads/${session?.data?.user?.image}`}
                   // src="/avatar.png"
-                  layout="fill"
-                  objectFit="cover"
+                  fill
                   className="rounded-full object-cover object-center"
                   alt="user"
                 />
@@ -119,17 +137,7 @@ export default function Topbar() {
               session.data.user?.level < 5) ||
               session.data.user?.role === "student") && (
               <div
-                onClick={() => {
-                  console.log(session.data.user);
-                  const user = session.data?.user || {};
-                  router.push({
-                    pathname: `/${session.data.user?.role}/profile`,
-                    query: {
-                      selfEdit: true,
-                      faculty_id: session.data.user.id,
-                    },
-                  });
-                }}
+                onClick={handleProfile}
                 className="flex items-center justify-center gap-3 rounded-lg bg-slate-100 px-10 py-2 font-poppins text-red-600 font-medium cursor-pointer"
               >
                 See Profile

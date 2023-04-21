@@ -82,13 +82,6 @@ export default async function handler(req, res) {
       })),
     });
 
-    // const createdPaper = await prisma.paper.create({
-    //   data: {
-    //     ...newPaper,
-    //     paper_name: `${newPaper.paper_name} (copy)`,
-    //     status: "Draft",
-    //   },
-    // });
     return res.status(200).json({
       ...createdPaper,
       objective_questions: createdObjectiveQuestions,

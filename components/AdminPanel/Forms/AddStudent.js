@@ -94,6 +94,7 @@ export default function AddStudent() {
           })
           .then((res) => {
             console.log("course added successfully", res.data);
+            router.push("/");
           })
           .catch((err) =>
             console.log("Error in registering student to course", err)
@@ -121,6 +122,17 @@ export default function AddStudent() {
       })
       .catch((err) => console.log("Error in editing student", err));
     router.push("/admin");
+  };
+
+  const handleRecoverPassword = () => {
+    router.push({
+      pathname: "/change_password",
+      query: {
+        student_id: pNumber,
+        recovery: true,
+        name: name,
+      },
+    });
   };
 
   return (
@@ -216,15 +228,17 @@ export default function AddStudent() {
           </select>
         </div>
 
-        <div className="mb-4">
-          <Input
-            text="Password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
-        </div>
+        {!edit && (
+          <div className="mb-4">
+            <Input
+              text="Password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          </div>
+        )}
         <div className="font-poppins mt-[22px]">
           <label
             className="block mb-2  text-primary-black"
@@ -249,11 +263,21 @@ export default function AddStudent() {
         </div>
       </div>
       <div className="flex justify-end">
+        {edit && (
+          <button
+            type="button"
+            onClick={handleRecoverPassword}
+            className="mr-4 bg-blue-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
+          >
+            Recover Password
+          </button>
+        )}
+
         <button
           type="submit"
           className="bg-blue-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
         >
-          {edit ? "Edit" : "Add"} Student
+          Save
         </button>
       </div>
     </form>
