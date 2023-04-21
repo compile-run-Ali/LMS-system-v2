@@ -9,6 +9,15 @@ const handler = async (req, res) => {
         faculty_id: req.body.faculty_id,
         read: false,
       },
+      select: {
+        notification_id,
+        notification,
+        exam_id,
+        faculty,
+        faculty_id,
+        read,
+        time,
+      },
     });
     res.status(200).json(unread_notifications);
   } catch (err) {
