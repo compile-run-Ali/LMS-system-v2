@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import Input from "@/components/Common/Form/Input";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Spinner from "@/components/Loader/Spinner";
 
 export default function AddStudent() {
   const router = useRouter();
+  const [loading, setLoading] = useState({});
   const [pNumber, setPNumber] = useState(
     router.query.p_number ? router.query.p_number : ""
   );
@@ -78,6 +80,8 @@ export default function AddStudent() {
   };
 
   const addStudent = async (student) => {
+    setLoading({ message: "Saving..." });
+
     axios
       .post(`/api/admin/student/add_student`, student, {
         headers: {
@@ -93,17 +97,21 @@ export default function AddStudent() {
             course_code: selectedCourse,
           })
           .then((res) => {
+            setLoading({});
             console.log("course added successfully", res.data);
             router.push("/");
           })
-          .catch((err) =>
-            console.log("Error in registering student to course", err)
-          );
+          .catch((err) => {
+            setLoading({ message: "Error in enrolling student to course." });
+
+            console.log("Error in registering student to course", err);
+          });
       })
       .catch((error) => {
         if (error.response && error.response.status === 400) {
           alert("Student with that Army Number already exists.");
         } else {
+          setLoading({ message: "Error in registering student." });
           console.error(error);
         }
       });
@@ -111,6 +119,7 @@ export default function AddStudent() {
   };
 
   const editStudent = async (student) => {
+    setLoading({ message: "Saving..." });
     axios
       .post(`/api/admin/student/edit_student`, student, {
         headers: {
@@ -118,9 +127,13 @@ export default function AddStudent() {
         },
       })
       .then((res) => {
+        setLoading({});
         console.log("student edited successfully", res.data);
       })
-      .catch((err) => console.log("Error in editing student", err));
+      .catch((err) => {
+        setLoading({ error: "Error in editing student." });
+        console.log("Error in editing student", err);
+      });
     router.push("/admin");
   };
 
@@ -137,6 +150,7 @@ export default function AddStudent() {
 
   return (
     <form onSubmit={handleSubmit} className="font-poppins px-14">
+      <Spinner loading={loading} />
       <div className="py-4 grid grid-cols-2 gap-x-8">
         <div className="mb-4">
           <Input
