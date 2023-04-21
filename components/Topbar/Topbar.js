@@ -1,14 +1,20 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Image from "next/image";
+import ClickAwayListener from "react-click-away-listener";
+
+import { signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+
 import ArrowDownSVG from "@/svgs/arrow_down";
 import NotificationSVG from "@/svgs/notification";
-import { signOut } from "next-auth/react";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
+
 import NotificationDropdown from "./NotificationDropdown";
-import axios from "axios";
-import ClickAwayListener from "react-click-away-listener";
-import { useRouter } from "next/router";
+
 import { IoArrowBackSharp } from "react-icons/io5";
+import { MdOutlineLogout } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
 
 export default function Topbar() {
   const router = useRouter();
@@ -138,23 +144,25 @@ export default function Topbar() {
         </div>
       </div>
       {dropdown && (
-        <div className="flex justify-end mr-10">
-          <div className="dropdown absolute -mt-8 space-y-2">
+        <div className="flex justify-end mr-10 font-poppins text-black">
+          <div className="dropdown absolute -mt-8">
             {((session.data.user?.role === "faculty" &&
               session.data.user?.level < 5) ||
               session.data.user?.role === "student") && (
               <div
                 onClick={handleProfile}
-                className="flex items-center justify-center gap-3 rounded-lg bg-slate-100 px-10 py-2 font-poppins text-red-600 font-medium cursor-pointer"
+                className="flex items-center justify-between  px-4 font-medium bg-white space-x-6 py-2 cursor-pointer border-2 border-blue-800 border-b-0"
               >
-                See Profile
+                <p>See Profile</p>
+                <CgProfile className="text-2xl" />
               </div>
             )}
             <div
               onClick={logout}
-              className="flex items-center justify-center gap-3 rounded-lg bg-slate-100 px-10 py-2 font-poppins text-red-600 font-medium cursor-pointer "
+              className="flex items-center justify-between  px-4 font-medium bg-white space-x-6 py-2 cursor-pointer border-2 border-blue-800"
             >
-              Logout
+              <p>Logout</p>
+              <MdOutlineLogout className="text-2xl" />
             </div>
           </div>
         </div>
