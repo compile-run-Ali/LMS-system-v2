@@ -64,17 +64,21 @@ const ExamTable = ({ exams_data, faculty }) => {
   return (
     <>
       <Spinner loading={loading} />
-      <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
+      <table className="table-auto mt-10 rounded-md font-poppins w-full text-left shadow-md">
         <thead>
           <tr className="bg-blue-800 rounded-md text-white">
-            <th className="px-4 py-2">Exam Name</th>
-            <th className="px-4 py-2">Course</th>
-            <th className="px-4 py-2">Type</th>
-            <th className="px-4 py-2">Date</th>
-            <th className="px-4 py-2">Time</th>
-            <th className="px-4 py-2">Status</th>
-            <th className="px-4 py-2"></th>
-            <th className="px-4 py-2"></th>
+            <th className="px-4 py-2 border border-gray-500">Exam Name</th>
+            <th className="px-4 py-2 border border-gray-500">Course</th>
+            <th className="px-4 py-2 border border-gray-500">Type</th>
+            <th className="px-4 py-2 border border-gray-500">Date</th>
+            <th className="px-4 py-2 border border-gray-500">Time</th>
+            <th className="px-4 py-2 border border-gray-500">Status</th>
+            <th className="px-4 py-2 border border-gray-500 w-20 text-center">
+              Edit
+            </th>
+            <th className="px-4 py-2 border border-gray-500 w-20 text-center">
+              Delete
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -99,7 +103,7 @@ const ExamTable = ({ exams_data, faculty }) => {
                     <>from {getExamOfficer(exam.examofficer?.faculty_id)}</>
                   )}{" "}
                 </td>
-                <td>
+                <td className="border border-gray-500 w-20 text-center">
                   <button
                     onClick={() => handleExamEdit(exam)}
                     className="hover:bg-blue-800 text-blue-800 hover:text-white p-2 rounded-md transition-colors "
@@ -107,7 +111,7 @@ const ExamTable = ({ exams_data, faculty }) => {
                     <MdEdit />
                   </button>
                 </td>
-                <td>
+                <td className="border border-gray-500 w-20 text-center">
                   <button
                     onClick={() => handleExamDelete(exam)}
                     className="text-red-600 p-2 hover:text-white hover:bg-red-600 rounded-md transition-colors"

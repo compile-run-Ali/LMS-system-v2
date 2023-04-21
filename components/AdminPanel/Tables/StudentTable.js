@@ -32,33 +32,43 @@ export default function StudentTable({
 
   return (
     <div>
-      <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
+      <table className="table-auto mt-10 rounded-md font-poppins w-full text-left shadow-md">
         <thead>
           <tr className="bg-blue-800 rounded-md text-white">
-            <th className="px-4 py-2">Sr. #</th>
-            <th className="px-4 py-2">Army Number</th>
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Phone Number</th>
-            <th className="px-4 py-2">Email</th>
-            <th className="px-4 py-2">DOB</th>
-            <th className="px-4 py-2">Rank</th>
-            <th className="px-4 py-2"></th>
-            <th className="px-4 py-2"></th>
+            <th className="px-4 py-2 border border-gray-500">Sr. #</th>
+            <th className="px-4 py-2 border border-gray-500">Army Number</th>
+            <th className="px-4 py-2 border border-gray-500">Name</th>
+            <th className="px-4 py-2 border border-gray-500">Phone Number</th>
+            <th className="px-4 py-2 border border-gray-500">Email</th>
+            <th className="px-4 py-2 border border-gray-500">DOB</th>
+            <th className="px-4 py-2 border border-gray-500">Rank</th>
+            <th className="px-4 py-2 border border-gray-500 w-20 text-center">Edit</th>
+            <th className="px-4 py-2 border border-gray-500 w-20 text-center">Delete</th>
           </tr>
         </thead>
         <tbody>
           {students.map((student, index) => (
             <tr key={index} className="bg-white">
-              <td className=" px-4 py-2">{index + 1}</td>
-              <td className=" px-4 py-2">{student.p_number}</td>
-              <td className=" px-4 py-2">{student.name}</td>
-              <td className=" px-4 py-2">{student.phone_number}</td>
-              <td className=" px-4 py-2">{student.email}</td>
-              <td className=" px-4 py-2">{student.rank}</td>
-              <td className=" px-4 py-2">
+              <td className=" px-4 py-2 border border-gray-500">{index + 1}</td>
+              <td className=" px-4 py-2 border border-gray-500">
+                {student.p_number}
+              </td>
+              <td className=" px-4 py-2 border border-gray-500">
+                {student.name}
+              </td>
+              <td className=" px-4 py-2 border border-gray-500">
+                {student.phone_number}
+              </td>
+              <td className=" px-4 py-2 border border-gray-500">
+                {student.email}
+              </td>
+              <td className=" px-4 py-2 border border-gray-500">
+                {student.rank}
+              </td>
+              <td className=" px-4 py-2 border border-gray-500">
                 {new Date(student.DOB).toDateString()}
               </td>
-              <td className="px-4 py-2">
+              <td className="px-4 py-2 border border-gray-500 w-20 text-center">
                 <button
                   onClick={() => {
                     editStudent(index);
@@ -68,7 +78,7 @@ export default function StudentTable({
                   <MdEdit />
                 </button>
               </td>
-              <td className="px-4 py-2">
+              <td className="px-4 py-2 border border-gray-500 w-20 text-center">
                 <button
                   onClick={() => {
                     openModal(index);

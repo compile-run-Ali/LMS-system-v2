@@ -39,19 +39,19 @@ const AssignedTable = ({ course_data }) => {
   console.log("courseData", courseData[1]?.faculty);
 
   return (
-    <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
+    <table className="table-auto mt-10 rounded-md font-poppins w-full text-left shadow-md">
       <thead>
         <tr className="bg-blue-800 rounded-md text-white">
-          <th className="px-4 py-2 border border-gray-600">Course</th>
-          <th className="px-4 py-2 border border-gray-600">Assigned to:</th>
-          <th className="px-4 py-2 border border-gray-600 w-[-20">Unassign</th>
+          <th className="px-4 py-2 border border-gray-500">Course</th>
+          <th className="px-4 py-2 border border-gray-500">Assigned to:</th>
+          <th className="px-4 py-2 border border-gray-500 w-32 text-center">Unassign</th>
         </tr>
       </thead>
       <tbody>
         {courseData.map((course, index) => (
           <tr key={index} className="bg-white">
-            <td className=" px-4 py-2 border border-gray-600">{`${course.course_code} - ${course.course_name}`}</td>
-            <td className=" px-4 py-2 border border-gray-600">
+            <td className=" px-4 py-2 border border-gray-500">{`${course.course_code} - ${course.course_name}`}</td>
+            <td className=" px-4 py-2 border border-gray-500">
               <ul>
                 {course.faculty.length > 0
                   ? course.faculty.map((fac, index) => (
@@ -62,7 +62,7 @@ const AssignedTable = ({ course_data }) => {
                   : "No faculty assigned"}
               </ul>
             </td>
-            <td className="w-20 border border-gray-600 text-center">
+            <td className="w-32 border border-gray-500 text-center">
               <button
                 onClick={() => {
                   setOpenedIndex(index);
