@@ -4,12 +4,14 @@ import CourseTable from "../Tables/CourseTable";
 import DeleteModal from "./DeleteModal";
 import AssignFacultyModal from "./AssignFacultyModal";
 import axios from "axios";
+import Spinner from "@/components/Loader/Spinner";
 
 export default function Courses({ courses, setCourses, faculty }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [assignFacultyOpen, setAssignFacultyOpen] = useState(false);
+  const [loading, setLoading] = useState({});
   const addCourses = () => {
     router.push("/admin/add_course");
   };
@@ -28,6 +30,8 @@ export default function Courses({ courses, setCourses, faculty }) {
 
   const handleAssignFaculty = async (faculty) => {
     if (!faculty) return alert("Please select a faculty");
+
+    setLoading({ message: "Enrolling in course..." });
 
     await axios
       .post("/api/admin/assign_faculty_to_courses", {
@@ -48,9 +52,11 @@ export default function Courses({ courses, setCourses, faculty }) {
           });
           setCourses(newCourses);
           setAssignFacultyOpen(false);
+          setLoading({});
         }
       })
       .catch((err) => {
+        setLoading({ error: "Error in assigning course." });
         console.log("Error", err);
         if (err.response.status === 409) {
           alert("Faculty already assigned to this course");
@@ -66,6 +72,7 @@ export default function Courses({ courses, setCourses, faculty }) {
         handleDelete={handleDelete}
       />
       <AssignFacultyModal
+        loading={loading}
         setIsOpen={setAssignFacultyOpen}
         isOpen={assignFacultyOpen}
         faculty={faculty}
