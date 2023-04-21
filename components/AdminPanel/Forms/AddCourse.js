@@ -94,7 +94,7 @@ const AddCourse = () => {
             className=" font-poppins mt-8 bg-blue-800 hover:bg-blue-700 text-white font-semibold py-2 px-8 rounded focus:outline-none focus:shadow-outline"
             type="submit"
           >
-            Add Course
+            Save
           </button>
         </div>
       </form>
