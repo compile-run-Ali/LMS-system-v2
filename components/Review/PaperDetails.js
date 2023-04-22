@@ -8,7 +8,6 @@ export default function PaperDetails({
   paper: initialPaper,
   isFaculty = false,
   studentId,
-  
 }) {
   const [paper, setPaper] = useState(initialPaper);
   const [studentStatus, setStudentStatus] = useState({
@@ -86,7 +85,9 @@ export default function PaperDetails({
         <thead>
           <tr className="bg-blue-900 text-white">
             <th className="text-left border px-4 py-2">Course Code</th>
-            <td className="border text-center px-4 py-2">{paper.course_code}</td>
+            <td className="border text-center px-4 py-2">
+              {paper.course_code}
+            </td>
           </tr>
           <tr className="bg-blue-900 text-white">
             <th className="text-left border px-4 py-2">Paper</th>
@@ -114,10 +115,12 @@ export default function PaperDetails({
           )}
           <tr className="bg-blue-900 text-white">
             <th className="text-left border px-4 py-2">Duration</th>
-            <td className="border text-center px-4 py-2">{paper.duration} Minutes</td>
+            <td className="border text-center px-4 py-2">
+              {paper.duration} Minutes
+            </td>
           </tr>
           <tr className="bg-blue-900 text-white">
-            <th className="text-left border px-4 py-2">Live Time</th>
+            <th className="text-left border px-4 py-2">Start Time</th>
             <td className="border text-center px-4 py-2">
               {studentStatus.timeStarted && studentStatus.timeCompleted
                 ? convertDateTimeToStrings(studentStatus.timeStarted, false) +
@@ -127,7 +130,7 @@ export default function PaperDetails({
             </td>
           </tr>
           <tr className="bg-blue-900 text-white">
-            <th className="text-left border px-4 py-2">End Time</th>
+            <th className="text-left border px-4 py-2">Submit Time</th>
             <td className="border text-center px-4 py-2">
               {studentStatus.timeStarted && studentStatus.timeCompleted
                 ? convertDateTimeToStrings(studentStatus.timeCompleted, false) +
@@ -136,7 +139,6 @@ export default function PaperDetails({
                 : end}
             </td>
           </tr>
-         
         </thead>
       </table>
     </div>

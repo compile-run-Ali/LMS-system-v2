@@ -56,19 +56,12 @@ export default function OQContainer({
         is_attempted: attemptDone,
       })
       .then((res) => {
-        console.log("answer added successfully ", res.data);
         setAttempted(attemptDone);
         setSavingAnswer({
           message: "",
         });
         if (!freeFlow && attemptDone) {
           if (currentQuestion + 1 < totalQuestions) {
-            console.log(
-              "current question",
-              currentQuestion,
-              "total questions",
-              totalQuestions
-            );
             setCurrentQuestion(currentQuestion + 1);
           }
         }
@@ -147,10 +140,6 @@ export default function OQContainer({
         })
         .then((res) => {
           if (res.data) {
-            console.log(
-              "answer exists, setting selectedAnswer to fetched answer",
-              res.data
-            );
             const fetchedAnswer =
               res.data.answer.split(",")[0] === ""
                 ? []
