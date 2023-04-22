@@ -5,6 +5,8 @@ import axios from "axios";
 import * as XLSX from "xlsx";
 import Spinner from "../Loader/Spinner";
 import { MdLock, MdShare, MdDownload } from "react-icons/md";
+import { FaTrophy, FaRegThumbsDown, FaRegThumbsUp } from "react-icons/fa";
+
 import ShareModal from "./ShareModal";
 import { useSession } from "next-auth/react";
 
@@ -15,8 +17,11 @@ const StudentsTable = ({
   isPrinter = false,
 }) => {
   const [students, setStudents] = useState([]);
+
   const [classAverage, setClassAverage] = useState(null);
   const [highestMarks, setHighestMarks] = useState(null);
+  const [lowestMarks, setLowestMarks] = useState(null);
+
   const [marked, setMarked] = useState(false);
   const [noneAttempted, setNoneAttempted] = useState(false);
   const [loading, setLoading] = useState({});
@@ -158,6 +163,16 @@ const StudentsTable = ({
       );
       setHighestMarks(highestMarks);
 
+      // do not include marks of student whos status is Not Attempted
+      const lowestMarks = students_data.reduce(
+        (min, student) =>
+          student.status === "Not Attempted"
+            ? min
+            : Math.min(min, student.obtainedMarks),
+        100
+      );
+      setLowestMarks(lowestMarks);
+
       const isAllMarked = students_data.every(
         (student) =>
           student.status === "Marked" || student.status === "Not Attempted"
@@ -205,7 +220,7 @@ const StudentsTable = ({
       <Spinner loading={loading} />
       <table
         id="my-table"
-        className="table-auto w-full mt-10 font-poppins text-left "
+        className="table-auto w-full mt-10 font-poppins text-left shadow-lg"
       >
         <thead>
           <tr className="bg-white text-black text-3xl font-normal font-sans">
@@ -219,6 +234,7 @@ const StudentsTable = ({
             <th className="px-4 py-2">Student Name</th>
             <th className="px-4 py-2">Status</th>
             <th className="px-4 py-2">Marks</th>
+            <th className="px-4 py-2">Remarks</th>
             <th className="px-4 py-2"></th>
           </tr>
         </thead>
@@ -263,6 +279,26 @@ const StudentsTable = ({
                   : "Not Marked"}
               </td>
               <td
+                className={`px-4 py-2 border text-center ${
+                  index === students_data.length - 1 &&
+                  "border-b-gray-300 border-b w-32"
+                }`}
+              >
+                {highestMarks === student.obtainedMarks ? (
+                  <>
+                    Highest
+                    <FaRegThumbsUp className="text-green-600 text-lg inline ml-2" />
+                  </>
+                ) : lowestMarks === student.obtainedMarks ? (
+                  <>
+                    Lowest
+                    <FaRegThumbsDown className="text-red-600 text-lg inline ml-2" />
+                  </>
+                ) : (
+                  ""
+                )}
+              </td>
+              <td
                 className={`px-4 py-2 border w-[15%] text-center ${
                   index === students_data.length - 1 &&
                   "border-b-gray-300 border-b"
@@ -285,33 +321,39 @@ const StudentsTable = ({
           {marked && (
             <>
               <tr id="last-row" className={"bg-gray-300"}>
-                <td className="px-4 py-2 border-l border-gray-500">
-                  <div className="flx flex justify-between">
+                <td className="px-4 py-2">
+                  <div className="flx flex justify-between font-semibold">
                     <p>Class Average: </p>
                     <p>{classAverage}</p>
                   </div>
                 </td>
                 <td className="px-4 py-2 border-l border-gray-500">
-                  <div className="flx flex justify-between">
+                  <div className="flx flex justify-between font-semibold">
+                    <p>Lowest Marks: </p>
+                    <p>{lowestMarks}</p>
+                  </div>
+                </td>
+                <td className="px-4 py-2 border-l border-gray-500">
+                  <div className="flx flex justify-between font-semibold">
                     <p>Highest Marks: </p>
                     <p>{highestMarks}</p>
                   </div>
                 </td>
                 <td className="px-4 py-2 border-l border-gray-500">
-                  <div className="flx flex justify-between">
+                  <div className="flx flex justify-between font-semibold">
                     <p>Total Marks: </p>
                     <p>{exam.total_marks}</p>
                   </div>
                 </td>
                 <td className="px-4 py-2 border-l border-gray-500"></td>
-                <td className="px-4 py-2"></td>
+                <td></td>
               </tr>
             </>
           )}
         </tbody>
       </table>
       {!isPrinter && (
-        <div className="flex justify-end py-4 space-x-4">
+        <div className="flex justify-end py-4 space-x-4 mt-4">
           {exam.status === "Result Locked" && user.level === 1 && (
             <button
               className={`bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded`}
