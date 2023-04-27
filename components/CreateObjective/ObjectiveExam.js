@@ -351,19 +351,22 @@ const MCQTable = ({
                 </div>
               ))}
             </div>
-            <button
-              onClick={handleOptionAddition}
-              className="bg-[#FEC703] text-white p-2 rounded hover:bg-[#edbd12]"
-            >
-              Add Option
-            </button>
 
-            <button
-              onClick={handleOptionDeletion(currentMCQ.options.length - 1)}
-              className="bg-red-600 ml-5 text-white p-2 rounded hover:bg-red-700"
-            >
-              Delete Option
-            </button>
+            <div className="my-6 flex space-x-8">
+              <button
+                onClick={handleOptionAddition}
+                className="bg-[#FEC703] text-white p-2 rounded hover:bg-[#edbd12]"
+              >
+                Add Option
+              </button>
+
+              <button
+                onClick={handleOptionDeletion(currentMCQ.options.length - 1)}
+                className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
+              >
+                Delete Option
+              </button>
+            </div>
           </div>
           <div className="flex items-center mt-10 mb-2 gap-x-3">
             <label className="block">Allow Multiple Correct Options</label>

@@ -478,7 +478,7 @@ const SubjectiveExam = ({
     <div className="flex font-poppins flex-col items-center p-6">
       <Spinner loading={loading} />
 
-      <div className="w-full flex justify-center mt-10">
+      <div className="w-full flex justify-center">
         <button
           onClick={() => {
             if (!editing && !adding) {
