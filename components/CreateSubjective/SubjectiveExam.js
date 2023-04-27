@@ -618,7 +618,7 @@ const SubjectiveExam = ({
           )}
         </div>
       )}
-      <div className=" w-full pr-10 flex justify-end gap-x-5 mt-10">
+      <div className=" w-full pr-10 flex justify-end gap-x-10 mt-10">
         <button
           type="button"
           className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
@@ -659,82 +659,46 @@ const SubjectiveExam = ({
         </button>
       </div>
 
+      {subjectivesLocal.length > 0 && (
+        <>
+          <h1 className="text-2xl font-bold mt-10">Subjective Question</h1>
 
-
-      <h1 className="text-2xl font-bold">Subjective Question</h1>
-
-      <table className="w-full mt-6 text-left table-collapse">
-        <thead>
-          <tr>
-            <th className="px-4">Q#</th>
-            <th className="px-4">Part</th>
-            <th className="px-4 py-2">Question</th>
-            <th className="px-4 py-2">Parent Question</th>
-            <th className="px-4 py-2">Marks</th>
-            <th className="px-4 py-2"></th>
-            <th className="px-4 py-2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {subjectivesLocal
-            .sort((a, b) => a.questionnumber - b.questionnumber)
-            .map((subjective, index) => (
-              <React.Fragment key={subjective.sq_id}>
-                <tr
-                  className={` border
+          <table className="w-full mt-6 text-left table-collapse">
+            <thead>
+              <tr>
+                <th className="px-4">Q#</th>
+                <th className="px-4">Part</th>
+                <th className="px-4 py-2">Question</th>
+                <th className="px-4 py-2">Parent Question</th>
+                <th className="px-4 py-2">Marks</th>
+                <th className="px-4 py-2"></th>
+                <th className="px-4 py-2"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {subjectivesLocal
+                .sort((a, b) => a.questionnumber - b.questionnumber)
+                .map((subjective, index) => (
+                  <React.Fragment key={subjective.sq_id}>
+                    <tr
+                      className={` border
               ${
                 subjective.child_question &&
                 subjective.child_question.length > 0 &&
                 "border border-b-0"
               }
               `}
-                >
-                  <td className="px-6">{subjective.questionnumber}</td>
-                  <td className="px-6"></td>
-                  <td className="px-4 py-2">{subjective.question}</td>
-                  <td className="px-4 py-2">
-                    {subjective.parent_sq_id?.question}
-                  </td>
-                  <td className="px-4 py-2">{subjective.marks}</td>
-                  <td className="px-4 py-2">
-                    <button
-                      onClick={handleEditMCQ(subjective)}
-                      className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                     >
-                      <MdEdit />
-                    </button>
-                  </td>
-                  <td className="px-4 py-2">
-                    <button
-                      onClick={() => {
-                        handleDeleteSubjective(subjective.sq_id);
-                      }}
-                      className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
-                    >
-                      <MdDelete />
-                    </button>
-                  </td>
-                </tr>
-                {subjective.child_question
-                  ?.sort((a, b) => a.questionnumber - b.questionnumber)
-                  .map((child, index) => (
-                    <tr
-                      key={child.sq_id}
-                      className={`border-x ${
-                        index === subjective.child_question.length - 1 &&
-                        "border-b"
-                      }`}
-                    >
-                      <td className="pl-2"></td>
-                      <td className="pl-2">
-                        {integerToAlphabet(child.questionnumber)}
+                      <td className="px-6">{subjective.questionnumber}</td>
+                      <td className="px-6"></td>
+                      <td className="px-4 py-2">{subjective.question}</td>
+                      <td className="px-4 py-2">
+                        {subjective.parent_sq_id?.question}
                       </td>
-                      <td className="px-4 py-1">{child.question}</td>
-                      <td className="px-4 py-1">{subjective.question}</td>
-                      <td className="px-4 py-1">{child.marks}</td>
-                      <td className="px-4 py-1">
+                      <td className="px-4 py-2">{subjective.marks}</td>
+                      <td className="px-4 py-2">
                         <button
-                          onClick={handleEditMCQ(child)}
+                          onClick={handleEditMCQ(subjective)}
                           className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                         >
                           <MdEdit />
@@ -743,11 +707,7 @@ const SubjectiveExam = ({
                       <td className="px-4 py-2">
                         <button
                           onClick={() => {
-                            handleDeleteSubjective(
-                              child.sq_id,
-                              subjective,
-                              true
-                            );
+                            handleDeleteSubjective(subjective.sq_id);
                           }}
                           className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                         >
@@ -755,13 +715,53 @@ const SubjectiveExam = ({
                         </button>
                       </td>
                     </tr>
-                  ))}
-              </React.Fragment>
-            ))}
-        </tbody>
-      </table>
-
-
+                    {subjective.child_question
+                      ?.sort((a, b) => a.questionnumber - b.questionnumber)
+                      .map((child, index) => (
+                        <tr
+                          key={child.sq_id}
+                          className={`border-x ${
+                            index === subjective.child_question.length - 1 &&
+                            "border-b"
+                          }`}
+                        >
+                          <td className="pl-2"></td>
+                          <td className="pl-2">
+                            {integerToAlphabet(child.questionnumber)}
+                          </td>
+                          <td className="px-4 py-1">{child.question}</td>
+                          <td className="px-4 py-1">{subjective.question}</td>
+                          <td className="px-4 py-1">{child.marks}</td>
+                          <td className="px-4 py-1">
+                            <button
+                              onClick={handleEditMCQ(child)}
+                              className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
+                            >
+                              <MdEdit />
+                            </button>
+                          </td>
+                          <td className="px-4 py-2">
+                            <button
+                              onClick={() => {
+                                handleDeleteSubjective(
+                                  child.sq_id,
+                                  subjective,
+                                  true
+                                );
+                              }}
+                              className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
+                            >
+                              <MdDelete />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                  </React.Fragment>
+                ))}
+            </tbody>
+          </table>
+        </>
+      )}
     </div>
   );
 };

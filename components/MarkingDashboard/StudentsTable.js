@@ -313,7 +313,7 @@ const StudentsTable = ({
                     <Link
                       href={`/faculty/mark_exam/${exam?.paper_id}/${student.p_number}`}
                     >
-                      <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded ">
+                      <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-2 text-sm rounded ">
                         Check Answers
                       </button>
                     </Link>
@@ -357,10 +357,10 @@ const StudentsTable = ({
         </tbody>
       </table>
       {!isPrinter && (
-        <div className="flex justify-end py-4 space-x-4 mt-4">
+        <div className="flex justify-end py-4 space-x-10 mt-10">
           {exam.status === "Result Locked" && user.level === 1 && (
             <button
-              className={`bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded`}
+              className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
               onClick={() => {
                 setShowShareModal(true);
               }}
@@ -371,7 +371,7 @@ const StudentsTable = ({
           )}
 
           <button
-            className={`bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded`}
+            className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
             onClick={handleExport}
           >
             Export to Excel
@@ -386,7 +386,7 @@ const StudentsTable = ({
           }
           
           
-          text-white py-2 text-sm px-2 rounded`}
+          text-white text-lg py-3 px-4 rounded-md`}
             onClick={() => {
               if (exam.status === "Marked") {
                 changeStatusTo("Result Locked", true);
@@ -413,7 +413,7 @@ const StudentsTable = ({
       {isPrinter && (
         <div className="flex justify-end py-4">
           <button
-            className={`bg-blue-800 hover:bg-blue-700 text-white py-2 text-sm px-2 rounded`}
+            className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
             onClick={handlePrint}
           >
             Print Result

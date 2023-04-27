@@ -89,7 +89,9 @@ export default function Exam({
     const paperDate = new Date(exam.date);
     const today = new Date();
     // get gmt offset in minutes and add in today
-    paperDate.setMinutes(paperDate.getMinutes() + paperDate.getTimezoneOffset());
+    paperDate.setMinutes(
+      paperDate.getMinutes() + paperDate.getTimezoneOffset()
+    );
 
     console.log("today is", today, "\npaper date is", paperDate);
 
@@ -322,7 +324,7 @@ export default function Exam({
   return (
     <>
       <Spinner loading={loading} />
-      <div className="pr-10 pl-7 font-poppins w-full ">
+      <div className="px-10 font-poppins w-full">
         <div className="bg-gray-100 bg-opacity-50 pt-10 rounded-md">
           {access && (
             <div className="w-full flex justify-end pr-5 cursor-pointer">
@@ -484,41 +486,35 @@ export default function Exam({
                     </select>
                   </div>
                 </div>
-                <div className="flex gap-x-5 justify-end">
-                  <div className="mt-10 mb-10">
-                    <button
-                      type="submit"
-                      className="bg-red-800 hover:bg-red-700 font-medium text-white rounded-lg py-4 px-8"
-                      onClick={() => {
-                        sendBack();
-                      }}
-                    >
-                      Send Back
-                    </button>
-                  </div>
-                  <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
-                    <button
-                      type="submit"
-                      className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-                      onClick={() => {
-                        sendForward();
-                      }}
-                    >
-                      Mark To
-                    </button>
-                  </div>
+                <div className="flex gap-x-10 justify-end">
+                  <button
+                    type="submit"
+                    className="bg-red-800 hover:bg-red-700 font-medium text-white rounded-lg py-4 px-8"
+                    onClick={() => {
+                      sendBack();
+                    }}
+                  >
+                    Send Back
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+                    onClick={() => {
+                      sendForward();
+                    }}
+                  >
+                    Mark To
+                  </button>
                   {exam.examofficer?.level > 2 && (
-                    <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
-                      <button
-                        type="submit"
-                        className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
-                        onClick={() => {
-                          approve();
-                        }}
-                      >
-                        Approve
-                      </button>
-                    </div>
+                    <button
+                      type="submit"
+                      className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
+                      onClick={() => {
+                        approve();
+                      }}
+                    >
+                      Approve
+                    </button>
                   )}
                 </div>
               </div>
@@ -546,57 +542,49 @@ export default function Exam({
                         ))}
                   </select>
                 </div>
-                <div className="flex justify-end gap-x-5">
+                <div className="flex justify-end gap-x-10">
                   {setActive && (
-                    <div className="mt-10 mb-10">
-                      <button
-                        type="submit"
-                        className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
-                        onClick={() => {
-                          setActive(
-                            exam.paper_type === "Subjective/Objective" ? 3 : 2
-                          );
-                        }}
-                      >
-                        Back
-                      </button>
-                    </div>
+                    <button
+                      type="submit"
+                      className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
+                      onClick={() => {
+                        setActive(
+                          exam.paper_type === "Subjective/Objective" ? 3 : 2
+                        );
+                      }}
+                    >
+                      Back
+                    </button>
                   )}
-                  <div className="mt-10 mb-10">
-                    <button
-                      type="submit"
-                      className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-                      onClick={() => {
-                        saveDraft();
-                      }}
-                    >
-                      Save Draft
-                    </button>
-                  </div>
-                  <div className="mt-10 flex justify-end mb-10">
-                    <button
-                      type="submit"
-                      className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
-                      onClick={() => {
-                        submitExam();
-                        //here
-                      }}
-                    >
-                      Mark To
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+                    onClick={() => {
+                      saveDraft();
+                    }}
+                  >
+                    Save Draft
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
+                    onClick={() => {
+                      submitExam();
+                      //here
+                    }}
+                  >
+                    Mark To
+                  </button>
                   {session.data.user.level === 5 && (
-                    <div className="mt-10 flex justify-end mb-10">
-                      <button
-                        className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8 transition-all"
-                        onClick={() => {
-                          // router.push("/");
-                          approve();
-                        }}
-                      >
-                        Save and Approve
-                      </button>
-                    </div>
+                    <button
+                      className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8 transition-all"
+                      onClick={() => {
+                        // router.push("/");
+                        approve();
+                      }}
+                    >
+                      Save and Approve
+                    </button>
                   )}
                 </div>
               </div>
@@ -606,16 +594,14 @@ export default function Exam({
         {(session.data.user.level === 1 || session.data.user.level === 5) &&
           exam.status !== "Draft" &&
           exam.status !== "Pending Approval" && (
-            <div className="mt-10 pr-10 flex justify-start gap-x-5 mb-10">
-              <button
-                className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-                onClick={() => {
-                  router.push("/faculty/mark_exam/" + exam.paper_id);
-                }}
-              >
-                Evaluate
-              </button>
-            </div>
+            <button
+              className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8 my-10"
+              onClick={() => {
+                router.push("/faculty/mark_exam/" + exam.paper_id);
+              }}
+            >
+              Evaluate
+            </button>
           )}
       </div>
     </>

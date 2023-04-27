@@ -133,7 +133,7 @@ function WordExam({
             please double check the format of your questions in the uploaded
             file.
           </div>
-          <div className="flex justify-end space-x-4 mt-6">
+          <div className="flex justify-end space-x-10 mt-6">
             <button
               type="button"
               className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"

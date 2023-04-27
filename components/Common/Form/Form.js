@@ -310,7 +310,7 @@ export default function Form({
           />
         </div>
       </div>
-      <div className="mt-10 w-full pr-10 flex justify-end gap-x-5">
+      <div className="mt-10 w-full pr-10 flex justify-end gap-x-10">
         <button
           type="button"
           onClick={() => router.push("/")}
