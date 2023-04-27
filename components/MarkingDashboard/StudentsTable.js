@@ -5,7 +5,7 @@ import axios from "axios";
 import * as XLSX from "xlsx";
 import Spinner from "../Loader/Spinner";
 import { MdLock, MdShare, MdDownload } from "react-icons/md";
-import { FaTrophy, FaRegThumbsDown, FaRegThumbsUp } from "react-icons/fa";
+import { FaRegThumbsDown, FaRegThumbsUp } from "react-icons/fa";
 
 import ShareModal from "./ShareModal";
 import { useSession } from "next-auth/react";
@@ -284,18 +284,22 @@ const StudentsTable = ({
                   "border-b-gray-300 border-b w-32"
                 }`}
               >
-                {highestMarks === student.obtainedMarks ? (
+                {marked && (
                   <>
-                    Highest
-                    <FaRegThumbsUp className="text-green-600 text-lg inline ml-2" />
+                    {highestMarks === student.obtainedMarks ? (
+                      <>
+                        Highest
+                        <FaRegThumbsUp className="text-green-600 text-lg inline ml-2" />
+                      </>
+                    ) : lowestMarks === student.obtainedMarks ? (
+                      <>
+                        Lowest
+                        <FaRegThumbsDown className="text-red-600 text-lg inline ml-2" />
+                      </>
+                    ) : (
+                      ""
+                    )}
                   </>
-                ) : lowestMarks === student.obtainedMarks ? (
-                  <>
-                    Lowest
-                    <FaRegThumbsDown className="text-red-600 text-lg inline ml-2" />
-                  </>
-                ) : (
-                  ""
                 )}
               </td>
               <td
