@@ -71,10 +71,10 @@ export default function StudentTable({
                   {student.email}
                 </td>
                 <td className=" px-4 py-2 border border-gray-500">
-                  {student.rank}
+                  {new Date(student.DOB).toDateString()}
                 </td>
                 <td className=" px-4 py-2 border border-gray-500">
-                  {new Date(student.DOB).toDateString()}
+                  {student.rank}
                 </td>
                 <td className="px-4 py-2 border border-gray-500 w-20 text-center">
                   <button
