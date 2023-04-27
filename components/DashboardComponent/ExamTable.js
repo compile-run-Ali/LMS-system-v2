@@ -65,14 +65,17 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
   }, [exams_data]);
 
   const isPaperDatePast = (examDate) => {
-    const date = new Date(examDate);
+    const paperDate = new Date(examDate);
     const today = new Date();
     // get gmt offset in minutes and add in today
-    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    paperDate.setMinutes(
+      paperDate.getMinutes() + paperDate.getTimezoneOffset()
+    );
+
     return (
-      date.getDate() < today.getDate() ||
-      date.getMonth() < today.getMonth() ||
-      date.getFullYear() < today.getFullYear()
+      paperDate.getDate() < today.getDate() ||
+      paperDate.getMonth() < today.getMonth() ||
+      paperDate.getFullYear() < today.getFullYear()
     );
   };
 
@@ -129,8 +132,6 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
       </div>
     );
   }
-
-  console.log("Level", session.user.id, "\nApprove", approve_row);
 
   return (
     <table className="table-auto w-full mt-2 font-poppins text-left px-5">

@@ -89,7 +89,10 @@ export default function Exam({
     const paperDate = new Date(exam.date);
     const today = new Date();
     // get gmt offset in minutes and add in today
-    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    paperDate.setMinutes(paperDate.getMinutes() + paperDate.getTimezoneOffset());
+
+    console.log("today is", today, "\npaper date is", paperDate);
+
     return (
       paperDate.getDate() < today.getDate() ||
       paperDate.getMonth() < today.getMonth() ||
@@ -468,7 +471,7 @@ export default function Exam({
                         faculties
                           .filter(
                             (faculty) =>
-                            faculty.level === 2 ||
+                              faculty.level === 2 ||
                               faculty.level === 3 ||
                               faculty.level === 4
                           )
@@ -531,7 +534,7 @@ export default function Exam({
                       faculties
                         .filter(
                           (faculty) =>
-                          faculty.level === 2 ||
+                            faculty.level === 2 ||
                             faculty.level === 3 ||
                             faculty.level === 4
                         )

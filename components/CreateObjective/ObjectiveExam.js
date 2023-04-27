@@ -286,60 +286,9 @@ const MCQTable = ({
 
   return (
     <div className="flex font-poppins flex-col items-center p-6">
-      <h1 className="text-2xl font-bold">MCQ Question</h1>
+
       <Spinner loading={loading} />
-      <table className="w-full mt-6 text-left table-collapse">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">SR#</th>
-            <th className="px-4 py-2">Question</th>
-            <th className="px-4 py-2">Options</th>
-            <th className="px-4 py-2">Correct Option</th>
-            <th className="px-4 py-2">Marks</th>
-            {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
-            <th className="px-4 py-2"></th>
-            <th className="px-4 py-2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {mcqs.map((mcq, index) => (
-            <tr key={index} className="border-t">
-              <td className="px-4 py-2">{index + 1}</td>
-              <td className="px-4 py-2">{mcq.question}</td>
-              <td className="px-4 py-2">
-                <ol className="list-[lower-alpha] list-inside">
-                  {mcq.options?.map((option, index) => (
-                    <li key={index}>{option}</li>
-                  ))}
-                </ol>
-              </td>
-              <td className="px-4 py-2">{mcq.correct_answer}</td>
-              <td className="px-4 py-2">{mcq.marks}</td>
-              {freeFlow ? null : (
-                <td className="px-4 py-2">{mcq.timeAllowed}</td>
-              )}
-              <td className="px-4 py-2">
-                <button
-                  onClick={handleEditMCQ(index)}
-                  className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
-                >
-                  <MdEdit />
-                </button>
-              </td>
-              <td className="px-4 py-2">
-                <button
-                  onClick={() => {
-                    handleDeleteMCQ(index);
-                  }}
-                  className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
-                >
-                  <MdDelete />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
       <div className="w-full flex justify-center mt-10">
         <button
           onClick={() => {
@@ -513,6 +462,63 @@ const MCQTable = ({
           Save and Proceed
         </button>
       </div>
+
+      <h1 className="text-2xl font-bold">MCQ Question</h1>
+
+      <table className="w-full mt-6 text-left table-collapse">
+        <thead>
+          <tr>
+            <th className="px-4 py-2">SR#</th>
+            <th className="px-4 py-2">Question</th>
+            <th className="px-4 py-2">Options</th>
+            <th className="px-4 py-2">Correct Option</th>
+            <th className="px-4 py-2">Marks</th>
+            {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
+            <th className="px-4 py-2"></th>
+            <th className="px-4 py-2"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {mcqs.map((mcq, index) => (
+            <tr key={index} className="border-t">
+              <td className="px-4 py-2">{index + 1}</td>
+              <td className="px-4 py-2">{mcq.question}</td>
+              <td className="px-4 py-2">
+                <ol className="list-[lower-alpha] list-inside">
+                  {mcq.options?.map((option, index) => (
+                    <li key={index}>{option}</li>
+                  ))}
+                </ol>
+              </td>
+              <td className="px-4 py-2">{mcq.correct_answer}</td>
+              <td className="px-4 py-2">{mcq.marks}</td>
+              {freeFlow ? null : (
+                <td className="px-4 py-2">{mcq.timeAllowed}</td>
+              )}
+              <td className="px-4 py-2">
+                <button
+                  onClick={handleEditMCQ(index)}
+                  className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
+                >
+                  <MdEdit />
+                </button>
+              </td>
+              <td className="px-4 py-2">
+                <button
+                  onClick={() => {
+                    handleDeleteMCQ(index);
+                  }}
+                  className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
+                >
+                  <MdDelete />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+
     </div>
   );
 };
