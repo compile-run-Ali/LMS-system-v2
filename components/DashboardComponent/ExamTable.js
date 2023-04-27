@@ -141,8 +141,12 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
           <th className="px-4 py-2">Time</th>
           <th className="px-4 py-2">Total Marks</th>
           <th className="px-4 py-2">Status</th>
-          {approve_row && <th className="px-4 py-2 w-20 text-center">Approve</th>}
-          <th className="px-4 py-2 w-20 text-center">{isPrevious ? "View" : "Edit"}</th>
+          {approve_row && session.user.id > 2 && (
+            <th className="px-4 py-2 w-20 text-center">Approve</th>
+          )}
+          <th className="px-4 py-2 w-20 text-center">
+            {isPrevious ? "View" : "Edit"}
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -162,7 +166,7 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
             </td>
             <td className="border px-4 py-2">{exam.total_marks}</td>
             <td className="border px-4 py-2">{exam.status}</td>
-            {approve_row && (
+            {approve_row && session.user.id > 2 && (
               <td className="border px-4 py-2 z-10 text-center w-20">
                 <button
                   className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md mx-auto"

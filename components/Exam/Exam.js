@@ -468,6 +468,7 @@ export default function Exam({
                         faculties
                           .filter(
                             (faculty) =>
+                            faculty.level === 2 ||
                               faculty.level === 3 ||
                               faculty.level === 4
                           )
@@ -503,7 +504,7 @@ export default function Exam({
                       Mark To
                     </button>
                   </div>
-                  {exam.examofficer?.level > 1 && (
+                  {exam.examofficer?.level > 2 && (
                     <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
                       <button
                         type="submit"
@@ -530,6 +531,7 @@ export default function Exam({
                       faculties
                         .filter(
                           (faculty) =>
+                          faculty.level === 2 ||
                             faculty.level === 3 ||
                             faculty.level === 4
                         )
