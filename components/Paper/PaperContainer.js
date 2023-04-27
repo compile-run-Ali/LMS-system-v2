@@ -57,12 +57,11 @@ export default function PaperContainer({ startOfPage }) {
     }
   }, [paper]);
 
-  useEffect(() => () => {
+  useEffect(() => {
     if (session.status === "authenticated") {
       setStudent(session.data.user.id);
     }
-  });
-  [session];
+  }, [session]);
 
   const shuffleArray = (array) => {
     const shuffledArray = [...array];
