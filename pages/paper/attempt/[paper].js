@@ -7,39 +7,45 @@ import { useSession } from "next-auth/react";
 import Loader from "@/components/Loader";
 import ObjectivePaper from "@/components/Paper/ObjectivePaper";
 import SubjectivePaper from "@/components/Paper/SubjectivePaper";
-
+import { detectIncognito } from "detectincognitojs";
 
 export default function Paper() {
   const router = useRouter();
   const { paper } = router.query;
   const [paperDetails, setPaperDetails] = useState(null); // paper details
-  const [attemptTime, setAttemptTime] = useState(null); // time left to attempt the paper
+  const [attemptTime, setAttemptTime] = useState(NaN); // time left to attempt the paper
   const session = useSession();
   const [solveObjective, setSolveObjective] = useState(true);
   const [startTime, setStartTime] = useState(null);
   const [paperAttempt, setPaperAttempt] = useState(null);
 
+  useEffect(() => {
+    detectIncognito().then((result) => {
+      console.log('IT WORKS????',result.browserName, result.isPrivate);
+    });
+  }, []);
+
   const fetchPaper = async () => {
-    console.log("Fetch paper called")
+    console.log("Fetch paper called");
     // fetch paper details from api
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
     setPaperDetails(res.data);
-    console.log(res.data.duration)
+    console.log(res.data.duration);
     console.log(res.data);
-  }
-
+  };
 
   const getTimeCookie = () => {
     if (document.cookie.includes("timeLeft")) {
-      const timeLeft = document.cookie.split(";").filter((item) => item.includes("timeLeft"))[0].split("=")[1];
+      const timeLeft = document.cookie
+        .split(";")
+        .filter((item) => item.includes("timeLeft"))[0]
+        .split("=")[1];
       setAttemptTime(timeLeft);
-    } else{
+    } else {
       setAttemptTime(NaN);
     }
-  }
-
-
+  };
 
   const fetchAttemptOrCreateAttempt = async () => {
     let getAttempt;
@@ -47,9 +53,9 @@ export default function Paper() {
       getAttempt = await axios.get("/api/student/paper/get_single_attempt", {
         params: {
           p_number: session.data.user.id,
-          paper_id: paper
+          paper_id: paper,
         },
-      })
+      });
       setSolveObjective(!getAttempt.data.objectiveSolved);
       setStartTime(getAttempt.data.timeStarted);
       if (getAttempt.data.status === "Attempted") {
@@ -61,10 +67,9 @@ export default function Paper() {
         fetchPaper();
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
-
+  };
 
   const handleSolveObjective = async () => {
     setSolveObjective(false);
@@ -73,9 +78,8 @@ export default function Paper() {
       studentId: session.data.user.id,
       paperId: paper,
       objectiveSolved: true,
-    })
-  }
-
+    });
+  };
 
   useEffect(() => {
     if (session.status === "authenticated" && paper) {
@@ -89,8 +93,6 @@ export default function Paper() {
   const clearPaperFromLocal = () => {
     localStorage.removeItem(`paper ${paper}`);
   };
-
-
 
   const updateStatus = () => {
     //update spa status to Attempted
@@ -113,40 +115,52 @@ export default function Paper() {
   };
 
   useEffect(() => {
-    console.log("attempt time is ", attemptTime)
-      if(!attemptTime && paperDetails){
-        console.log("Doing here")
-        setAttemptTime(paperDetails.duration * 60);
-        return
-      }
-      if (attemptTime > 0) {
-        setTimeout(() => {
-          setAttemptTime(attemptTime - 1);
-          var now = new Date();
-          now.setTime(now.getTime() + 1 * 3600 * 1000);
-          document.cookie = `timeLeft=${attemptTime}; expires=${now.toUTCString()}; path=/`;
-        }, 800);
-      } else if (attemptTime && attemptTime <= 0) {
-        console.log("attempt time is very high ", attemptTime);
-        // clearPaperFromLocal();
-        // updateStatus();
-        // router.push(`/student`);
-      }
+    console.log("attempt time is ", attemptTime);
+    if (!attemptTime && paperDetails) {
+      console.log("Doing here");
+      setAttemptTime(paperDetails.duration * 60);
+      return;
+    }
+    if (attemptTime > 0) {
+      setTimeout(() => {
+        setAttemptTime(attemptTime - 1);
+        var now = new Date();
+        now.setTime(now.getTime() + 1 * 3600 * 1000);
+        document.cookie = `timeLeft=${attemptTime}; expires=${now.toUTCString()}; path=/`;
+      }, 800);
+    } else if (attemptTime && attemptTime <= 0) {
+      console.log("attempt time is very high ", attemptTime);
+      // clearPaperFromLocal();
+      // updateStatus();
+      // router.push(`/student`);
+    }
   }, [attemptTime, paperDetails]);
 
-
   if (!paperDetails) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
     <BaseLayout>
       <DashboardLayout>
-        {(paperDetails && solveObjective) ?
-          <ObjectivePaper questions={paperDetails.objective_questions} isfreeFlow={paperDetails.freeflow}
-            setSolveObjective={handleSolveObjective} paper={paper} attemptTime={attemptTime} startTime={startTime} />
-          : <SubjectivePaper questions={paperDetails.subjective_questions} isfreeFlow={paperDetails.freeflow} attemptTime={attemptTime} paper={paper} startTime={startTime} />
-        }
+        {paperDetails && solveObjective ? (
+          <ObjectivePaper
+            questions={paperDetails.objective_questions}
+            isfreeFlow={paperDetails.freeflow}
+            setSolveObjective={handleSolveObjective}
+            paper={paper}
+            attemptTime={attemptTime}
+            startTime={startTime}
+          />
+        ) : (
+          <SubjectivePaper
+            questions={paperDetails.subjective_questions}
+            isfreeFlow={paperDetails.freeflow}
+            attemptTime={attemptTime}
+            paper={paper}
+            startTime={startTime}
+          />
+        )}
       </DashboardLayout>
     </BaseLayout>
   );
