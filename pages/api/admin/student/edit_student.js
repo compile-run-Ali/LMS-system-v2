@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { IncomingForm } from "formidable";
 import mv from "mv";
 
-const prisma = new PrismaClient();
 
 export const config = {
   api: {
@@ -88,8 +87,7 @@ const handler = async (req, res) => {
     });
   });
   res.status(200).json(data);
-  // const prisma = new PrismaClient();
-  // try {
+  //   // try {
   //   // Edit Student Details
   //   const student = await prisma.student.update({
   //     where: {

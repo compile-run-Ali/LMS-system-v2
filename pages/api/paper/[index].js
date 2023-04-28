@@ -1,9 +1,8 @@
 // get paper by id
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { getPaperDateTime, compareDateTime } from "@/lib/TimeCalculations";
 
 const handle = async (req, res) => {
-  const prisma = new PrismaClient();
   const { index } = req.query;
   let id = index;
   try {

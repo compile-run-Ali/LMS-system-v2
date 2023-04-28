@@ -1,10 +1,9 @@
 // get a paper by id
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
   console.log("body", req.body, "query", req.query);
-  const prisma = new PrismaClient();
   try {
     const paper = await prisma.paper.findUnique({
       where: {

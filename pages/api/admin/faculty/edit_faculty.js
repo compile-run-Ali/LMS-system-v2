@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { IncomingForm } from "formidable";
 import mv from "mv";
 
-const prisma = new PrismaClient();
 
 export const config = {
   api: {

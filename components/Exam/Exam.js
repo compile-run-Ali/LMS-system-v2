@@ -228,11 +228,11 @@ export default function Exam({
       examofficer: null,
     });
     if (approveExam.status === 200) {
-      addComment({
-        comment: `Exam saved as draft by ${session.data.user.name}`,
-        faculty_id: session.data.user.id,
-        paper_id: exam.paper_id,
-      });
+      // addComment({
+      //   comment: `Exam saved as draft by ${session.data.user.name}`,
+      //   faculty_id: session.data.user.id,
+      //   paper_id: exam.paper_id,
+      // });
       router.push("/");
     } else {
       setLoading({

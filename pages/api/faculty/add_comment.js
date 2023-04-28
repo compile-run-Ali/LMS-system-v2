@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const addPaperComment = await prisma.paperComment.create({
       data: {

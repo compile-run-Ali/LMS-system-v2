@@ -1,10 +1,9 @@
 // Import the required libraries and modules
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { IncomingForm } from "formidable";
 import mv from "mv";
 // Create a new PrismaClient instance
-const prisma = new PrismaClient();
 // Configure the Next.js API to disable the bodyParser
 export const config = {
   api: {

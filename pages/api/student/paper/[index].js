@@ -1,9 +1,8 @@
 // api to fetch papers of student using course in which he is enrolled
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 export default async function handler(req, res) {
-  const prisma = new PrismaClient();
   const { index } = req.query;
   const p_number = index;
   console.log("finding courses of ", p_number);

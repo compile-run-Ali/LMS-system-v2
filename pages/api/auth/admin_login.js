@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 
 const confirmPasswordHash = (plainPassword, hashedPassword) => {
@@ -10,7 +10,6 @@ const confirmPasswordHash = (plainPassword, hashedPassword) => {
 };
 
 const handler = async (email, password) => {
-  const prisma = new PrismaClient();
 
   try {
     const admin = await prisma.faculty.findFirst({

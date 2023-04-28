@@ -1,9 +1,8 @@
 // api that fetches student paper attempt aka SPA where student and paper id match
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 export default async function handler(req, res) {
-  const prisma = new PrismaClient();
   const {  p_number,  paper_id } = req.query;
   try {
     const spa = await prisma.sPA.findUnique({

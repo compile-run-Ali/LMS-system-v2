@@ -1,6 +1,5 @@
 // get student by p_number
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 
 const handle = async (req, res) => {
   let p_number = req.query;

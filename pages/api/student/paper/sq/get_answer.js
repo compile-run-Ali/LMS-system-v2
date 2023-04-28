@@ -1,8 +1,7 @@
 // api to get student subjective answer
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   console.log("received", req.query.sq_ids);

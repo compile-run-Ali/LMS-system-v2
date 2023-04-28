@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-    const prisma = new PrismaClient();
-    try {
+      try {
         const paperComments = await prisma.paperComment.findMany({
             where: {    
                 paper_id: req.body.paper_id,

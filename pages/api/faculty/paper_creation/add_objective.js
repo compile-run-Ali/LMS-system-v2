@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
   console.log("Add Objective Question", req.body);
-  const prisma = new PrismaClient();
   try {
     //Create New Objective Question
     const newObjective = await prisma.objectiveQuestion.create({
