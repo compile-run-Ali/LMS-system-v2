@@ -18,7 +18,6 @@ export default function Paper() {
   const [solveObjective, setSolveObjective] = useState(true);
   const [startTime, setStartTime] = useState(null);
   const [paperAttempt, setPaperAttempt] = useState(null);
-  const [timeIsReady, setTimeIsReady] = useState(false);
 
   const fetchPaper = async () => {
     console.log("Fetch paper called")
@@ -27,11 +26,6 @@ export default function Paper() {
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
     setPaperDetails(res.data);
     console.log(res.data.duration)
-
-    if (!attemptTime) {
-      setAttemptTime(res.data.duration * 60);
-      setTimeIsReady(true);
-    }
     console.log(res.data);
   }
 
@@ -40,7 +34,8 @@ export default function Paper() {
     if (document.cookie.includes("timeLeft")) {
       const timeLeft = document.cookie.split(";").filter((item) => item.includes("timeLeft"))[0].split("=")[1];
       setAttemptTime(timeLeft);
-      setTimeIsReady(true);
+    } else{
+      setAttemptTime(NaN);
     }
   }
 
@@ -118,7 +113,12 @@ export default function Paper() {
   };
 
   useEffect(() => {
-    if (timeIsReady) {
+    console.log("attempt time is ", attemptTime)
+      if(!attemptTime && paperDetails){
+        console.log("Doing here")
+        setAttemptTime(paperDetails.duration * 60);
+        return
+      }
       if (attemptTime > 0) {
         setTimeout(() => {
           setAttemptTime(attemptTime - 1);
@@ -132,9 +132,7 @@ export default function Paper() {
         // updateStatus();
         // router.push(`/student`);
       }
-    }
-    console.log("timeIsReady", timeIsReady)
-  }, [timeIsReady, attemptTime]);
+  }, [attemptTime, paperDetails]);
 
 
   if (!paperDetails) {
