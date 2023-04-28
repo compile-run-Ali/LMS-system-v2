@@ -24,8 +24,9 @@ export default function Topbar() {
   const [dropdown, setDropdown] = useState(false);
   const logout = () => {
     signOut({
-      callbackUrl: "/",
+      redirect: false,
     });
+    router.push("/");
   };
 
   useEffect(() => {
