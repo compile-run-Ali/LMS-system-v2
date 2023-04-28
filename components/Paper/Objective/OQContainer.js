@@ -293,7 +293,7 @@ export default function OQContainer({
             )}
             {currentQuestion < totalQuestions - 1 ? (
               <>
-                {freeFlow && (
+                {(freeFlow || attempted) && (
                   <button
                     className="bg-white hover:bg-zinc-300 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                     onClick={() => {

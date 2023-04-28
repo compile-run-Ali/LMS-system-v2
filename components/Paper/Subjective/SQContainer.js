@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import SubmitModal from "../SubmitModal";
 import Spinner from "@/components/Loader/Spinner";
+import Submitted from "../Submitted";
 
 export default function SQContainer({
   question,
@@ -296,7 +297,7 @@ export default function SQContainer({
         </>
       ) : (
         <div>
-          <h1>loading</h1>
+          <Submitted />
         </div>
       )}
     </div>

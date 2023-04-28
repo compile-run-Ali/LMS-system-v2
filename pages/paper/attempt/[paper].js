@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import Loader from "@/components/Loader";
 import ObjectivePaper from "@/components/Paper/ObjectivePaper";
 import SubjectivePaper from "@/components/Paper/SubjectivePaper";
+import Submitted from "@/components/Paper/Submitted";
 
 
 export default function Paper() {
@@ -18,6 +19,7 @@ export default function Paper() {
   const [solveObjective, setSolveObjective] = useState(true);
   const [startTime, setStartTime] = useState(null);
   const [paperAttempt, setPaperAttempt] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const fetchPaper = async () => {
     console.log("Fetch paper called")
@@ -31,11 +33,11 @@ export default function Paper() {
 
 
   const getTimeCookie = () => {
-    if (document.cookie.includes("timeLeft")) {
-      const timeLeft = document.cookie.split(";").filter((item) => item.includes("timeLeft"))[0].split("=")[1];
+    if (document.cookie.includes(`${paper}-time`)) {
+      const timeLeft = document.cookie.split(";").filter((item) => item.includes(`${paper}-time`))[0].split("=")[1];
       setAttemptTime(timeLeft);
     } else{
-      setAttemptTime(NaN);
+      setAttemptTime(-100);
     }
   }
 
@@ -100,7 +102,7 @@ export default function Paper() {
     axios
       .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.data.user.id,
-        paperId: paper.paper_id,
+        paperId: paper,
         status: "Incomplete Submission",
         timeCompleted: timeCompletedString,
       })
@@ -114,7 +116,7 @@ export default function Paper() {
 
   useEffect(() => {
     console.log("attempt time is ", attemptTime)
-      if(!attemptTime && paperDetails){
+      if(attemptTime === -100 && paperDetails){
         console.log("Doing here")
         setAttemptTime(paperDetails.duration * 60);
         return
@@ -124,13 +126,13 @@ export default function Paper() {
           setAttemptTime(attemptTime - 1);
           var now = new Date();
           now.setTime(now.getTime() + 1 * 3600 * 1000);
-          document.cookie = `timeLeft=${attemptTime}; expires=${now.toUTCString()}; path=/`;
+          document.cookie = `${paper}-time=${attemptTime}; expires=${now.toUTCString()}; path=/`;
         }, 800);
-      } else if (attemptTime && attemptTime <= 0) {
+      } else if (attemptTime <= 0 && attemptTime > -100 && attemptTime !== null) {
         console.log("attempt time is very high ", attemptTime);
-        // clearPaperFromLocal();
-        // updateStatus();
-        // router.push(`/student`);
+        clearPaperFromLocal();
+        updateStatus();
+        setSubmitted(true);
       }
   }, [attemptTime, paperDetails]);
 
@@ -142,10 +144,19 @@ export default function Paper() {
   return (
     <BaseLayout>
       <DashboardLayout>
-        {(paperDetails && solveObjective) ?
+        {
+          !submitted ?
+          (paperDetails && solveObjective) ?
           <ObjectivePaper questions={paperDetails.objective_questions} isfreeFlow={paperDetails.freeflow}
             setSolveObjective={handleSolveObjective} paper={paper} attemptTime={attemptTime} startTime={startTime} />
           : <SubjectivePaper questions={paperDetails.subjective_questions} isfreeFlow={paperDetails.freeflow} attemptTime={attemptTime} paper={paper} startTime={startTime} />
+
+          : 
+          <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
+          <div className="flex justify-center w-full">
+          <Submitted />
+          </div>
+          </div>
         }
       </DashboardLayout>
     </BaseLayout>
