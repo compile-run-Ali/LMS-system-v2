@@ -61,9 +61,9 @@ export default function SQContainer({
       ? (f = f.filter((flags) => flags !== current))
       : (f = [...flags, current]);
     setFlags(f);
-    const papers = JSON.parse(localStorage.getItem("papers"));
-    papers[paper].flags = f;
-    localStorage.setItem("papers", JSON.stringify(papers));
+    const papers = JSON.parse(localStorage.getItem(`paper ${paper}`));
+    papers.flags = f;
+    localStorage.setItem(`paper ${paper}`, JSON.stringify(papers));
   };
 
   function integerToAlphabet(num) {

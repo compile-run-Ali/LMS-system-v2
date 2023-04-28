@@ -14,7 +14,7 @@ export default function SubmitModal({
 }) {
   //call api and create attempt on the paper
   const { data: session, status } = useSession();
-  const paperDetails = JSON.parse(localStorage.getItem("papers"))[paper];
+  const paperDetails = JSON.parse(localStorage.getItem(`paper ${paper}`));
 
   const updateAttempt = () => {
 

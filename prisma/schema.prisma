@@ -226,6 +226,7 @@ model SPA {
   obtainedMarks   Float   @default(0)
   studentComment  String? @default("")
   teacherComment  String? @default("")
+  objectiveSolved Boolean @default(false)
 
   student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
   paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)

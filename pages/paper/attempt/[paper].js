@@ -1,22 +1,157 @@
-import { useEffect, useState } from "react";
-import PaperContainer from "@/components/Paper/PaperContainer";
+import { use, useEffect, useState } from "react";
 import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
 import BaseLayout from "@/components/BaseLayout/BaseLayout";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import Loader from "@/components/Loader";
+import ObjectivePaper from "@/components/Paper/ObjectivePaper";
+import SubjectivePaper from "@/components/Paper/SubjectivePaper";
 
 
 export default function Paper() {
+  const router = useRouter();
+  const { paper } = router.query;
+  const [paperDetails, setPaperDetails] = useState(null); // paper details
+  const [attemptTime, setAttemptTime] = useState(null); // time left to attempt the paper
+  const session = useSession();
+  const [solveObjective, setSolveObjective] = useState(true);
+  const [startTime, setStartTime] = useState(null);
+  const [paperAttempt, setPaperAttempt] = useState(null);
 
 
-  const [startOfPage, setStartOfPage] = useState(new Date());
+  const fetchPaper = async () => {
+    console.log("Fetch paper called")
+    // fetch paper details from api
+    const res = await axios.get(`/api/paper/${paper}`);
+    localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
+    setPaperDetails(res.data);
+
+
+    if (!attemptTime){
+      setAttemptTime(res.data.time * 60);
+    }
+
+    console.log(res.data);
+  }
+
+
+  const getTimeFromCookie = () => {
+    if (document.cookie.includes("timeLeft")) {
+      console.log(document.cookie)
+      const timeLeft = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("timeLeft"))
+        .split("=")[1];
+      setAttemptTime(timeLeft);
+    }
+  };
+
+
+  const fetchAttemptOrCreateAttempt = async () => {
+    let getAttempt;
+    try {
+      getAttempt = await axios.get("/api/student/paper/get_single_attempt", {
+        params: {
+          p_number: session.data.user.id,
+          paper_id: paper
+        },
+      })
+      setSolveObjective(!getAttempt.data.objectiveSolved);
+      setStartTime(getAttempt.data.timeStarted);
+      if (getAttempt.data.status === "Attempted") {
+        getTimeFromCookie();
+      }
+      if (localStorage.getItem(`paper ${paper}`)) {
+        setPaperDetails(JSON.parse(localStorage.getItem(`paper ${paper}`)));
+        console.log("paper details from local storage", JSON.parse(localStorage.getItem(`paper ${paper}`)));
+      } else {
+        fetchPaper();
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+
+  const handleSolveObjective = async () => {
+    setSolveObjective(false);
+
+    await axios.post("/api/student/paper/update_attempt_status", {
+      studentId: session.data.user.id,
+      paperId: paper,
+      objectiveSolved: true,
+    })
+  }
+
+
+  useEffect(() => {
+    if (session.status === "authenticated" && paper) {
+      if (!paperAttempt) {
+        setPaperAttempt(true);
+        fetchAttemptOrCreateAttempt();
+      }
+    }
+  }, [session, paper]);
+
+  const clearPaperFromLocal = () => {
+    localStorage.removeItem(`paper ${paper}`);
+  };
+
+  useEffect(() => {
+  console.log("attempt time", attemptTime);
+  }, [attemptTime]);
+
+  const updateStatus = () => {
+    //update spa status to Attempted
+    const timeCompleted = new Date();
+    // get gmt offset in hours, and add that in startTime
+    const timeCompletedString = `${timeCompleted.getHours()}:${timeCompleted.getMinutes()}`;
+    axios
+      .post(`/api/student/paper/update_attempt_status`, {
+        studentId: session.data.user.id,
+        paperId: paper.paper_id,
+        status: "Incomplete Submission",
+        timeCompleted: timeCompletedString,
+      })
+      .then((res) => {
+        console.log("updated attempt status ", res.data);
+      })
+      .catch((err) => {
+        console.log("error updating attempt status", err);
+      });
+  };
+
+  useEffect(() => {
+    console.log("attempt time", attemptTime);
+    if (attemptTime > 0) {
+      setTimeout(() => {
+        setAttemptTime(attemptTime - 1);
+        var now = new Date();
+        now.setTime(now.getTime() + 1 * 3600 * 1000);
+        document.cookie = `timeLeft=${attemptTime}; expires=${now.toUTCString()}; path=/`;
+      }, 800);
+    } else if (attemptTime && attemptTime <= 0) {
+      console.log("attempt time is very high ", attemptTime);
+      // clearPaperFromLocal();
+      // updateStatus();
+      // router.push(`/student`);
+    }
+  }, [attemptTime]);
+
+
+  if (!paperDetails) {
+    return <Loader />
+  }
+
   return (
     <BaseLayout>
       <DashboardLayout>
-        <PaperContainer
-          startOfPage={startOfPage}
-        />
+        {(paperDetails && solveObjective) ?
+          <ObjectivePaper questions={paperDetails.objective_questions} isfreeFlow={paperDetails.freeflow}
+            setSolveObjective={handleSolveObjective} paper={paper} attemptTime={attemptTime} startTime={startTime} />
+          : <SubjectivePaper questions={paperDetails.subjective_questions} isfreeFlow={paperDetails.freeflow} attemptTime={attemptTime} paper={paper} startTime={startTime} />
+        }
       </DashboardLayout>
     </BaseLayout>
   );

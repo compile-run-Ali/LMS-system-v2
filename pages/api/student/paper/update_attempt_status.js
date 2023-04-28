@@ -12,6 +12,7 @@ export default async function handler(req, res) {
       teacherComment,
       timeStarted,
       timeCompleted,
+      objectiveSolved
     } = req.body;
 
     // find an existing record with the provided id
@@ -34,6 +35,7 @@ export default async function handler(req, res) {
     const updatedSPA = await prisma.sPA.update({
       where: { spaId: studentId + paperId },
       data: {
+        objectiveSolved: objectiveSolved ? objectiveSolved : existingSPA.objectiveSolved,
         status: status !== undefined ? status : existingSPA.status,
         obtainedMarks: obtainedMarks
           ? obtainedMarks

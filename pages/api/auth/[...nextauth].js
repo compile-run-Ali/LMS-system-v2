@@ -11,6 +11,9 @@ const configuration = {
     jwt: true,
     maxAge: 3 * 60 * 60, // 3 hours
   },
+  jwt: {
+    maxAge: 3 * 60 * 60, // 3 hours
+  },
   providers: [
     CredentialsProvider({
       id: "credentials",

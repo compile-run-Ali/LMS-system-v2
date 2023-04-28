@@ -3,7 +3,6 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import CountdownTimer from "../CountdownTimer";
-import SubmitModal from "../SubmitModal";
 import Loader from "@/components/Loader";
 import Spinner from "@/components/Loader/Spinner";
 
@@ -11,13 +10,14 @@ export default function OQContainer({
   question,
   currentQuestion,
   setCurrentQuestion,
+  paper,
   totalQuestions,
   freeFlow,
   flags,
   setFlags,
+  setSolveObjective
 }) {
   const router = useRouter();
-  const { paper } = router.query;
   const session = useSession();
 
   const [answers, setAnswers] = useState([]);
@@ -25,7 +25,6 @@ export default function OQContainer({
   const [correctAnswers, setCorrectAnswers] = useState([]);
   const [multipleAllowed, setMultipleAllowed] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [numSelected, setNumSelected] = useState(0);
   const [loading, setLoading] = useState(true);
   const [changed, setChanged] = useState(false);
@@ -112,9 +111,9 @@ export default function OQContainer({
       ? (f = f.filter((flags) => flags !== current))
       : (f = [...flags, current]);
     setFlags(f);
-    const papers = JSON.parse(localStorage.getItem("papers"));
-    papers[paper].flags = f;
-    localStorage.setItem("papers", JSON.stringify(papers));
+    const currentPaper = JSON.parse(localStorage.getItem(`paper ${paper}`));
+    currentPaper.flags = f;
+    localStorage.setItem(`paper ${paper}`, JSON.stringify(currentPaper));
   };
 
   useEffect(() => {
@@ -190,7 +189,7 @@ export default function OQContainer({
             <div className="  text-black absolute top-0 right-0" id="timer">
               {!freeFlow && (
                 <CountdownTimer
-                  timeAllowed={question.timeAllowed || 60}
+                  timeAllowed={question.timeAllowed || 10}
                   currentQuestion={currentQuestion}
                   setCurrentQuestion={setCurrentQuestion}
                 />
@@ -309,22 +308,14 @@ export default function OQContainer({
               <button
                 className="bg-green-500 hover:bg-green-600 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
                 onClick={() => {
-                  // open modal
-                  setShowModal(true);
-                }}
+                  setSolveObjective(false)
+                }
+              }
               >
-                Submit
+                Submit Objective
               </button>
             )}
           </div>
-          <SubmitModal
-            flags={flags}
-            showModal={showModal}
-            setShowModal={setShowModal}
-            currentQuestion={currentQuestion}
-            setCurrentQuestion={setCurrentQuestion}
-            paper={paper}
-          />
         </>
       ) : (
         <Loader />

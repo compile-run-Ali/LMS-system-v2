@@ -8,6 +8,7 @@ import {
 } from "@/lib/TimeCalculations";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 export default function PapersList({ papers, status }) {
   const [sortedPapers, setSortedPapers] = useState([]);
@@ -51,6 +52,9 @@ export default function PapersList({ papers, status }) {
     setUpdatedPapers(newUpdatedPapers);
   }, [attemptStatus]);
 
+
+
+
   return (
     <div>
       <table className="table-auto rounded-md mt-2 mb-4 font-poppins w-full text-left">
@@ -90,6 +94,33 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
   const startTime = convertDateTimeToStrings(start);
   const isLive = status === "Live Papers";
   const isPast = status === "Past Papers";
+  const session = useSession();
+  const router = useRouter();
+
+
+  const attemptExam = async (paperId) => {
+    try {
+      const startTime = new Date();
+
+      // pad the hours and minutes with leading zeros
+
+      let hours = startTime.getHours().toString();
+      let minutes = startTime.getMinutes().toString();
+      let startTimeInString = `${hours.padStart(2, "0")}:${minutes.padStart( 2, "0")}`;
+      await axios
+        .post(`/api/student/paper/update_attempt_status`, {
+          studentId: session.data.user.id,
+          paperId: paperId,
+          status: "Attempted",
+          timeStarted: startTimeInString,
+        })
+
+      router.push(`/paper/attempt/${paperId}`);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <>
       <td className="border px-4 py-2">{paper.paper_name}</td>
@@ -101,10 +132,10 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
         {paper.status === "Approved" && isLive
           ? "Live"
           : paper.status === "Approved" && !isLive && !isPast
-          ? "Upcoming"
-          : paper.status === "Closed"
-          ? "Marking"
-          : paper.status}
+            ? "Upcoming"
+            : paper.status === "Closed"
+              ? "Marking"
+              : paper.status}
       </td>
       <td className="border px-4 py-2 text-center">
         {/* if paper is live and is submitted, show submitted button, else show attempt button */}
@@ -112,11 +143,10 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
         {/* else show view button */}
         {isLive ? (
           !attemptStatus ? (
-            <Link href={`/paper/attempt/${paper.paper_id}`}>
-              <button className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded">
-                Attempt
-              </button>
-            </Link>
+
+            <button className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded" onClick={() => attemptExam(paper.paper_id)}>
+              Attempt
+            </button>
           ) : (
             <button className="bg-gray-400 text-white py-2 px-4 rounded cursor-not-allowed">
               Attempted
