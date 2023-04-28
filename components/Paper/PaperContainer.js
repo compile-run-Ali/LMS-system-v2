@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import OQContainer from "./Objective/OQContainer";
@@ -114,7 +114,6 @@ export default function PaperContainer({ startOfPage }) {
           papers[paper].objectiveCount = randomizedQuestions.length;
           localStorage.setItem("papers", JSON.stringify(papers));
           setObjectiveCount(randomizedQuestions.length);
-          setLoading(false);
           setQuestions(papers[paper].objectiveQuestions);
         })
         .catch((err) => {
@@ -131,20 +130,35 @@ export default function PaperContainer({ startOfPage }) {
               "time taken to get subjective",
               (new Date() - startOfPage) / 1000
             );
+            console.log("subjective questions", res.data);
             const subjectiveQuestions = res.data.filter(
               (question) => !question.parent_sq_id
             );
+              
             papers[paper].subjectiveQuestions = subjectiveQuestions;
-            localStorage.setItem("papers", JSON.stringify(papers));
+            console.log("subjective questions", subjectiveQuestions);
+            console.log("papers", papers[paper].objectiveQuestions);
             setQuestions(
               [
-                ...papers[paper].objectiveQuestions,
-                ...papers[paper].subjectiveQuestions,
-              ] || []
+                ...papers[paper].objectiveQuestions|| [],
+                ...papers[paper].subjectiveQuestions|| [],
+              ] 
             );
+            setLoading(false);
+            localStorage.setItem("papers", JSON.stringify(papers));
           })
           .catch((err) => {
             console.log("error ", err.message);
+            console.log("papers", papers[paper]);
+            setQuestions(
+              [
+                papers[paper].objectiveQuestions,
+                ...papers[paper].subjectiveQuestions,
+              ] || []
+            );
+            console.log("Updating questions");
+            setLoading(false);
+            
           });
       }
       if (currentPaper.paper_type === "IE") {
@@ -209,6 +223,10 @@ export default function PaperContainer({ startOfPage }) {
 
     console.log("updated attempt status ", updated.data);
   }
+
+  useEffect(() => {
+    console.log(questions)
+  }, [questions])
 
   useEffect(() => {
     setCount(count + 1);
