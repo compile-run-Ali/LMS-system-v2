@@ -26,26 +26,17 @@ export default function Paper() {
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
     setPaperDetails(res.data);
-
+    console.log(res.data.duration)
 
     if (!attemptTime){
-      setAttemptTime(res.data.time * 60);
+      setAttemptTime(res.data.duration * 60);
     }
 
     console.log(res.data);
   }
 
 
-  const getTimeFromCookie = () => {
-    if (document.cookie.includes("timeLeft")) {
-      console.log(document.cookie)
-      const timeLeft = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("timeLeft"))
-        .split("=")[1];
-      setAttemptTime(timeLeft);
-    }
-  };
+  
 
 
   const fetchAttemptOrCreateAttempt = async () => {
@@ -60,7 +51,7 @@ export default function Paper() {
       setSolveObjective(!getAttempt.data.objectiveSolved);
       setStartTime(getAttempt.data.timeStarted);
       if (getAttempt.data.status === "Attempted") {
-        getTimeFromCookie();
+
       }
       if (localStorage.getItem(`paper ${paper}`)) {
         setPaperDetails(JSON.parse(localStorage.getItem(`paper ${paper}`)));
