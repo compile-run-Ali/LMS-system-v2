@@ -14,23 +14,28 @@ export default function Paper() {
   const router = useRouter();
   const { paper } = router.query;
   const [paperDetails, setPaperDetails] = useState(null); // paper details
-  const [attemptTime, setAttemptTime] = useState(null); // time left to attempt the paper
+  const [attemptTime, setAttemptTime] = useState(NaN); // time left to attempt the paper
   const session = useSession();
   const [solveObjective, setSolveObjective] = useState(true);
   const [startTime, setStartTime] = useState(null);
   const [paperAttempt, setPaperAttempt] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
+  useEffect(() => {
+    detectIncognito().then((result) => {
+      console.log('IT WORKS????',result.browserName, result.isPrivate);
+    });
+  }, []);
+
   const fetchPaper = async () => {
-    console.log("Fetch paper called")
+    console.log("Fetch paper called");
     // fetch paper details from api
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
     setPaperDetails(res.data);
-    console.log(res.data.duration)
+    console.log(res.data.duration);
     console.log(res.data);
-  }
-
+  };
 
   const getTimeCookie = () => {
     if (document.cookie.includes(`${paper}-time`)) {
@@ -39,9 +44,7 @@ export default function Paper() {
     } else{
       setAttemptTime(-100);
     }
-  }
-
-
+  };
 
   const fetchAttemptOrCreateAttempt = async () => {
     let getAttempt;
@@ -49,9 +52,9 @@ export default function Paper() {
       getAttempt = await axios.get("/api/student/paper/get_single_attempt", {
         params: {
           p_number: session.data.user.id,
-          paper_id: paper
+          paper_id: paper,
         },
-      })
+      });
       setSolveObjective(!getAttempt.data.objectiveSolved);
       setStartTime(getAttempt.data.timeStarted);
       if (getAttempt.data.status === "Attempted") {
@@ -63,10 +66,9 @@ export default function Paper() {
         fetchPaper();
       }
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
-
+  };
 
   const handleSolveObjective = async () => {
     setSolveObjective(false);
@@ -75,9 +77,8 @@ export default function Paper() {
       studentId: session.data.user.id,
       paperId: paper,
       objectiveSolved: true,
-    })
-  }
-
+    });
+  };
 
   useEffect(() => {
     if (session.status === "authenticated" && paper) {
@@ -91,8 +92,6 @@ export default function Paper() {
   const clearPaperFromLocal = () => {
     localStorage.removeItem(`paper ${paper}`);
   };
-
-
 
   const updateStatus = () => {
     //update spa status to Attempted
@@ -136,9 +135,8 @@ export default function Paper() {
       }
   }, [attemptTime, paperDetails]);
 
-
   if (!paperDetails) {
-    return <Loader />
+    return <Loader />;
   }
 
   return (
