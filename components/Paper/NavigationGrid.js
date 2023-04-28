@@ -11,14 +11,14 @@ export default function NavigationGrid({
   return (
     <div className="mt-4 border-blue-800 ">
       <h1 className="text-2xl mb-2 font-poppins">Navigate</h1>
-      <div className="grid grid-cols-2 xl:grid-cols-5 max-w-[250px] ">
+      <div className="grid grid-cols-2 xl:grid-cols-5 max-w-[100px] xl:max-w-[250px] ">
         {[...Array(totalQuestions)].map((_, index) => (
           <div
             onClick={() =>
               setCurrentQuestion(freeFlow ? index : index + offset)
             }
             key={index}
-            className={`min-w-[20px] duration-300 max-w-[50px] transition-colors cursor-pointer border border-blue-800 w-full aspect-square flex justify-center items-center
+            className={`min-w-[20px] duration-300 transition-colors cursor-pointer border border-blue-800 w-full aspect-square flex justify-center items-center
           ${
             currentQuestion === index
               ? "bg-blue-800 text-white"
