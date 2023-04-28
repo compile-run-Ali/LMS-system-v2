@@ -45,35 +45,55 @@ export default function Timer({ paper }) {
         console.log("updated attempt status ", res.data);
       })
       .catch((err) => {
-        console.log("error updating attempt status", err);
+        if (err.response && err.response.status === 404) {
+          console.log("Error 404, resending in 5 secs...");
+          setTimeout(() => {
+            updateStatus();
+          }, 5000);
+        } else {
+          console.log("error in get_single_attempt", err);
+        }
+      });
+  };
+
+  const getPaperAttempt = () => {
+    axios
+      .get("/api/student/paper/get_single_attempt", {
+        params: {
+          p_number: session.user.id,
+          paper_id: paper.paper_id,
+        },
+      })
+      .then((res) => {
+        const paperStartTime = res.data.timeStarted;
+        if (paperStartTime) {
+          setStartTimeString(paperStartTime);
+          setStartTime(
+            convertDateTimeToStrings(
+              getPaperDateTime(paperStartTime, paper.duration).start
+            )
+          );
+          setEndTime(
+            convertDateTimeToStrings(
+              getPaperDateTime(paperStartTime, paper.duration).end
+            )
+          );
+        }
+      })
+      .catch((err) => {
+        if (err.response && err.response.status === 404) {
+          console.log("Error 404, resending in 5 secs...");
+          setTimeout(() => {
+            getPaperAttempt();
+          }, 5000);
+        } else {
+          console.log("error in get_single_attempt", err);
+        }
       });
   };
 
   useEffect(() => {
     if (session?.user?.id && paper.paper_id) {
-      axios
-        .get("/api/student/paper/get_single_attempt", {
-          params: {
-            p_number: session.user.id,
-            paper_id: paper.paper_id,
-          },
-        })
-        .then((res) => {
-          const paperStartTime = res.data.timeStarted;
-          if (paperStartTime) {
-            setStartTimeString(paperStartTime);
-            setStartTime(
-              convertDateTimeToStrings(
-                getPaperDateTime(paperStartTime, paper.duration).start
-              )
-            );
-            setEndTime(
-              convertDateTimeToStrings(
-                getPaperDateTime(paperStartTime, paper.duration).end
-              )
-            );
-          }
-        });
     }
   }, [session]);
 
@@ -85,6 +105,7 @@ export default function Timer({ paper }) {
             getPaperDateTime(startTimeString, paper.duration).end
           )
         );
+        console.log("start time string is", startTimeString);
         if (timeLeft === "00:00:00") {
           clearPaperFromLocal();
           updateStatus();
