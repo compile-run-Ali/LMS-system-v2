@@ -18,7 +18,7 @@ export default function Paper() {
   const [solveObjective, setSolveObjective] = useState(true);
   const [startTime, setStartTime] = useState(null);
   const [paperAttempt, setPaperAttempt] = useState(null);
-
+  const [timeIsReady, setTimeIsReady] = useState(false);
 
   const fetchPaper = async () => {
     console.log("Fetch paper called")
@@ -28,15 +28,22 @@ export default function Paper() {
     setPaperDetails(res.data);
     console.log(res.data.duration)
 
-    if (!attemptTime){
+    if (!attemptTime) {
       setAttemptTime(res.data.duration * 60);
+      setTimeIsReady(true);
     }
-
     console.log(res.data);
   }
 
 
-  
+  const getTimeCookie = () => {
+    if (document.cookie.includes("timeLeft")) {
+      const timeLeft = document.cookie.split(";").filter((item) => item.includes("timeLeft"))[0].split("=")[1];
+      setAttemptTime(timeLeft);
+      setTimeIsReady(true);
+    }
+  }
+
 
 
   const fetchAttemptOrCreateAttempt = async () => {
@@ -51,11 +58,10 @@ export default function Paper() {
       setSolveObjective(!getAttempt.data.objectiveSolved);
       setStartTime(getAttempt.data.timeStarted);
       if (getAttempt.data.status === "Attempted") {
-
+        getTimeCookie();
       }
       if (localStorage.getItem(`paper ${paper}`)) {
         setPaperDetails(JSON.parse(localStorage.getItem(`paper ${paper}`)));
-        console.log("paper details from local storage", JSON.parse(localStorage.getItem(`paper ${paper}`)));
       } else {
         fetchPaper();
       }
@@ -89,9 +95,7 @@ export default function Paper() {
     localStorage.removeItem(`paper ${paper}`);
   };
 
-  useEffect(() => {
-  console.log("attempt time", attemptTime);
-  }, [attemptTime]);
+
 
   const updateStatus = () => {
     //update spa status to Attempted
@@ -114,21 +118,23 @@ export default function Paper() {
   };
 
   useEffect(() => {
-    console.log("attempt time", attemptTime);
-    if (attemptTime > 0) {
-      setTimeout(() => {
-        setAttemptTime(attemptTime - 1);
-        var now = new Date();
-        now.setTime(now.getTime() + 1 * 3600 * 1000);
-        document.cookie = `timeLeft=${attemptTime}; expires=${now.toUTCString()}; path=/`;
-      }, 800);
-    } else if (attemptTime && attemptTime <= 0) {
-      console.log("attempt time is very high ", attemptTime);
-      // clearPaperFromLocal();
-      // updateStatus();
-      // router.push(`/student`);
+    if (timeIsReady) {
+      if (attemptTime > 0) {
+        setTimeout(() => {
+          setAttemptTime(attemptTime - 1);
+          var now = new Date();
+          now.setTime(now.getTime() + 1 * 3600 * 1000);
+          document.cookie = `timeLeft=${attemptTime}; expires=${now.toUTCString()}; path=/`;
+        }, 800);
+      } else if (attemptTime && attemptTime <= 0) {
+        console.log("attempt time is very high ", attemptTime);
+        // clearPaperFromLocal();
+        // updateStatus();
+        // router.push(`/student`);
+      }
     }
-  }, [attemptTime]);
+    console.log("timeIsReady", timeIsReady)
+  }, [timeIsReady, attemptTime]);
 
 
   if (!paperDetails) {
