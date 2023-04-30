@@ -85,8 +85,8 @@ const configuration = {
       session.user.id = token.user.faculty_id
         ? token.user.faculty_id
         : token.user.p_number
-        ? token.user.p_number
-        : token.user.admin_id;
+          ? token.user.p_number
+          : token.user.admin_id;
       return session;
     },
     async signIn(user, account, profile) {
@@ -105,6 +105,13 @@ const configuration = {
         token.user = user;
       }
       return token;
+    },
+    async redirect({ url, baseUrl }) {
+
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${url}`
+      
+      return url
     },
 
   },
