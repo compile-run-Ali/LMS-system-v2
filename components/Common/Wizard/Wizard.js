@@ -1,6 +1,15 @@
 import React from "react";
+import { useRouter } from "next/router";
 
-export default function Wizard({ active, setActive, items, paperName }) {
+export default function Wizard({
+  active,
+  setActive,
+  items,
+  paperName,
+  paperId,
+}) {
+  const router = useRouter();
+
   return (
     <div className=" font-cabin flex items-center border-b border-primary-black border-opacity-20 w-fit px-6">
       {paperName && (
@@ -12,6 +21,16 @@ export default function Wizard({ active, setActive, items, paperName }) {
         <div
           key={item.id}
           onClick={() => {
+            if (item.id === 1 && active !== 1) {
+              router.push({
+                pathname: `/faculty/create_exam/word`,
+                query: {
+                  paper_id: paperId,
+                  is_edit: true,
+                },
+              });
+            } else return;
+
             if (active >= item.id) {
               setActive(item.id);
             } else {
