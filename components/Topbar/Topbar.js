@@ -22,11 +22,10 @@ export default function Topbar() {
   const [notifications, setNotifications] = useState([]);
   const session = useSession();
   const [dropdown, setDropdown] = useState(false);
-  const logout = () => {
+  const logout = async () => {
     signOut({
-      redirect: false,
+      callbackUrl: "/",
     });
-    router.push("/");
   };
 
   useEffect(() => {
