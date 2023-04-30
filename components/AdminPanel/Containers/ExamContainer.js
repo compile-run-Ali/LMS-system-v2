@@ -6,11 +6,10 @@ import ExamTable from "../Tables/ExamTable";
 import DeleteModal from "../Modals/DeleteModal";
 import Spinner from "@/components/Loader/Spinner";
 
-const ExamContainer = ({ courses, exams, faculty }) => {
+const ExamContainer = ({ courses, exams, setExams, faculty }) => {
   const [selectedForDeletion, setSelectedForDeletion] = useState(null);
   const [loading, setLoading] = useState({});
   const [open, setOpen] = useState(false);
-  const [examsState, setExams] = useState(exams);
 
   const handleDelete = () => {
     setLoading({
@@ -44,7 +43,7 @@ const ExamContainer = ({ courses, exams, faculty }) => {
       />
       <CreateWordButton courses={courses} />
       <ExamTable
-        exams_data={examsState}
+        exams_data={exams}
         faculty={faculty}
         setOpen={setOpen}
         setSelectedForDeletion={setSelectedForDeletion}

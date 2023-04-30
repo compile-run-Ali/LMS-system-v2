@@ -91,7 +91,12 @@ export default function AdminPanel({
           {loading.exams ? (
             <Loader />
           ) : (
-            <ExamContainer courses={courses} exams={exams} faculty={faculty} />
+            <ExamContainer
+              courses={courses}
+              exams={exams}
+              setExams={setExams}
+              faculty={faculty}
+            />
           )}
         </>
       )}
