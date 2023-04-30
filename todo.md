@@ -1,12 +1,12 @@
 # From Feedback:
 
-1 - Move the "Save and Proceed" key to the bottom of the page. Marking page, when set marks is pressed send to bottom
+<!-- 1 - Move the "Save and Proceed" key to the bottom of the page. Marking page, when set marks is pressed send to bottom -->
 
 2 - Instructor/Exam Owner to have "End Exam" key that triggers auto submission of all student IDs that have started attempting. The same key triggers Exam status to be moved to "closed".
 
 3 - Color Indication for attempted questions in the navigation box during student attempt, to signify which question has been attempted and which is pending.
 
-4 - For exam result table, highlight row/s which have been marked by the instructor.
+<!-- 4 - For exam result table, highlight row/s which have been marked by the instructor. -->
 
 5 - Word upload feature to be reserved for use by Admin ID only.
 
@@ -28,7 +28,7 @@
 
 1 - Dont allow student to login when in incognito mode
 
-2 - Flag modal fix
+2 - Flags are Nan only in sequentials
 
 3 - Flags are same for both subjective and objective
 
