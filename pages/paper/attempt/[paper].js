@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
 import BaseLayout from "@/components/BaseLayout/BaseLayout";
 import axios from "axios";
@@ -9,6 +9,7 @@ import ObjectivePaper from "@/components/Paper/ObjectivePaper";
 import SubjectivePaper from "@/components/Paper/SubjectivePaper";
 import Submitted from "@/components/Paper/Submitted";
 
+import { detectIncognito } from "detectincognitojs";
 
 export default function Paper() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function Paper() {
 
   useEffect(() => {
     detectIncognito().then((result) => {
-      console.log('IT WORKS????',result.browserName, result.isPrivate);
+      console.log("IT WORKS????", result.browserName, result.isPrivate);
     });
   }, []);
 
@@ -39,9 +40,12 @@ export default function Paper() {
 
   const getTimeCookie = () => {
     if (document.cookie.includes(`${paper}-time`)) {
-      const timeLeft = document.cookie.split(";").filter((item) => item.includes(`${paper}-time`))[0].split("=")[1];
+      const timeLeft = document.cookie
+        .split(";")
+        .filter((item) => item.includes(`${paper}-time`))[0]
+        .split("=")[1];
       setAttemptTime(timeLeft);
-    } else{
+    } else {
       setAttemptTime(-100);
     }
   };
@@ -114,25 +118,24 @@ export default function Paper() {
   };
 
   useEffect(() => {
-    console.log("attempt time is ", attemptTime)
-      if(attemptTime === -100 && paperDetails){
-        console.log("Doing here")
-        setAttemptTime(paperDetails.duration * 60);
-        return
-      }
-      if (attemptTime > 0) {
-        setTimeout(() => {
-          setAttemptTime(attemptTime - 1);
-          var now = new Date();
-          now.setTime(now.getTime() + 1 * 3600 * 1000);
-          document.cookie = `${paper}-time=${attemptTime}; expires=${now.toUTCString()}; path=/`;
-        }, 800);
-      } else if (attemptTime <= 0 && attemptTime > -100 && attemptTime !== null) {
-        console.log("attempt time is very high ", attemptTime);
-        clearPaperFromLocal();
-        updateStatus();
-        setSubmitted(true);
-      }
+    if (attemptTime === -100 && paperDetails) {
+      console.log("Doing here");
+      setAttemptTime(paperDetails.duration * 60);
+      return;
+    }
+    if (attemptTime > 0) {
+      setTimeout(() => {
+        setAttemptTime(attemptTime - 1);
+        var now = new Date();
+        now.setTime(now.getTime() + 1 * 3600 * 1000);
+        document.cookie = `${paper}-time=${attemptTime}; expires=${now.toUTCString()}; path=/`;
+      }, 800);
+    } else if (attemptTime <= 0 && attemptTime > -100 && attemptTime !== null) {
+      console.log("attempt time is very high ", attemptTime);
+      clearPaperFromLocal();
+      updateStatus();
+      setSubmitted(true);
+    }
   }, [attemptTime, paperDetails]);
 
   if (!paperDetails) {
@@ -142,20 +145,32 @@ export default function Paper() {
   return (
     <BaseLayout>
       <DashboardLayout>
-        {
-          !submitted ?
-          (paperDetails && solveObjective) ?
-          <ObjectivePaper questions={paperDetails.objective_questions} isfreeFlow={paperDetails.freeflow}
-            setSolveObjective={handleSolveObjective} paper={paper} attemptTime={attemptTime} startTime={startTime} />
-          : <SubjectivePaper questions={paperDetails.subjective_questions} isfreeFlow={paperDetails.freeflow} attemptTime={attemptTime} paper={paper} startTime={startTime} />
-
-          : 
+        {!submitted ? (
+          paperDetails && solveObjective ? (
+            <ObjectivePaper
+              questions={paperDetails.objective_questions}
+              isfreeFlow={paperDetails.freeflow}
+              setSolveObjective={handleSolveObjective}
+              paper={paper}
+              attemptTime={attemptTime}
+              startTime={startTime}
+            />
+          ) : (
+            <SubjectivePaper
+              questions={paperDetails.subjective_questions}
+              isfreeFlow={paperDetails.freeflow}
+              attemptTime={attemptTime}
+              paper={paper}
+              startTime={startTime}
+            />
+          )
+        ) : (
           <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
-          <div className="flex justify-center w-full">
-          <Submitted />
+            <div className="flex justify-center w-full">
+              <Submitted />
+            </div>
           </div>
-          </div>
-        }
+        )}
       </DashboardLayout>
     </BaseLayout>
   );

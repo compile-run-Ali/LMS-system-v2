@@ -69,7 +69,7 @@ export default function AddStudent() {
     formData.append("rank", rank);
     formData.append("profile_picture", profilePicture);
 
-    console.log(profilePicture);
+    console.log("RANK IS ", rank);
 
     if (edit) {
       formData.append("student_id", router.query.student_id);
@@ -103,7 +103,6 @@ export default function AddStudent() {
           })
           .catch((err) => {
             setLoading({ message: "Error in enrolling student to course." });
-
             console.log("Error in registering student to course", err);
           });
       })
@@ -115,7 +114,6 @@ export default function AddStudent() {
           console.error(error);
         }
       });
-    // router.push("/admin");
   };
 
   const editStudent = async (student) => {
@@ -129,12 +127,12 @@ export default function AddStudent() {
       .then((res) => {
         setLoading({});
         console.log("student edited successfully", res.data);
+        router.push("/admin");
       })
       .catch((err) => {
         setLoading({ error: "Error in editing student." });
         console.log("Error in editing student", err);
       });
-    router.push("/admin");
   };
 
   const handleRecoverPassword = () => {
