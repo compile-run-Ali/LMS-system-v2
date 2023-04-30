@@ -4,8 +4,6 @@ import FacultyLogin from "./faculty_login";
 import StudentLogin from "./student_login";
 import AdminLogin from "./admin_login";
 
-let userAccount = null;
-
 const configuration = {
   session: {
     jwt: true,
@@ -68,6 +66,7 @@ const configuration = {
     }),
   ],
   callbacks: {
+
     async session({ session, token }) {
       session.user.name = token.name;
       session.user.image = token.user.profile_picture;
