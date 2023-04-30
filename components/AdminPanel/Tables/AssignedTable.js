@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
-import RemoveFacultyModal from "../Subcomponents/RemoveFacultyModal";
+import RemoveFacultyModal from "../Modals/RemoveFacultyModal";
 import axios from "axios";
 
 const AssignedTable = ({ course_data }) => {
@@ -44,7 +44,9 @@ const AssignedTable = ({ course_data }) => {
         <tr className="bg-blue-800 rounded-md text-white">
           <th className="px-4 py-2 border border-gray-500">Course</th>
           <th className="px-4 py-2 border border-gray-500">Assigned to:</th>
-          <th className="px-4 py-2 border border-gray-500 w-32 text-center">Unassign</th>
+          <th className="px-4 py-2 border border-gray-500 w-32 text-center">
+            Unassign
+          </th>
         </tr>
       </thead>
       <tbody>
