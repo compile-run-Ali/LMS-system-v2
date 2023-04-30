@@ -18,7 +18,6 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
 
   const handleLogin = async () => {
     setLoading({
-      show: true,
       message: "Logging in...",
     });
     const signin = await signIn("credentials", {
@@ -33,10 +32,7 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
         pathname: facultyLogin ? "/faculty" : "/student",
       });
     } else {
-      setLoading({
-        show: false,
-        message: "",
-      });
+      setLoading({});
       alert("Invalid Credentials");
     }
   };
@@ -49,10 +45,17 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
 
   return (
     <div className="w-full h-screen font-poppins flex flex-col justify-center items-center mt-10 ">
-      <Spinner show={loading.show} message={loading.message} />
+      <Spinner loading={loading} />
       <div className="w-2/3 lg:w-2/3 h-[90%] flex flex-col bg-blue-900 border border-slate-300 shadow-xl">
         <div className="flex justify-center">
-          <Image src="/logo.png" width={300} height={300} alt="logo" />
+          <Image
+            src="/logo.png"
+            width={300}
+            height={300}
+            alt="logo"
+            priority="loading"
+            className="w-auto h-auto"
+          />
         </div>
         <div className="h-1/5 text-4xl text-center mt-2 font-medium  text-white">
           <h1>ASC e-Exam System</h1>

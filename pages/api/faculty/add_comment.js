@@ -1,11 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const addPaperComment = await prisma.paperComment.create({
       data: {
         comment: req.body.comment,
+        user_generated: req.body.user_generated,
         faculty: {
           connect: {
             faculty_id: req.body.faculty_id,
@@ -27,6 +27,7 @@ const handler = async (req, res) => {
           },
         },
         comment: true,
+        user_generated: true,
         time: true,
       },
     });

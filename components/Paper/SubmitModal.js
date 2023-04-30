@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { useSession } from "next-auth/react";
@@ -14,14 +14,21 @@ export default function SubmitModal({
 }) {
   //call api and create attempt on the paper
   const { data: session, status } = useSession();
-  const paperDetails = JSON.parse(localStorage.getItem("papers"))[paper];
+  const paperDetails = JSON.parse(localStorage.getItem(`paper ${paper}`));
 
   const updateAttempt = () => {
+
+     //update spa status to Attempted
+     const timeCompleted = new Date();
+     // get gmt offset in hours, and add that in startTime
+     const gmtOffset = new Date().getTimezoneOffset();
+     timeCompleted.setMinutes(timeCompleted.getMinutes() - gmtOffset);
     axios
       .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.user.id,
         paperId: paper,
         status: "Submitted",
+        timeCompleted: timeCompleted.toISOString(),
       })
       .then((res) => {
         console.log("attempt created successfully ", res.data);

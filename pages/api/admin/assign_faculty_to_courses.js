@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client"
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient()
   try {
     // Check if record with given faculty_id and course_code already exists
     const ftcExists = await prisma.fTC.findFirst({

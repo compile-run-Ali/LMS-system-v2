@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import SubmitModal from "../SubmitModal";
 import Spinner from "@/components/Loader/Spinner";
+import Submitted from "../Submitted";
 
 export default function SQContainer({
   question,
@@ -22,7 +23,7 @@ export default function SQContainer({
   const [saved, setSaved] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [changed, setChanged] = useState(false);
-  const [savingAnswer, setSavingAnswer] = useState({
+  const [loading, setLoading] = useState({
     show: false,
     message: "",
   });
@@ -32,7 +33,7 @@ export default function SQContainer({
       alert("Your answer is empty. Please type anything to continue.");
       return;
     }
-    setSavingAnswer({ show: true, message: "Saving answer..." });
+    setLoading({ show: true, message: "Saving Answer..." });
 
     for (let question_id in answers) {
       axios
@@ -43,11 +44,14 @@ export default function SQContainer({
         })
         .then((res) => {
           setSaved(true);
-          setSavingAnswer({ show: false, message: "" });
+          setLoading({ show: false, message: "" });
           console.log("answer added successfully ", res.data);
         })
         .catch((err) => {
           console.log("error ", err.message);
+          setLoading({
+            error: "Error in Saving Answer.",
+          });
         });
     }
   };
@@ -58,10 +62,25 @@ export default function SQContainer({
       ? (f = f.filter((flags) => flags !== current))
       : (f = [...flags, current]);
     setFlags(f);
-    const papers = JSON.parse(localStorage.getItem("papers"));
-    papers[paper].flags = f;
-    localStorage.setItem("papers", JSON.stringify(papers));
+    const papers = JSON.parse(localStorage.getItem(`paper ${paper}`));
+    papers.flags = f;
+    localStorage.setItem(`paper ${paper}`, JSON.stringify(papers));
   };
+
+  function integerToAlphabet(num) {
+    let alphabet = "abcdefghijklmnopqrstuvwxyz";
+    let result = "";
+
+    // check if num is within the range of the alphabet
+    if (num <= 0 || num > 26) {
+      return "Invalid input";
+    }
+
+    // convert the integer to its respective alphabet
+    result = alphabet.charAt(num - 1);
+
+    return result;
+  }
 
   useEffect(() => {
     if (question) {
@@ -76,6 +95,9 @@ export default function SQContainer({
           question.child_question.map((child) => child.sq_id) || [];
       }
 
+      setLoading({
+        message: "Loading Answer...",
+      });
       axios
         .get("/api/student/paper/sq/get_answer", {
           params: {
@@ -84,6 +106,7 @@ export default function SQContainer({
           },
         })
         .then((res) => {
+          setLoading({});
           if (hasChild) {
             const answers = {};
             res.data.forEach((answer) => {
@@ -92,14 +115,15 @@ export default function SQContainer({
             setAnswers(answers);
           } else {
             setAnswers({
-              [question.sq_id]: res.data[0]?.answer,
+              [question.sq_id]: res.data[0]?.answer || "",
             });
           }
-
-          console.log("received answers are", res.data);
         })
         .catch((err) => {
           console.log(err);
+          setLoading({
+            error: "Error in Loading Answer.",
+          });
         });
     }
   }, [question]);
@@ -114,7 +138,7 @@ export default function SQContainer({
 
   return (
     <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl text-white">
-      <Spinner show={savingAnswer.show} message={savingAnswer.message} />
+      <Spinner loading={loading} />
       {question ? (
         <>
           <div>
@@ -133,7 +157,7 @@ export default function SQContainer({
                       <div className="text-xl">
                         <div className="flex justify-between items-center ">
                           <p>
-                            {childQuestion.questionnumber +
+                            {integerToAlphabet(childQuestion.questionnumber) +
                               ". " +
                               childQuestion.question}
                           </p>
@@ -271,7 +295,7 @@ export default function SQContainer({
         </>
       ) : (
         <div>
-          <h1>loading</h1>
+          <Submitted />
         </div>
       )}
     </div>

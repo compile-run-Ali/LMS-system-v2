@@ -1,9 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 //get faculty with level above 1
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const faculty = await prisma.faculty.findMany({
       where: {

@@ -1,30 +1,33 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
+import {
+  convertDateTimeToStrings,
+  compareDateTime,
+} from "@/lib/TimeCalculations";
 import { useSession } from "next-auth/react";
+import { MdCheckCircle, MdEdit } from "react-icons/md";
+import { IoMdEye } from "react-icons/io";
 
-const ExamTable = ({ exams_data }) => {
+const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
   const router = useRouter();
   const [exams, setExams] = useState([]);
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    const currentDate = new Date();
     const updatedExams = exams_data.map((exam) => {
       const examDate = new Date(exam.date);
-      if (
-        examDate < currentDate &&
-        exam.status !== "Closed" &&
-        exam.status !== "Marked"
-      ) {
+      if (compareDateTime(examDate) === "past" && exam.status === "Approved") {
         return axios
           .put(`/api/faculty/update_exam_status`, {
             paper_id: exam.paper_id,
-            status: "Closed",
+            status: exam.paper_type === "Objective" ? "Marked" : "Closed",
           })
           .then((response) => {
-            return { ...exam, status: "Closed" };
+            return {
+              ...exam,
+              status: exam.paper_type === "Objective" ? "Marked" : "Closed",
+            };
           })
           .catch((error) => {
             console.log(error);
@@ -61,6 +64,63 @@ const ExamTable = ({ exams_data }) => {
     });
   }, [exams_data]);
 
+  const isPaperDatePast = (examDate) => {
+    const paperDate = new Date(examDate);
+    const today = new Date();
+    // get gmt offset in minutes and add in today
+    paperDate.setMinutes(
+      paperDate.getMinutes() + paperDate.getTimezoneOffset()
+    );
+
+    return (
+      paperDate.getDate() < today.getDate() ||
+      paperDate.getMonth() < today.getMonth() ||
+      paperDate.getFullYear() < today.getFullYear()
+    );
+  };
+
+  const approveExam = (examId, date) => {
+    if (isPaperDatePast(date)) {
+      alert("Exam date is in the past. Please change the date and try again.");
+      return;
+    }
+    axios
+      .put(`/api/faculty/update_exam_status`, {
+        paper_id: examId,
+        status: "Approved",
+      })
+      .then((response) => {
+        console.log("exam id is", examId);
+        addComment({
+          comment: `Exam Approved by ${session.user.name}`,
+          faculty_id: session.user.id,
+          paper_id: examId,
+        });
+        router.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const addComment = (comment) => {
+    if (session.user) {
+      const res = axios
+        .post("/api/faculty/add_comment", {
+          paper_id: comment.paper_id,
+          comment: comment.comment,
+          faculty_id: session.user.id,
+        })
+        .then((response) => {
+          console.log("Comment added successfully");
+          console.log(response);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+
   const handleExamClick = (paper_id) => {
     router.push(`/faculty/exam_details/${paper_id}`);
   };
@@ -74,7 +134,7 @@ const ExamTable = ({ exams_data }) => {
   }
 
   return (
-    <table className="table-auto w-full mt-10 font-poppins text-left px-5">
+    <table className="table-auto w-full mt-2 font-poppins text-left px-5">
       <thead>
         <tr className="bg-blue-800 text-white font-medium ">
           <th className="px-4 py-2">Exam Name</th>
@@ -84,14 +144,19 @@ const ExamTable = ({ exams_data }) => {
           <th className="px-4 py-2">Time</th>
           <th className="px-4 py-2">Total Marks</th>
           <th className="px-4 py-2">Status</th>
+          {approve_row && session.user.level > 2 && (
+            <th className="px-4 py-2 w-20 text-center">Approve</th>
+          )}
+          <th className="px-4 py-2 w-20 text-center">
+            {isPrevious ? "View" : "Edit"}
+          </th>
         </tr>
       </thead>
       <tbody>
         {exams.map((exam, index) => (
           <tr
             key={exam.paper_id}
-            className={`cursor-pointer bg-gray-${index % 2 === 0 ? 100 : 200}`}
-            onClick={() => handleExamClick(exam.paper_id)}
+            className={`bg-gray-${index % 2 === 0 ? 100 : 200}`}
           >
             <td className="border px-4 py-2">{exam.paper_name}</td>
             <td className="border px-4 py-2">{exam.paper_type}</td>
@@ -102,8 +167,28 @@ const ExamTable = ({ exams_data }) => {
             <td className="border px-4 py-2">
               {convertDateTimeToStrings(exam.date)}
             </td>
-            <td className="border px-4 py-2">{exam.weightage}</td>
+            <td className="border px-4 py-2">{exam.total_marks}</td>
             <td className="border px-4 py-2">{exam.status}</td>
+            {approve_row && session.user.level > 2 && (
+              <td className="border px-4 py-2 z-10 text-center w-20">
+                <button
+                  className="bg-green-500 hover:bg-green-600 text-white p-2 rounded-md mx-auto"
+                  onClick={() => {
+                    approveExam(exam.paper_id, exam.date);
+                  }}
+                >
+                  <MdCheckCircle />
+                </button>
+              </td>
+            )}
+            <td className="border px-4 py-2 z-10 text-center w-20">
+              <button
+                className="bg-blue-800 hover:bg-blue-700 text-white p-2 rounded-md text-center"
+                onClick={() => handleExamClick(exam.paper_id)}
+              >
+                {isPrevious ? <IoMdEye /> : <MdEdit />}
+              </button>
+            </td>
           </tr>
         ))}
       </tbody>

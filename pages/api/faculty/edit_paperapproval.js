@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     await prisma.paper.update({
       where: {
@@ -12,11 +11,20 @@ const handler = async (req, res) => {
       },
     });
 
-    await prisma.paperApproval.delete({
+    const approval = await prisma.paperApproval.findUnique({
       where: {
         paper_id: req.body.paper_id,
       },
     });
+    
+    if (approval) {
+      await prisma.paperApproval.delete({
+        where: {
+          paper_id: req.body.paper_id,
+        },
+      });
+    }
+    
 
     req.body.examofficer !== null &&
       (await prisma.paperApproval.create({

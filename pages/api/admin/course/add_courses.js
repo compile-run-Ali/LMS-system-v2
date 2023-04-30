@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client"
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient()
   try {
     //create Course
     const course = await prisma.course.create({
@@ -9,6 +8,7 @@ const handler = async (req, res) => {
         course_code: req.body.course_code,
         course_name: req.body.name,
         credit_hours: Number(req.body.credit_hours),
+        max_students: Number(req.body.max_students),
       },
     });
     res.status(200).json(course)

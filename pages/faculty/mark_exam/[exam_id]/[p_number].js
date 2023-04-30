@@ -22,11 +22,13 @@ const Index = () => {
   const { exam_id, p_number } = router.query;
 
   const fetchObjectiveAttempts = async () => {
-    let question = objectiveQuestions.map((question) => question.oq_id);
+    let questions = objectiveQuestions.map((question) => question.oq_id);
     const res = await axios.post(`/api/student/paper/oq/get_questions`, {
       p_number: p_number,
-      question: question,
+      questions: questions,
     });
+
+    console.log("objective attempts fetched successfully", res.data);
 
     setObjectiveAnswers(res.data);
   };
@@ -57,7 +59,6 @@ const Index = () => {
         if (paperDetails.paper_type !== "Objective") {
           setSubjectiveQuestions(res.data.subjective_questions);
         }
-        console.log("paper details fetched successfully", res.data);
       })
       .catch((err) => {
         console.log("error in fetching paper details", err.message);

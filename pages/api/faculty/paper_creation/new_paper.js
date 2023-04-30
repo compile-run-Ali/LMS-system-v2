@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient();
   console.log(req.body);
   try {
     //Create Paper and connect to course code then connect course with paperid

@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import Input from "@/components/Common/Form/Input";
 import axios from "axios";
 import { useRouter } from "next/router";
+import Spinner from "@/components/Loader/Spinner";
 
 export default function AddStudent() {
   const router = useRouter();
+  const [loading, setLoading] = useState({});
   const [pNumber, setPNumber] = useState(
     router.query.p_number ? router.query.p_number : ""
   );
@@ -25,6 +27,7 @@ export default function AddStudent() {
   const [selectedCourse, setSelectedCourse] = useState(
     courseObject ? courseObject.course.course_code : null
   );
+  const previousCourse = courseObject ? courseObject.course.course_code : null;
   const [courses, setCourses] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
   const [rank, setRank] = useState(router.query.rank ? router.query.rank : "");
@@ -47,6 +50,13 @@ export default function AddStudent() {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    const course = courses.find(
+      (course) => course.course_code === selectedCourse
+    );
+    if (course.student_count === course.max_students) {
+      if (previousCourse !== selectedCourse) return alert("Course is full");
+    }
+
     const formData = new FormData();
     formData.append("p_number", pNumber);
     formData.append("name", name);
@@ -59,7 +69,7 @@ export default function AddStudent() {
     formData.append("rank", rank);
     formData.append("profile_picture", profilePicture);
 
-    console.log(profilePicture);
+    console.log("RANK IS ", rank);
 
     if (edit) {
       formData.append("student_id", router.query.student_id);
@@ -67,18 +77,11 @@ export default function AddStudent() {
     } else {
       addStudent(formData);
     }
-
-    // setPNumber("");
-    // setName("");
-    // setPhoneNumber("");
-    // setCgpa("");
-    // setDob("");
-    // setEmail("");
-    // setPassword("");
-    // setProfilePicture(null);
   };
 
   const addStudent = async (student) => {
+    setLoading({ message: "Saving..." });
+
     axios
       .post(`/api/admin/student/add_student`, student, {
         headers: {
@@ -94,17 +97,27 @@ export default function AddStudent() {
             course_code: selectedCourse,
           })
           .then((res) => {
+            setLoading({});
             console.log("course added successfully", res.data);
+            router.push("/");
           })
-          .catch((err) =>
-            console.log("Error in registering student to course", err)
-          );
+          .catch((err) => {
+            setLoading({ message: "Error in enrolling student to course." });
+            console.log("Error in registering student to course", err);
+          });
       })
-      .catch((err) => console.log("Error in registering student", err));
-    router.push("/admin");
+      .catch((error) => {
+        if (error.response && error.response.status === 400) {
+          alert("Student with that Army Number already exists.");
+        } else {
+          setLoading({ message: "Error in registering student." });
+          console.error(error);
+        }
+      });
   };
 
   const editStudent = async (student) => {
+    setLoading({ message: "Saving..." });
     axios
       .post(`/api/admin/student/edit_student`, student, {
         headers: {
@@ -112,15 +125,31 @@ export default function AddStudent() {
         },
       })
       .then((res) => {
+        setLoading({});
         console.log("student edited successfully", res.data);
+        router.push("/admin");
       })
-      .catch((err) => console.log("Error in editing student", err));
-    router.push("/admin");
+      .catch((err) => {
+        setLoading({ error: "Error in editing student." });
+        console.log("Error in editing student", err);
+      });
+  };
+
+  const handleRecoverPassword = () => {
+    router.push({
+      pathname: "/change_password",
+      query: {
+        student_id: pNumber,
+        recovery: true,
+        name: name,
+      },
+    });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="px-4 font-poppins">
-      <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
+    <form onSubmit={handleSubmit} className="font-poppins px-14">
+      <Spinner loading={loading} />
+      <div className="py-4 grid grid-cols-2 gap-x-8">
         <div className="mb-4">
           <Input
             text="Army Number"
@@ -139,6 +168,27 @@ export default function AddStudent() {
             onChange={(event) => setName(event.target.value)}
             required
           />
+        </div>
+        <div className="mt-6">
+          <label htmlFor="Rank">Rank</label>
+
+          <select
+            className="form-control block w-full mt-2 px-3 py-2 font-normal text-gray-700 
+                  bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
+                  focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+            id="Courses"
+            value={rank}
+            onChange={(e) => {
+              setRank(e.target.value);
+            }}
+          >
+            <option value={""}>Select a rank</option>
+            {ranks?.map((rank) => (
+              <option key={rank} value={rank}>
+                {rank}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-4">
           <Input
@@ -172,7 +222,7 @@ export default function AddStudent() {
           <label htmlFor="Courses">Courses</label>
 
           <select
-            className="form-control block w-full mt-2 px-3 py-2.5 text-sm font-normal text-gray-700 
+            className="form-control block w-full mt-2 px-3 py-2 font-normal text-gray-700 
                   bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
                   focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
             id="Courses"
@@ -189,36 +239,18 @@ export default function AddStudent() {
             ))}
           </select>
         </div>
-        <div className="mt-6">
-          <label htmlFor="Rank">Rank</label>
 
-          <select
-            className="form-control block w-full mt-2 px-3 py-2.5 text-sm font-normal text-gray-700 
-                  bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0
-                  focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-            id="Courses"
-            value={rank}
-            onChange={(e) => {
-              setRank(e.target.value);
-            }}
-          >
-            <option value={""}>Select a rank</option>
-            {ranks?.map((rank) => (
-              <option key={rank} value={rank}>
-                {rank}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="mb-4">
-          <Input
-            text="Password"
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
-        </div>
+        {!edit && (
+          <div className="mb-4">
+            <Input
+              text="Password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          </div>
+        )}
         <div className="font-poppins mt-[22px]">
           <label
             className="block mb-2  text-primary-black"
@@ -233,7 +265,7 @@ export default function AddStudent() {
             </span>
           </label>
           <input
-            className="block w-full text-sm text-gray-900 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
+            className=" block w-full text-sm text-gray-900 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
             aria-describedby="file_input_help"
             id="file_input"
             type="file"
@@ -243,11 +275,21 @@ export default function AddStudent() {
         </div>
       </div>
       <div className="flex justify-end">
+        {edit && (
+          <button
+            type="button"
+            onClick={handleRecoverPassword}
+            className="mr-4 bg-blue-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
+          >
+            Recover Password
+          </button>
+        )}
+
         <button
           type="submit"
           className="bg-blue-800 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded"
         >
-          Add Student
+          Save
         </button>
       </div>
     </form>

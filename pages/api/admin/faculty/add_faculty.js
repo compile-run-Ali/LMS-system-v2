@@ -1,9 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { IncomingForm } from "formidable";
 import mv from "mv";
 
-const prisma = new PrismaClient();
 
 export const config = {
   api: {
@@ -22,17 +21,17 @@ const handler = async (req, res) => {
       }
 
       try {
-        const existingFaculty = await prisma.faculty.findUnique({
-          where: {
-            email: fields.email,
-          },
-        });
+        // const existingFaculty = await prisma.faculty.findUnique({
+        //   where: {
+        //     email: fields.email,
+        //   },
+        // });
 
-        if (existingFaculty) {
-          res.json({
-            emailExists: true,
-          });
-        }
+        // if (existingFaculty) {
+        //   res.json({
+        //     emailExists: true,
+        //   });
+        // }
 
         const hash = await bcrypt.hash(fields.password, 0);
         const facultyData = {

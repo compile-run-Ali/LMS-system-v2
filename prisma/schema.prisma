@@ -43,6 +43,7 @@ model Course {
 
   course_name  String
   credit_hours Int
+  max_students Int?
 
   students SRC[]
   faculty  FTC[]
@@ -53,7 +54,7 @@ model Course {
 model Faculty {
   faculty_id String @id @default(uuid())
 
-  pa_number       String?    @unique
+  pa_number       String? @unique
   name            String
   password        String
   level           Int
@@ -94,18 +95,21 @@ model PaperApproval {
 }
 
 model Paper {
-  paper_id    String         @id @default(uuid())
-  paper_name  String
-  course      Course?        @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
-  course_code String?
-  paper_type  String
-  examofficer PaperApproval?
-  freeflow    Boolean?
-  review      Boolean        @default(false)
-  date        String
-  duration    Int
-  weightage   Int?
-  status      String         @default("Draft")
+  paper_id         String         @id @default(uuid())
+  paper_name       String
+  course           Course?        @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
+  course_code      String?
+  paper_type       String
+  examofficer      PaperApproval?
+  freeflow         Boolean?
+  review           Boolean        @default(false)
+  date             String
+  duration         Int
+  weightage        Int?
+  status           String         @default("Draft")
+  total_marks      Int            @default(0)
+  objective_marks  Int            @default(0)
+  subjective_marks Int            @default(0)
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]
@@ -184,17 +188,19 @@ model SOA {
   student  Student @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
 
   answer        String
+  is_attempted  Boolean @default(false)
   marksobtained Float
 }
 
 model PaperComment {
-  pc_id      String   @id @default(uuid())
-  paper      Paper    @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
-  paper_id   String
-  faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
-  faculty_id String
-  comment    String
-  time       DateTime @default(now())
+  pc_id          String   @id @default(uuid())
+  paper          Paper    @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
+  paper_id       String
+  faculty        Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
+  faculty_id     String
+  comment        String
+  user_generated Boolean  @default(false)
+  time           DateTime @default(now())
 }
 
 model Notification {
@@ -202,6 +208,7 @@ model Notification {
 
   notification String
 
+  exam_id    String   @default("")
   time       DateTime @default(now())
   read       Boolean  @default(false)
   faculty    Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
@@ -209,13 +216,17 @@ model Notification {
 }
 
 model SPA {
-  spaId          String  @id @default(uuid())
-  studentId      String
-  paperId        String
-  status         String? @default("Not Attempted")
-  obtainedMarks  Float   @default(0)
-  studentComment String? @default("")
-  teacherComment String? @default("")
+  spaId           String  @id @default(uuid())
+  studentId       String
+  paperId         String
+  status          String? @default("Not Attempted")
+  timeStarted     String?
+  timeCompleted   String?
+  currentQuestion Int     @default(1)
+  obtainedMarks   Float   @default(0)
+  studentComment  String? @default("")
+  teacherComment  String? @default("")
+  objectiveSolved Boolean @default(false)
 
   student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
   paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)

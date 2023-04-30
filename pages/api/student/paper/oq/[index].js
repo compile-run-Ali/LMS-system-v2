@@ -1,9 +1,8 @@
 // api to fetch objective questions using paper
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 export default async function handler(req, res) {
-  const prisma = new PrismaClient();
   const { index } = req.query;
   const paper_id = index;
   try {

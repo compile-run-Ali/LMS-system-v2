@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     //Find Faculty
     const faculty = await prisma.faculty.findMany({
@@ -15,6 +14,7 @@ const handler = async (req, res) => {
         profile_picture: true,
         level: true,
         position: true,
+        
       },
     });
     res.status(200).json(faculty);

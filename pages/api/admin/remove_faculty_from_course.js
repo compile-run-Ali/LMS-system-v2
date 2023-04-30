@@ -1,8 +1,7 @@
 // delete ftc record where course_code and faculty_id match
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export default async function handle(req, res) {
   const { course_code, faculty_id } = req.body;

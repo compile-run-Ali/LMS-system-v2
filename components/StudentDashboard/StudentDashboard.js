@@ -14,16 +14,16 @@ export default function StudentDashboard({ session }) {
 
   const papers = [
     {
-      title: "Past Papers",
-      papers: pastPapers,
-    },
-    {
       title: "Live Papers",
       papers: livePapers,
     },
     {
       title: "Upcoming Papers",
       papers: upcomingPapers,
+    },
+    {
+      title: "Past Papers",
+      papers: pastPapers,
     },
   ];
 
@@ -34,9 +34,8 @@ export default function StudentDashboard({ session }) {
 
   const getStudentAndSetPapers = async () => {
     const studentexams = await axios.get(`/api/student/paper/${index}`);
-    console.log("papers are ", studentexams.data);
     const approvedPapers = studentexams.data.filter(
-      (paper) => paper.status !== "Draft"
+      (paper) => paper.status !== "Draft" && paper.status !== "Pending Approval"
     );
 
     // categorize papers here
@@ -84,9 +83,7 @@ export default function StudentDashboard({ session }) {
   return (
     <div className="px-8 py-4">
       <div className="flex justify-between mb-8 px-4 bg-blue-100 bg-opacity-40 text-black font-poppins py-4 items-center">
-        <Link key={index} href={`/student/profile`}>
-          <div className="text-2xl">{student?.name}</div>
-        </Link>
+        <div className="text-2xl">{student?.name}</div>
         <div className="text-lg">{student?.email}</div>
       </div>
       {papers.map(

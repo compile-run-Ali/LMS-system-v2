@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const exams = await prisma.faculty.findUnique({
       where: {
@@ -21,6 +20,8 @@ const handler = async (req, res) => {
                 weightage: true,
                 freeflow: true,
                 status: true,
+                total_marks: true,
+                course: true,
               },
             },
           },
@@ -43,6 +44,7 @@ const handler = async (req, res) => {
                     freeflow: true,
                     examofficer: true,
                     status: true,
+                    total_marks: true,
                   },
                 },
               },

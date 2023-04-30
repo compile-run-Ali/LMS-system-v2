@@ -34,8 +34,6 @@ export default function ExamPage() {
       subjectiveQuestions = res.data.filter(
         (question) => !question.parent_sq_id
       );
-
-      console.log("res.data ", subjectiveQuestions);
     }
     setSubjectiveQuestions(subjectiveQuestions);
   };
@@ -43,7 +41,6 @@ export default function ExamPage() {
   useEffect(() => {
     if (exam_id) {
       fetchExam();
-      console.log("exam details are", examDetails);
     }
   }, [exam_id]);
 

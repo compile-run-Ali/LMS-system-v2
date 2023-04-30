@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient();
   console.log(req.body);
   try {
     const paper = await prisma.paper.update({
@@ -10,6 +9,9 @@ const handler = async (req, res) => {
       },
       data: {
         status: req.body.status,
+      },
+      include: {
+        course: true,
       },
     });
 

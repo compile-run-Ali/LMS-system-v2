@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { IncomingForm } from "formidable";
 import mv from "mv";
-
-const prisma = new PrismaClient();
 
 export const config = {
   api: {
@@ -14,7 +12,6 @@ const handler = async (req, res) => {
   const data = await new Promise((resolve, reject) => {
     const form = new IncomingForm({ multiples: true });
     form.parse(req, async (err, fields, files) => {
-      console.log(fields.p_number);
       if (err) {
         console.error(err);
         return reject(err);
@@ -26,7 +23,38 @@ const handler = async (req, res) => {
           phone_number: fields.phone_number,
           cgpa: Number(fields.cgpa),
           DOB: new Date(fields.DOB),
+          rank: fields.rank,
+          p_number: fields.p_number,
         };
+
+
+        
+        const newData = fields.course_code;
+
+        const { course_code: previousData } = await prisma.sRC.findFirst({
+          where: {
+            p_number: fields.p_number,
+          },
+          select: {
+            course_code: true,
+          },
+        });
+
+        if (previousData !== newData) {
+          await prisma.sRC.deleteMany({
+            where: {
+              p_number: fields.p_number,
+            },
+          });
+          await prisma.sRC.create({
+            data: {
+              p_number: fields.p_number,
+              course_code: newData,
+            },
+          });
+        }
+
+
 
         if (files.profile_picture) {
           studentData.profile_picture = files.profile_picture.originalFilename;
@@ -40,7 +68,6 @@ const handler = async (req, res) => {
               console.error(err);
               return reject(err);
             }
-
             prisma.student
               .update({
                 where: {
@@ -88,25 +115,6 @@ const handler = async (req, res) => {
     });
   });
   res.status(200).json(data);
-  // const prisma = new PrismaClient();
-  // try {
-  //   // Edit Student Details
-  //   const student = await prisma.student.update({
-  //     where: {
-  //       p_number: req.body.p_number,
-  //     },
-  //     data: {
-  //       name: req.body.name,
-  //       email: req.body.email,
-  //       phone_number: req.body.phone_number,
-  //       cgpa: req.body.cgpa,
-  //       dob: req.body.dob,
-  //     },
-  //   });
-  //   res.status(200).json(student);
-  // } catch (err) {
-  //   throw new Error(err.message);
-  // }
 };
 
 export default handler;

@@ -7,6 +7,7 @@ import Exam from "../Exam/Exam";
 import axios from "axios";
 import SubjectiveExam from "../CreateSubjective/SubjectiveExam";
 import IeExam from "../CreateIE/IeExam";
+import WordExam from "../CreateWord";
 
 const wizardItemsObjective = [
   {
@@ -48,7 +49,7 @@ export default function CreateExam({ paperType }) {
   const [examDetails, setExamDetails] = useState(null);
   const [active, setActive] = useState(1);
   const [paperId, setPaperId] = useState(
-    Object.keys(router.query).length > 0 ? router.query.paper_id : 0
+    Object.keys(router.query).length > 1 ? router.query.paper_id : 0
   );
   const [exam, setExam] = useState();
   const [mcqs, setMCQs] = useState([]);
@@ -58,12 +59,11 @@ export default function CreateExam({ paperType }) {
 
   useEffect(() => {
     if (router.isReady) {
-      console.log("router is ready");
       setPaperId(
-        Object.keys(router.query).length > 0 ? router.query.paper_id : 0
+        Object.keys(router.query).length > 1 ? router.query.paper_id : 0
       );
       setExamDetails(
-        Object.keys(router.query).length > 0 ? router.query : null
+        Object.keys(router.query).length > 1 ? router.query : null
       );
     }
   }, [router]);
@@ -74,8 +74,6 @@ export default function CreateExam({ paperType }) {
     });
     setExam(res.data);
   };
-
-  console.log("paper id is", paperId);
 
   const fetchObjectives = async () => {
     const res = await axios.post("/api/faculty/get_objective", {
@@ -110,10 +108,9 @@ export default function CreateExam({ paperType }) {
 
   useEffect(() => {
     if (paperId && !exam) {
-      console.log("paper id is", paperId, "fetching exam");
       fetchExam();
     }
-    if (paperType === "Objective" && paperId) {
+    if ((paperType === "Objective" || paperType === "Word") && paperId) {
       fetchObjectives();
     }
     if (paperType === "Subjective/Objective" && paperId) {
@@ -126,37 +123,47 @@ export default function CreateExam({ paperType }) {
   }, [paperId, exam, paperType]);
 
   return (
-    <div className="w-full pl-6 mt-2">
+    <div className="w-full px-6 mt-2">
+      {}
       <Wizard
         active={active}
         setActive={setActive}
+        paperName={exam?.paper_name}
         items={
           paperType === "Subjective/Objective"
             ? wizardItemsSubjective
             : wizardItemsObjective
         }
       />
+
       {active === 1 && (
         <Form
           setActive={setActive}
           setPaperId={setPaperId}
           examDetails={examDetails}
+          setExam={setExam}
           paperType={paperType}
           setFreeFlowGlobal={setFreeFlowGlobal}
         />
       )}
-      {active === 2 && paperId !== 0 && paperType !== "IE" && (
-        <div className="mt-10">
-          <MCQTable
-            exam={exam}
-            paperId={paperId}
-            setActive={setActive}
-            objective_questions={mcqs}
-            setObjectiveQuestions={setMCQs}
-            freeFlow={freeFlowGlobal}
-          />
-        </div>
-      )}
+
+      {active === 2 &&
+        paperId !== 0 &&
+        paperType !== "IE" &&
+        paperType !== "Word" && (
+          <div className="mt-10">
+            <MCQTable
+              exam={exam}
+              setExam={setExam}
+              paperId={paperId}
+              setActive={setActive}
+              objective_questions={mcqs}
+              setObjectiveQuestions={setMCQs}
+              freeFlow={freeFlowGlobal}
+            />
+          </div>
+        )}
+
       {active === 2 && paperId !== 0 && paperType === "IE" && (
         <div className="mt-10">
           <IeExam
@@ -167,33 +174,40 @@ export default function CreateExam({ paperType }) {
           />
         </div>
       )}
-      {active === 3 && paperId !== 0 && paperType === "Objective" && (
+
+      {active === 2 && paperType === "Word" && (
         <div className="mt-10">
-          <Exam
-            exam={exam}
-            objectiveQuestions={mcqs}
-            subjectiveQuestions={subjectives}
-            isEdit={true}
+          <WordExam
+            paperId={paperId}
+            setExam={setExam}
             setActive={setActive}
+            objectiveQuestions={mcqs}
+            setObjectiveQuestions={setMCQs}
           />
         </div>
       )}
-      {active === 3 && paperId !== 0 && paperType === "IE" && (
-        <div className="mt-10">
-          <Exam
-            exam={exam}
-            objectiveQuestions={mcqs}
-            subjectiveQuestions={subjectives}
-            isEdit={true}
-            setActive={setActive}
-          />
-        </div>
-      )}
+
+      {active === 3 &&
+        paperId !== 0 &&
+        paperType !== "Subjective/Objective" && (
+          <div className="mt-10">
+            <Exam
+              exam={exam}
+              objectiveQuestions={mcqs}
+              subjectiveQuestions={subjectives}
+              isEdit={true}
+              setActive={setActive}
+            />
+          </div>
+        )}
+
       {active === 3 &&
         paperId !== 0 &&
         paperType === "Subjective/Objective" && (
           <div className="mt-10">
             <SubjectiveExam
+              exam={exam}
+              setExam={setExam}
               paperId={paperId}
               setActive={setActive}
               subjective_questions={subjectives}
@@ -201,6 +215,7 @@ export default function CreateExam({ paperType }) {
             />
           </div>
         )}
+
       {active === 4 &&
         paperId !== 0 &&
         paperType === "Subjective/Objective" && (

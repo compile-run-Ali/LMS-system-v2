@@ -31,6 +31,7 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
         profile_picture: facultyData[index].profile_picture,
         position: facultyData[index].position,
         rank: facultyData[index].rank,
+        adminEdit: true,
       },
     });
   };
@@ -50,50 +51,51 @@ const FacultyTable = ({ faculty, setSelectedFaculty, setOpen }) => {
   };
 
   return (
-    <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
+    <table className="table-auto mt-10 rounded-md font-poppins w-full text-left shadow-md">
       <thead>
         <tr className="bg-blue-800 rounded-md text-white">
-          <th className="px-4 py-2">PA Number</th>
-          <th className="px-4 py-2">Name</th>
-          <th className="px-4 py-2">Phone Number</th>
-          <th className="px-4 py-2">Rank</th>
-          <th className="px-4 py-2">Level</th>
-          <th className="px-4 py-2">Email</th>
-          <th className="px-4 py-2"></th>
-          <th className="px-4 py-2"></th>
+          <th className="px-4 py-2 border border-gray-500">PA Number</th>
+          <th className="px-4 py-2 border border-gray-500">Name</th>
+          <th className="px-4 py-2 border border-gray-500">Phone Number</th>
+          <th className="px-4 py-2 border border-gray-500">Rank</th>
+          <th className="px-4 py-2 border border-gray-500">Level</th>
+          <th className="px-4 py-2 border border-gray-500">Email</th>
+          <th className="px-4 py-2 border border-gray-500 text-center w-20">Edit</th>
+          <th className="px-4 py-2 border border-gray-500 text-center w-20">Delete</th>
         </tr>
       </thead>
       <tbody>
-        {facultyData.map((facultyMember, index) => (
-          facultyMember.level !== 5 &&
-          <tr key={index} className="bg-white">
-            <td className=" px-4 py-2">{facultyMember.pa_number}</td>
-            <td className=" px-4 py-2">{facultyMember.name}</td>
-            <td className=" px-4 py-2">{facultyMember.phone_number}</td>
-            <td className=" px-4 py-2">{facultyMember.rank}</td>
-            <td className=" px-4 py-2">{facultyMember.position}</td>
-            <td className=" px-4 py-2">{facultyMember.email}</td>
-            <td className="px-4 py-2">
-              <button
-                onClick={handleEditFaculty(index)}
-                className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
-              >
-                <MdEdit />
-              </button>
-            </td>
-            <td className="px-4 py-2">
-              <button
-                onClick={() => {
-                  openModal(index);
-                }}
-                className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
-              >
-                <MdDelete />
-              </button>
-            </td>
-          </tr>
-          
-        ))}
+        {facultyData.map(
+          (facultyMember, index) =>
+            facultyMember.level !== 5 && (
+              <tr key={index} className="bg-white">
+                <td className=" px-4 py-2 border border-gray-500">{facultyMember.pa_number}</td>
+                <td className=" px-4 py-2 border border-gray-500">{facultyMember.name}</td>
+                <td className=" px-4 py-2 border border-gray-500">{facultyMember.phone_number}</td>
+                <td className=" px-4 py-2 border border-gray-500">{facultyMember.rank}</td>
+                <td className=" px-4 py-2 border border-gray-500">{facultyMember.position}</td>
+                <td className=" px-4 py-2 border border-gray-500">{facultyMember.email}</td>
+                <td className="px-4 py-2 border border-gray-500 text-center w-20">
+                  <button
+                    onClick={handleEditFaculty(index)}
+                    className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
+                  >
+                    <MdEdit />
+                  </button>
+                </td>
+                <td className="px-4 py-2 border border-gray-500 text-center w-20">
+                  <button
+                    onClick={() => {
+                      openModal(index);
+                    }}
+                    className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
+                  >
+                    <MdDelete />
+                  </button>
+                </td>
+              </tr>
+            )
+        )}
       </tbody>
     </table>
   );

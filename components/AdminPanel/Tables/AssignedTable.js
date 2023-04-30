@@ -11,18 +11,6 @@ const AssignedTable = ({ course_data }) => {
     setCourseData(course_data);
   }, [course_data]);
 
-  const handleMultipleFaculty = (faculty) => {
-    let facultyString = "";
-    faculty.forEach((fac, index) => {
-      if (index === faculty.length - 1) {
-        facultyString += ` ${fac.name}`;
-      } else {
-        facultyString += ` ${fac.name},`;
-      }
-    });
-    return facultyString;
-  };
-
   const handleRemove = (courseToBeDeleted, faculty) => {
     if (!faculty) return alert("Please select a faculty to remove.");
     console.log("faculty", faculty);
@@ -48,23 +36,33 @@ const AssignedTable = ({ course_data }) => {
       .catch((err) => console.log("Error in removing faculty", err));
   };
 
+  console.log("courseData", courseData[1]?.faculty);
+
   return (
-    <table className="table-auto mt-10 rounded-md font-poppins w-full text-left">
+    <table className="table-auto mt-10 rounded-md font-poppins w-full text-left shadow-md">
       <thead>
         <tr className="bg-blue-800 rounded-md text-white">
-          <th className="px-4 py-2">Course</th>
-          <th className="px-4 py-2">Assigned to:</th>
-          <th className="px-4 py-2"></th>
+          <th className="px-4 py-2 border border-gray-500">Course</th>
+          <th className="px-4 py-2 border border-gray-500">Assigned to:</th>
+          <th className="px-4 py-2 border border-gray-500 w-32 text-center">Unassign</th>
         </tr>
       </thead>
       <tbody>
         {courseData.map((course, index) => (
           <tr key={index} className="bg-white">
-            <td className=" px-4 py-2">{`${course.course_code} - ${course.course_name}`}</td>
-            <td className=" px-4 py-2">
-              {handleMultipleFaculty(course.faculty)}
+            <td className=" px-4 py-2 border border-gray-500">{`${course.course_code} - ${course.course_name}`}</td>
+            <td className=" px-4 py-2 border border-gray-500">
+              <ul>
+                {course.faculty.length > 0
+                  ? course.faculty.map((fac, index) => (
+                      <li key={fac.faculty_id}>
+                        {index + 1}. {fac.name}
+                      </li>
+                    ))
+                  : "No faculty assigned"}
+              </ul>
             </td>
-            <td>
+            <td className="w-32 border border-gray-500 text-center">
               <button
                 onClick={() => {
                   setOpenedIndex(index);

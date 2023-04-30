@@ -13,22 +13,20 @@ export default function Students({ students, setStudents }) {
   };
 
   const handleDelete = async () => {
-    console.log(selectedStudent)
-    const deletedStudent = await axios.post(
-      "/api/admin/student/remove_student",
-      {
+    console.log(selectedStudent);
+    axios
+      .post("/api/admin/student/remove_student", {
         p_number: selectedStudent,
-      }
-    );
-    if (deletedStudent.status === 200) {
-      const newStudents = students.filter(
-        (student) => student.student_id !== selectedStudent
-      );
-      setStudents(newStudents);
-      setOpen(false);
-    }
-    router.reload();
-  };
+      })
+      .then((res) => {
+        const newStudents = students.filter(
+          (student) => student.student_id !== selectedStudent
+        );
+        setStudents(newStudents);
+        setOpen(false);
+      });
+      router.reload();
+    };
 
   return (
     <div>

@@ -7,9 +7,9 @@ import { useRouter } from "next/router";
 const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
   const router = useRouter();
   const [files, setFiles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  
-  console.log(ieFiles)
+  const [loading, setLoading] = useState({});
+
+  console.log(ieFiles);
 
   const handleFileUpload = (e) => {
     const newFile = e.target.files[0];
@@ -27,14 +27,17 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
     router.push({
       pathname: `/faculty/create_exam/ie`,
       query: {
-        ...exam,
+        paper_id: exam.paper_id,
+        is_edit: true,
       },
     });
   };
 
   const handleUpload = async () => {
     try {
-      setLoading(true);
+      setLoading({
+        message: "Uploading Exam...",
+      });
       const formData = new FormData();
       files.forEach((file) => {
         formData.append("files", file);
@@ -50,38 +53,40 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
         }
       );
       console.log(res);
-      setLoading(false);
+      setLoading({});
       setFiles([]);
     } catch (error) {
       console.error(error);
-      setLoading(false);
+      setLoading({
+        error: "Error in Uploading Exam",
+      });
     }
   };
 
-
   return (
     <div>
-      <div className="flex flex-wrap gap-4">
-      <table className="w-full mt-6 text-left table-collapse">
-        <thead>
-          <tr>
-            <th className="px-4 py-2">SR#</th>
-            <th className="px-4 py-2">File</th>
-            <th className="px-4 py-2">url</th>
+      <Spinner loading={loading} />
 
-          </tr>
-        </thead>
-        <tbody>
-          {ieFiles.length > 0 &&
-          ieFiles.map((IE, index) => (
-            <tr key={index} className="border-t">
-              <td className="px-4 py-2">{index + 1}</td>
-              <td className="px-4 py-2">{IE.fileName}</td>
-              <td className="px-4 py-2">{IE.url}</td>
+      <div className="flex flex-wrap gap-4">
+        <table className="w-full mt-6 text-left table-collapse">
+          <thead>
+            <tr>
+              <th className="px-4 py-2">SR#</th>
+              <th className="px-4 py-2">File</th>
+              <th className="px-4 py-2">url</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {ieFiles.length > 0 &&
+              ieFiles.map((IE, index) => (
+                <tr key={index} className="border-t">
+                  <td className="px-4 py-2">{index + 1}</td>
+                  <td className="px-4 py-2">{IE.fileName}</td>
+                  <td className="px-4 py-2">{IE.url}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
         {files.map((file, index) => (
           <div key={index} className="flex items-center">
             <p>{file.name}</p>
@@ -91,14 +96,20 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
           </div>
         ))}
       </div>
-      <input type="file" onChange={handleFileUpload} multiple />
+      <label class="ml-2 inline-flex items-center justify-center px-4 py-2 bg-blue-800 text-white font-medium rounded cursor-pointer">
+        <span>Choose files</span>
+        <input
+          type="file"
+          class="hidden"
+          onChange={handleFileUpload}
+          multiple
+        />
+      </label>
       <button
         onClick={handleUpload}
         disabled={files.length === 0 || loading}
         className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
-      >
-        {loading ? <Spinner /> : "Upload"}
-      </button>
+      ></button>
       <div className="mt-10 w-full pr-10 flex justify-end gap-x-5">
         <button
           type="button"
@@ -115,7 +126,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
           onClick={() => setActive(3)}
         >
-          Proceed
+          Save and Proceed
         </button>
       </div>
     </div>

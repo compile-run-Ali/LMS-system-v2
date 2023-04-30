@@ -1,18 +1,20 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 //the route is /api/student/paper/get_attempt_status
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     const SPA = await prisma.sPA.findMany({
       where: {
-        studentId: req.body.studentId,
+        studentId: req.query.studentId,
       },
       select: {
         paperId: true,
         status: true,
         obtainedMarks: true,
+        timeCompleted: true,
+        timeStarted: true,
+        
       },
     });
     res.status(200).json(SPA);

@@ -11,6 +11,9 @@ const configuration = {
     jwt: true,
     maxAge: 3 * 60 * 60, // 3 hours
   },
+  jwt: {
+    maxAge: 3 * 60 * 60, // 3 hours
+  },
   providers: [
     CredentialsProvider({
       id: "credentials",
@@ -69,12 +72,21 @@ const configuration = {
       session.user.name = token.name;
       session.user.image = token.user.profile_picture;
       session.user.role = token.user.role;
-      session.user.level = token.user.level;
+      if (token.user.faculty_id) {
+        session.user.level = token.user.level;
+        session.user.position = token.user.position;
+        session.user.pa_number = token.user.pa_number;
+      } else {
+        session.user.cgpa = token.user.cgpa;
+        session.user.DOB = token.user.DOB;
+      }
+      session.user.phone_number = token.user.phone_number;
+      session.user.rank = token.user.rank;
       session.user.id = token.user.faculty_id
         ? token.user.faculty_id
         : token.user.p_number
-        ? token.user.p_number
-        : token.user.admin_id;
+          ? token.user.p_number
+          : token.user.admin_id;
       return session;
     },
     async signIn(user, account, profile) {
@@ -94,6 +106,14 @@ const configuration = {
       }
       return token;
     },
+    async redirect({ url, baseUrl }) {
+
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${url}`
+      
+      return url
+    },
+
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {

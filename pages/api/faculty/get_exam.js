@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  const prisma = new PrismaClient();
   try {
     //get all papers
     const paper = await prisma.paper.findUnique({
@@ -15,6 +14,7 @@ const handler = async (req, res) => {
             level: true,
           },
         },
+        course: true,
         paper_name: true,
         paper_type: true,
         date: true,
@@ -24,11 +24,12 @@ const handler = async (req, res) => {
         status: true,
         paper_id: true,
         review: true,
+        total_marks: true,
       },
     });
     res.status(200).json(paper);
   } catch (err) {
-    throw new Error(err.message);
+    res.status(500).json({ err });
   }
 };
 

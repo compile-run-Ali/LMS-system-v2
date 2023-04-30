@@ -1,9 +1,8 @@
 // get paper by id
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { getPaperDateTime, compareDateTime } from "@/lib/TimeCalculations";
 
 const handle = async (req, res) => {
-  const prisma = new PrismaClient();
   const { index } = req.query;
   let id = index;
   try {
@@ -25,6 +24,7 @@ const handle = async (req, res) => {
         paper_type: true,
         review: true,
         weightage: true,
+
         objective_questions: {
           select: {
             oq_id: true,
@@ -88,17 +88,7 @@ const handle = async (req, res) => {
       },
     });
     if (!paper) return res.status(404).json("Paper not found");
-
-    if (
-      compareDateTime(
-        paper.date,
-        getPaperDateTime(paper.date, paper.duration).end
-      ) === "live"
-    ) {
-      res.status(200).json(paper);
-    } else {
-      res.status(401).json("Paper is not live.");
-    }
+    res.status(200).json(paper);
   } catch (error) {
     console.log(
       "Error in /pages/api/paper/[index].js: ",

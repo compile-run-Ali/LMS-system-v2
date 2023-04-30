@@ -1,14 +1,19 @@
 // api to get answer of student if exists
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
   try {
     const existingSOA = await prisma.sOA.findUnique({
       where: {
         soa_id: req.query.p_number + req.query.oq_id,
+      },
+      select: {
+        answer: true,
+        oq_id: true,
+        marksobtained: true,
+        is_attempted: true,
       },
     });
 

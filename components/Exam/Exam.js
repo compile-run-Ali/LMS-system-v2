@@ -17,27 +17,26 @@ export default function Exam({
   const session = useSession();
   const router = useRouter();
 
-  const [loading, setLoading] = useState({
-    show: false,
-    message: "",
-  });
+  const [loading, setLoading] = useState({});
   const [edit, setEdit] = useState(isEdit);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState();
-  const [faculty, setFaculty] = useState();
+  const [faculties, setFaculties] = useState();
   const [selectedFaculty, setSelectedFaculty] = useState();
   const [access, setAccess] = useState(null);
 
   useEffect(() => {
     setAccess(() => {
-      if (session.status === "authenticated") {
-
-        if (session.data.user.role === "faculty" && session.data.user.level === 5) {
+      if (session.status === "authenticated" && exam !== undefined) {
+        if (
+          session.data.user.role === "faculty" &&
+          session.data.user.level === 5
+        ) {
           return true;
         }
 
         if (exam.status === "Pending Approval") {
-          return exam.examofficer.faculty_id === session.data.user.id;
+          return exam.examofficer?.faculty_id === session.data.user.id;
         } else if (exam.status === "Approved") {
           return false;
         } else if (exam.status === "Draft") {
@@ -48,30 +47,25 @@ export default function Exam({
   }, [session]);
 
   const getComments = async () => {
-    const res = await axios.post("/api/paper/get_comments", {
-      paper_id: exam.paper_id,
-    });
-    console.log("paper comments", res.data);
+    if (exam !== undefined) {
+      const res = await axios.post("/api/paper/get_comments", {
+        paper_id: exam.paper_id,
+      });
 
-    // sort comment by date and time
-    res.data.sort((a, b) => {
-      const dateA = new Date(a.time);
-      const dateB = new Date(b.time);
-      return dateA - dateB;
-    });
+      // sort comment by date and time
+      res.data.sort((a, b) => {
+        const dateA = new Date(a.time);
+        const dateB = new Date(b.time);
+        return dateA - dateB;
+      });
 
-    setComments(res.data);
-  };
-
-  const addFiveHoursToISOString = (dateString) => {
-    const date = new Date(dateString);
-    date.setHours(date.getHours() + 5);
-    return date.toISOString();
+      setComments(res.data);
+    }
   };
 
   const getFaculty = async () => {
     const res = await axios.get("/api/paper/get_faculty");
-    setFaculty(
+    setFaculties(
       res.data.filter(
         (faculty) => faculty.faculty_id !== session?.data?.user.id
       )
@@ -87,57 +81,132 @@ export default function Exam({
     }
   }, []);
 
+  if (!exam) {
+    return <div>Exam not found</div>;
+  }
+
+  const isPaperDateNotToday = () => {
+    const paperDate = new Date(exam.date);
+    const today = new Date();
+    // get gmt offset in minutes and add in today
+    paperDate.setMinutes(
+      paperDate.getMinutes() + paperDate.getTimezoneOffset()
+    );
+
+    console.log("today is", today, "\npaper date is", paperDate);
+
+    return (
+      paperDate.getDate() < today.getDate() ||
+      paperDate.getMonth() < today.getMonth() ||
+      paperDate.getFullYear() < today.getFullYear()
+    );
+  };
+
+  const showSpinner = () => {
+    setLoading({
+      message: "Saving...",
+    });
+  };
+
+  const hideSpinner = () => {
+    setLoading({});
+  };
+
+  const addFiveHoursToISOString = (dateString) => {
+    const date = new Date(dateString);
+    date.setHours(date.getHours() + 5);
+    return date.toISOString();
+  };
+
   const editExam = () => {
     if (setActive) {
       setActive(1);
     }
     router.push({
       pathname: `/faculty/create_exam/${
-        exam.paper_type === "Objective" ? "objective" : "subjective"
+        exam.paper_type === "Objective"
+          ? "objective"
+          : exam.paper_type === "Subjective/Objective"
+          ? "subjective"
+          : exam.paper_type === "I.E"
+          ? "ie"
+          : "word"
       }`,
       query: {
-        ...exam,
+        paper_id: exam.paper_id,
+        is_edit: true,
       },
     });
   };
+
+  async function submitExamOrEditPaperApproval(apiEndpoint, data) {
+    try {
+      console.log(`calling ${apiEndpoint}`);
+      const response = await axios.post(apiEndpoint, data);
+      console.log(`${apiEndpoint} called`);
+      setLoading({});
+
+      addComment({
+        comment: `Exam Submitted by ${session.data.user.name} to ${
+          faculties.filter(
+            (faculty) => faculty.faculty_id === selectedFaculty
+          )[0].name
+        }`,
+        faculty_id: session.data.user.id,
+        paper_id: exam.paper_id,
+      });
+      console.log("added comment");
+      generateNotification();
+      router.push("/");
+    } catch (err) {
+      console.log("error", err);
+    }
+    hideSpinner();
+  }
 
   const submitExam = async () => {
     if (!selectedFaculty) {
       alert("Please select a faculty to mark to");
       return;
     }
+    if (isPaperDateNotToday()) {
+      alert("Exam date is in the past. Please change the date and try again.");
+      return;
+    }
 
-    setLoading({
-      show: true,
-      message: "Submitting Exam...",
-    });
-    const submitExam = await axios.post("/api/faculty/submit_exam", {
-      paper_id: exam.paper_id,
-      faculty_id: selectedFaculty,
-      level: faculty.filter(
-        (faculty) => faculty.faculty_id === selectedFaculty
-      )[0].level,
-    });
-    if (submitExam.status === 200) {
-      setLoading({
-        show: false,
-        message: "",
-      });
-
-      addComment({
-        comment: `Exam Submitted by ${session.data.user.name} to ${
-          faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
-            .name
-        }`,
-        faculty_id: session.data.user.id,
+    showSpinner();
+    if (exam.examofficer !== null) {
+      console.log("exam officer EXISTS");
+      const editPaperApprovalData = {
         paper_id: exam.paper_id,
-      });
-      generateNotification();
-      router.push("/faculty");
+        examofficer: selectedFaculty,
+        level: faculties.filter(
+          (faculty) => faculty.faculty_id === selectedFaculty
+        )[0].level,
+      };
+      submitExamOrEditPaperApproval(
+        "/api/faculty/edit_paperapproval",
+        editPaperApprovalData
+      );
+    } else {
+      console.log("exam officer DOES NOT exist");
+      const submitExamData = {
+        paper_id: exam.paper_id,
+        faculty_id: selectedFaculty,
+        level: faculties.filter(
+          (faculty) => faculty.faculty_id === selectedFaculty
+        )[0].level,
+      };
+      submitExamOrEditPaperApproval("/api/faculty/submit_exam", submitExamData);
     }
   };
 
   const approve = async () => {
+    if (isPaperDateNotToday()) {
+      alert("Exam date is in the past. Please change the date and try again.");
+      return;
+    }
+
     const approveExam = await axios.post("/api/faculty/update_exam_status", {
       paper_id: exam.paper_id,
       status: "Approved",
@@ -148,51 +217,78 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
-      router.push("/faculty");
+      router.push("/");
     }
   };
 
-  // const sendBack = async () => {
-  //   const sendBack = await axios.post("/api/faculty/edit_paperapproval", {
-  //     paper_id: exam.paper_id,
-  //     examofficer: null,
-  //   });
-  //   if (sendBack.status === 200) {
-  //     addComment({
-  //       comment: `Exam Sent Back by ${session.data.user.name}`,
-  //       faculty_id: session.data.user.id,
-  //       paper_id: exam.paper_id,
-  //     });
-  //     router.push("/faculty");
-  //   }
-  // };
+  const saveDraft = async () => {
+    showSpinner();
+    const approveExam = await axios.post("/api/faculty/edit_paperapproval", {
+      paper_id: exam.paper_id,
+      examofficer: null,
+    });
+    if (approveExam.status === 200) {
+      // addComment({
+      //   comment: `Exam saved as draft by ${session.data.user.name}`,
+      //   faculty_id: session.data.user.id,
+      //   paper_id: exam.paper_id,
+      // });
+      router.push("/");
+    } else {
+      setLoading({
+        error: "Error saving draft",
+      });
+    }
+    hideSpinner();
+  };
 
-  // const sendForward = async () => {
-  //   if (!selectedFaculty) {
-  //     alert("Please select a faculty to send to");
-  //     return;
-  //   }
-  //   const sendForward = await axios.post("/api/faculty/edit_paperapproval", {
-  //     paper_id: exam.paper_id,
-  //     examofficer: selectedFaculty,
-  //     level: faculty.filter(
-  //       (faculty) => faculty.faculty_id === selectedFaculty
-  //     )[0].level,
-  //   });
-  //   if (sendForward.status === 200) {
-  //     addComment({
-  //       comment: `Exam Sent Forward by ${session.data.user.name} to ${
-  //         faculty.filter((faculty) => faculty.faculty_id === selectedFaculty)[0]
-  //           .name
-  //       }`,
-  //       faculty_id: session.data.user.id,
-  //       paper_id: exam.paper_id,
-  //     });
-  //     console.log("Exam Sent Forward");
-  //     generateNotification();
-  //     router.push("/faculty");
-  //   }
-  // };
+  const sendBack = async () => {
+    const sendBack = await axios.post("/api/faculty/edit_paperapproval", {
+      paper_id: exam.paper_id,
+      examofficer: null,
+    });
+    if (sendBack.status === 200) {
+      addComment({
+        comment: `Exam Sent Back by ${session.data.user.name}`,
+        faculty_id: session.data.user.id,
+        paper_id: exam.paper_id,
+      });
+      router.push("/");
+    }
+  };
+
+  const sendForward = async () => {
+    if (!selectedFaculty) {
+      alert("Please select a faculty to send to");
+      return;
+    }
+    if (isPaperDateNotToday()) {
+      alert("Exam date is in the past. Please change the date and try again.");
+      return;
+    }
+
+    const sendForward = await axios.post("/api/faculty/edit_paperapproval", {
+      paper_id: exam.paper_id,
+      examofficer: selectedFaculty,
+      level: faculties.filter(
+        (faculty) => faculty.faculty_id === selectedFaculty
+      )[0].level,
+    });
+    if (sendForward.status === 200) {
+      addComment({
+        comment: `Exam Sent Forward by ${session.data.user.name} to ${
+          faculties.filter(
+            (faculty) => faculty.faculty_id === selectedFaculty
+          )[0].name
+        }`,
+        faculty_id: session.data.user.id,
+        paper_id: exam.paper_id,
+      });
+      console.log("Exam Sent Forward");
+      generateNotification();
+      router.push("/");
+    }
+  };
 
   const generateNotification = async () => {
     const res = await axios.post("/api/faculty/generate_notification", {
@@ -204,12 +300,13 @@ export default function Exam({
     }
   };
 
-  const addComment = async ({ comment }) => {
+  const addComment = async ({ comment }, userGenerated = false) => {
     if (session.status === "authenticated") {
       const res = await axios.post("/api/faculty/add_comment", {
         paper_id: exam.paper_id,
         comment: comment,
         faculty_id: session.data.user.id,
+        user_generated: userGenerated,
       });
 
       if (res.status === 200) {
@@ -226,8 +323,8 @@ export default function Exam({
 
   return (
     <>
-      <Spinner show={loading.show} message={loading.message} />
-      <div className="pr-10 pl-7 font-poppins w-full ">
+      <Spinner loading={loading} />
+      <div className="px-10 font-poppins w-full">
         <div className="bg-gray-100 bg-opacity-50 pt-10 rounded-md">
           {access && (
             <div className="w-full flex justify-end pr-5 cursor-pointer">
@@ -272,9 +369,13 @@ export default function Exam({
               <span className=" font-medium">Exam Duration:</span>
               <span className="ml-2">{exam.duration}</span>
             </div>
+
+            <div className="pl-20">
+              <span className=" font-medium">Total Marks:</span>
+              <span className="ml-2">{exam.total_marks}</span>
+            </div>
           </div>
-          {(exam.paper_type === "Objective" ||
-            exam.paper_type === "Subjective/Objective") && (
+          {exam.paper_type !== "IE" && (
             <div className="bg-gray-100 py-5 mt-5 px-5 border-b border-slate-400 border-opacity-50">
               <Accordion
                 questions={objectiveQuestions}
@@ -301,8 +402,15 @@ export default function Exam({
                   className="flex justify-between mb-5 pb-4 border-b border-gray-600 border-opacity-20"
                 >
                   <div className=" flex flex-col justify-center">
-                    <span className="text-[#212121] font-medium">
+                    <span
+                      className={`
+                        text-[#212121] font-medium
+                        ${comment.user_generated && "italic"}
+                    `}
+                    >
+                      {comment.user_generated && '"'}
                       {comment.comment}
+                      {comment.user_generated && '"'}
                     </span>
                     <span className="text-sm mt-2 text-[#828282]">
                       By {comment.faculty?.name}
@@ -345,7 +453,7 @@ export default function Exam({
                     alert("Please enter a comment");
                     return;
                   }
-                  addComment({ comment });
+                  addComment({ comment }, true);
                 }}
               >
                 Add Comment
@@ -353,7 +461,7 @@ export default function Exam({
             </div>
 
             {exam.examofficer?.faculty_id === session.data.user.id ? (
-              <div>
+              <div className="">
                 <div className="flex justify-end">
                   <div className="mt-10 mb-10">
                     <select
@@ -361,51 +469,52 @@ export default function Exam({
                       onChange={handleSelectedFaculty}
                     >
                       <option value="">Mark to</option>
-                      {faculty &&
-                        faculty.map((faculty) => (
-                          <option
-                            key={faculty.faculty_id}
-                            value={faculty.faculty_id}
-                          >{`${faculty.name}`}</option>
-                        ))}
+                      {faculties &&
+                        faculties
+                          .filter(
+                            (faculty) =>
+                              faculty.level === 2 ||
+                              faculty.level === 3 ||
+                              faculty.level === 4
+                          )
+                          .map((faculty) => (
+                            <option
+                              key={faculty.faculty_id}
+                              value={faculty.faculty_id}
+                            >{`${faculty.name}`}</option>
+                          ))}
                     </select>
                   </div>
                 </div>
-                <div className="flex gap-x-5 justify-end">
-                  {/* <div className="mt-10 mb-10">
-                    <button
-                      type="submit"
-                      className="bg-red-800 hover:bg-red-700 font-medium text-white rounded-lg py-4 px-8"
-                      onClick={() => {
-                        sendBack();
-                      }}
-                    >
-                      Send Back
-                    </button>
-                  </div>
-                  <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
-                    <button
-                      type="submit"
-                      className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-                      onClick={() => {
-                        sendForward();
-                      }}
-                    >
-                      Send Forward
-                    </button>
-                  </div> */}
+                <div className="flex gap-x-10 justify-end">
+                  <button
+                    type="submit"
+                    className="bg-red-800 hover:bg-red-700 font-medium text-white rounded-lg py-4 px-8"
+                    onClick={() => {
+                      sendBack();
+                    }}
+                  >
+                    Send Back
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+                    onClick={() => {
+                      sendForward();
+                    }}
+                  >
+                    Mark To
+                  </button>
                   {exam.examofficer?.level > 2 && (
-                    <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
-                      <button
-                        type="submit"
-                        className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
-                        onClick={() => {
-                          approve();
-                        }}
-                      >
-                        Approve
-                      </button>
-                    </div>
+                    <button
+                      type="submit"
+                      className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
+                      onClick={() => {
+                        approve();
+                      }}
+                    >
+                      Approve
+                    </button>
                   )}
                 </div>
               </div>
@@ -417,67 +526,83 @@ export default function Exam({
                     onChange={handleSelectedFaculty}
                   >
                     <option value="">Mark to</option>
-                    {faculty &&
-                      faculty.map((faculty) => (
-                        <option
-                          key={faculty.faculty_id}
-                          value={faculty.faculty_id}
-                        >{`${faculty.name}`}</option>
-                      ))}
+                    {faculties &&
+                      faculties
+                        .filter(
+                          (faculty) =>
+                            faculty.level === 2 ||
+                            faculty.level === 3 ||
+                            faculty.level === 4
+                        )
+                        .map((faculty) => (
+                          <option
+                            key={faculty.faculty_id}
+                            value={faculty.faculty_id}
+                          >{`${faculty.name}`}</option>
+                        ))}
                   </select>
                 </div>
-                <div className="flex justify-end gap-x-5">
+                <div className="flex justify-end gap-x-10">
                   {setActive && (
-                    <div className="mt-10 mb-10">
-                      <button
-                        type="submit"
-                        className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
-                        onClick={() => {
-                          setActive(exam.paper_type === "Objective" ? 2 : 3);
-                        }}
-                      >
-                        Back
-                      </button>
-                    </div>
+                    <button
+                      type="submit"
+                      className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
+                      onClick={() => {
+                        setActive(
+                          exam.paper_type === "Subjective/Objective" ? 3 : 2
+                        );
+                      }}
+                    >
+                      Back
+                    </button>
                   )}
-                  <div className="mt-10 mb-10">
+                  <button
+                    type="submit"
+                    className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+                    onClick={() => {
+                      saveDraft();
+                    }}
+                  >
+                    Save Draft
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
+                    onClick={() => {
+                      submitExam();
+                      //here
+                    }}
+                  >
+                    Mark To
+                  </button>
+                  {session.data.user.level === 5 && (
                     <button
-                      type="submit"
-                      className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+                      className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8 transition-all"
                       onClick={() => {
-                        router.push("/faculty");
+                        // router.push("/");
+                        approve();
                       }}
                     >
-                      Save Draft
+                      Save and Approve
                     </button>
-                  </div>
-                  <div className="mt-10 pr-10 flex justify-end gap-x-5 mb-10">
-                    <button
-                      type="submit"
-                      className="bg-green-800 hover:bg-green-700 font-medium text-white rounded-lg py-4 px-8"
-                      onClick={() => {
-                        submitExam();
-                      }}
-                    >
-                      Submit
-                    </button>
-                  </div>
+                  )}
                 </div>
               </div>
             )}
           </div>
         )}
-
-        <div className="mt-10 pr-10 flex justify-start gap-x-5 mb-10">
-          <button
-            className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-            onClick={() => {
-              router.push("/faculty/mark_exam/" + exam.paper_id);
-            }}
-          >
-            Mark Exam
-          </button>
-        </div>
+        {(session.data.user.level === 1 || session.data.user.level === 5) &&
+          exam.status !== "Draft" &&
+          exam.status !== "Pending Approval" && (
+            <button
+              className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8 my-10"
+              onClick={() => {
+                router.push("/faculty/mark_exam/" + exam.paper_id);
+              }}
+            >
+              Evaluate
+            </button>
+          )}
       </div>
     </>
   );

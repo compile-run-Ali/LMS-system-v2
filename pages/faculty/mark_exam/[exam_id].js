@@ -9,7 +9,9 @@ import Loader from "@/components/Loader";
 const MarkingPage = () => {
   const router = useRouter();
   const [studentsData, setStudentsData] = useState([]);
+  const [exam, setExam] = useState({});
   const [loading, setLoading] = useState(true);
+
   const { exam_id } = router.query;
 
   const fetchStudents = async () => {
@@ -20,7 +22,6 @@ const MarkingPage = () => {
     const promises = [studentsPromise];
     const [students] = await Promise.all(promises);
 
-    console.log("exam id", exam_id);
     // now fetch spa and join it with students
     const studentSpaPromise = axios.post(
       "/api/student/paper/get_attempt_by_paper",
@@ -31,7 +32,6 @@ const MarkingPage = () => {
 
     const promises2 = [studentSpaPromise];
     const [studentSpa] = await Promise.all(promises2);
-    console.log("students data before joining with spa", studentSpa.data);
 
     // now join the two
     students.data.course.students.forEach((student) => {
@@ -55,10 +55,6 @@ const MarkingPage = () => {
       }
     });
 
-    console.log(
-      "students data after joining with spa",
-      students.data.course.students
-    );
 
     let students_data = [];
     if (students.data.course && students.data.course.students.length > 0) {
@@ -69,11 +65,24 @@ const MarkingPage = () => {
     setStudentsData(students_data);
     setLoading(false);
   };
-  console.log("students data in marking page", studentsData);
+
+  const fetchExamDetails = () => {
+    axios
+      .post("/api/faculty/get_exam", {
+        paper_id: exam_id,
+      })
+      .then((response) => {
+        setExam(response.data);
+      })
+      .catch((error) => {
+        console.log("Error in get_exams", error);
+      });
+  };
 
   useEffect(() => {
     if (exam_id) {
       fetchStudents();
+      fetchExamDetails();
     }
   }, [exam_id]);
 
@@ -83,7 +92,11 @@ const MarkingPage = () => {
         {loading ? (
           <Loader />
         ) : (
-          <MarkingDashboard students_data={studentsData} exam_id={exam_id} />
+          <MarkingDashboard
+            students_data={studentsData}
+            exam_id={exam_id}
+            exam={exam}
+          />
         )}
       </DashboardLayout>
     </BaseLayout>

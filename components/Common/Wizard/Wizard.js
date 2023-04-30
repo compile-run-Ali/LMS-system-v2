@@ -1,18 +1,29 @@
 import React from "react";
 
-export default function Wizard({ active, setActive, items }) {
+export default function Wizard({ active, setActive, items, paperName }) {
   return (
-    <div className=" font-cabin flex justify-between items-center border-b border-primary-black border-opacity-20 w-full max-w-[850px] ">
+    <div className=" font-cabin flex items-center border-b border-primary-black border-opacity-20 w-fit px-6">
+      {paperName && (
+        <div className="p-6 pl-0 border-r-primary-black border-opacity-20 border-r font-medium text-primary-black text-xl">
+          {paperName}
+        </div>
+      )}
       {items.map((item) => (
         <div
           key={item.id}
-          onClick={() => setActive(item.id)}
-          className={`w-full flex py-6 mr-5 gap-x-2 cursor-pointer ${
-            active === item.id ? "border-b-[3px]  border-[#FEC703]" : ""
+          onClick={() => {
+            if (active >= item.id) {
+              setActive(item.id);
+            } else {
+              alert("Please save current information to proceed.");
+            }
+          }}
+          className={`w-fit flex py-6 px-6 mx-2 cursor-pointer ${
+            active === item.id ? "border-b-4 border-[#FEC703]" : ""
           }`}
         >
           <div
-            className={`w-6 h-6 rounded-full flex items-center justify-center ${
+            className={`w-6 h-6 mr-3 rounded-full flex items-center justify-center ${
               active === item.id
                 ? "bg-blue-800"
                 : "border border-primary-black border-opacity-30"

@@ -55,7 +55,7 @@ const AttempContainer = ({ question, isStudent }) => {
                   className="h-6 w-16 mr-3 rounded-md bg-white text-black accent-blue-600 mt-1 ring-0 focus:outline-none p-2 border text-xs border-gray-300 appearance-none"
                   type="number"
                   value={changed ? givenmarks : question.marksobtained}
-                  step={0.1}
+                  step={0.5}
                   onChange={(e) => {
                     setSaved(false);
                     setChanged(true);

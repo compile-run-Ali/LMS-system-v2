@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
 
 const confirmPasswordHash = (plainPassword, hashedPassword) => {
@@ -10,7 +10,6 @@ const confirmPasswordHash = (plainPassword, hashedPassword) => {
 };
 
 const handler = async (p_number, password) => {
-  const prisma = new PrismaClient();
 
   try {
     const student = await prisma.student.findFirst({

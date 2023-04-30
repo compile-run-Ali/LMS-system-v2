@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from "react";
 
-const MultiSelectDropdown = ({ options, onChange }) => {
-  const [selectedOptions, setSelectedOptions] = useState([]);
+const MultiSelectDropdown = ({ options, setCurrentMCQ, selected }) => {
+  const [selectedOptions, setSelectedOptions] = useState(
+    selected ? selected.split(",") : []
+  );
   const [dropdown, setDropdown] = useState(false);
 
   useEffect(() => {
-    onChange(selectedOptions.toString());
-  }, [onChange, selectedOptions]);
+    if (selectedOptions.length > 0) {
+      setCurrentMCQ((prev) => {
+        return {
+          ...prev,
+          correct_answer: selectedOptions.join(","),
+        };
+      });
+    }
+  }, [setCurrentMCQ, selectedOptions]);
 
   const handleOptionClick = (option) => {
     if (selectedOptions.includes(option)) {

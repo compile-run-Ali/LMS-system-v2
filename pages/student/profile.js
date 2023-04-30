@@ -9,23 +9,10 @@ export default function Profile() {
   const { data: session, status } = useSession();
   const [student, setStudent] = useState(null);
 
-  const getStudent = async () => {
-    if (session) {
-      await axios
-        .get(`/api/student/details/${session.user.id}`)
-        .then((res) => {
-          setStudent(res.data);
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-    }
-  };
-
   useEffect(() => {
-    if (!session) return;
-
-    getStudent();
+    if (session) {
+      setStudent(session?.user);
+    }
   }, [session]);
 
   return (
