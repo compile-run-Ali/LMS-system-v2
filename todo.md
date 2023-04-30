@@ -32,4 +32,4 @@
 
 3 - Review table fix
 
-4 - 
+4 - Remove IE completely
