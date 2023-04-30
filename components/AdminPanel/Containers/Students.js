@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import StudentTable from "../Tables/StudentTable";
-import DeleteModal from "./DeleteModal";
+import DeleteModal from "../Modals/DeleteModal";
 import axios from "axios";
 
 export default function Students({ students, setStudents }) {
@@ -25,8 +25,8 @@ export default function Students({ students, setStudents }) {
         setStudents(newStudents);
         setOpen(false);
       });
-      router.reload();
-    };
+    router.reload();
+  };
 
   return (
     <div>
