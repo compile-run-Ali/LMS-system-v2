@@ -242,7 +242,15 @@ const StudentsTable = ({
           {students.map((student, index) => (
             <tr
               key={student.p_number}
-              className={`h-12 bg-gray-${index % 2 === 0 ? 100 : 200}`}
+              className={`h-12 ${
+                student.status === "Marked"
+                  ? "bg-green-200"
+                  : student.status === "Not Attempted"
+                  ? "bg-red-200"
+                  : index % 2 === 0
+                  ? "bg-gray-100"
+                  : "bg-gray-200"
+              }`}
             >
               <td
                 className={`px-4 py-2 border ${
