@@ -118,8 +118,6 @@ export default function SQContainer({
               [question.sq_id]: res.data[0]?.answer || "",
             });
           }
-
-          console.log("received answers are", res.data);
         })
         .catch((err) => {
           console.log(err);

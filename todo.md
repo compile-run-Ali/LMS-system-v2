@@ -1,6 +1,6 @@
 # From Feedback:
 
-1 - Move the "Save and Proceed" key to the bottom of the page.
+1 - Move the "Save and Proceed" key to the bottom of the page. Marking page, when set marks is pressed send to bottom
 
 2 - Instructor/Exam Owner to have "End Exam" key that triggers auto submission of all student IDs that have started attempting. The same key triggers Exam status to be moved to "closed".
 
@@ -16,11 +16,11 @@
 
 8 - Revise paper marking checks and logic to ensure students have no impediments to reviewing results timely and providing feedback to instructors (Yellow keys)
 
-9 - Fix missing Exam Timer during student paper attempt.
+<!-- 9 - Fix missing Exam Timer during student paper attempt. -->
 
-10 - Separate the Subjective and Objective portions for free flow exam type.
+<!-- 10 - Separate the Subjective and Objective portions for free flow exam type. -->
 
-11 - System should retain remaining time accurately in case of a power outage.
+<!-- 11 - System should retain remaining time accurately in case of a power outage. -->
 
 12 - Delink system time with Exam Start/End Time to avoid wasted student exam attempt. Revise logic to ensure system does not auto submit based on system time.
 
@@ -30,6 +30,12 @@
 
 2 - Flag modal fix
 
-3 - Review table fix
+3 - Flags are same for both subjective and objective
 
-4 - Remove IE completely
+4 - Review table fix
+
+5 - Remove IE completely
+
+6 - Check share result feature
+
+7 - Dont allow to make duplicate options in mcqs
