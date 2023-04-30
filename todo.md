@@ -8,7 +8,7 @@
 
 <!-- 4 - For exam result table, highlight row/s which have been marked by the instructor. -->
 
-5 - Word upload feature to be reserved for use by Admin ID only.
+<!-- 5 - Word upload feature to be reserved for use by Admin ID only. -->
 
 6 - Add Date and Time field to basic information table for each student attempt. (Shown on top of evaluation page view for faculty)
 
@@ -39,3 +39,5 @@
 6 - Check share result feature
 
 7 - Dont allow to make duplicate options in mcqs
+
+<!-- 8 - Confirmation Modal for exam deletion -->
