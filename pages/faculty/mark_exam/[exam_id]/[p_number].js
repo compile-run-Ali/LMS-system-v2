@@ -18,8 +18,32 @@ const Index = () => {
   const [objectiveQuestions, setObjectiveQuestions] = useState([]);
   const [objectiveAnswers, setObjectiveAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [bottom, setBottom] = useState(false);
 
   const { exam_id, p_number } = router.query;
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (router.isReady) {
+        if (router.query.action) {
+          console.log("scrolling to bottom", router.query.action);
+          setBottom(true);
+        }
+      }
+    }, 500); // wait 500ms before executing the function
+  }, [router]);
+  useEffect(() => {
+    if (bottom) {
+      scrollToBottom();
+    }
+  }, [bottom]);
+  const scrollToBottom = () => {
+    const height = document.documentElement.scrollHeight; // use documentElement instead of body
+    window.scrollBy({
+      top: height,
+      behavior: "smooth",
+    });
+  };
 
   const fetchObjectiveAttempts = async () => {
     let questions = objectiveQuestions.map((question) => question.oq_id);
@@ -27,9 +51,6 @@ const Index = () => {
       p_number: p_number,
       questions: questions,
     });
-
-    console.log("objective attempts fetched successfully", res.data);
-
     setObjectiveAnswers(res.data);
   };
 
@@ -51,7 +72,7 @@ const Index = () => {
         },
       })
       .then((res) => {
-        console.log("paper details fetched successfully", res.data);
+        console.log("paper details fetched successfully");
         setLoading(false);
 
         setPaperDetails(res.data);
@@ -69,7 +90,7 @@ const Index = () => {
     if (exam_id && p_number) {
       fetchPaperDetails();
     }
-  }, [exam_id, p_number]);
+  }, [exam_id, p_number, router]);
 
   useEffect(() => {
     fetchObjectiveAttempts();
@@ -100,14 +121,14 @@ const Index = () => {
                 />
               )}
 
+              <CommentBox student={p_number} paper={exam_id} />
+
               <MarkPaper
                 objectiveAnswers={objectiveAnswers}
                 subjectiveAnswers={subjectiveAnswers}
                 objectiveQuestions={objectiveQuestions}
                 subjectiveQuestions={subjectiveQuestions}
               />
-
-              <CommentBox student={p_number} paper={exam_id} />
             </div>
           )}
         </DashboardLayout>
