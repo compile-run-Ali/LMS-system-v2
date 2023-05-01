@@ -2,7 +2,7 @@ import handle from "@/pages/api/paper/[index]";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import FacultyTable from "../Tables/FacultyTable";
-import DeleteModal from "./DeleteModal";
+import DeleteModal from "../Modals/DeleteModal";
 import axios from "axios";
 
 export default function Faculty({ faculty, setFaculty }) {

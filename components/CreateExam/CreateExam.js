@@ -126,6 +126,7 @@ export default function CreateExam({ paperType }) {
     <div className="w-full px-6 mt-2">
       {}
       <Wizard
+        paperId={exam?.paper_id}
         active={active}
         setActive={setActive}
         paperName={exam?.paper_name}

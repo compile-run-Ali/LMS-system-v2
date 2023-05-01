@@ -59,7 +59,6 @@ const MCQTable = ({
   const router = useRouter();
 
   const editExam = () => {
-    console.log("pushing back");
     router.push({
       pathname: `/faculty/create_exam/${
         exam.paper_type === "Objective" ? "objective" : "subjective"
