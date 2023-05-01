@@ -307,10 +307,7 @@ export default function OQContainer({
             ) : (
               <button
                 className="bg-green-500 hover:bg-green-600 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
-                onClick={() => {
-                  setSolveObjective(false)
-                }
-              }
+                onClick={setSolveObjective}
               >
                 Submit Objective
               </button>

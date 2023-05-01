@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { useRouter } from "next/router";
-import axios from "axios";
 import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
-import Spinner from "@/components/Loader/Spinner";
 
-const ExamTable = ({ exams_data, faculty }) => {
+const ExamTable = ({
+  exams_data,
+  faculty,
+  setOpen,
+  setSelectedForDeletion,
+}) => {
   const router = useRouter();
 
   const [exams, setExams] = useState([]);
-  const [loading, setLoading] = useState({});
+
+  const openModal = (paperId) => {
+    setOpen(true);
+    setSelectedForDeletion(paperId);
+  };
 
   useEffect(() => {
     setExams(exams_data);
@@ -33,97 +40,77 @@ const ExamTable = ({ exams_data, faculty }) => {
     });
   };
 
-  const handleExamDelete = (exam) => {
-    setLoading({
-      message: "Deleting Exam...",
-    });
-    // delete modal to be added
-    console.log(exam.paper_id);
-    axios
-      .post("/api/admin/paper/delete_exam", {
-        paper_id: exam.paper_id,
-      })
-      .then((res) => {
-        console.log(res);
-        // router.reload();
-        setLoading({});
-        console.log("Exam Deleted Successfully", exams);
-        setExams(exams.filter((exam) => exam.paper_id !== res.data.paper_id));
-      })
-      .catch((err) => {
-        setLoading({ error: "Error in deleting exam." });
-        console.log(err);
-      });
-  };
-
   const getExamOfficer = (findId) => {
     let examOfficer = faculty.find((faculty) => faculty.faculty_id === findId);
     return examOfficer?.name;
   };
 
   return (
-    <>
-      <Spinner loading={loading} />
-      <table className="table-auto mt-10 rounded-md font-poppins w-full text-left shadow-md">
-        <thead>
-          <tr className="bg-blue-800 rounded-md text-white">
-            <th className="px-4 py-2 border border-gray-500">Exam Name</th>
-            <th className="px-4 py-2 border border-gray-500">Course</th>
-            <th className="px-4 py-2 border border-gray-500">Type</th>
-            <th className="px-4 py-2 border border-gray-500">Date</th>
-            <th className="px-4 py-2 border border-gray-500">Time</th>
-            <th className="px-4 py-2 border border-gray-500">Status</th>
-            <th className="px-4 py-2 border border-gray-500 w-20 text-center">
-              Edit
-            </th>
-            <th className="px-4 py-2 border border-gray-500 w-20 text-center">
-              Delete
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {exams
-            .sort(
-              (a, b) => -new Date(a.date).getTime() + new Date(b.date).getTime()
-            )
-            .map((exam, index) => (
-              <tr key={index} className="bg-white ">
-                <td className="border border-gray-500 px-4 py-3">{exam.paper_name}</td>
-                <td className="border border-gray-500 px-4 py-3">{exam.course.course_name}</td>
-                <td className="border border-gray-500 px-4 py-3">{exam.paper_type}</td>
-                <td className="border border-gray-500 px-4 py-3">
-                  {convertDateTimeToStrings(exam.date, true)}
-                </td>
-                <td className="border border-gray-500 px-4 py-3">
-                  {convertDateTimeToStrings(exam.date)}
-                </td>
-                <td className="border border-gray-500 px-4 py-3">
-                  {exam.status}{" "}
-                  {exam.status === "Pending Approval" && (
-                    <>from {getExamOfficer(exam.examofficer?.faculty_id)}</>
-                  )}{" "}
-                </td>
-                <td className="border border-gray-500 w-20 text-center">
-                  <button
-                    onClick={() => handleExamEdit(exam)}
-                    className="hover:bg-blue-800 text-blue-800 hover:text-white p-2 rounded-md transition-colors "
-                  >
-                    <MdEdit />
-                  </button>
-                </td>
-                <td className="border border-gray-500 w-20 text-center">
-                  <button
-                    onClick={() => handleExamDelete(exam)}
-                    className="text-red-600 p-2 hover:text-white hover:bg-red-600 rounded-md transition-colors"
-                  >
-                    <MdDelete />
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    </>
+    <table className="table-auto mt-10 rounded-md font-poppins w-full text-left shadow-md">
+      <thead>
+        <tr className="bg-blue-800 rounded-md text-white">
+          <th className="px-4 py-2 border border-gray-500">Exam Name</th>
+          <th className="px-4 py-2 border border-gray-500">Course</th>
+          <th className="px-4 py-2 border border-gray-500">Type</th>
+          <th className="px-4 py-2 border border-gray-500">Date</th>
+          <th className="px-4 py-2 border border-gray-500">Time</th>
+          <th className="px-4 py-2 border border-gray-500">Status</th>
+          <th className="px-4 py-2 border border-gray-500 w-20 text-center">
+            Edit
+          </th>
+          <th className="px-4 py-2 border border-gray-500 w-20 text-center">
+            Delete
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {exams
+          .sort(
+            (a, b) => -new Date(a.date).getTime() + new Date(b.date).getTime()
+          )
+          .map((exam, index) => (
+            <tr key={index} className="bg-white ">
+              <td className="border border-gray-500 px-4 py-3">
+                {exam.paper_name}
+              </td>
+              <td className="border border-gray-500 px-4 py-3">
+                {exam.course.course_name}
+              </td>
+              <td className="border border-gray-500 px-4 py-3">
+                {exam.paper_type}
+              </td>
+              <td className="border border-gray-500 px-4 py-3">
+                {convertDateTimeToStrings(exam.date, true)}
+              </td>
+              <td className="border border-gray-500 px-4 py-3">
+                {convertDateTimeToStrings(exam.date)}
+              </td>
+              <td className="border border-gray-500 px-4 py-3">
+                {exam.status}{" "}
+                {exam.status === "Pending Approval" && (
+                  <>from {getExamOfficer(exam.examofficer?.faculty_id)}</>
+                )}{" "}
+              </td>
+              <td className="border border-gray-500 w-20 text-center">
+                <button
+                  onClick={() => handleExamEdit(exam)}
+                  className="hover:bg-blue-800 text-blue-800 hover:text-white p-2 rounded-md transition-colors "
+                >
+                  <MdEdit />
+                </button>
+              </td>
+              <td className="border border-gray-500 w-20 text-center">
+                <button
+                  onClick={() => openModal(exam.paper_id)}
+                  className="text-red-600 p-2 hover:text-white hover:bg-red-600 rounded-md transition-colors"
+                >
+                  <MdDelete />
+                </button>
+              </td>
+            </tr>
+          ))}
+      </tbody>
+    </table>
   );
 };
 

@@ -36,13 +36,6 @@ export default function Modal({ open, setOpen, courseCode }) {
           course_code: courseCode,
         },
       });
-    } else {
-      router.push({
-        pathname: `/faculty/create_exam/word`,
-        query: {
-          course_code: courseCode,
-        },
-      });
     }
   };
 
@@ -134,19 +127,6 @@ export default function Modal({ open, setOpen, courseCode }) {
                               className="mr-2"
                             />
                             Objective Exam
-                          </button>
-                        </div>
-
-                        <div className="mt-2">
-                          <button type="button">
-                            <input
-                              type={"radio"}
-                              value="W"
-                              onChange={(e) => handleInput(e)}
-                              name="paperType"
-                              className="mr-2"
-                            />
-                            Upload Word File
                           </button>
                         </div>
                       </form>

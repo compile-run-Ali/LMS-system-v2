@@ -104,7 +104,7 @@ const CommentBox = ({ student, paper, isStudent }) => {
       </div>
 
       {/* teacher's comment box */}
-      <div>
+      <div className="mt-16">
         <div className="text-2xl font-bold">Comment by Faculty</div>
         <div className="my-2 p-6 bg-blue-900 rounded-md">
           <textarea

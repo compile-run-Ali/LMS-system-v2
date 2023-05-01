@@ -1,7 +1,21 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 
-export default function DeleteModal({ isOpen, setIsOpen, handleDelete }) {
+export default function RemoveFacultyModal({
+  isOpen,
+  setIsOpen,
+  faculty,
+  course,
+  handleRemove,
+}) {
+  const [selectedFaculty, setSelectedFaculty] = useState('');
+
+  const handleFacultyChange = async (e) => {
+    const selected_faculty = faculty.find(
+      (faculty) => faculty.faculty_id === e
+    );
+    setSelectedFaculty(selected_faculty?.faculty_id);
+  };
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -38,28 +52,48 @@ export default function DeleteModal({ isOpen, setIsOpen, handleDelete }) {
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
                   >
-                    Delete Alert
+                    Remove Faculty
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">
-                      Do you really want to delete this?
+                      Choose the faculty you want to remove from this course:
                     </p>
                   </div>
-
+                  <div className="flex w-full gap-x-5">
+                    <div className="mb-10 w-full mt-6">
+                      <label className="block mb-2">Faculty Member</label>
+                      <select
+                        type="text"
+                        value={selectedFaculty}
+                        onChange={(e) => handleFacultyChange(e.target.value)}
+                        className="bg-white p-2 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703]"
+                      >
+                        <option value="">Select Faculty Member</option>
+                        {faculty.map((faculty, index) => (
+                          <option
+                            key={index}
+                            value={faculty.faculty_id}
+                          >{`${faculty.name}`}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                   <div className="mt-4 flex gap-x-3 justify-end">
                     <button
                       type="button"
                       className="inline-flex justify-center focus:outline-none active:outline-none rounded-md border border-transparent px-4 py-2 text-sm font-medium bg-[#FEC703] text-white hover:bg-[#edbd12]"
                       onClick={() => setIsOpen(false)}
                     >
-                      No
+                      Cancel
                     </button>
                     <button
                       type="button"
                       className="inline-flex justify-center focus:outline-none active:outline-none rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
-                      onClick={handleDelete}
+                      onClick={() => {
+                        handleRemove(course, selectedFaculty);
+                      }}
                     >
-                      Delete
+                      Confirm
                     </button>
                   </div>
                 </Dialog.Panel>

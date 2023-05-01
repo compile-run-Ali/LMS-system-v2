@@ -1,11 +1,13 @@
-import Students from "./Subcomponents/Students";
+import Students from "./Containers/Students";
 import React, { useEffect, useState } from "react";
 import ExamTable from "./Tables/ExamTable";
-import Courses from "./Subcomponents/Courses";
-import Faculty from "./Subcomponents/Faculty";
-import Tabs from "./Subcomponents/Tabs";
+import Courses from "./Containers/Courses";
+import Faculty from "./Containers/Faculty";
+import Tabs from "./Tabs";
 import AssignedTable from "./Tables/AssignedTable";
 import Loader from "../Loader";
+import CreateWordButton from "./CreateWordButton";
+import ExamContainer from "./Containers/ExamContainer";
 
 export default function AdminPanel({
   faculty_data,
@@ -89,7 +91,12 @@ export default function AdminPanel({
           {loading.exams ? (
             <Loader />
           ) : (
-            <ExamTable exams_data={exams} faculty={faculty} />
+            <ExamContainer
+              courses={courses}
+              exams={exams}
+              setExams={setExams}
+              faculty={faculty}
+            />
           )}
         </>
       )}

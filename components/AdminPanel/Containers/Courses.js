@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import CourseTable from "../Tables/CourseTable";
-import DeleteModal from "./DeleteModal";
-import AssignFacultyModal from "./AssignFacultyModal";
+import DeleteModal from "../Modals/DeleteModal";
+import AssignFacultyModal from "../Modals/AssignFacultyModal";
 import axios from "axios";
 import Spinner from "@/components/Loader/Spinner";
 

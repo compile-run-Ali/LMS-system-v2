@@ -27,7 +27,6 @@ export default function PaperDetails({
         },
       })
       .then((res) => {
-        console.log(res.data);
         setName(res.data.name);
       })
       .catch((err) => {
@@ -122,21 +121,16 @@ export default function PaperDetails({
           <tr className="bg-blue-900 text-white">
             <th className="text-left border px-4 py-2">Start Time</th>
             <td className="border text-center px-4 py-2">
-              {studentStatus.timeStarted && studentStatus.timeCompleted
-                ? convertDateTimeToStrings(studentStatus.timeStarted, false) +
-                  ", " +
-                  convertDateTimeToStrings(studentStatus.timeStarted, true)
-                : start}
+              {convertDateTimeToStrings(studentStatus.timeStarted, false) !==
+              "lid Date"
+                ? convertDateTimeToStrings(studentStatus.timeStarted, false)
+                : studentStatus.timeStarted}
             </td>
           </tr>
           <tr className="bg-blue-900 text-white">
             <th className="text-left border px-4 py-2">Submit Time</th>
             <td className="border text-center px-4 py-2">
-              {studentStatus.timeStarted && studentStatus.timeCompleted
-                ? convertDateTimeToStrings(studentStatus.timeCompleted, false) +
-                  ", " +
-                  convertDateTimeToStrings(studentStatus.timeCompleted, true)
-                : end}
+              {convertDateTimeToStrings(studentStatus.timeCompleted, false)}
             </td>
           </tr>
         </thead>

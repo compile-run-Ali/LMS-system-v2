@@ -4,6 +4,7 @@ import axios from "axios";
 import Spinner from "../Loader/Spinner";
 import { saveAs } from "file-saver";
 import { FaFileUpload, FaFileDownload } from "react-icons/fa";
+import { useRouter } from "next/router";
 
 function WordExam({
   paperId,
@@ -14,6 +15,8 @@ function WordExam({
 }) {
   const [questions, setQuestions] = useState(objectiveQuestions);
   const [loading, setLoading] = useState({});
+
+  const router = useRouter();
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -27,6 +30,17 @@ function WordExam({
     if (file) {
       reader.readAsText(file);
     }
+  };
+
+  const editExam = () => {
+    console.log("pushing back");
+    router.push({
+      pathname: `/faculty/create_exam/word`,
+      query: {
+        paper_id: paperId,
+        is_edit: true,
+      },
+    });
   };
 
   const saveQuestions = () => {
@@ -64,32 +78,51 @@ function WordExam({
       {<Spinner loading={loading} />}
       <UploadInstructions />
 
-      <div className="flex space-x-4">
-        <label
-          htmlFor="file-upload"
-          className="cursor-pointer inline-flex items-center px-6 py-2.5 bg-green-600 border border-transparent rounded-md font-semibold text-white 
+      <div className="flex justify-between flex-row-reverse">
+        <div className="flex space-x-10">
+          <button
+            type="button"
+            className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
+            onClick={() => {
+              setActive(1);
+              editExam();
+            }}
+          >
+            Back
+          </button>
+          <label
+            htmlFor="file-upload"
+            className="cursor-pointer inline-flex items-center px-6 py-2.5 bg-green-600 border border-transparent rounded-md font-semibold text-white 
           hover:bg-green-700 focus:outline-none focus:border-green-700 focus:ring-green-300"
-        >
-          Upload File
-          <FaFileUpload className="ml-2 inline" />
-        </label>
-        <input
-          id="file-upload"
-          type="file"
-          onChange={handleFileUpload}
-          className="sr-only"
-        />
+          >
+            Upload File
+            <FaFileUpload className="ml-2 inline" />
+          </label>
+          <input
+            id="file-upload"
+            type="file"
+            onChange={handleFileUpload}
+            className="sr-only"
+          />
 
-        <button
-          className="cursor-pointer flex items-center px-6 py-2.5 bg-blue-800 border border-transparent rounded-md font-semibold text-white hover:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring-blue-300"
-          onClick={downloadDoc}
-        >
-          Download File
-          <FaFileDownload className="ml-2 inline" />
-        </button>
+          <button
+            className="cursor-pointer flex items-center px-6 py-2.5 bg-blue-800 border border-transparent rounded-md font-semibold text-white hover:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring-blue-300"
+            onClick={downloadDoc}
+          >
+            Download File
+            <FaFileDownload className="ml-2 inline" />
+          </button>
+        </div>
+        {questions.length < 1 && (
+          <div>
+            <p className="text-lg mt-4">
+              Please upload a file to preview the questions.
+            </p>
+          </div>
+        )}
       </div>
 
-      {questions.length > 0 ? (
+      {questions.length > 0 && (
         <>
           <div className="text-3xl mt-10 font-bold">Uploaded Questions</div>
           <table className="w-full mt-4 text-left table-collapse">
@@ -117,12 +150,6 @@ function WordExam({
             </tbody>
           </table>
         </>
-      ) : (
-        <div>
-          <p className="text-lg mt-4">
-            Please upload a file to preview the questions.
-          </p>
-        </div>
       )}
 
       {questions.length > 0 && (
@@ -134,15 +161,6 @@ function WordExam({
             file.
           </div>
           <div className="flex justify-end space-x-10 mt-6">
-            <button
-              type="button"
-              className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
-              onClick={() => {
-                setActive(1);
-              }}
-            >
-              Back
-            </button>
             <button
               className="inline-flex items-center px-8 py-3 bg-blue-800 border border-transparent rounded-lg font-semibold text-white hover:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring-blue-300"
               onClick={() => {

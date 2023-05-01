@@ -4,15 +4,13 @@ import FacultyLogin from "./faculty_login";
 import StudentLogin from "./student_login";
 import AdminLogin from "./admin_login";
 
-let userAccount = null;
-
 const configuration = {
   session: {
     jwt: true,
-    maxAge: 3 * 60 * 60, // 3 hours
+    maxAge: 4 * 60 * 60, // 3 hours
   },
   jwt: {
-    maxAge: 3 * 60 * 60, // 3 hours
+    maxAge: 4 * 60 * 60, // 3 hours
   },
   providers: [
     CredentialsProvider({
@@ -68,6 +66,7 @@ const configuration = {
     }),
   ],
   callbacks: {
+
     async session({ session, token }) {
       session.user.name = token.name;
       session.user.image = token.user.profile_picture;

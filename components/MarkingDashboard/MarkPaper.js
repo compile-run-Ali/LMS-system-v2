@@ -109,7 +109,14 @@ const MarkPaper = ({
           <button
             className="p-2 w-32 bg-blue-900 text-white rounded-lg mr-4"
             onClick={() => {
-              router.reload();
+              if (router.query.action) {
+                router.reload();
+              } else {
+                router.push({
+                  pathname: router.asPath,
+                  query: { action: true },
+                });
+              }
             }}
           >
             Set Marks
