@@ -3,7 +3,6 @@ import axios from "axios";
 import {
   getPaperDateTime,
   convertDateTimeToStrings,
-  returnDateInString,
 } from "@/lib/TimeCalculations";
 export default function PaperDetails({
   paper: initialPaper,
@@ -59,14 +58,6 @@ export default function PaperDetails({
   }, [studentId, paper]);
 
   const paperDateTime = getPaperDateTime(paper.date, paper.duration);
-  const start =
-    convertDateTimeToStrings(paperDateTime.start, false) +
-    ", " +
-    convertDateTimeToStrings(paperDateTime.start, true);
-  const end =
-    convertDateTimeToStrings(paperDateTime.end, false) +
-    ", " +
-    convertDateTimeToStrings(paperDateTime.end, true);
 
   return (
     <div className="mt-4 mb-10">
@@ -90,7 +81,7 @@ export default function PaperDetails({
             </td>
           </tr>
           <tr className="bg-blue-900 text-white">
-            <th className="text-left border px-4 py-2">Paper</th>
+            <th className="text-left border px-4 py-2">Paper Name</th>
             <td className="border text-center px-4 py-2">{paper.paper_name}</td>
           </tr>
           <tr className="bg-blue-900 text-white">
@@ -114,19 +105,31 @@ export default function PaperDetails({
             </>
           )}
           <tr className="bg-blue-900 text-white">
+            <th className="text-left border px-4 py-2">Date</th>
+            <td className="border text-center px-4 py-2">
+              {convertDateTimeToStrings(paper.date, true)}
+            </td>
+          </tr>
+          <tr className="bg-blue-900 text-white">
+            <th className="text-left border px-4 py-2">Paper Live Time</th>
+            <td className="border text-center px-4 py-2">
+              {convertDateTimeToStrings(paper.date, false)}
+            </td>
+          </tr>
+          <tr className="bg-blue-900 text-white">
             <th className="text-left border px-4 py-2">Duration</th>
             <td className="border text-center px-4 py-2">
               {paper.duration} Minutes
             </td>
           </tr>
           <tr className="bg-blue-900 text-white">
-            <th className="text-left border px-4 py-2">Start Time</th>
+            <th className="text-left border px-4 py-2">Attempt Started at</th>
             <td className="border text-center px-4 py-2">
               {studentStatus.timeStarted}
             </td>
           </tr>
           <tr className="bg-blue-900 text-white">
-            <th className="text-left border px-4 py-2">Submit Time</th>
+            <th className="text-left border px-4 py-2">Submitted Time</th>
             <td className="border text-center px-4 py-2">
               {studentStatus.timeCompleted}
             </td>
