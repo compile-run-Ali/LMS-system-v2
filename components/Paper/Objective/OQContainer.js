@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import CountdownTimer from "../CountdownTimer";
 import Loader from "@/components/Loader";
 import Spinner from "@/components/Loader/Spinner";
@@ -15,11 +14,10 @@ export default function OQContainer({
   freeFlow,
   flags,
   setFlags,
-  setSolveObjective
+  setSolveObjective,
+  submit,
 }) {
-  const router = useRouter();
   const session = useSession();
-
   const [answers, setAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
@@ -189,9 +187,12 @@ export default function OQContainer({
             <div className="  text-black absolute top-0 right-0" id="timer">
               {!freeFlow && (
                 <CountdownTimer
+                  submit={submit}
                   timeAllowed={question.timeAllowed || 10}
                   currentQuestion={currentQuestion}
                   setCurrentQuestion={setCurrentQuestion}
+                  totalQuestions={totalQuestions}
+                  setSolveObjective={setSolveObjective}
                 />
               )}
             </div>

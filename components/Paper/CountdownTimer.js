@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
-function CountdownTimer(props) {
-  const [timeLeft, setTimeLeft] = useState(props.timeAllowed);
+function CountdownTimer({
+  timeAllowed,
+  currentQuestion,
+  setCurrentQuestion,
+  totalQuestions,
+  submit,
+}) {
+  const [timeLeft, setTimeLeft] = useState(timeAllowed);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -14,17 +23,21 @@ function CountdownTimer(props) {
   }, []);
 
   useEffect(() => {
-    setTimeLeft(props.timeAllowed);
-  }, [props.timeAllowed]);
+    setTimeLeft(timeAllowed);
+  }, [timeAllowed]);
 
   useEffect(() => {
-    setTimeLeft(props.timeAllowed);
-  }, [props.currentQuestion]);
+    setTimeLeft(timeAllowed);
+  }, [currentQuestion]);
 
   useEffect(() => {
     if (timeLeft === 0) {
-      props.setCurrentQuestion((prevQuestion) => prevQuestion + 1);
-      setTimeLeft(props.timeAllowed);
+      setCurrentQuestion((prevQuestion) => prevQuestion + 1);
+      setTimeLeft(timeAllowed);
+
+      if (currentQuestion === totalQuestions - 1) {
+        submit();
+      }
     }
   }, [timeLeft]);
 

@@ -15,20 +15,17 @@ export default function SubmitModal({
   //call api and create attempt on the paper
   const session = useSession();
   const paperDetails = JSON.parse(localStorage.getItem(`paper ${paper}`));
-  console.log("flags", flags);
   const updateAttempt = () => {
-
-     //update spa status to Attempted
-     const timeCompleted = new Date();
-     // get gmt offset in hours, and add that in startTime
-     const gmtOffset = new Date().getTimezoneOffset();
-     timeCompleted.setMinutes(timeCompleted.getMinutes() - gmtOffset);
+    //update spa status to Attempted
+    const timeCompleted = new Date();
+    // get gmt offset in hours, and add that in startTime
+    const timeCompletedString = `${timeCompleted.getHours()}:${timeCompleted.getMinutes()}`;
     axios
       .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.data.user.id,
         paperId: paper,
         status: "Submitted",
-        timeCompleted: timeCompleted.toISOString(),
+        timeCompleted: timeCompletedString,
       })
       .then((res) => {
         console.log("attempt created successfully ", res.data);

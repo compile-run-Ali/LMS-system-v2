@@ -8,34 +8,11 @@ export default function Submitted() {
   const { paper } = router.query;
   const session = useSession();
 
-  const updateAttempt = () => {
-
-    //update spa status to Attempted
-    const timeCompleted = new Date();
-    // get gmt offset in hours, and add that in startTime
-    const gmtOffset = new Date().getTimezoneOffset();
-    timeCompleted.setMinutes(timeCompleted.getMinutes() - gmtOffset);
-   axios
-     .post(`/api/student/paper/update_attempt_status`, {
-       studentId: session.data.user.id,
-       paperId: paper,
-       status: "Submitted",
-       timeCompleted: timeCompleted.toISOString(),
-     })
-     .then((res) => {
-       console.log("attempt created successfully ", res.data);
-     })
-     .catch((err) => {
-       console.log("error ", err.message);
-     });
- };
-
  const clearPaperFromLocal = () => {
    localStorage.removeItem(`paper ${paper}`);
  };
 
   const handleGoBack = () => {
-    updateAttempt();
     clearPaperFromLocal();
     router.push("/student");
   };

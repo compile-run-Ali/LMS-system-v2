@@ -47,22 +47,21 @@ export default function SubjectivePaper({
           setFlags={setFlags}
         />
       </div>
-      { currentQuestion !== questions.length &&
-      <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
-        <NewTimer time={attemptTime} startTime={startTime} />
+      {currentQuestion !== questions.length && (
+        <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
+          <NewTimer time={attemptTime} startTime={startTime} />
 
-        <NavigationGrid
-          totalQuestions={questions.length}
-          currentQuestion={currentQuestion}
-          freeFlow={true}
-          offset={questions.length}
-          setCurrentQuestion={setCurrentAndLocal}
-          flags={flags || []}
-          setFlags={setFlags}
-        />
-      </div>
-      }
-      
+          <NavigationGrid
+            totalQuestions={questions.length}
+            currentQuestion={currentQuestion}
+            freeFlow={true}
+            offset={questions.length}
+            setCurrentQuestion={setCurrentAndLocal}
+            flags={flags || []}
+            setFlags={setFlags}
+          />
+        </div>
+      )}
     </div>
   );
 }

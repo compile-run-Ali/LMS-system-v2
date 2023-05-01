@@ -23,7 +23,6 @@ export default function Paper() {
   const [paperAttempt, setPaperAttempt] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [objectiveSubmitModal, setObjectiveSubmitModal] = useState(false);
-    
 
   useEffect(() => {
     detectIncognito().then((result) => {
@@ -83,10 +82,13 @@ export default function Paper() {
   };
 
   const handleSubmitObjective = async () => {
+    const isObjective = paperDetails?.subjective_questions?.length === 0;
+
     await axios.post("/api/student/paper/update_attempt_status", {
       studentId: session.data.user.id,
       paperId: paper,
       objectiveSolved: true,
+      status: isObjective ? "Submitted" : "Attempted",
     });
 
     const localPaper = JSON.parse(localStorage.getItem(`paper ${paper}`));
@@ -95,6 +97,7 @@ export default function Paper() {
     localStorage.setItem(`paper ${paper}`, JSON.stringify(localPaper));
     setObjectiveSubmitModal(false);
     setSolveObjective(false);
+    isObjective && setSubmitted(true);
   };
 
   useEffect(() => {
@@ -119,7 +122,7 @@ export default function Paper() {
       .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.data.user.id,
         paperId: paper,
-        status: "Incomplete Submission",
+        status: "Submitted",
         timeCompleted: timeCompletedString,
       })
       .then((res) => {
@@ -157,14 +160,14 @@ export default function Paper() {
 
   return (
     <BaseLayout>
-    {objectiveSubmitModal && 
-      <SubmitObjectiveModal
-        showModal={objectiveSubmitModal}
-        setShowModal={setObjectiveSubmitModal}
-        handleSubmit={handleSubmitObjective}
-        freeFlow={paperDetails.freeflow}
-       />
-    }
+      {objectiveSubmitModal && (
+        <SubmitObjectiveModal
+          showModal={objectiveSubmitModal}
+          setShowModal={setObjectiveSubmitModal}
+          handleSubmit={handleSubmitObjective}
+          freeFlow={paperDetails.freeflow}
+        />
+      )}
       <DashboardLayout>
         {!submitted ? (
           paperDetails && solveObjective ? (
@@ -175,6 +178,7 @@ export default function Paper() {
               paper={paper}
               attemptTime={attemptTime}
               startTime={startTime}
+              submit={handleSubmitObjective}
             />
           ) : (
             <SubjectivePaper
