@@ -19,7 +19,7 @@ export default function SubmitModal({
     //update spa status to Attempted
     const timeCompleted = new Date();
     // get gmt offset in hours, and add that in startTime
-    const timeCompletedString = `${timeCompleted.getHours()}:${timeCompleted.getMinutes()}`;
+    const timeCompletedString = `${timeCompleted.getHours().toString().padStart(2, "0")}:${timeCompleted.getMinutes().toString().padStart(2, "0")}`;
     axios
       .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.data.user.id,

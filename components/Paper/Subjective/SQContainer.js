@@ -14,6 +14,7 @@ export default function SQContainer({
   freeFlow,
   flags,
   setFlags,
+  studentId,
 }) {
   const router = useRouter();
   const session = useSession();
@@ -83,6 +84,24 @@ export default function SQContainer({
 
   useEffect(() => {
     if (question) {
+      // fetch SPA and if status is submitted then redirect to '/'
+      axios
+        .get("/api/student/paper/get_single_attempt", {
+          params: {
+            p_number: studentId,
+            paper_id: paper,
+          },
+        })
+        .then((res) => {
+          const isSubmitted = res.data?.status === "Submitted";
+          if (isSubmitted) {
+            router.push("/student");
+          }
+        })
+        .catch((err) => {
+          console.log("error is", err);
+        });
+
       const hasChild = question.child_question.length > 0;
       setAnswers("");
       setChanged(false);

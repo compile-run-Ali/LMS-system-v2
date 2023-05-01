@@ -2,7 +2,7 @@
 
 <!-- 1 - Move the "Save and Proceed" key to the bottom of the page. Marking page, when set marks is pressed send to bottom -->
 
-2 - Instructor/Exam Owner to have "End Exam" key that triggers auto submission of all student IDs that have started attempting. The same key triggers Exam status to be moved to "closed".
+<!-- 2 - Instructor/Exam Owner to have "End Exam" key that triggers auto submission of all student IDs that have started attempting. The same key triggers Exam status to be moved to "closed". -->
 
 3 - Color Indication for attempted questions in the navigation box during student attempt, to signify which question has been attempted and which is pending.
 
@@ -37,10 +37,20 @@
 
 5 - Remove IE completely
 
-6 - Check share result feature
+<!-- 6 - Check share result feature -->
 
 7 - Dont allow to make duplicate options in mcqs
 
 <!-- 8 - Confirmation Modal for exam deletion -->
 
 <!-- 9 - Hide navigation panel when submitted -->
+
+<!-- 10 - In submit objective modal if there are no subjectives then change spa to submitted as well -->
+
+11 - Sequential Objective Sequence not maintained on reload
+
+12 - Update word file "wrong" option to wrong 1, wrong 2
+
+13 - Child questions are copied to original parent in copying subjective exam
+
+14 - Test close exam button when student is in subjective portion

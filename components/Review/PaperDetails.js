@@ -3,6 +3,7 @@ import axios from "axios";
 import {
   getPaperDateTime,
   convertDateTimeToStrings,
+  returnDateInString,
 } from "@/lib/TimeCalculations";
 export default function PaperDetails({
   paper: initialPaper,
@@ -121,16 +122,13 @@ export default function PaperDetails({
           <tr className="bg-blue-900 text-white">
             <th className="text-left border px-4 py-2">Start Time</th>
             <td className="border text-center px-4 py-2">
-              {convertDateTimeToStrings(studentStatus.timeStarted, false) !==
-              "lid Date"
-                ? convertDateTimeToStrings(studentStatus.timeStarted, false)
-                : studentStatus.timeStarted}
+              {studentStatus.timeStarted}
             </td>
           </tr>
           <tr className="bg-blue-900 text-white">
             <th className="text-left border px-4 py-2">Submit Time</th>
             <td className="border text-center px-4 py-2">
-              {convertDateTimeToStrings(studentStatus.timeCompleted, false)}
+              {studentStatus.timeCompleted}
             </td>
           </tr>
         </thead>

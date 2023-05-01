@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
-import BaseLayout from "@/components/BaseLayout/BaseLayout";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+
+import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
+import BaseLayout from "@/components/BaseLayout/BaseLayout";
 import Loader from "@/components/Loader";
 import ObjectivePaper from "@/components/Paper/ObjectivePaper";
 import SubjectivePaper from "@/components/Paper/SubjectivePaper";
@@ -117,7 +118,13 @@ export default function Paper() {
     //update spa status to Attempted
     const timeCompleted = new Date();
     // get gmt offset in hours, and add that in startTime
-    const timeCompletedString = `${timeCompleted.getHours()}:${timeCompleted.getMinutes()}`;
+    const timeCompletedString = `${timeCompleted
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${timeCompleted
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
     axios
       .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.data.user.id,
@@ -172,6 +179,7 @@ export default function Paper() {
         {!submitted ? (
           paperDetails && solveObjective ? (
             <ObjectivePaper
+              studentId={session?.data?.user.id}
               questions={paperDetails.objective_questions}
               isfreeFlow={paperDetails.freeflow}
               setSolveObjective={handleSolveObjective}
@@ -182,6 +190,7 @@ export default function Paper() {
             />
           ) : (
             <SubjectivePaper
+              studentId={session?.data?.user.id}
               submitted={submitted}
               questions={paperDetails.subjective_questions}
               isfreeFlow={paperDetails.freeflow}
