@@ -5,6 +5,7 @@ import SQContainer from "./Subjective/SQContainer";
 import NewTimer from "./NewTimer";
 
 export default function SubjectivePaper({
+  submitted,
   questions,
   isfreeFlow,
   attemptTime,
@@ -17,6 +18,10 @@ export default function SubjectivePaper({
   const setCurrentAndLocal = (newValue) => {
     setCurrentQuestion(newValue);
   };
+
+  useEffect(() => {
+    console.log("submited", submitted);
+  }, [submitted]);
 
   useEffect(() => {
     if (paper) {
@@ -42,6 +47,7 @@ export default function SubjectivePaper({
           setFlags={setFlags}
         />
       </div>
+      { currentQuestion !== questions.length &&
       <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
         <NewTimer time={attemptTime} startTime={startTime} />
 
@@ -55,6 +61,8 @@ export default function SubjectivePaper({
           setFlags={setFlags}
         />
       </div>
+      }
+      
     </div>
   );
 }

@@ -7,10 +7,10 @@ import AdminLogin from "./admin_login";
 const configuration = {
   session: {
     jwt: true,
-    maxAge: 3 * 60 * 60, // 3 hours
+    maxAge: 4 * 60 * 60, // 3 hours
   },
   jwt: {
-    maxAge: 3 * 60 * 60, // 3 hours
+    maxAge: 4 * 60 * 60, // 3 hours
   },
   providers: [
     CredentialsProvider({

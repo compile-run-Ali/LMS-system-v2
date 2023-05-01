@@ -17,7 +17,6 @@ export default function SQContainer({
 }) {
   const router = useRouter();
   const session = useSession();
-
   const { paper } = router.query;
   const [answers, setAnswers] = useState({});
   const [saved, setSaved] = useState(false);
@@ -294,7 +293,7 @@ export default function SQContainer({
           />
         </>
       ) : (
-        <div>
+        <div className="flex justify-center max-w-4xl">
           <Submitted />
         </div>
       )}

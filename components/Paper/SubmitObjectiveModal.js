@@ -1,52 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
-import { useSession } from "next-auth/react";
-import axios from "axios";
+import { useRouter } from "next/router";
 
-export default function SubmitModal({
-  showModal,
-  setShowModal,
-  currentQuestion,
-  setCurrentQuestion,
-  flags,
-  paper,
+
+export default function SubmitObjectiveModal({
+    showModal,
+    handleSubmit,
+    setShowModal,
+    freeFlow
 }) {
-  //call api and create attempt on the paper
-  const session = useSession();
-  const paperDetails = JSON.parse(localStorage.getItem(`paper ${paper}`));
-  console.log("flags", flags);
-  const updateAttempt = () => {
+    const [flags, setFlags] = useState([])
+    const router = useRouter();
 
-     //update spa status to Attempted
-     const timeCompleted = new Date();
-     // get gmt offset in hours, and add that in startTime
-     const gmtOffset = new Date().getTimezoneOffset();
-     timeCompleted.setMinutes(timeCompleted.getMinutes() - gmtOffset);
-    axios
-      .post(`/api/student/paper/update_attempt_status`, {
-        studentId: session.data.user.id,
-        paperId: paper,
-        status: "Submitted",
-        timeCompleted: timeCompleted.toISOString(),
-      })
-      .then((res) => {
-        console.log("attempt created successfully ", res.data);
-      })
-      .catch((err) => {
-        console.log("error ", err.message);
-      });
-  };
+    const {paper} = router.query;
 
-  const clearPaperFromLocal = () => {
-    const papers = JSON.parse(localStorage.getItem("papers")) || {};
-    delete papers[paper];
-    localStorage.setItem("papers", JSON.stringify(papers));
-    console.log(
-      "papers after deleting",
-      JSON.parse(localStorage.getItem("papers"))
-    );
-  };
+
+    useEffect(() => {
+        const paperObject = JSON.parse(localStorage.getItem(`paper ${paper}`));
+        setFlags(paperObject.flags || [])
+    }, [])
+
+
 
   return (
     <Transition appear show={showModal} as={Fragment}>
@@ -76,12 +51,12 @@ export default function SubmitModal({
                 Are you sure you want to submit?
                 {
                   // if there are any flags, show which questions are flagged
-                  flags.length > 0 && (
+                  flags && flags.length > 0 && (
                     <span className="text-red-500 text-sm block">
                       {" "}
                       (You have flagged question number{" "}
                       {flags.map((flag) => {
-                        return paperDetails.freeflow
+                        return freeFlow
                           ? Number(flag) + 1
                           : Number(flag) + 1;
                       }) + " "}
@@ -99,13 +74,7 @@ export default function SubmitModal({
                 </button>
                 <button
                   className="bg-green-500 hover:bg-green-600 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
-                  onClick={() => {
-                    updateAttempt();
-                    console.log("submitted");
-                    setCurrentQuestion(currentQuestion + 1);
-                    clearPaperFromLocal();
-                    setShowModal(false);
-                  }}
+                  onClick={handleSubmit}
                 >
                   Submit
                 </button>

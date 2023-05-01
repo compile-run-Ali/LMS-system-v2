@@ -5,6 +5,7 @@ import { TfiPencilAlt } from "react-icons/tfi";
 import {
   getPaperDateTime,
   convertDateTimeToStrings,
+  returnDateInString,
 } from "@/lib/TimeCalculations";
 import { useSession } from "next-auth/react";
 import axios from "axios";
@@ -90,7 +91,7 @@ export default function PapersList({ papers, status }) {
 
 const PaperRow = ({ paper, attemptStatus, status }) => {
   const { start, end } = getPaperDateTime(paper.date, paper.duration);
-  const startDate = convertDateTimeToStrings(start, true);
+  const startDate = returnDateInString(start, true);
   const startTime = convertDateTimeToStrings(start);
   const isLive = status === "Live Papers";
   const isPast = status === "Past Papers";

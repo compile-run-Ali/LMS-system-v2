@@ -10,6 +10,7 @@ import SubjectivePaper from "@/components/Paper/SubjectivePaper";
 import Submitted from "@/components/Paper/Submitted";
 
 import { detectIncognito } from "detectincognitojs";
+import SubmitObjectiveModal from "@/components/Paper/SubmitObjectiveModal";
 
 export default function Paper() {
   const router = useRouter();
@@ -21,6 +22,8 @@ export default function Paper() {
   const [startTime, setStartTime] = useState(null);
   const [paperAttempt, setPaperAttempt] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [objectiveSubmitModal, setObjectiveSubmitModal] = useState(false);
+    
 
   useEffect(() => {
     detectIncognito().then((result) => {
@@ -34,8 +37,7 @@ export default function Paper() {
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
     setPaperDetails(res.data);
-    console.log(res.data.duration);
-    console.log(res.data);
+    console.log(res);
   };
 
   const getTimeCookie = () => {
@@ -71,17 +73,28 @@ export default function Paper() {
       }
     } catch (err) {
       console.log(err);
+      alert("Something went wrong!");
+      router.push("/student");
     }
   };
 
   const handleSolveObjective = async () => {
-    setSolveObjective(false);
+    setObjectiveSubmitModal(true);
+  };
 
+  const handleSubmitObjective = async () => {
     await axios.post("/api/student/paper/update_attempt_status", {
       studentId: session.data.user.id,
       paperId: paper,
       objectiveSolved: true,
     });
+
+    const localPaper = JSON.parse(localStorage.getItem(`paper ${paper}`));
+    localPaper.flags = [];
+    console.log("local paper", localPaper);
+    localStorage.setItem(`paper ${paper}`, JSON.stringify(localPaper));
+    setObjectiveSubmitModal(false);
+    setSolveObjective(false);
   };
 
   useEffect(() => {
@@ -144,6 +157,14 @@ export default function Paper() {
 
   return (
     <BaseLayout>
+    {objectiveSubmitModal && 
+      <SubmitObjectiveModal
+        showModal={objectiveSubmitModal}
+        setShowModal={setObjectiveSubmitModal}
+        handleSubmit={handleSubmitObjective}
+        freeFlow={paperDetails.freeflow}
+       />
+    }
       <DashboardLayout>
         {!submitted ? (
           paperDetails && solveObjective ? (
@@ -157,6 +178,7 @@ export default function Paper() {
             />
           ) : (
             <SubjectivePaper
+              submitted={submitted}
               questions={paperDetails.subjective_questions}
               isfreeFlow={paperDetails.freeflow}
               attemptTime={attemptTime}
