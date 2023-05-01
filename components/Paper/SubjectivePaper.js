@@ -11,6 +11,7 @@ export default function SubjectivePaper({
   attemptTime,
   paper,
   startTime,
+  studentId,
 }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [flags, setFlags] = useState([]);
@@ -38,6 +39,7 @@ export default function SubjectivePaper({
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">
         <SQContainer
+          studentId={studentId}
           question={questions[currentQuestion]}
           totalQuestions={questions.length}
           currentQuestion={currentQuestion}
@@ -47,22 +49,21 @@ export default function SubjectivePaper({
           setFlags={setFlags}
         />
       </div>
-      { currentQuestion !== questions.length &&
-      <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
-        <NewTimer time={attemptTime} startTime={startTime} />
+      {currentQuestion !== questions.length && (
+        <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
+          <NewTimer time={attemptTime} startTime={startTime} />
 
-        <NavigationGrid
-          totalQuestions={questions.length}
-          currentQuestion={currentQuestion}
-          freeFlow={true}
-          offset={questions.length}
-          setCurrentQuestion={setCurrentAndLocal}
-          flags={flags || []}
-          setFlags={setFlags}
-        />
-      </div>
-      }
-      
+          <NavigationGrid
+            totalQuestions={questions.length}
+            currentQuestion={currentQuestion}
+            freeFlow={true}
+            offset={questions.length}
+            setCurrentQuestion={setCurrentAndLocal}
+            flags={flags || []}
+            setFlags={setFlags}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -57,14 +57,13 @@ export default function ReviewContainer() {
         },
       })
       .then((res) => {
-        console.log("paper details fetched successfully", res.data);
+        console.log("paper details fetched successfully");
 
         setPaperDetails(res.data);
         setObjectiveQuestions(res.data.objective_questions);
         if (paperDetails.paper_type !== "Objective") {
           setSubjectiveQuestions(res.data.subjective_questions);
         }
-        console.log("paper details fetched successfully", res.data);
         setLoading(false);
       })
       .catch((err) => {
@@ -103,6 +102,9 @@ export default function ReviewContainer() {
           isStudent={true}
         />
       )}
+
+      <CommentBox paper={paper} student={student} isStudent={true} />
+
       <MarkPaper
         objectiveAnswers={objectiveAnswers}
         subjectiveAnswers={subjectiveAnswers}
@@ -110,8 +112,6 @@ export default function ReviewContainer() {
         subjectiveQuestions={subjectiveQuestions}
         isStudent={true}
       />
-
-      <CommentBox paper={paper} student={student} isStudent={true} />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect, Fragment } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+
 import CountdownTimer from "../CountdownTimer";
 import Loader from "@/components/Loader";
 import Spinner from "@/components/Loader/Spinner";
@@ -15,11 +16,12 @@ export default function OQContainer({
   freeFlow,
   flags,
   setFlags,
-  setSolveObjective
+  setSolveObjective,
+  submit,
+  studentId,
 }) {
   const router = useRouter();
   const session = useSession();
-
   const [answers, setAnswers] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState([]);
   const [correctAnswers, setCorrectAnswers] = useState([]);
@@ -130,6 +132,24 @@ export default function OQContainer({
       setLoading(true);
       setAnswers(question.answers.split(",").sort(() => Math.random() - 0.5));
 
+      // fetch SPA and if status is submitted then redirect to '/'
+      axios
+        .get("/api/student/paper/get_single_attempt", {
+          params: {
+            p_number: studentId,
+            paper_id: paper,
+          },
+        })
+        .then((res) => {
+          const isSubmitted = res.data?.status === "Submitted";
+          if (isSubmitted) {
+            router.push("/student");
+          }
+        })
+        .catch((err) => {
+          console.log("error is", err);
+        });
+
       axios
         .get("/api/student/paper/oq/get_answer", {
           params: {
@@ -189,9 +209,12 @@ export default function OQContainer({
             <div className="  text-black absolute top-0 right-0" id="timer">
               {!freeFlow && (
                 <CountdownTimer
+                  submit={submit}
                   timeAllowed={question.timeAllowed || 10}
                   currentQuestion={currentQuestion}
                   setCurrentQuestion={setCurrentQuestion}
+                  totalQuestions={totalQuestions}
+                  setSolveObjective={setSolveObjective}
                 />
               )}
             </div>
