@@ -32,8 +32,7 @@
 
 <!-- 3 - Flags are same for both subjective and objective -->
 
-
-4 - Review table fix
+<!-- 4 - Review table fix -->
 
 5 - Remove IE completely
 
@@ -49,8 +48,8 @@
 
 11 - Sequential Objective Sequence not maintained on reload
 
-12 - Update word file "wrong" option to wrong 1, wrong 2
+<!-- 12 - Update word file "wrong" option to wrong 1, wrong 2 -->
 
 13 - Child questions are copied to original parent in copying subjective exam
 
-14 - Test close exam button when student is in subjective portion
+14 - Testing of close exam button when student is in subjective portion
