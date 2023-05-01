@@ -26,6 +26,8 @@ export default function ViewContainer() {
     [session]
   );
 
+  console.log(paperDetails);
+
   useEffect(() => {
     if (student && paper) {
       axios
@@ -90,7 +92,11 @@ export default function ViewContainer() {
           </div>
           <div className="pl-20">
             <span className=" font-medium">Exam Duration:</span>
-            <span className="ml-2">{paperDetails.duration}</span>
+            <span className="ml-2">{paperDetails.duration} minutes</span>
+          </div>
+           <div className="pl-20">
+            <span className=" font-medium">Marks:</span>
+            <span className="ml-2">{paperDetails.total_marks}</span>
           </div>
         </div>
       </div>

@@ -30,6 +30,16 @@ export default function NotificationDropdown({
               className="flex items-center justify-between px-4 py-3 border-b hover:bg-gray-100 -mx-2"
               // onClick={() => markAsRead(notification.notification_id)}
             >
+              {notification.exam_id && (
+                <p>
+                  <IoMdEye
+                    className="ml-2 text-xl  text-blue-700 cursor-pointer"
+                    onClick={() => {
+                      router.push(`/faculty/mark_exam/${notification.exam_id}`);
+                    }}
+                  />
+                </p>
+              )}
               <p className="text-gray-600 text-sm mx-2 flex items-end">
                 <span className="font-poppins text-black" href="#">
                   {notification.notification}
@@ -38,22 +48,12 @@ export default function NotificationDropdown({
                   {getNotificationTime(notification.time)}
                 </span>
               </p>
-              {notification.exam_id && (
-                <p>
-                  <IoMdEye
-                    className="ml-2 text-lg mb-0.5 text-blue-700 cursor-pointer"
-                    onClick={() => {
-                      router.push(`/faculty/mark_exam/${notification.exam_id}`);
-                    }}
-                  />
-                </p>
-              )}
               <p className="mr-2 mt-1">
                 {notification.read ? (
                   <IoMdMailOpen className="ml-2 text-xs mb-1 text-gray-400" />
                 ) : (
                   <MdDelete
-                    className="ml-2 text mb-1 text-red-600 cursor-pointer"
+                    className="ml-2 text mb-2 text-red-600 cursor-pointer"
                     onClick={() => {
                       markAsRead(notification.notification_id);
                       setNotifications(
