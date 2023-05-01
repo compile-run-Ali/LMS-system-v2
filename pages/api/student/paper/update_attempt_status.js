@@ -27,6 +27,7 @@ export default async function handler(req, res) {
           spaId: studentId + paperId,
           studentId: studentId,
           paperId: paperId,
+          timeStarted: timeStarted,
         },
       });
     }
@@ -50,7 +51,7 @@ export default async function handler(req, res) {
           teacherComment !== undefined
             ? teacherComment
             : existingSPA.teacherComment,
-        timeStarted: timeStarted ? timeStarted : existingSPA.timeStarted,
+        timeStarted: existingSPA.timeStarted,
         timeCompleted: timeCompleted
           ? timeCompleted
           : existingSPA.timeCompleted,
