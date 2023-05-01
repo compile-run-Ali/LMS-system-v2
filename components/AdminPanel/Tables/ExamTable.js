@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { useRouter } from "next/router";
-import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
+import { returnDateInString } from "@/lib/TimeCalculations";
 
 const ExamTable = ({
   exams_data,
@@ -80,10 +80,10 @@ const ExamTable = ({
                 {exam.paper_type}
               </td>
               <td className="border border-gray-500 px-4 py-3">
-                {convertDateTimeToStrings(exam.date, true)}
+                {returnDateInString(exam.date, true)}
               </td>
               <td className="border border-gray-500 px-4 py-3">
-                {convertDateTimeToStrings(exam.date)}
+                {returnDateInString(exam.date)}
               </td>
               <td className="border border-gray-500 px-4 py-3">
                 {exam.status}{" "}
