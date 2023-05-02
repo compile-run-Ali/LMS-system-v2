@@ -10,7 +10,7 @@
 
 <!-- 5 - Word upload feature to be reserved for use by Admin ID only. -->
 
-6 - Add Date and Time field to basic information table for each student attempt. (Shown on top of evaluation page view for faculty)
+<!-- 6 - Add Date and Time field to basic information table for each student attempt. (Shown on top of evaluation page view for faculty) -->
 
 <!-- 7 - Auto log out all IDs on system shutdown. -->
 
@@ -52,4 +52,4 @@
 
 13 - Child questions are copied to original parent in copying subjective exam
 
-14 - Testing of close exam button when student is in subjective portion
+<!-- 14 - Testing of close exam button when student is in subjective **portion** -->

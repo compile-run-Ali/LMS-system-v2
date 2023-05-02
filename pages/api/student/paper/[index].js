@@ -5,7 +5,6 @@ import prisma from "@/lib/prisma";
 export default async function handler(req, res) {
   const { index } = req.query;
   const p_number = index;
-  console.log("finding courses of ", p_number);
   try {
     const course = await prisma.sRC.findMany({
       where: {

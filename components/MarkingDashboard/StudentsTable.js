@@ -25,7 +25,7 @@ const StudentsTable = ({
   const [lowestMarks, setLowestMarks] = useState(null);
 
   const [marked, setMarked] = useState(false);
-  const [noneAttempted, setNoneAttempted] = useState(false);
+  // const [noneAttempted, setNoneAttempted] = useState(false);
   const [loading, setLoading] = useState({});
   const [exam, setExam] = useState(examDetails);
   const [showShareModal, setShowShareModal] = useState(false);
@@ -224,11 +224,11 @@ const StudentsTable = ({
       );
       setMarked(isAllMarked);
 
-      const isNoneAttempted = students_data.every(
-        (student) =>
-          student.status === "Not Attempted" || student.status === "Attempted"
-      );
-      setNoneAttempted(isNoneAttempted);
+      // const isNoneAttempted = students_data.every(
+      //   (student) =>
+      //     student.status === "Not Attempted" || student.status === "Attempted"
+      // );
+      // setNoneAttempted(isNoneAttempted);
       if (
         isAllMarked &&
         !isNoneAttempted &&
@@ -250,15 +250,15 @@ const StudentsTable = ({
     }
   }, [students_data]);
 
-  if (noneAttempted) {
-    return (
-      <div className="flex flex-col items-center justify-center mt-8">
-        <h1 className="text-2xl font-poppins font-bold">
-          No student has attempted this exam
-        </h1>
-      </div>
-    );
-  }
+  // if (noneAttempted) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center mt-8">
+  //       <h1 className="text-2xl font-poppins font-bold">
+  //         No student has attempted this exam
+  //       </h1>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div>
@@ -430,13 +430,15 @@ const StudentsTable = ({
             Export to Excel
             <MdDownload className="ml-2 mb-0.5 inline" />
           </button>
-          <button
-            className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
-            onClick={handleCloseExam}
-          >
-            Close Exam
-            <IoMdEyeOff className="ml-2 mb-0.5 inline" />
-          </button>
+          {exam.status === "Approved" && (
+            <button
+              className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
+              onClick={handleCloseExam}
+            >
+              Close Exam
+              <IoMdEyeOff className="ml-2 mb-0.5 inline" />
+            </button>
+          )}
           <button
             className={`
           ${
