@@ -120,6 +120,11 @@ const MCQTable = ({
       return;
     }
 
+    if (currentMCQ.options.length !== new Set(currentMCQ.options).size) {
+      alert("Please remove duplicate options, and reselect correct option.");
+      return;
+    }
+
     setLoading({
       message: "Adding Question",
     });
@@ -181,6 +186,11 @@ const MCQTable = ({
       (!freeFlow && !currentMCQ.timeAllowed)
     ) {
       alert("Please fill all the fields");
+      return;
+    }
+
+    if (currentMCQ.options.length !== new Set(currentMCQ.options).size) {
+      alert("Please remove duplicate options, and reselect correct option.");
       return;
     }
 

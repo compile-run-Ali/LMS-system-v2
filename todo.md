@@ -38,7 +38,7 @@
 
 <!-- 6 - Check share result feature -->
 
-7 - Dont allow to make duplicate options in mcqs
+<!-- 7 - Dont allow to make duplicate options in mcqs -->
 
 <!-- 8 - Confirmation Modal for exam deletion -->
 
@@ -52,4 +52,6 @@
 
 <!-- 13 - Child questions are copied to original parent in copying subjective exam -->
 
-<!-- 14 - Testing of close exam button when student is in subjective **portion** -->
+<!-- 14 - Testing of close exam button when student is in subjective portion -->
+
+15 - Delete cookie, if time ends, or when student submits exam
