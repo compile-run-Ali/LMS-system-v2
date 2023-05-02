@@ -50,6 +50,6 @@
 
 <!-- 12 - Update word file "wrong" option to wrong 1, wrong 2 -->
 
-13 - Child questions are copied to original parent in copying subjective exam
+<!-- 13 - Child questions are copied to original parent in copying subjective exam -->
 
 <!-- 14 - Testing of close exam button when student is in subjective **portion** -->
