@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useSession } from "next-auth/react";
+
 import BaseLayout from "@/components/BaseLayout/BaseLayout";
 import DashboardLayout from "@/components/DasboardLayout/DashboardLayout";
 import StudentProfile from "@/components/StudentProfile/StudentProfile";

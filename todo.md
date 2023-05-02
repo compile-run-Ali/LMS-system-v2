@@ -26,7 +26,7 @@
 
 # Others
 
-1 - Dont allow student to login when in incognito mode
+<!-- 1 - Dont allow student to login when in incognito mode -->
 
 <!-- 2 - Flags are Nan only in sequentials -->
 
