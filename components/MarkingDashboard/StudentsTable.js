@@ -6,9 +6,11 @@ import * as XLSX from "xlsx";
 import Spinner from "../Loader/Spinner";
 import { MdLock, MdShare, MdDownload } from "react-icons/md";
 import { FaRegThumbsDown, FaRegThumbsUp } from "react-icons/fa";
+import { IoMdEyeOff } from "react-icons/io";
 
 import ShareModal from "./ShareModal";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const StudentsTable = ({
   students_data,
@@ -23,12 +25,13 @@ const StudentsTable = ({
   const [lowestMarks, setLowestMarks] = useState(null);
 
   const [marked, setMarked] = useState(false);
-  const [noneAttempted, setNoneAttempted] = useState(false);
+  // const [noneAttempted, setNoneAttempted] = useState(false);
   const [loading, setLoading] = useState({});
   const [exam, setExam] = useState(examDetails);
   const [showShareModal, setShowShareModal] = useState(false);
   const session = useSession();
   const user = session.data.user;
+  const router = useRouter();
 
   const handlePrint = () => {
     const printContents = document.getElementById("my-table").outerHTML;
@@ -136,6 +139,48 @@ const StudentsTable = ({
       });
   };
 
+  const handleLockResult = () => {
+    if (exam.status === "Marked") {
+      changeStatusTo("Result Locked", true);
+    } else if (
+      exam.paper_type === "Objective" &&
+      (exam.status === "Approved" || exam.status === "Closed")
+    ) {
+      changeStatusTo("Result Locked", true);
+    } else if (exam.status === "Result Locked") {
+      alert("Result is already locked");
+    } else {
+      alert(
+        "You can't lock the result of this exam. Please mark the exam first. If the exam is objective type, you can lock the result only after student attempt it."
+      );
+    }
+  };
+
+  const handleCloseExam = () => {
+    setLoading({
+      message: "Closing Exam...",
+    });
+    axios
+      .post("/api/faculty/close_exam", {
+        paper_id: exam_id,
+      })
+      .then((response) => {
+        setLoading({});
+        console.log(
+          "Exam closed successfully. Response from server: ",
+          response.data
+        );
+        router.reload();
+      })
+      .catch((error) => {
+        setLoading({
+          error: "Error in loading exam.",
+        });
+        console.log("Error while closing exam: ", error);
+        // alert("Error while closing exam. Please try again later");
+      });
+  };
+
   useEffect(() => {
     if (students_data) {
       setStudents(students_data);
@@ -179,11 +224,11 @@ const StudentsTable = ({
       );
       setMarked(isAllMarked);
 
-      const isNoneAttempted = students_data.every(
-        (student) =>
-          student.status === "Not Attempted" || student.status === "Attempted"
-      );
-      setNoneAttempted(isNoneAttempted);
+      // const isNoneAttempted = students_data.every(
+      //   (student) =>
+      //     student.status === "Not Attempted" || student.status === "Attempted"
+      // );
+      // setNoneAttempted(isNoneAttempted);
       if (
         isAllMarked &&
         !isNoneAttempted &&
@@ -205,15 +250,15 @@ const StudentsTable = ({
     }
   }, [students_data]);
 
-  if (noneAttempted) {
-    return (
-      <div className="flex flex-col items-center justify-center mt-8">
-        <h1 className="text-2xl font-poppins font-bold">
-          No student has attempted this exam
-        </h1>
-      </div>
-    );
-  }
+  // if (noneAttempted) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center mt-8">
+  //       <h1 className="text-2xl font-poppins font-bold">
+  //         No student has attempted this exam
+  //       </h1>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div>
@@ -385,6 +430,15 @@ const StudentsTable = ({
             Export to Excel
             <MdDownload className="ml-2 mb-0.5 inline" />
           </button>
+          {exam.status === "Approved" && (
+            <button
+              className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
+              onClick={handleCloseExam}
+            >
+              Close Exam
+              <IoMdEyeOff className="ml-2 mb-0.5 inline" />
+            </button>
+          )}
           <button
             className={`
           ${
@@ -392,25 +446,8 @@ const StudentsTable = ({
               ? "bg-gray-400 p cursor-not-allowed"
               : "bg-blue-800 hover:bg-blue-700"
           }
-          
-          
           text-white text-lg py-3 px-4 rounded-md`}
-            onClick={() => {
-              if (exam.status === "Marked") {
-                changeStatusTo("Result Locked", true);
-              } else if (
-                exam.paper_type === "Objective" &&
-                (exam.status === "Approved" || exam.status === "Closed")
-              ) {
-                changeStatusTo("Result Locked", true);
-              } else if (exam.status === "Result Locked") {
-                alert("Result is already locked");
-              } else {
-                alert(
-                  "You can't lock the result of this exam. Please mark the exam first. If the exam is objective type, you can lock the result only after student attempt it."
-                );
-              }
-            }}
+            onClick={handleLockResult}
           >
             {exam.status === "Result Locked" ? "Result Locked" : "Lock Result"}
 

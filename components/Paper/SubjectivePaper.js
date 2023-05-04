@@ -11,6 +11,7 @@ export default function SubjectivePaper({
   attemptTime,
   paper,
   startTime,
+  studentId,
 }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [flags, setFlags] = useState([]);
@@ -38,6 +39,7 @@ export default function SubjectivePaper({
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">
         <SQContainer
+          studentId={studentId}
           question={questions[currentQuestion]}
           totalQuestions={questions.length}
           currentQuestion={currentQuestion}
