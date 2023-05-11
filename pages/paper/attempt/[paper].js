@@ -32,7 +32,6 @@ export default function Paper() {
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
     setPaperDetails(res.data);
-    console.log(res);
   };
 
   const getTimeCookie = () => {
@@ -137,7 +136,6 @@ export default function Paper() {
 
   useEffect(() => {
     if (attemptTime === -100 && paperDetails) {
-      console.log("Doing here");
       setAttemptTime(paperDetails.duration * 60);
       return;
     }

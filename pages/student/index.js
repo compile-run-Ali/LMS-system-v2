@@ -32,18 +32,18 @@ export default function Dashboard() {
 
   if (loading) return <Loader />;
 
-  // if (isIncognito)
-  //   return (
-  //     <BaseLayout title={"Dashboard"}>
-  //       <DashboardLayout>
-  //         <div className="px-10">
-  //           <h1 className="text-2xl font-bold text-center">
-  //             Please disable incognito mode to continue.
-  //           </h1>
-  //         </div>
-  //       </DashboardLayout>
-  //     </BaseLayout>
-  //   );
+  if (isIncognito)
+    return (
+      <BaseLayout title={"Dashboard"}>
+        <DashboardLayout>
+          <div className="px-10">
+            <h1 className="text-2xl font-bold text-center">
+              Please disable incognito mode to continue.
+            </h1>
+          </div>
+        </DashboardLayout>
+      </BaseLayout>
+    );
 
   return (
     <BaseLayout title={"Dashboard"}>
