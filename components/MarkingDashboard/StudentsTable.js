@@ -231,7 +231,7 @@ const StudentsTable = ({
       // setNoneAttempted(isNoneAttempted);
       if (
         isAllMarked &&
-        !isNoneAttempted &&
+        // !isNoneAttempted &&
         exam.status !== "Marked" &&
         exam.status !== "Result Locked"
       ) {

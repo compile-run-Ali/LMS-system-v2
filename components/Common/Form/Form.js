@@ -47,6 +47,7 @@ export default function Form({
           setDateOfExam(new Date(res.data.date).toISOString().substr(0, 10));
           setPaperTime(new Date(res.data.date).toISOString().substr(11, 5));
           setFreeflow(res.data.freeflow);
+          setFreeFlowGlobal(res.data.freeflow);
           setReview(res.data.review);
           setLoading({});
         })
