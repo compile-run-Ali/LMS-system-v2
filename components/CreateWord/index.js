@@ -141,7 +141,13 @@ function WordExam({
                 <tr key={index} className="border-t">
                   <td className="border px-4 py-2">{index + 1}</td>
                   <td className="border px-4 py-2">{mcq.question}</td>
-                  <td className="border px-4 py-2">{mcq.answers}</td>
+                  <td className="border px-4 py-2">
+                    <ol className="list-[lower-alpha] list-inside">
+                      {mcq.answers?.split(",").map((option, index) => (
+                        <li key={index}>{option}</li>
+                      ))}
+                    </ol>
+                  </td>
                   <td className="border px-4 py-2">{mcq.correct_answer}</td>
                   <td className="border px-4 py-2">{mcq.marks}</td>
                   <td className="border px-4 py-2">{mcq.timeAllowed}</td>
@@ -204,14 +210,19 @@ function convertToQuestions(contents) {
     let correctAnswer;
     switch (correctLetter) {
       case "a":
+      case "A":
         correctAnswer = question.answers.split(",")[0];
         break;
       case "b":
+      case "B":
         correctAnswer = question.answers.split(",")[1];
         break;
+
       case "c":
+      case "C":
         correctAnswer = question.answers.split(",")[2];
         break;
+      case "D":
       case "d":
         correctAnswer = question.answers.split(",")[3];
         break;
