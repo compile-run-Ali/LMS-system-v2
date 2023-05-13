@@ -22,7 +22,6 @@ export default function Dashboard() {
 
   useEffect(() => {
     detectIncognito().then((result) => {
-      console.log("Is incognito? ", result.browserName, result.isPrivate);
       if (result.isPrivate) {
         setIsIncognito(true);
       }
