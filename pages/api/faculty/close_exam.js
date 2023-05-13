@@ -21,6 +21,7 @@ export default async function handler(req, res) {
     const submittedSPAs = await prisma.sPA.updateMany({
       where: {
         paperId: paper_id,
+        status: "Attempted",
       },
       data: {
         status: "Submitted",

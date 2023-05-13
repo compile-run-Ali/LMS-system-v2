@@ -130,8 +130,9 @@ export default function CreateExam({ paperType }) {
         active={active}
         setActive={setActive}
         paperName={exam?.paper_name}
+        paperType={paperType}
         items={
-          paperType === "Subjective/Objective"
+          paperType !== "Objective" && paperType !== "IE"
             ? wizardItemsSubjective
             : wizardItemsObjective
         }
@@ -190,7 +191,7 @@ export default function CreateExam({ paperType }) {
 
       {active === 3 &&
         paperId !== 0 &&
-        paperType !== "Subjective/Objective" && (
+        (paperType === "Objective" || paperType === "IE") && (
           <div className="mt-10">
             <Exam
               exam={exam}
@@ -204,7 +205,8 @@ export default function CreateExam({ paperType }) {
 
       {active === 3 &&
         paperId !== 0 &&
-        paperType === "Subjective/Objective" && (
+        paperType !== "Objective" &&
+        paperType !== "IE" && (
           <div className="mt-10">
             <SubjectiveExam
               exam={exam}
@@ -219,7 +221,8 @@ export default function CreateExam({ paperType }) {
 
       {active === 4 &&
         paperId !== 0 &&
-        paperType === "Subjective/Objective" && (
+        paperType !== "Objective" &&
+        paperType !== "IE" && (
           <div className="mt-10">
             <Exam
               exam={exam}

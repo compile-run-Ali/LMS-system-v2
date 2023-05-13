@@ -381,7 +381,7 @@ const StudentsTable = ({
                 <td className="px-4 py-2">
                   <div className="flx flex justify-between font-semibold">
                     <p>Class Average: </p>
-                    <p>{classAverage}</p>
+                    <p>{classAverage.toFixed(2)}</p>
                   </div>
                 </td>
                 <td className="px-4 py-2 border-l border-gray-500">

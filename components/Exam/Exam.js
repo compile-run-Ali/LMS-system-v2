@@ -383,7 +383,7 @@ export default function Exam({
               />
             </div>
           )}
-          {exam.paper_type === "Subjective/Objective" && (
+          {exam.paper_type !== "Objective" && exam.paper_type !== "IE" && (
             <div className="bg-gray-100 py-5 px-5 border-b border-slate-400 border-opacity-50">
               <Accordion
                 questions={subjectiveQuestions}

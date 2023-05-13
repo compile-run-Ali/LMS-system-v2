@@ -7,6 +7,7 @@ export default function Wizard({
   items,
   paperName,
   paperId,
+  paperType,
 }) {
   const router = useRouter();
 
@@ -22,16 +23,34 @@ export default function Wizard({
           key={item.id}
           onClick={() => {
             if (item.id === 1 && active !== 1) {
+              let type;
+              switch (paperType) {
+                case "Objective":
+                  type = "objective";
+                  break;
+                case "Subjective/Objective":
+                  type = "subjective";
+                  break;
+                case "Word":
+                  type = "word";
+                  break;
+                case "IE":
+                  type = "ie";
+                default:
+                  type = "subjective";
+                  break;
+              }
               router.push({
-                pathname: `/faculty/create_exam/word`,
+                pathname: `/faculty/create_exam/${type}`,
                 query: {
                   paper_id: paperId,
                   is_edit: true,
                 },
               });
-            } else return;
+            }
 
             if (active >= item.id) {
+              console.log("clicked", item.id);
               setActive(item.id);
             } else {
               alert("Please save current information to proceed.");

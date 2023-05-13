@@ -85,8 +85,7 @@ export default function PaperContainer({ startOfPage }) {
   };
 
   const fetchPaperDetails = async (papers) => {
-
-    const res = await axios.get(`/api/paper/${paper}`)
+    const res = await axios.get(`/api/paper/${paper}`);
     // subtract time here from startTime to get time taken in seconds
     console.log("paper details from server", res.data);
 
@@ -134,16 +133,14 @@ export default function PaperContainer({ startOfPage }) {
             const subjectiveQuestions = res.data.filter(
               (question) => !question.parent_sq_id
             );
-              
+
             papers[paper].subjectiveQuestions = subjectiveQuestions;
             console.log("subjective questions", subjectiveQuestions);
             console.log("papers", papers[paper].objectiveQuestions);
-            setQuestions(
-              [
-                ...papers[paper].objectiveQuestions|| [],
-                ...papers[paper].subjectiveQuestions|| [],
-              ] 
-            );
+            setQuestions([
+              ...(papers[paper].objectiveQuestions || []),
+              ...(papers[paper].subjectiveQuestions || []),
+            ]);
             setLoading(false);
             localStorage.setItem("papers", JSON.stringify(papers));
           })
@@ -158,7 +155,6 @@ export default function PaperContainer({ startOfPage }) {
             );
             console.log("Updating questions");
             setLoading(false);
-            
           });
       }
       if (currentPaper.paper_type === "IE") {
@@ -181,10 +177,7 @@ export default function PaperContainer({ startOfPage }) {
                   fileUrl: file.fileUrl,
                 })
                 .then((res) => {
-                  console.log(
-                    "Response from second API call",
-                    res.data
-                  );
+                  console.log("Response from second API call", res.data);
                   //loop through the res.data and if the data is filled, excelData
                   res.data.forEach((data) => {
                     if (data) {
@@ -213,20 +206,22 @@ export default function PaperContainer({ startOfPage }) {
     const gmtOffset = new Date().getTimezoneOffset();
     startTime.setMinutes(startTime.getMinutes() - gmtOffset);
 
-    const updated = await axios
-      .post(`/api/student/paper/update_attempt_status`, {
+    const updated = await axios.post(
+      `/api/student/paper/update_attempt_status`,
+      {
         studentId: session.data.user.id,
         paperId: paper,
         status: "Attempted",
         timeStarted: startTime.toISOString(),
-      })
+      }
+    );
 
     console.log("updated attempt status ", updated.data);
-  }
+  };
 
   useEffect(() => {
-    console.log(questions)
-  }, [questions])
+    console.log(questions);
+  }, [questions]);
 
   useEffect(() => {
     setCount(count + 1);
@@ -258,9 +253,8 @@ export default function PaperContainer({ startOfPage }) {
 
         // get paper details
         try {
-          fetchPaperDetails(papers)
-        }
-        catch (err) {
+          fetchPaperDetails(papers);
+        } catch (err) {
           console.log("error in fetching paper details", err.message);
           try {
             setInterval(() => {
@@ -269,9 +263,7 @@ export default function PaperContainer({ startOfPage }) {
           } catch (err) {
             console.log("Still can not fetch paper details", err.message);
           }
-
         }
-
       }
     }
   }, [paper, student]);
@@ -286,10 +278,9 @@ export default function PaperContainer({ startOfPage }) {
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">
         {currentQuestion === questions.length &&
-          paperDetails.paper_type !== "IE" ? (
+        paperDetails.paper_type !== "IE" ? (
           <Submitted />
-        ) : paperDetails.paper_type === "Objective" ||
-          paperDetails.paper_type === "Word" ? (
+        ) : paperDetails.paper_type === "Objective" ? (
           <OQContainer
             question={questions[currentQuestion]}
             totalQuestions={questions.length}
@@ -299,7 +290,8 @@ export default function PaperContainer({ startOfPage }) {
             flags={flags || []}
             setFlags={setFlags}
           />
-        ) : paperDetails.paper_type === "Subjective/Objective" ? (
+        ) : paperDetails.paper_type === "Subjective/Objective" ||
+          paperDetails.paper_type === "Word" ? (
           <>
             {currentQuestion < objectiveCount ? (
               <OQContainer

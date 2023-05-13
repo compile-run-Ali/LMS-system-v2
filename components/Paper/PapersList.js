@@ -141,7 +141,9 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
         {/* if paper is past and review is allowed, show review button, else show review not allowed button */}
         {/* else show view button */}
         {isLive ? (
-          !attemptStatus && paper.status !== "Closed" ? (
+          !attemptStatus &&
+          paper.status !== "Closed" &&
+          paper.status !== "Marked" ? (
             <button
               className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded"
               onClick={() => attemptExam(paper.paper_id)}
