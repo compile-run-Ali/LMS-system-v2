@@ -110,10 +110,13 @@ export default function CreateExam({ paperType }) {
     if (paperId && !exam) {
       fetchExam();
     }
-    if ((paperType === "Objective" || paperType === "Word") && paperId) {
+    if (paperType === "Objective" && paperId) {
       fetchObjectives();
     }
-    if (paperType === "Subjective/Objective" && paperId) {
+    if (
+      (paperType === "Subjective/Objective" || paperType === "Word") &&
+      paperId
+    ) {
       fetchObjectives();
       fetchSubjectives();
     }
