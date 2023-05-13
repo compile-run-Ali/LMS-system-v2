@@ -11,7 +11,7 @@ export default function NavigationGrid({
   return (
     <div className="mt-4 border-blue-800 ">
       <h1 className="text-2xl mb-2 font-poppins">Navigate</h1>
-      <div className="grid grid-cols-2 xl:grid-cols-5 max-w-[100px] xl:max-w-[250px] ">
+      <div className="grid grid-cols-2 md:grid-cols-5 max-w-[100px] md:max-w-[250px] ">
         {[...Array(totalQuestions)].map((_, index) => (
           <div
             onClick={() =>
