@@ -5,6 +5,7 @@ import OQContainer from "./Objective/OQContainer";
 import Loader from "../Loader";
 import NavigationGrid from "./NavigationGrid";
 import NewTimer from "./NewTimer";
+const seedrandom = require('seedrandom');
 
 export default function ObjectivePaper({
   questions,
@@ -41,9 +42,13 @@ export default function ObjectivePaper({
   };
 
   const shuffleArray = (array) => {
+    const generator = seedrandom(studentId);
+    const randomNumber = generator();
+
+    console.log(randomNumber);
     const shuffledArray = [...array];
     for (let i = shuffledArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
+      const j = Math.floor(randomNumber * (i + 1));
       [shuffledArray[i], shuffledArray[j]] = [
         shuffledArray[j],
         shuffledArray[i],
@@ -60,7 +65,7 @@ export default function ObjectivePaper({
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">
         <OQContainer
-        studentId={studentId}
+          studentId={studentId}
           submit={submit}
           paper={paper}
           question={randomizedQuestions[currentQuestion]}
