@@ -25,6 +25,8 @@ export default function Timer({ paper }) {
       "papers after deleting",
       JSON.parse(localStorage.getItem("papers"))
     );
+    localStorage.removeItem(`attempted_questions`);
+
   };
 
   const updateStatus = () => {

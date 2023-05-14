@@ -106,6 +106,7 @@ export default function Paper() {
 
   const clearPaperFromLocal = () => {
     localStorage.removeItem(`paper ${paper}`);
+    localStorage.removeItem(`attempted_questions`);
   };
 
   const updateStatus = () => {

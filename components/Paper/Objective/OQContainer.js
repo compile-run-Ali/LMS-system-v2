@@ -231,6 +231,15 @@ export default function OQContainer({
                     }
                   `}
                   onClick={() => {
+                    localStorage.setItem(
+                      `attempted_questions`,
+                      localStorage.getItem(`attempted_questions`) ?
+                      JSON.stringify([
+                        ...JSON.parse(localStorage.getItem(`attempted_questions`)),
+                        currentQuestion,
+                      ]):
+                      JSON.stringify([currentQuestion])
+                    )
                     setChanged(selectedAnswer.includes(answer) ? false : true);
                     setSaved(selectedAnswer.includes(answer) ? true : false);
                     const input = document.querySelector(
