@@ -33,7 +33,18 @@ export default function SQContainer({
       alert("Your answer is empty. Please type anything to continue.");
       return;
     }
+
     setLoading({ show: true, message: "Saving Answer..." });
+
+    localStorage.setItem(
+      `attempted_questions`,
+      localStorage.getItem(`attempted_questions`)
+        ? JSON.stringify([
+            ...JSON.parse(localStorage.getItem(`attempted_questions`)),
+            currentQuestion,
+          ])
+        : JSON.stringify([currentQuestion])
+    );
 
     for (let question_id in answers) {
       axios

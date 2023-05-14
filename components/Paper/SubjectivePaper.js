@@ -15,6 +15,12 @@ export default function SubjectivePaper({
 }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [flags, setFlags] = useState([]);
+  const [attempted, setAttempted] = useState([]);
+
+  useEffect(() => {
+    const attempted = JSON.parse(localStorage.getItem("attempted_questions"));
+    setAttempted(attempted ? attempted : []);
+  }, [currentQuestion]);
 
   const setCurrentAndLocal = (newValue) => {
     setCurrentQuestion(newValue);
@@ -61,6 +67,7 @@ export default function SubjectivePaper({
             setCurrentQuestion={setCurrentAndLocal}
             flags={flags || []}
             setFlags={setFlags}
+            attempted={attempted}
           />
         </div>
       )}

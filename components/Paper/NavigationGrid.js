@@ -7,12 +7,10 @@ export default function NavigationGrid({
   flags,
   freeFlow,
   offset,
-  attempted
+  attempted,
 }) {
-
-  
-  console.log(attempted)
-  console.log(attempted.includes(0))
+  console.log(attempted);
+  console.log(attempted?.includes(0));
   return (
     <div className="mt-4 border-blue-800 ">
       <h1 className="text-2xl mb-2 font-poppins">Navigate</h1>
@@ -25,15 +23,14 @@ export default function NavigationGrid({
             key={index}
             className={`min-w-[20px] duration-300 transition-colors cursor-pointer border border-blue-800 w-full aspect-square flex justify-center items-center
           ${
-
             currentQuestion === index
               ? "bg-blue-800 text-white"
+              : attempted?.includes(index)
+              ? "bg-green-500 text-white"
               : flags.includes(String(freeFlow ? index : index + offset))
               ? "bg-yellow-400 text-black"
-              : attempted.includes(index)?
-              "bg-green-400 text-white"
-              :"bg-white text-black hover:bg-zinc-300  "
-            }
+              : "bg-white text-black hover:bg-zinc-300  "
+          }
             `}
           >
             {index + 1}
