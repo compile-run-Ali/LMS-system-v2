@@ -106,18 +106,20 @@ export default function DashboardComponent({
           />
         </div>
       )}
-      {courses.length > 0 && (
+      {
         <div>
-          <div className="pr-10 pl-5 ">
+          <div className="pr-10 pl-5 mt-10">
             <h1 className="text-2xl font-poppins font-bold">
-              Previous Exams of {selectedCourse}
+              {level < 3 ? "Previous" : "Approved"} Exams of {selectedCourse}
             </h1>
             <ExamTable
               isPrevious={true}
               exams_data={exams.filter(
                 (paper) =>
-                  paper.status !== "Pending Approval" &&
-                  paper.status !== "Draft"
+                  (level < 3 &&
+                    paper.status !== "Pending Approval" &&
+                    paper.status !== "Draft") ||
+                  (level > 2 && paper.status === "Approved")
               )}
             />
           </div>
@@ -138,7 +140,7 @@ export default function DashboardComponent({
             </div>
           )}
         </div>
-      )}
+      }
     </div>
   );
 }

@@ -10,6 +10,7 @@ export default function Submitted() {
 
  const clearPaperFromLocal = () => {
    localStorage.removeItem(`paper ${paper}`);
+   localStorage.removeItem(`attempted_questions`);
  };
 
   const handleGoBack = () => {

@@ -110,10 +110,13 @@ export default function CreateExam({ paperType }) {
     if (paperId && !exam) {
       fetchExam();
     }
-    if ((paperType === "Objective" || paperType === "Word") && paperId) {
+    if (paperType === "Objective" && paperId) {
       fetchObjectives();
     }
-    if (paperType === "Subjective/Objective" && paperId) {
+    if (
+      (paperType === "Subjective/Objective" || paperType === "Word") &&
+      paperId
+    ) {
       fetchObjectives();
       fetchSubjectives();
     }
@@ -130,8 +133,9 @@ export default function CreateExam({ paperType }) {
         active={active}
         setActive={setActive}
         paperName={exam?.paper_name}
+        paperType={paperType}
         items={
-          paperType === "Subjective/Objective"
+          paperType !== "Objective" && paperType !== "IE"
             ? wizardItemsSubjective
             : wizardItemsObjective
         }
@@ -190,7 +194,7 @@ export default function CreateExam({ paperType }) {
 
       {active === 3 &&
         paperId !== 0 &&
-        paperType !== "Subjective/Objective" && (
+        (paperType === "Objective" || paperType === "IE") && (
           <div className="mt-10">
             <Exam
               exam={exam}
@@ -204,7 +208,8 @@ export default function CreateExam({ paperType }) {
 
       {active === 3 &&
         paperId !== 0 &&
-        paperType === "Subjective/Objective" && (
+        paperType !== "Objective" &&
+        paperType !== "IE" && (
           <div className="mt-10">
             <SubjectiveExam
               exam={exam}
@@ -219,7 +224,8 @@ export default function CreateExam({ paperType }) {
 
       {active === 4 &&
         paperId !== 0 &&
-        paperType === "Subjective/Objective" && (
+        paperType !== "Objective" &&
+        paperType !== "IE" && (
           <div className="mt-10">
             <Exam
               exam={exam}

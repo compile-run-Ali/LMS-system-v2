@@ -120,6 +120,11 @@ const MCQTable = ({
       return;
     }
 
+    if (currentMCQ.options.length !== new Set(currentMCQ.options).size) {
+      alert("Please remove duplicate options, and reselect correct option.");
+      return;
+    }
+
     setLoading({
       message: "Adding Question",
     });
@@ -181,6 +186,11 @@ const MCQTable = ({
       (!freeFlow && !currentMCQ.timeAllowed)
     ) {
       alert("Please fill all the fields");
+      return;
+    }
+
+    if (currentMCQ.options.length !== new Set(currentMCQ.options).size) {
+      alert("Please remove duplicate options, and reselect correct option.");
       return;
     }
 
@@ -471,13 +481,13 @@ const MCQTable = ({
             <thead>
               <tr>
                 <th className="px-4 py-2">SR#</th>
-                <th className="px-4 py-2">Question</th>
-                <th className="px-4 py-2">Options</th>
+                <th className="px-4 py-2 w-1/2">Question</th>
+                <th className="px-4 py-2 w-1/4">Options</th>
                 <th className="px-4 py-2">Correct Option</th>
                 <th className="px-4 py-2">Marks</th>
                 {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
-                <th className="px-4 py-2"></th>
-                <th className="px-4 py-2"></th>
+                <th className="px-4 py-2">Edit</th>
+                <th className="px-4 py-2">Delete</th>
               </tr>
             </thead>
             <tbody>

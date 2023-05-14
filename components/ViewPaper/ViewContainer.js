@@ -26,8 +26,6 @@ export default function ViewContainer() {
     [session]
   );
 
-  console.log(paperDetails);
-
   useEffect(() => {
     if (student && paper) {
       axios

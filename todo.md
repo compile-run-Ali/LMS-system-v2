@@ -10,7 +10,7 @@
 
 <!-- 5 - Word upload feature to be reserved for use by Admin ID only. -->
 
-6 - Add Date and Time field to basic information table for each student attempt. (Shown on top of evaluation page view for faculty)
+<!-- 6 - Add Date and Time field to basic information table for each student attempt. (Shown on top of evaluation page view for faculty) -->
 
 <!-- 7 - Auto log out all IDs on system shutdown. -->
 
@@ -26,7 +26,7 @@
 
 # Others
 
-1 - Dont allow student to login when in incognito mode
+<!-- 1 - Dont allow student to login when in incognito mode -->
 
 <!-- 2 - Flags are Nan only in sequentials -->
 
@@ -38,7 +38,7 @@
 
 <!-- 6 - Check share result feature -->
 
-7 - Dont allow to make duplicate options in mcqs
+<!-- 7 - Dont allow to make duplicate options in mcqs -->
 
 <!-- 8 - Confirmation Modal for exam deletion -->
 
@@ -50,6 +50,8 @@
 
 <!-- 12 - Update word file "wrong" option to wrong 1, wrong 2 -->
 
-13 - Child questions are copied to original parent in copying subjective exam
+<!-- 13 - Child questions are copied to original parent in copying subjective exam -->
 
-14 - Testing of close exam button when student is in subjective portion
+<!-- 14 - Testing of close exam button when student is in subjective portion -->
+
+15 - Delete cookie, if time ends, or when student submits exam

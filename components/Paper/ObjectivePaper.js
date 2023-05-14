@@ -19,6 +19,14 @@ export default function ObjectivePaper({
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [flags, setFlags] = useState([]);
   const [randomizedQuestions, setRandomizedQuestions] = useState([]);
+  const [attempted, setAttempted] = useState([])
+
+
+  useEffect(() => {
+    const attempted = JSON.parse(localStorage.getItem("attempted_questions"));
+    setAttempted(attempted ? attempted : [])
+  }, [currentQuestion])
+
 
   useEffect(() => {
     if (questions && paper) {
@@ -76,6 +84,7 @@ export default function ObjectivePaper({
             setCurrentQuestion={setCurrentAndLocal}
             flags={flags || []}
             setFlags={setFlags}
+            attempted={attempted}
           />
         )}
       </div>

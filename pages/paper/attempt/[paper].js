@@ -10,7 +10,6 @@ import ObjectivePaper from "@/components/Paper/ObjectivePaper";
 import SubjectivePaper from "@/components/Paper/SubjectivePaper";
 import Submitted from "@/components/Paper/Submitted";
 
-import { detectIncognito } from "detectincognitojs";
 import SubmitObjectiveModal from "@/components/Paper/SubmitObjectiveModal";
 
 export default function Paper() {
@@ -25,11 +24,7 @@ export default function Paper() {
   const [submitted, setSubmitted] = useState(false);
   const [objectiveSubmitModal, setObjectiveSubmitModal] = useState(false);
 
-  useEffect(() => {
-    detectIncognito().then((result) => {
-      console.log("IT WORKS????", result.browserName, result.isPrivate);
-    });
-  }, []);
+
 
   const fetchPaper = async () => {
     console.log("Fetch paper called");
@@ -37,7 +32,6 @@ export default function Paper() {
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
     setPaperDetails(res.data);
-    console.log(res);
   };
 
   const getTimeCookie = () => {
@@ -112,6 +106,7 @@ export default function Paper() {
 
   const clearPaperFromLocal = () => {
     localStorage.removeItem(`paper ${paper}`);
+    localStorage.removeItem(`attempted_questions`);
   };
 
   const updateStatus = () => {
@@ -142,7 +137,6 @@ export default function Paper() {
 
   useEffect(() => {
     if (attemptTime === -100 && paperDetails) {
-      console.log("Doing here");
       setAttemptTime(paperDetails.duration * 60);
       return;
     }

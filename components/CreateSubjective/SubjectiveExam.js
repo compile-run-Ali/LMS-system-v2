@@ -668,11 +668,11 @@ const SubjectiveExam = ({
               <tr>
                 <th className="px-4">Q#</th>
                 <th className="px-4">Part</th>
-                <th className="px-4 py-2">Question</th>
+                <th className="px-4 py-2 w-1/3">Question</th>
                 <th className="px-4 py-2">Parent Question</th>
                 <th className="px-4 py-2">Marks</th>
-                <th className="px-4 py-2"></th>
-                <th className="px-4 py-2"></th>
+                <th className="px-4 py-2">Edit</th>
+                <th className="px-4 py-2">Delete</th>
               </tr>
             </thead>
             <tbody>

@@ -383,7 +383,7 @@ export default function Exam({
               />
             </div>
           )}
-          {exam.paper_type === "Subjective/Objective" && (
+          {exam.paper_type !== "Objective" && exam.paper_type !== "IE" && (
             <div className="bg-gray-100 py-5 px-5 border-b border-slate-400 border-opacity-50">
               <Accordion
                 questions={subjectiveQuestions}
@@ -549,7 +549,7 @@ export default function Exam({
                       className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
                       onClick={() => {
                         setActive(
-                          exam.paper_type === "Subjective/Objective" ? 3 : 2
+                          exam.paper_type === "Subjective/Objective"||exam.paper_type === "Word" ? 3 : 2
                         );
                       }}
                     >

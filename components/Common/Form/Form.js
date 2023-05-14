@@ -47,6 +47,7 @@ export default function Form({
           setDateOfExam(new Date(res.data.date).toISOString().substr(0, 10));
           setPaperTime(new Date(res.data.date).toISOString().substr(11, 5));
           setFreeflow(res.data.freeflow);
+          setFreeFlowGlobal(res.data.freeflow);
           setReview(res.data.review);
           setLoading({});
         })
@@ -318,7 +319,7 @@ export default function Form({
         >
           Cancel
         </button>
-        {level === 5 && !copy && (
+        {level === 5 && !copy && paperType !== "Word" && (
           <button
             type="button"
             className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
