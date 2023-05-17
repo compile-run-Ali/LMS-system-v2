@@ -319,7 +319,7 @@ export default function Form({
         >
           Cancel
         </button>
-        {level === 5 && !copy && paperType !== "Word" && (
+        {level === 5 && !copy && edit && (
           <button
             type="button"
             className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"

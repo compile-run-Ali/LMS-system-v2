@@ -337,7 +337,7 @@ const StudentsTable = ({
                   "border-b-gray-300 border-b w-32"
                 }`}
               >
-                {marked && (
+                {marked && student.status === "Marked" && (
                   <>
                     {highestMarks === student.obtainedMarks ? (
                       <>
