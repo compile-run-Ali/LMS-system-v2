@@ -171,7 +171,7 @@ export default function Paper() {
       )}
       <DashboardLayout>
         {!submitted ? (
-          paperDetails && solveObjective ? (
+         paperDetails && paperDetails.objective_questions.length > 0 && solveObjective ? (
             <ObjectivePaper
               studentId={session?.data?.user.id}
               questions={paperDetails.objective_questions}
