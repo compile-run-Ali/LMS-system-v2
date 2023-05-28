@@ -24,8 +24,6 @@ export default function Paper() {
   const [submitted, setSubmitted] = useState(false);
   const [objectiveSubmitModal, setObjectiveSubmitModal] = useState(false);
 
-
-
   const fetchPaper = async () => {
     console.log("Fetch paper called");
     // fetch paper details from api
@@ -85,6 +83,8 @@ export default function Paper() {
       objectiveSolved: true,
       status: isObjective ? "Submitted" : "Attempted",
     });
+
+    localStorage.removeItem("attempted_questions");
 
     const localPaper = JSON.parse(localStorage.getItem(`paper ${paper}`));
     localPaper.flags = [];
@@ -171,7 +171,7 @@ export default function Paper() {
       )}
       <DashboardLayout>
         {!submitted ? (
-          paperDetails && solveObjective ? (
+         paperDetails && paperDetails.objective_questions.length > 0 && solveObjective ? (
             <ObjectivePaper
               studentId={session?.data?.user.id}
               questions={paperDetails.objective_questions}
