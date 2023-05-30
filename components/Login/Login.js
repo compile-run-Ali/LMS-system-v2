@@ -58,7 +58,7 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
           />
         </div>
         <div className="h-1/5 text-4xl text-center mt-2 font-medium  text-white">
-          <h1>ASC e-Exam System</h1>
+          <h1>ASC SCHOOL e EXAM SYSTEM</h1>
           <h2 className="mt-1 text-2xl">Student Portal</h2>
         </div>
         <div className="w-full h-4/5 mt-2 pt-5  border-t border-slate-300 relative z-10 flex justify-between items-end pb-20 pr-40 bg-white ">

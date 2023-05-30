@@ -21,12 +21,21 @@ const AddCourse = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await addCourse({
-      name,
-      credit_hours: creditHours,
-      course_code: courseCode,
-      max_students: maxStudents,
-    });
+    if (edit) {
+      await addCourse({
+        name,
+        credit_hours: creditHours,
+        max_students: maxStudents,
+        updated_course_code: courseCode,
+      });
+    } else {
+      await addCourse({
+        name,
+        credit_hours: creditHours,
+        course_code: courseCode,
+        max_students: maxStudents,
+      });
+    }
     setName("");
     setCreditHours("");
     setCourseCode("");

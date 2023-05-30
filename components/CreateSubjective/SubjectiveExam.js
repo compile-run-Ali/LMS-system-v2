@@ -4,6 +4,7 @@ import Input from "../Common/Form/Input";
 import axios from "axios";
 import { ImCross } from "react-icons/im";
 import Spinner from "../Loader/Spinner";
+import TextArea from "../Common/Form/TextArea";
 
 const SubjectiveExam = ({
   exam,
@@ -522,7 +523,7 @@ const SubjectiveExam = ({
           </div>
 
           <div className="mb-4">
-            <Input
+            <TextArea
               text={"Question"}
               required
               value={currentQuestion.question}
