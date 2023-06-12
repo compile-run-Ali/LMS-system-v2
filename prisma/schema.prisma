@@ -107,9 +107,9 @@ model Paper {
   duration         Int
   weightage        Int?
   status           String         @default("Draft")
-  total_marks      Int            @default(0)
+  total_marks      Float            @default(0)
   objective_marks  Int            @default(0)
-  subjective_marks Int            @default(0)
+  subjective_marks Float            @default(0)
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]
@@ -124,8 +124,8 @@ model SubjectiveQuestion {
 
   questionnumber Int
   question       String @db.VarChar(10000)
-  long_question  Boolean
-  marks          Int
+  long_question  Boolean @default(true)
+  marks          Float
 
   paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
   paper_id String
@@ -141,14 +141,11 @@ model SubjectiveQuestion {
 //Student Subjective Question Attempt
 model SSA {
   ssa_id String @id @default(uuid())
-
   sq_id               String
   subjective_question SubjectiveQuestion @relation(fields: [sq_id], references: [sq_id], onDelete: Cascade)
-
   p_number String
   student  Student @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
-
-  answer        String
+  answer        String @db.VarChar(10000)
   marksobtained Float  @default(0)
 }
 
@@ -198,7 +195,7 @@ model PaperComment {
   paper_id       String
   faculty        Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
   faculty_id     String
-  comment        String
+  comment        String 
   user_generated Boolean  @default(false)
   time           DateTime @default(now())
 }
@@ -224,8 +221,8 @@ model SPA {
   timeCompleted   String?
   currentQuestion Int     @default(1)
   obtainedMarks   Float   @default(0)
-  studentComment  String? @default("")
-  teacherComment  String? @default("")
+  studentComment  String  @db.VarChar(1000) @default("")
+  teacherComment  String  @db.VarChar(10000) @default("") 
   objectiveSolved Boolean @default(false)
 
   student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
