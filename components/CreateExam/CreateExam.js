@@ -54,7 +54,7 @@ export default function CreateExam({ paperType }) {
   const [exam, setExam] = useState();
   const [mcqs, setMCQs] = useState([]);
   const [subjectives, setSubjectives] = useState([]);
-  const [freeFlowGlobal, setFreeFlowGlobal] = useState(false);
+  const [freeFlowGlobal, setFreeFlowGlobal] = useState(true);
   const [ieFiles, setIeFiles] = useState([]);
 
   useEffect(() => {
@@ -188,6 +188,7 @@ export default function CreateExam({ paperType }) {
             setActive={setActive}
             objectiveQuestions={mcqs}
             setObjectiveQuestions={setMCQs}
+            freeFlow={freeFlowGlobal}
           />
         </div>
       )}

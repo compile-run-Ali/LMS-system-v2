@@ -20,7 +20,8 @@ export default function Form({
   const [edit, setEdit] = useState(examDetails ? true : false);
   const [copy, setCopy] = useState(examDetails?.is_copy ? true : false);
   const [paperName, setPaperName] = useState("");
-  const [paperDuration, setPaperDuration] = useState(180);
+  const [paperDuration, setPaperDuration] = useState(
+    router.query.is_edit === "true" ? null :180);
   const [weightage, setWeightage] = useState("");
   const [dateOfExam, setDateOfExam] = useState(null);
   const [paperTime, setPaperTime] = useState(
@@ -28,8 +29,8 @@ export default function Form({
   );
   const [courses, setCourses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("");
-  const [freeflow, setFreeflow] = useState(false);
-  const [review, setReview] = useState(false);
+  const [freeflow, setFreeflow] = useState(true);
+  const [review, setReview] = useState(true);
 
   useEffect(() => {
     if (edit) {
@@ -42,6 +43,7 @@ export default function Form({
         })
         .then((res) => {
           setPaperName(res.data.paper_name);
+          console.log(res.data);
           setPaperDuration(res.data.duration);
           setWeightage(res.data.weightage);
           setDateOfExam(new Date(res.data.date).toISOString().substr(0, 10));

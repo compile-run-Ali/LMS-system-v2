@@ -17,6 +17,8 @@ const MCQTable = ({
   setObjectiveQuestions,
   freeFlow,
 }) => {
+  
+  console.log(freeFlow)
   const [loading, setLoading] = useState({});
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);

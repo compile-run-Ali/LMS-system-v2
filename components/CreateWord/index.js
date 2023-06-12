@@ -12,6 +12,7 @@ function WordExam({
   setActive,
   objectiveQuestions = [],
   setObjectiveQuestions,
+  freeFlow
 }) {
   const [questions, setQuestions] = useState(objectiveQuestions);
   const [loading, setLoading] = useState({});
@@ -25,6 +26,10 @@ function WordExam({
     reader.onload = (event) => {
       const contents = event.target.result;
       const questions = convertToQuestions(contents);
+      if (questions.length === 0) {
+        alert("No questions found in the file.");
+        return;
+      }
       setQuestions(questions);
     };
     if (file) {
@@ -133,7 +138,10 @@ function WordExam({
                 <th className="border px-4 py-2">Options</th>
                 <th className="border px-4 py-2">Correct Option</th>
                 <th className="border px-4 py-2">Marks</th>
+                
+                {freeFlow ? null :
                 <th className="border px-4 py-2">Time Allowed</th>
+                }
               </tr>
             </thead>
             <tbody>
@@ -150,7 +158,9 @@ function WordExam({
                   </td>
                   <td className="border px-4 py-2">{mcq.correct_answer}</td>
                   <td className="border px-4 py-2">{mcq.marks}</td>
+                  {freeFlow ? null :
                   <td className="border px-4 py-2">{mcq.timeAllowed}</td>
+                  }
                 </tr>
               ))}
             </tbody>

@@ -124,7 +124,7 @@ export default function DashboardComponent({
             />
           </div>
 
-          {level < 3 && (
+          {level < 2 && (
             <div className="pr-10 pl-5 mt-10">
               <h1 className="text-2xl font-poppins font-bold">
                 Open Exams of {selectedCourse}
