@@ -46,22 +46,39 @@ const Index = () => {
   };
 
   const fetchObjectiveAttempts = async () => {
+    if (!objectiveQuestions) return;
     let questions = objectiveQuestions.map((question) => question.oq_id);
+    try{
+      setLoading(true);
     const res = await axios.post(`/api/student/paper/oq/get_questions`, {
       p_number: p_number,
       questions: questions,
     });
     setObjectiveAnswers(res.data);
+    setLoading(false);
+    }catch(err){
+      alert("Something went wrong!")
+      router.push(`/faculty/mark_exam/${exam_id}`);
+    }
   };
 
   const fetchSubjectiveAttempts = async () => {
+    if(!subjectiveQuestions) return
     let question = subjectiveQuestions.map((question) => question.sq_id);
+    try{
+      setLoading(true);
     const res = await axios.post("/api/paper/marking/get_student_attempts", {
       question: question,
       p_number: p_number,
     });
+    console.log("subjective attempts fetched successfully", res.data);
 
     setSubjectiveAnswers(res.data);
+    setLoading(false);
+    }catch(err){
+      alert("Something went wrong!")
+      router.push(`/faculty/mark_exam/${exam_id}`);
+    }
   };
 
   const fetchPaperDetails = async () => {
@@ -73,13 +90,13 @@ const Index = () => {
       })
       .then((res) => {
         console.log("paper details fetched successfully");
-        setLoading(false);
-
+        
         setPaperDetails(res.data);
         setObjectiveQuestions(res.data.objective_questions);
         if (paperDetails.paper_type !== "Objective") {
           setSubjectiveQuestions(res.data.subjective_questions);
         }
+        setLoading(false);
       })
       .catch((err) => {
         console.log("error in fetching paper details", err.message);
@@ -88,15 +105,18 @@ const Index = () => {
 
   useEffect(() => {
     if (exam_id && p_number) {
+      setLoading(true);
       fetchPaperDetails();
     }
+    setLoading(false);
   }, [exam_id, p_number, router]);
 
   useEffect(() => {
+    if(objectiveQuestions.length === 0 || subjectiveQuestions.length === 0) return
     fetchObjectiveAttempts();
     fetchSubjectiveAttempts();
-  }, [objectiveQuestions, subjectiveQuestions]);
 
+  }, [objectiveQuestions, subjectiveQuestions]);
   return (
     <div>
       <BaseLayout title={"Mark Exam"}>
