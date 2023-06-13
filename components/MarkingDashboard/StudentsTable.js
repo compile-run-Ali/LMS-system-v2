@@ -140,6 +140,7 @@ const StudentsTable = ({
   };
 
   const handleLockResult = () => {
+    if (!exam) return;
     if (exam.status === "Marked") {
       changeStatusTo("Result Locked", true);
     } else if (
@@ -180,8 +181,8 @@ const StudentsTable = ({
         // alert("Error while closing exam. Please try again later");
       });
   };
-
   useEffect(() => {
+    if (!exam) return;
     if (students_data) {
       setStudents(students_data);
 
@@ -248,7 +249,7 @@ const StudentsTable = ({
         changeStatusTo("Approved");
       }
     }
-  }, [students_data]);
+  }, [students_data, exam]);
 
   // if (noneAttempted) {
   //   return (
@@ -270,8 +271,12 @@ const StudentsTable = ({
         <thead>
           <tr className="bg-white text-black text-3xl font-normal font-sans">
             <th colSpan={5} className="px-4 py-2 text-center remove-col">
-              {exam.course.course_name} --- {exam.paper_name} (
-              <span className="text-red-600">{exam.status}</span>)
+              {exam?.course?.course_name && (
+                <>
+                  {exam.course.course_name} --- {exam.paper_name} (
+                  <span className="text-red-600">{exam.status}</span>)
+                </>
+              )}
             </th>
           </tr>
           <tr id="second-row" className="bg-blue-800 text-white font-medium ">
