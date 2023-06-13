@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import Link from "next/link";
 
 const MarkPaper = ({
   objectiveAnswers,
@@ -17,7 +16,9 @@ const MarkPaper = ({
   const [subjectiveMarks, setSubjectiveMarks] = useState(0);
   const [totalMarks, setTotalMarks] = useState(0);
   const [saved, setSaved] = useState(false);
-
+  const [marksSet, setMarksSet] = useState(
+    localStorage.getItem("marksSet") === "true" // Retrieve marksSet value from local storage
+  );
   useEffect(() => {
     if (
       (objectiveMarks || objectiveMarks === 0) &&
@@ -110,6 +111,7 @@ const MarkPaper = ({
             className="p-2 w-32 bg-blue-900 text-white rounded-lg mr-4"
             onClick={() => {
               if (router.query.action) {
+                localStorage.setItem("marksSet", "true"); // Store marksSet value in local storage
                 router.reload();
               } else {
                 router.push({
@@ -124,6 +126,11 @@ const MarkPaper = ({
           <button
             className="px-6 py-2 bg-blue-900 text-white rounded-lg"
             onClick={() => {
+              if(!marksSet && !router.query.action) {
+                alert("Please set marks first");
+                return;
+              }
+              localStorage.removeItem("marksSet"); // Remove marksSet value from local storage
               setSaved(true);
               updateStatus();
             }}
