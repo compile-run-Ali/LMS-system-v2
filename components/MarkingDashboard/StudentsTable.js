@@ -418,7 +418,7 @@ const StudentsTable = ({
       </table>
       {!isPrinter && (
         <div className="flex justify-end py-4 space-x-10 mt-10">
-          {exam.status === "Result Locked" && user.level === 1 && (
+          {exam.status === "Result Locked" && user.level >= 4 && (
             <button
               className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
               onClick={() => {
@@ -429,7 +429,7 @@ const StudentsTable = ({
               <MdShare className="ml-2 mb-0.5 inline" />
             </button>
           )}
-
+          {user.level >=4 && (
           <button
             className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
             onClick={handleExport}
@@ -437,6 +437,7 @@ const StudentsTable = ({
             Export to Excel
             <MdDownload className="ml-2 mb-0.5 inline" />
           </button>
+          )}
           {exam.status === "Approved" && (
             <button
               className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
