@@ -21,12 +21,12 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
         return axios
           .put(`/api/faculty/update_exam_status`, {
             paper_id: exam.paper_id,
-            status: exam.paper_type === "Objective" ? "Marked" : "Closed",
+            status: exam.paper_type === "Objective" ? "Marked" : exam.status,
           })
           .then((response) => {
             return {
               ...exam,
-              status: exam.paper_type === "Objective" ? "Marked" : "Closed",
+              status: exam.paper_type === "Objective" ? "Marked" : exam.status,
             };
           })
           .catch((error) => {
