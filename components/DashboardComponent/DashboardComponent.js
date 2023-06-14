@@ -15,19 +15,25 @@ export default function DashboardComponent({
   const [paperapproval, setPaperApproval] = useState([]);
   const session = useSession();
   const facultyId = session.data.user.id;
-
   useEffect(() => {
     if (
-      exams_data !== undefined &&
+      (exams_data !== undefined &&
       exams_data !== null &&
-      exams_data.length > 0
+      exams_data.length > 0) 
     ) {
       const sortedExams = exams_data.sort((a, b) =>
         a.course.course_name.localeCompare(b.course.course_name)
       );
       setCourses(sortedExams);
-      setSelectedCourse(sortedExams[0].course.course_code);
-      setExams(sortedExams[0].course.paper);
+      setSelectedCourse(localStorage.getItem("selectedCourse") || sortedExams[0]?.course.course_code || "");
+      //set exam according to the selected course
+      const course = sortedExams.find(
+        (course) =>
+          course.course.course_code ===
+          (localStorage.getItem("selectedCourse") || sortedExams[0]?.course.course_code || "")
+      );
+      setExams(course?.course.paper || []);
+        console.log("course", course?.course.paper || [])
     }
     if (
       paperapproval_data !== undefined &&
@@ -36,7 +42,7 @@ export default function DashboardComponent({
     ) {
       setPaperApproval(paperapproval_data.map((paper) => paper.paper));
     }
-  }, [exams_data, paperapproval_data]);
+  }, [exams_data, paperapproval_data,selectedCourse]);
 
   const toggleModal = () => {
     //throw notification if no course is selected
@@ -53,6 +59,8 @@ export default function DashboardComponent({
       return;
     }
     setSelectedCourse(e.target.value);
+    localStorage.setItem("selectedCourse", e.target.value);
+    //console the localstorage
     const course = courses.find(
       (course) => course.course.course_code === e.target.value
     );
@@ -66,6 +74,7 @@ export default function DashboardComponent({
         <select
           className="bg-white border rounded-md px-3 py-2"
           onChange={handleCourseChange}
+          value={selectedCourse} 
         >
           {courses && courses.length > 0 ? (
             courses

@@ -7,7 +7,6 @@ export default function Modal({ open, setOpen, courseCode }) {
   const [examType, setExamType] = useState("I.E");
   const router = useRouter();
   const cancelButtonRef = useRef(null);
-
   const handleNext = async () => {
     if (examType === "I.E") {
       // Redirect to create exam page for IE
