@@ -34,7 +34,7 @@ const CommentBox = ({ student, paper, isStudent }) => {
         console.log("error in fetching attempt details", err.message);
       });
   };
-
+  console.log(studentPaperAttempt)
   const submitComment = () => {
     axios
       .post("/api/student/paper/update_attempt_status", {
@@ -42,6 +42,8 @@ const CommentBox = ({ student, paper, isStudent }) => {
         paperId: paper,
         studentComment: studentComment,
         teacherComment: teacherComment,
+        //if student comment exists then change status to commented else no change
+        status: studentComment.length > 0 ? "Commented" : studentPaperAttempt.status
       })
       .then((res) => {
         console.log("comment submitted successfully", res.data);
