@@ -76,7 +76,7 @@ export default function ReviewContainer() {
       fetchPaperDetails();
     }
   }, [paper, student]);
-
+  console.log(paperDetails)
   useEffect(() => {
     if (session?.user?.id && paperDetails?.paper_id) {
       fetchObjectiveAttempts();

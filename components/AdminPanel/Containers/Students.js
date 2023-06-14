@@ -14,17 +14,25 @@ export default function Students({ students, setStudents }) {
 
   const handleDelete = async () => {
     console.log(selectedStudent);
-    axios
-      .post("/api/admin/student/remove_student", {
-        p_number: selectedStudent,
-      })
-      .then((res) => {
-        const newStudents = students.filter(
-          (student) => student.student_id !== selectedStudent
-        );
-        setStudents(newStudents);
-        setOpen(false);
-      });
+    try {
+      axios
+        .post("/api/admin/student/remove_student", {
+          p_number: selectedStudent,
+        })
+        .then((res) => {
+          const newStudents = students.filter(
+            (student) => student.student_id !== selectedStudent
+          );
+          setStudents(newStudents);
+          setOpen(false);
+        })
+        .catch((error) => {
+          console.log("An error occurred:", error);
+        });
+    } catch (error) {
+      console.log("An error occurred:", error);
+    }
+
     router.reload();
   };
 

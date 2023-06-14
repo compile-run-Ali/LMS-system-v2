@@ -15,21 +15,26 @@ export default function Faculty({ faculty, setFaculty }) {
   };
   const handleDelete = async () => {
     console.log(selectedFaculty);
-    const deletedFaculty = await axios.post(
-      "/api/admin/faculty/remove_faculty",
-      {
+    
+    try {
+      const deletedFaculty = await axios.post("/api/admin/faculty/remove_faculty", {
         faculty_id: selectedFaculty,
+      });
+      
+      if (deletedFaculty.status === 200) {
+        const newFaculty = faculty.filter(
+          (faculty) => faculty.faculty_id !== selectedFaculty
+        );
+        setFaculty(newFaculty);
+        setOpen(false);
       }
-    );
-    if (deletedFaculty.status === 200) {
-      const newFaculty = faculty.filter(
-        (faculty) => faculty.faculty_id !== selectedFaculty
-      );
-      setFaculty(newFaculty);
-      setOpen(false);
+      
+      router.reload();
+    } catch (error) {
+      console.log("An error occurred:", error);
     }
-    router.reload();
   };
+  
   return (
     <div>
       <DeleteModal

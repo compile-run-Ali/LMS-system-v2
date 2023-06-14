@@ -69,42 +69,53 @@ export default function CreateExam({ paperType }) {
   }, [router]);
 
   const fetchExam = async () => {
+    try {
     const res = await axios.post("/api/faculty/get_exam", {
       paper_id: paperId,
     });
     setExam(res.data);
+    }catch(err){
+      console.log(err);
+    }
   };
 
   const fetchObjectives = async () => {
+    try {
     const res = await axios.post("/api/faculty/get_objective", {
       paper_id: paperId,
     });
     setMCQs(res.data);
+    }catch(err){
+      console.log(err);
+    }
   };
 
   const fetchIeFiles = async () => {
+    try{
     const res = await axios.get(`/api/faculty/get_ie_files`, {
       params: {
         paperId: paperId,
       },
     });
     setIeFiles(res.data);
+    }catch(err){
+      console.log(err);
+    }
   };
 
-  const fetchSubjectives = async () => {
-    await axios
-      .post("/api/faculty/get_subjective", {
-        paper_id: paperId,
-      })
-      .then((res) => {
-        const allQuestion = res.data;
-        setSubjectives(res.data.filter((question) => !question.parent_sq_id));
-        // console.log("allQuestion", res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+const fetchSubjectives = async () => {
+  try {
+    const res = await axios.post("/api/faculty/get_subjective", {
+      paper_id: paperId,
+    });
+    const allQuestion = res.data;
+    setSubjectives(res.data.filter((question) => !question.parent_sq_id));
+    // console.log("allQuestion", res.data);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 
   useEffect(() => {
     if (paperId && !exam) {

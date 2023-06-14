@@ -219,8 +219,8 @@ const SubjectiveExam = ({
     const nowHasParent = question.parent_sq_id ? true : false;
     // how to check if previously had parent?
     const previouslyHadParent = previousParent ? true : false;
-
-    await axios
+    try{
+    const res = await axios
       .post("/api/faculty/edit_subjective", {
         sq_id: question.sq_id,
         question: currentQuestion.question,
@@ -229,7 +229,6 @@ const SubjectiveExam = ({
         long_question: true,
         marks: currentQuestion.marks,
       })
-      .then((res) => {
         setLoading({});
         // case 1: previously had parent, now no parent
         // case 2: previously had no parent, now no parent
@@ -366,14 +365,13 @@ const SubjectiveExam = ({
 
         setEditing(false);
         setPreviousParent(null);
-      })
-
-      .catch((err) => {
+      } catch (err) {
         setLoading({
           error: "Error updating question.",
         });
         console.log("Error updating question", err);
-      });
+      }
+
   };
 
   function integerToAlphabet(num) {

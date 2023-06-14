@@ -15,6 +15,7 @@ const AssignedTable = ({ course_data }) => {
     if (!faculty) return alert("Please select a faculty to remove.");
     console.log("faculty", faculty);
     //call api here to remove faculty
+    try{
     axios
       .post("/api/admin/remove_faculty_from_course", {
         course_code: courseToBeDeleted,
@@ -34,6 +35,9 @@ const AssignedTable = ({ course_data }) => {
         setOpenedIndex(-1);
       })
       .catch((err) => console.log("Error in removing faculty", err));
+    }catch(err){
+      console.log(err)
+    }
   };
 
   console.log("courseData", courseData[1]?.faculty);

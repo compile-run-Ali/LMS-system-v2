@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { FaExchangeAlt } from "react-icons/fa";
 import { useRouter } from "next/router";

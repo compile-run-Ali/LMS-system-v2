@@ -48,28 +48,36 @@ export default function Exam({
 
   const getComments = async () => {
     if (exam !== undefined) {
-      const res = await axios.post("/api/paper/get_comments", {
-        paper_id: exam.paper_id,
-      });
+      try {
+        const res = await axios.post("/api/paper/get_comments", {
+          paper_id: exam.paper_id,
+        });
 
-      // sort comment by date and time
-      res.data.sort((a, b) => {
-        const dateA = new Date(a.time);
-        const dateB = new Date(b.time);
-        return dateA - dateB;
-      });
+        // sort comment by date and time
+        res.data.sort((a, b) => {
+          const dateA = new Date(a.time);
+          const dateB = new Date(b.time);
+          return dateA - dateB;
+        });
 
-      setComments(res.data);
+        setComments(res.data);
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
   const getFaculty = async () => {
-    const res = await axios.get("/api/paper/get_faculty");
-    setFaculties(
-      res.data.filter(
-        (faculty) => faculty.faculty_id !== session?.data?.user.id
-      )
-    );
+    try {
+      const res = await axios.get("/api/paper/get_faculty");
+      setFaculties(
+        res.data.filter(
+          (faculty) => faculty.faculty_id !== session?.data?.user.id
+        )
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -206,18 +214,21 @@ export default function Exam({
       alert("Exam date is in the past. Please change the date and try again.");
       return;
     }
-
-    const approveExam = await axios.post("/api/faculty/update_exam_status", {
-      paper_id: exam.paper_id,
-      status: "Approved",
-    });
-    if (approveExam.status === 200) {
-      addComment({
-        comment: `Exam Approved by ${session.data.user.name}`,
-        faculty_id: session.data.user.id,
+    try {
+      const approveExam = await axios.post("/api/faculty/update_exam_status", {
         paper_id: exam.paper_id,
+        status: "Approved",
       });
-      router.push("/");
+      if (approveExam.status === 200) {
+        addComment({
+          comment: `Exam Approved by ${session.data.user.name}`,
+          faculty_id: session.data.user.id,
+          paper_id: exam.paper_id,
+        });
+        router.push("/");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -253,7 +264,12 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
+
       router.push("/");
+    } else {
+      setLoading({
+        error: "Error sending back",
+      });
     }
   };
 
@@ -288,6 +304,12 @@ export default function Exam({
       generateNotification();
       router.push("/");
     }
+    else {
+      setLoading({
+        error: "Error sending forward",
+      });
+    }
+
   };
 
   const generateNotification = async () => {
@@ -297,6 +319,9 @@ export default function Exam({
     });
     if (res.status === 200) {
       console.log("Notification sent");
+    }
+    else {
+      console.log("Notification not sent, some error occured");
     }
   };
 
@@ -312,6 +337,9 @@ export default function Exam({
       if (res.status === 200) {
         setComments([...comments, res.data]);
         setComment("");
+      }
+      else {
+        console.log("Error adding comment");
       }
       // setComments([...comments, new_comment])
     }
@@ -549,7 +577,10 @@ export default function Exam({
                       className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3.5 px-8"
                       onClick={() => {
                         setActive(
-                          exam.paper_type === "Subjective/Objective"||exam.paper_type === "Word" ? 3 : 2
+                          exam.paper_type === "Subjective/Objective" ||
+                            exam.paper_type === "Word"
+                            ? 3
+                            : 2
                         );
                       }}
                     >
