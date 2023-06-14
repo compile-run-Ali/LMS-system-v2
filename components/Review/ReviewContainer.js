@@ -45,7 +45,7 @@ export default function ReviewContainer() {
       question: question,
       p_number: student,
     });
-
+    
     setSubjectiveAnswers(res.data);
   };
 
@@ -60,8 +60,16 @@ export default function ReviewContainer() {
         console.log("paper details fetched successfully");
 
         setPaperDetails(res.data);
+        //sort objective questions
+        res.data.objective_questions.sort((a, b) => {
+          return a.oq_id - b.oq_id;
+        });
         setObjectiveQuestions(res.data.objective_questions);
         if (paperDetails.paper_type !== "Objective") {
+          //sort subjective questions
+          res.data.subjective_questions.sort((a, b) => {
+            return a.sq_id - b.sq_id;
+          });
           setSubjectiveQuestions(res.data.subjective_questions);
         }
         setLoading(false);
