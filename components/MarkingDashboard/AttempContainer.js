@@ -21,7 +21,13 @@ const AttempContainer = ({ question, isStudent }) => {
         console.log("error in marking", err.message);
       });
   };
-
+  const setMarks = (e) => {
+    if (e.target.value > question.marks) {
+      setGivenmarks(question.marks);
+      return;
+    }
+    setGivenmarks(Number(e.target.value));
+  };
   useEffect(() => {
     setGivenmarks(question.marksobtained);
   }, [question]);
@@ -59,7 +65,7 @@ const AttempContainer = ({ question, isStudent }) => {
                   onChange={(e) => {
                     setSaved(false);
                     setChanged(true);
-                    setGivenmarks(Number(e.target.value));
+                    setMarks(e);
                   }}
                   max={question.marks}
                   min={0}
