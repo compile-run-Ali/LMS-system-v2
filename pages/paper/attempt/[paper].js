@@ -136,6 +136,21 @@ export default function Paper() {
   };
 
   useEffect(() => {
+    if (!paperDetails) {
+      // If paper details are not available and still loading
+      const timeout = setTimeout(() => {
+        // Reload the page after 10 seconds
+        window.location.reload();
+      }, 10000);
+
+      return () => {
+        // Cleanup the timeout when component unmounts or when paper details are fetched
+        clearTimeout(timeout);
+      };
+    }
+  }, [paperDetails]);
+
+  useEffect(() => {
     if (attemptTime === -100 && paperDetails) {
       setAttemptTime(paperDetails.duration * 60);
       return;
