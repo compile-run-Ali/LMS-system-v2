@@ -153,7 +153,7 @@ model ObjectiveQuestion {
   oq_id String @id @default(uuid())
 
   question       String @db.VarChar(10000)
-  answers        String
+  answers        String @db.VarChar(1000)
   correct_answer String
   marks          Int
   timeAllowed    Int    @default(0)
