@@ -33,16 +33,26 @@ export default function Paper() {
   };
 
   const getTimeCookie = () => {
-    if (document.cookie.includes(`${paper}-time`)) {
-      const timeLeft = document.cookie
-        .split(";")
-        .filter((item) => item.includes(`${paper}-time`))[0]
-        .split("=")[1];
-      setAttemptTime(timeLeft);
+    const studentIdCookie = document.cookie
+      .split(";")
+      .map((item) => item.trim())
+      .find((item) => item.startsWith("studentId="));
+  
+    if (studentIdCookie && studentIdCookie.includes(`studentId=${session.data.user.id}`)) {
+      if (document.cookie.includes(`${paper}-time`)) {
+        const timeLeft = document.cookie
+          .split(";")
+          .filter((item) => item.includes(`${paper}-time`))[0]
+          .split("=")[1];
+        setAttemptTime(timeLeft);
+      } else {
+        setAttemptTime(-100);
+      }
     } else {
       setAttemptTime(-100);
     }
   };
+  
 
   const fetchAttemptOrCreateAttempt = async () => {
     let getAttempt;
@@ -69,7 +79,6 @@ export default function Paper() {
       router.push("/student");
     }
   };
-
   const handleSolveObjective = async () => {
     setObjectiveSubmitModal(true);
   };
@@ -161,6 +170,7 @@ export default function Paper() {
         var now = new Date();
         now.setTime(now.getTime() + 1 * 3600 * 1000);
         document.cookie = `${paper}-time=${attemptTime}; expires=${now.toUTCString()}; path=/`;
+        document.cookie = `studentId=${session.data.user.id}; expires=${now.toUTCString()}; path=/`;
       }, 800);
     } else if (attemptTime <= 0 && attemptTime > -100 && attemptTime !== null) {
       console.log("attempt time is very high ", attemptTime);
