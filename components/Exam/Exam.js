@@ -16,7 +16,6 @@ export default function Exam({
 }) {
   const session = useSession();
   const router = useRouter();
-
   const [loading, setLoading] = useState({});
   const [edit, setEdit] = useState(isEdit);
   const [comment, setComment] = useState("");
@@ -24,7 +23,7 @@ export default function Exam({
   const [faculties, setFaculties] = useState();
   const [selectedFaculty, setSelectedFaculty] = useState();
   const [access, setAccess] = useState(null);
-
+  console.log(exam)
   useEffect(() => {
     setAccess(() => {
       if (session.status === "authenticated" && exam !== undefined) {
@@ -311,7 +310,6 @@ export default function Exam({
     }
 
   };
-
   const generateNotification = async () => {
     const res = await axios.post("/api/faculty/generate_notification", {
       faculty_id: selectedFaculty,
@@ -406,6 +404,7 @@ export default function Exam({
           {exam.paper_type !== "IE" && (
             <div className="bg-gray-100 py-5 mt-5 px-5 border-b border-slate-400 border-opacity-50">
               <Accordion
+                freeFlow={exam.freeflow}
                 questions={objectiveQuestions}
                 paperType={"Objective"}
               />
@@ -414,6 +413,7 @@ export default function Exam({
           {exam.paper_type !== "Objective" && exam.paper_type !== "IE" && (
             <div className="bg-gray-100 py-5 px-5 border-b border-slate-400 border-opacity-50">
               <Accordion
+                freeFlow={exam.freeflow}
                 questions={subjectiveQuestions}
                 paperType={"Subjective/Objective"}
               />

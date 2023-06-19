@@ -3,7 +3,7 @@ import { MdArrowDropDown } from "react-icons/md";
 import MCQTable from "./McqTable";
 import SubjectiveTable from "./SubjectiveTable";
 
-const Accordion = ({ questions, paperType }) => {
+const Accordion = ({ questions, paperType, freeFlow }) => {
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const handleAccordionClick = (index) => {
@@ -30,7 +30,9 @@ const Accordion = ({ questions, paperType }) => {
           />
         </div>
         {activeIndex === 1 && paperType === "Objective" ? (
-          <MCQTable objective_questions={questions} />
+          <MCQTable objective_questions={questions} 
+          freeFlow={freeFlow}
+          />
         ) : (
           activeIndex === 1 &&
           paperType === "Subjective/Objective" && (

@@ -171,7 +171,7 @@ export default function Paper() {
         now.setTime(now.getTime() + 1 * 3600 * 1000);
         document.cookie = `${paper}-time=${attemptTime}; expires=${now.toUTCString()}; path=/`;
         document.cookie = `studentId=${session.data.user.id}; expires=${now.toUTCString()}; path=/`;
-      }, 800);
+      }, 1000);
     } else if (attemptTime <= 0 && attemptTime > -100 && attemptTime !== null) {
       console.log("attempt time is very high ", attemptTime);
       clearPaperFromLocal();
