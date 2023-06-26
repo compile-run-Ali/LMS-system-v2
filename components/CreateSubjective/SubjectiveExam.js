@@ -689,7 +689,7 @@ const SubjectiveExam = ({
               }
               `}
                     >
-                      <td className="px-6">{subjective.questionnumber}</td>
+                      <td className="px-6">{index+1}</td>
                       <td className="px-6"></td>
                       <td className="px-4 py-2">{subjective.question}</td>
                       <td className="px-4 py-2">
