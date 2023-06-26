@@ -78,10 +78,6 @@ const AttempContainer = ({ question, isStudent }) => {
                   <button
                     className="bg-green-800 hover:bg-green-700 text-white py-1 px-2 rounded"
                     onClick={() => {
-                      if (!question.answer) {
-                        alert("Can not mark an answer without answer.");
-                        return;
-                      }
                       setSaved(true);
                       markQuestion();
                     }}
