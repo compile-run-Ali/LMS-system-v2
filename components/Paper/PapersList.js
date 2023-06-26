@@ -94,7 +94,6 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
   const isPast = status === "Past Papers";
   const session = useSession();
   const router = useRouter();
-
   const attemptExam = async (paperId) => {
     try {
       const startTime = new Date();

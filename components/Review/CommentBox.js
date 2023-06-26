@@ -43,7 +43,7 @@ const CommentBox = ({ student, paper, isStudent }) => {
         studentComment: studentComment,
         teacherComment: teacherComment,
         //if student comment exists then change status to commented else no change
-        status: studentComment.length > 0 ? "Commented" : studentPaperAttempt.status
+        status: studentComment.length > 0 ? "Re-Check" : studentPaperAttempt.status
       })
       .then((res) => {
         console.log("comment submitted successfully", res.data);

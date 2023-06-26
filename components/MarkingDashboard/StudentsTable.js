@@ -299,7 +299,7 @@ const StudentsTable = ({
                   ? "bg-red-200"
                   : index % 2 === 0
                   ? "bg-gray-100"
-                  : student.status === "Commented"
+                  : student.status === "Re-Check"
                   ? "bg-blue-200"
                   : "bg-gray-200"
               }`}
