@@ -25,7 +25,7 @@ export default function NavigationGrid({
           ${
             currentQuestion === index
               ? "bg-blue-800 text-white"
-              : attempted?.includes(index)
+              : attempted?.includes(index) && !flags.includes(String(freeFlow ? index : index + offset))
               ? "bg-green-500 text-white"
               : flags.includes(String(freeFlow ? index : index + offset))
               ? "bg-yellow-400 text-black"
