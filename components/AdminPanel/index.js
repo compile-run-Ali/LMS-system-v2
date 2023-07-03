@@ -1,5 +1,5 @@
 import Students from "./Containers/Students";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import ExamTable from "./Tables/ExamTable";
 import Courses from "./Containers/Courses";
 import Faculty from "./Containers/Faculty";
@@ -20,8 +20,15 @@ export default function AdminPanel({
   const [faculty, setFaculty] = useState([]);
   const [courses, setCourses] = useState([]);
   const [students, setStudents] = useState([]);
+  const [reload , setReload] = useState(true);
   const [exams, setExams] = useState([]);
-  const [active, setActive] = useState("Faculty");
+  const [active, setActive] = useState( "Faculty");
+
+  useEffect(() => {
+    const tab = localStorage.getItem('active');
+    setActive(tab);
+    setReload(false);
+  },[])
 
   useEffect(() => {
     if ((faculty_data !== undefined, faculty_data !== null)) {
@@ -37,6 +44,10 @@ export default function AdminPanel({
       setStudents(student_data);
     }
   }, [faculty_data, courses_data, exams_data, student_data]);
+  useEffect(() => {
+    if(reload) return
+    localStorage.setItem('active', active);
+  }, [active]);    
 
   return (
     <div className="w-full pr-10 mt-5 px-5">
