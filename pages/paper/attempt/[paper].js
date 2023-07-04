@@ -11,6 +11,8 @@ import SubjectivePaper from "@/components/Paper/SubjectivePaper";
 import Submitted from "@/components/Paper/Submitted";
 
 import SubmitObjectiveModal from "@/components/Paper/SubmitObjectiveModal";
+import IeExam from "@/components/CreateIE/IeExam";
+import IEContainer from "@/components/Paper/IE/IEContainer";
 
 export default function Paper() {
   const router = useRouter();
@@ -23,6 +25,7 @@ export default function Paper() {
   const [paperAttempt, setPaperAttempt] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [objectiveSubmitModal, setObjectiveSubmitModal] = useState(false);
+  const [IE, setIE] = useState(null);
 
   const fetchPaper = async () => {
     console.log("Fetch paper called");
@@ -30,8 +33,8 @@ export default function Paper() {
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
     setPaperDetails(res.data);
-  };
 
+  };
   const getTimeCookie = () => {
     const studentIdCookie = document.cookie
       .split(";")
@@ -53,7 +56,6 @@ export default function Paper() {
     }
   };
   
-
   const fetchAttemptOrCreateAttempt = async () => {
     let getAttempt;
     try {
@@ -112,6 +114,27 @@ export default function Paper() {
       }
     }
   }, [session, paper]);
+
+  useEffect(() => {
+    if (paperDetails) {
+      async function fetchIE() {
+      if(paperDetails?.paper_type === "IE"){
+        try {
+          const res = await axios.get(`/api/faculty/get_ie_files`,{
+            params: {
+              paperId: paper,
+          }
+          });
+          setIE(res.data);
+        }
+        catch(err){
+          console.log(err);
+        }
+      }
+    }
+    fetchIE();
+    }
+  }, [paperDetails]);
 
   const clearPaperFromLocal = () => {
     localStorage.removeItem(`paper ${paper}`);
@@ -196,7 +219,10 @@ export default function Paper() {
       )}
       <DashboardLayout>
         {!submitted ? (
-         paperDetails && paperDetails.objective_questions.length > 0 && solveObjective ? (
+          paperDetails.paper_type === "IE" ? (
+            <IEContainer IeFiles={IE} />
+          ) :
+         paperDetails && paperDetails.objective_questions.length > 0 && solveObjective  ? (
             <ObjectivePaper
               studentId={session?.data?.user.id}
               questions={paperDetails.objective_questions}

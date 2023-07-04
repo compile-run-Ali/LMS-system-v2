@@ -21,7 +21,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
     newFiles.splice(index, 1);
     setFiles(newFiles);
   };
-
+  console.log(files.length, "files");
   const editExam = () => {
     console.log("pushing back");
     router.push({
@@ -34,6 +34,10 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
   };
 
   const handleUpload = async () => {
+    if (files.length < 1) {
+      alert("Please select a file");
+      return;
+    }
     try {
       setLoading({
         message: "Uploading Exam...",
@@ -68,25 +72,26 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
       <Spinner loading={loading} />
 
       <div className="flex flex-wrap gap-4">
-        <table className="w-full mt-6 text-left table-collapse">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">SR#</th>
-              <th className="px-4 py-2">File</th>
-              <th className="px-4 py-2">url</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ieFiles.length > 0 &&
-              ieFiles.map((IE, index) => (
+        {ieFiles.length > 0 && (
+          <table className="w-full mt-6 text-left table-collapse">
+            <thead>
+              <tr>
+                <th className="px-4 py-2">SR#</th>
+                <th className="px-4 py-2">File</th>
+                <th className="px-4 py-2">url</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ieFiles.map((IE, index) => (
                 <tr key={index} className="border-t">
                   <td className="px-4 py-2">{index + 1}</td>
                   <td className="px-4 py-2">{IE.fileName}</td>
                   <td className="px-4 py-2">{IE.url}</td>
                 </tr>
               ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        )}
         {files.map((file, index) => (
           <div key={index} className="flex items-center">
             <p>{file.name}</p>
@@ -96,7 +101,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
           </div>
         ))}
       </div>
-      <label class="ml-2 inline-flex items-center justify-center px-4 py-2 bg-blue-800 text-white font-medium rounded cursor-pointer">
+      <label className="ml-2 inline-flex items-center justify-center px-4 py-2 bg-blue-800 text-white font-medium rounded cursor-pointer">
         <span>Choose files</span>
         <input
           type="file"
@@ -105,11 +110,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
           multiple
         />
       </label>
-      <button
-        onClick={handleUpload}
-        disabled={files.length === 0 || loading}
-        className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
-      ></button>
+
       <div className="mt-10 w-full pr-10 flex justify-end gap-x-5">
         <button
           type="button"
@@ -124,7 +125,10 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
         <button
           type="submit"
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-          onClick={() => setActive(3)}
+          onClick={() => {
+            handleUpload();
+            if (files.length > 0) setActive(3);
+          }}
         >
           Save and Proceed
         </button>

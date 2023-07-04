@@ -272,7 +272,7 @@ export default function PaperContainer({ startOfPage }) {
     return <Loader />;
   }
 
-  console.log();
+  console.log(paperDetails.paper_type,"paper type" )
 
   return (
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">

@@ -7,7 +7,6 @@ export default function Submitted() {
   const router = useRouter();
   const { paper } = router.query;
   const session = useSession();
-
  const clearPaperFromLocal = () => {
    localStorage.removeItem(`paper ${paper}`);
    localStorage.removeItem(`attempted_questions`);
