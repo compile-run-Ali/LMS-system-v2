@@ -7,6 +7,8 @@ const MarkPaper = ({
   subjectiveAnswers,
   objectiveQuestions,
   subjectiveQuestions,
+  paperDetails,
+  ieMarks,
   isStudent = false,
 }) => {
   const router = useRouter();
@@ -20,13 +22,17 @@ const MarkPaper = ({
     localStorage.getItem("marksSet") === "true" // Retrieve marksSet value from local storage
   );
   useEffect(() => {
-    if (
-      (objectiveMarks || objectiveMarks === 0) &&
-      (subjectiveMarks || subjectiveMarks === 0)
-    ) {
-      setObtainedMarks(objectiveMarks + subjectiveMarks);
+    if (paperDetails.paper_type === "IE") {
+      setObtainedMarks(Number(ieMarks));
+    } else {
+      if (
+        (objectiveMarks || objectiveMarks === 0) &&
+        (subjectiveMarks || subjectiveMarks === 0)
+      ) {
+        setObtainedMarks(objectiveMarks + subjectiveMarks);
+      }
     }
-  }, [objectiveMarks, subjectiveMarks]);
+  }, [objectiveMarks, subjectiveMarks, ieMarks]);
 
   useEffect(() => {
     getTotalMarks();
@@ -61,6 +67,10 @@ const MarkPaper = ({
 
   const getTotalMarks = () => {
     let total = 0;
+    if (paperDetails.paper_type === "IE") {
+      total = paperDetails.ie_questions[0].total_marks;
+    }
+    else {
     objectiveQuestions.forEach((question) => {
       total += question.marks;
     });
@@ -70,6 +80,7 @@ const MarkPaper = ({
         total += question.marks;
       }
     });
+  }
     setTotalMarks(total);
   };
 
@@ -126,7 +137,7 @@ const MarkPaper = ({
           <button
             className="px-6 py-2 bg-blue-900 text-white rounded-lg"
             onClick={() => {
-              if(!marksSet && !router.query.action) {
+              if (!marksSet && !router.query.action) {
                 alert("Please set marks first");
                 return;
               }

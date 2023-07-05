@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     }
 
     try {
-      const { paperId } = fields;
+      const { paperId,total_marks } = fields;
 
       const file = files.files;
       const oldPath = file.filepath;
@@ -35,6 +35,7 @@ export default async function handler(req, res) {
         data: {
           fileName: fileName,
           fileUrl: newPath,
+          total_marks: total_marks,
           paper: {
             connect: {
               paper_id: paperId,

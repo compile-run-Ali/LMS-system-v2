@@ -226,6 +226,7 @@ export default function Paper() {
             startTime={startTime}
             paperId={paper}
             setSubmitted={setSubmitted}
+            updateStatus={updateStatus}
              />
           ) :
          paperDetails && paperDetails.objective_questions.length > 0 && solveObjective  ? (

@@ -42,6 +42,7 @@ const handler = async (req, res) => {
             ie_id: true,
             fileName: true,
             fileUrl: true,
+            total_marks: true,
           },
         },
       },

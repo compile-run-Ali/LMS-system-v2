@@ -12,10 +12,16 @@ export default function IEContainer({
   startTime,
   paperId,
   setSubmitted,
+  updateStatus,
+  studentId,
+  setIeMarks,
+  faculty = false,
 }) {
+  console.log(IeFiles,"iefiles")
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState({});
   const { data: session } = useSession();
+
   const handleFileUpload = (e) => {
     const newFile = e.target.files[0];
     setFiles([newFile]);
@@ -57,6 +63,7 @@ export default function IEContainer({
       );
       console.log(res);
       setSubmitted(true);
+      updateStatus();
       setLoading({});
       setFiles([]);
     } catch (error) {
@@ -69,12 +76,25 @@ export default function IEContainer({
 
   const handleDownload = async (fileId) => {
     try {
-      const response = await axios.get(`/api/paper/get_downloadIE`, {
+      let response;
+      if(!faculty){
+      response = await axios.get(`/api/paper/get_downloadIE`, {
         params: {
           fileId: fileId,
         },
         responseType: "blob", // Set the response type to 'blob'
       });
+    }
+    else{
+
+      response = await axios.get(`/api/paper/marking/download_IE_attempt`, {
+        params: {
+          paperId: paperId,
+          studentId: studentId,
+        },
+        responseType: "blob", // Set the response type to 'blob'
+      });
+    }
 
       const href = window.URL.createObjectURL(response.data);
       const link = document.createElement("a");
@@ -103,11 +123,12 @@ export default function IEContainer({
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={() => handleDownload(question.ie_id)}
               >
-                Download Exam
+                Download Exam {faculty&&"Attempt"}
               </button>
             </div>
           ))}
         </div>
+        {!faculty && (
         <div className="flex flex-col gap-2 text-white">
           <label className="text-xl font-bold">Upload File</label>
           <input
@@ -136,10 +157,28 @@ export default function IEContainer({
             ))}
           </div>
         </div>
+        )}
         </div>
+        {!faculty && (
           <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
             <NewTimer time={attemptTime} startTime={startTime} />
           </div>
+        )}
+        {/* set Ie marks if faculty */}
+        {faculty && (
+          
+          <div className="flex flex-col gap-2 text-white">
+            <label className="text-xl font-bold">Set Marks</label>
+            <input
+              type="number"
+              min = "0"
+              max =   {IeFiles?.ie_questions[0].total_marks }
+              onChange={(e) => setIeMarks(e.target.value)}
+              className="border-2 border-gray-300 p-2 rounded-lg"
+            />
+             </div>
+        )}
+
       </div>
     </>
   );

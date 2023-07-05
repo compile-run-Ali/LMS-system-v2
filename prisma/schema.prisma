@@ -171,6 +171,7 @@ model IeQuestion {
 
   fileName String
   fileUrl  String
+  total_marks Float @default(0)
 
   paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
   paper_id String

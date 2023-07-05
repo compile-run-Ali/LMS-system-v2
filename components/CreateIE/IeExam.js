@@ -8,6 +8,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
   const router = useRouter();
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState({});
+  const [total_marks, setTotalMarks] = useState(0);
 
   console.log(ieFiles);
 
@@ -47,6 +48,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
         formData.append("files", file);
       });
       formData.append("paperId", paperId);
+      formData.append("total_marks", total_marks);
       const res = await axios.post(
         "/api/faculty/paper_creation/add_excel",
         formData,
@@ -110,6 +112,19 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
           multiple
         />
       </label>
+      <div className="mt-5 flex">
+        <label className="block ">
+          Total Marks:
+        </label>
+        <input
+          type="number"
+          name="total_marks"
+          id="total_marks"
+          value={total_marks}
+          onChange={(e) => setTotalMarks(e.target.value)}
+          className="ml-2 bg-white rounded-md"
+        />
+      </div>
 
       <div className="mt-10 w-full pr-10 flex justify-end gap-x-5">
         <button
