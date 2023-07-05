@@ -26,6 +26,7 @@ model Student {
   subjective_answers SSA[]
   objective_answers  SOA[]
   attempts           SPA[]
+  SIA                SIA[]
 }
 
 model SRC {
@@ -107,9 +108,9 @@ model Paper {
   duration         Int
   weightage        Int?
   status           String         @default("Draft")
-  total_marks      Float            @default(0)
+  total_marks      Float          @default(0)
   objective_marks  Int            @default(0)
-  subjective_marks Float            @default(0)
+  subjective_marks Float          @default(0)
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]
@@ -117,13 +118,14 @@ model Paper {
 
   PaperComment PaperComment[]
   attempts     SPA[]
+  SIA          SIA[]
 }
 
 model SubjectiveQuestion {
   sq_id String @id @default(uuid())
 
   questionnumber Int
-  question       String @db.VarChar(10000)
+  question       String  @db.VarChar(10000)
   long_question  Boolean @default(true)
   marks          Float
 
@@ -140,13 +142,13 @@ model SubjectiveQuestion {
 
 //Student Subjective Question Attempt
 model SSA {
-  ssa_id String @id @default(uuid())
+  ssa_id              String             @id @default(uuid())
   sq_id               String
   subjective_question SubjectiveQuestion @relation(fields: [sq_id], references: [sq_id], onDelete: Cascade)
-  p_number String
-  student  Student @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
-  answer        String @db.VarChar(10000)
-  marksobtained Float  @default(0)
+  p_number            String
+  student             Student            @relation(fields: [p_number], references: [p_number], onDelete: Cascade)
+  answer              String             @db.VarChar(10000)
+  marksobtained       Float              @default(0)
 }
 
 model ObjectiveQuestion {
@@ -195,7 +197,7 @@ model PaperComment {
   paper_id       String
   faculty        Faculty  @relation(fields: [faculty_id], references: [faculty_id], onDelete: Cascade)
   faculty_id     String
-  comment        String 
+  comment        String
   user_generated Boolean  @default(false)
   time           DateTime @default(now())
 }
@@ -221,9 +223,24 @@ model SPA {
   timeCompleted   String?
   currentQuestion Int     @default(1)
   obtainedMarks   Float   @default(0)
-  studentComment  String  @db.VarChar(1000) @default("")
-  teacherComment  String  @db.VarChar(10000) @default("") 
+  studentComment  String  @default("") @db.VarChar(1000)
+  teacherComment  String  @default("") @db.VarChar(10000)
   objectiveSolved Boolean @default(false)
+
+  student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
+  paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)
+}
+
+model SIA {
+  siaId         String  @id @default(uuid())
+  studentId     String
+  paperId       String
+  status        String? @default("Not Attempted")
+  timeStarted   String?
+  timeCompleted String?
+  obtainedMarks Float   @default(0)
+  fileName      String
+  fileUrl       String
 
   student Student @relation(fields: [studentId], references: [p_number], onDelete: Cascade)
   paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)

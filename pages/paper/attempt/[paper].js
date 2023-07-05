@@ -220,7 +220,13 @@ export default function Paper() {
       <DashboardLayout>
         {!submitted ? (
           paperDetails.paper_type === "IE" ? (
-            <IEContainer IeFiles={IE} />
+            <IEContainer 
+            IeFiles={IE}
+            attemptTime={attemptTime}
+            startTime={startTime}
+            paperId={paper}
+            setSubmitted={setSubmitted}
+             />
           ) :
          paperDetails && paperDetails.objective_questions.length > 0 && solveObjective  ? (
             <ObjectivePaper
