@@ -33,43 +33,49 @@ export default function StudentDashboard({ session }) {
   // if the paper is clicked, and review is allowed, send to dynamic route of that paper
 
   const getStudentAndSetPapers = async () => {
-    const studentexams = await axios.get(`/api/student/paper/${index}`);
-    const approvedPapers = studentexams.data.filter(
-      (paper) => paper.status !== "Draft" && paper.status !== "Pending Approval"
-    );
+    try {
+      const studentexams = await axios.get(`/api/student/paper/${index}`);
+      const approvedPapers = studentexams.data.filter(
+        (paper) =>
+          paper.status !== "Draft" && paper.status !== "Pending Approval"
+      );
 
-    // categorize papers here
-    const past = [];
-    const live = [];
-    const upcoming = [];
+      // categorize papers here
+      const past = [];
+      const live = [];
+      const upcoming = [];
 
-    for (const paper of approvedPapers) {
-      if (
-        compareDateTime(
-          getPaperDateTime(paper.date, paper.duration).start,
-          getPaperDateTime(paper.date, paper.duration).end
-        ) === "past"
-      ) {
-        past.push(paper);
-      } else if (
-        compareDateTime(
-          getPaperDateTime(paper.date, paper.duration).start,
-          getPaperDateTime(paper.date, paper.duration).end
-        ) === "live"
-      ) {
-        live.push(paper);
-      } else if (
-        compareDateTime(
-          getPaperDateTime(paper.date, paper.duration).start,
-          getPaperDateTime(paper.date, paper.duration).end
-        ) === "upcoming"
-      ) {
-        upcoming.push(paper);
+      for (const paper of approvedPapers) {
+        if (
+          compareDateTime(
+            getPaperDateTime(paper.date, paper.duration).start,
+            getPaperDateTime(paper.date, paper.duration).end
+          ) === "past"
+        ) {
+          past.push(paper);
+        } else if (
+          compareDateTime(
+            getPaperDateTime(paper.date, paper.duration).start,
+            getPaperDateTime(paper.date, paper.duration).end
+          ) === "live"
+        ) {
+          live.push(paper);
+        } else if (
+          compareDateTime(
+            getPaperDateTime(paper.date, paper.duration).start,
+            getPaperDateTime(paper.date, paper.duration).end
+          ) === "upcoming"
+        ) {
+          upcoming.push(paper);
+        }
       }
+      setPastPapers(past);
+      setLivePapers(live);
+      setUpcomingPapers(upcoming);
+    } catch (err) {
+      alert("Please Enroll in a course!");
+      return;
     }
-    setPastPapers(past);
-    setLivePapers(live);
-    setUpcomingPapers(upcoming);
   };
 
   useEffect(() => {

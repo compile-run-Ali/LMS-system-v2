@@ -29,6 +29,7 @@ export default function StudentTable({
       },
     });
   };
+  console.log(students, "students")
 
   return (
     <div>
@@ -42,6 +43,7 @@ export default function StudentTable({
             <th className="px-4 py-2 border border-gray-500">Email</th>
             <th className="px-4 py-2 border border-gray-500">DOB</th>
             <th className="px-4 py-2 border border-gray-500">Rank</th>
+            <th className="px-4 py-2 border border-gray-500">Courses</th>
             <th className="px-4 py-2 border border-gray-500 w-20 text-center">
               Edit
             </th>
@@ -75,6 +77,16 @@ export default function StudentTable({
                 </td>
                 <td className=" px-4 py-2 border border-gray-500">
                   {student.rank}
+                </td>
+                <td className=" px-4 py-2 border border-gray-500">
+                  {student.courses.map((course, index) => (
+                    <div key={index}>
+                      <span>
+                        {course.course_code}
+                      </span>
+                      <br />
+                    </div>
+                  ))}
                 </td>
                 <td className="px-4 py-2 border border-gray-500 w-20 text-center">
                   <button
