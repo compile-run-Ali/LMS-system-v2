@@ -26,7 +26,6 @@ export default function AdminPanel({
 
   useEffect(() => {
     const tab = localStorage.getItem('active');
-    if (tab === null) return
     setActive(tab);
     setReload(false);
   },[])
