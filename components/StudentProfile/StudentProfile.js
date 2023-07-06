@@ -32,7 +32,11 @@ export default function StudentProfile({ student }) {
   }, []);
   // p_number: pNumber,
   // course_code: selectedCourse,
-  async function handleEnroll (course_code) {
+  async function handleEnroll (course_code,course) {
+    if(course.max_students==course.student_count){
+      alert("You cannot enroll in this course as it has reached its maximum capacity")
+      return
+    }
     try {
       const res = await axios.post("/api/student/register", {
         p_number: student.p_number,
@@ -46,6 +50,7 @@ export default function StudentProfile({ student }) {
     }
   }
   async function handleUnenroll (course_code) {
+
     try {
       const res = await axios.post("/api/student/unregister", {
         p_number: student.p_number,
@@ -59,7 +64,7 @@ export default function StudentProfile({ student }) {
     }
   }
 
-
+  console.log(courses,"courses")
   return (
     <>
       {student ? (
@@ -129,7 +134,7 @@ export default function StudentProfile({ student }) {
                           ) : (
                             <button
                               className=" mx-7"
-                              onClick={() => handleEnroll(course.course_code)}
+                              onClick={() => handleEnroll(course.course_code,course)}
                             >
                               Enroll
                             </button>
