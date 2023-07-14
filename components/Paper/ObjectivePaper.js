@@ -16,6 +16,8 @@ export default function ObjectivePaper({
   startTime,
   submit,
   studentId,
+  setScore,
+  score
 }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [flags, setFlags] = useState([]);
@@ -76,6 +78,8 @@ export default function ObjectivePaper({
           flags={flags || []}
           setFlags={setFlags}
           setSolveObjective={setSolveObjective}
+          setScore = {setScore}
+          oldScore={score}
         />
       </div>
       <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">

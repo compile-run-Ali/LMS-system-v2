@@ -25,6 +25,7 @@ export default function Paper() {
   const [paperAttempt, setPaperAttempt] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [objectiveSubmitModal, setObjectiveSubmitModal] = useState(false);
+  const [score,setScore] = useState(0);
   const [IE, setIE] = useState(null);
 
   const fetchPaper = async () => {
@@ -35,6 +36,7 @@ export default function Paper() {
     setPaperDetails(res.data);
 
   };
+  console.log(score,"score")
   const getTimeCookie = () => {
     const studentIdCookie = document.cookie
       .split(";")
@@ -84,15 +86,17 @@ export default function Paper() {
   const handleSolveObjective = async () => {
     setObjectiveSubmitModal(true);
   };
-
+  console.log(paperDetails?.objective_questions)
   const handleSubmitObjective = async () => {
     const isObjective = paperDetails?.subjective_questions?.length === 0;
+    //we will send marks by comparing the answers
 
     await axios.post("/api/student/paper/update_attempt_status", {
       studentId: session.data.user.id,
       paperId: paper,
       objectiveSolved: true,
-      status: isObjective ? "Submitted" : "Attempted",
+      status: isObjective ? "Marked" : "Attempted",
+      obtainedMarks: score,
     });
 
     localStorage.removeItem("attempted_questions");
@@ -239,6 +243,8 @@ export default function Paper() {
               attemptTime={attemptTime}
               startTime={startTime}
               submit={handleSubmitObjective}
+              setScore={setScore}
+              score={score}
             />
           ) : (
             <SubjectivePaper

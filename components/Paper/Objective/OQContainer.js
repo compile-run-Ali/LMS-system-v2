@@ -19,6 +19,8 @@ export default function OQContainer({
   setSolveObjective,
   submit,
   studentId,
+  setScore,
+  oldScore,
 }) {
   const router = useRouter();
   const session = useSession();
@@ -46,7 +48,7 @@ export default function OQContainer({
       selectedAnswer.join(","),
       question.marks
     );
-
+    setScore(oldScore + score);
     axios
       .post(`/api/student/paper/oq/add_answer`, {
         p_number: session.data.user.id,
@@ -243,7 +245,7 @@ export default function OQContainer({
                     setChanged(selectedAnswer.includes(answer) ? false : true);
                     setSaved(selectedAnswer.includes(answer) ? true : false);
                     const input = document.querySelector(
-                      `input[value='${answer}']`
+                      `input[value="${answer}"]`
                     );
                     if (!multipleAllowed) {
                       setSelectedAnswer([answer]);
