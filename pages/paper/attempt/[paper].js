@@ -25,7 +25,7 @@ export default function Paper() {
   const [paperAttempt, setPaperAttempt] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [objectiveSubmitModal, setObjectiveSubmitModal] = useState(false);
-  const [score,setScore] = useState(0);
+  const [score, setScore] = useState(0);
   const [IE, setIE] = useState(null);
 
   const fetchPaper = async () => {
@@ -34,16 +34,18 @@ export default function Paper() {
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
     setPaperDetails(res.data);
-
   };
-  console.log(score,"score")
+  console.log(score, "score");
   const getTimeCookie = () => {
     const studentIdCookie = document.cookie
       .split(";")
       .map((item) => item.trim())
       .find((item) => item.startsWith("studentId="));
-  
-    if (studentIdCookie && studentIdCookie.includes(`studentId=${session.data.user.id}`)) {
+
+    if (
+      studentIdCookie &&
+      studentIdCookie.includes(`studentId=${session.data.user.id}`)
+    ) {
       if (document.cookie.includes(`${paper}-time`)) {
         const timeLeft = document.cookie
           .split(";")
@@ -57,7 +59,7 @@ export default function Paper() {
       setAttemptTime(-100);
     }
   };
-  
+
   const fetchAttemptOrCreateAttempt = async () => {
     let getAttempt;
     try {
@@ -86,7 +88,7 @@ export default function Paper() {
   const handleSolveObjective = async () => {
     setObjectiveSubmitModal(true);
   };
-  console.log(paperDetails?.objective_questions)
+  console.log(paperDetails?.objective_questions);
   const handleSubmitObjective = async () => {
     const isObjective = paperDetails?.subjective_questions?.length === 0;
     //we will send marks by comparing the answers
@@ -97,6 +99,7 @@ export default function Paper() {
       objectiveSolved: true,
       status: isObjective ? "Marked" : "Attempted",
       obtainedMarks: score,
+      timeCompleted: timeCompletedString,
     });
 
     localStorage.removeItem("attempted_questions");
@@ -122,21 +125,20 @@ export default function Paper() {
   useEffect(() => {
     if (paperDetails) {
       async function fetchIE() {
-      if(paperDetails?.paper_type === "IE"){
-        try {
-          const res = await axios.get(`/api/faculty/get_ie_files`,{
-            params: {
-              paperId: paper,
+        if (paperDetails?.paper_type === "IE") {
+          try {
+            const res = await axios.get(`/api/faculty/get_ie_files`, {
+              params: {
+                paperId: paper,
+              },
+            });
+            setIE(res.data);
+          } catch (err) {
+            console.log(err);
           }
-          });
-          setIE(res.data);
-        }
-        catch(err){
-          console.log(err);
         }
       }
-    }
-    fetchIE();
+      fetchIE();
     }
   }, [paperDetails]);
 
@@ -197,7 +199,9 @@ export default function Paper() {
         var now = new Date();
         now.setTime(now.getTime() + 1 * 3600 * 1000);
         document.cookie = `${paper}-time=${attemptTime}; expires=${now.toUTCString()}; path=/`;
-        document.cookie = `studentId=${session.data.user.id}; expires=${now.toUTCString()}; path=/`;
+        document.cookie = `studentId=${
+          session.data.user.id
+        }; expires=${now.toUTCString()}; path=/`;
       }, 1000);
     } else if (attemptTime <= 0 && attemptTime > -100 && attemptTime !== null) {
       console.log("attempt time is very high ", attemptTime);
@@ -224,16 +228,17 @@ export default function Paper() {
       <DashboardLayout>
         {!submitted ? (
           paperDetails.paper_type === "IE" ? (
-            <IEContainer 
-            IeFiles={IE}
-            attemptTime={attemptTime}
-            startTime={startTime}
-            paperId={paper}
-            setSubmitted={setSubmitted}
-            updateStatus={updateStatus}
-             />
-          ) :
-         paperDetails && paperDetails.objective_questions.length > 0 && solveObjective  ? (
+            <IEContainer
+              IeFiles={IE}
+              attemptTime={attemptTime}
+              startTime={startTime}
+              paperId={paper}
+              setSubmitted={setSubmitted}
+              updateStatus={updateStatus}
+            />
+          ) : paperDetails &&
+            paperDetails.objective_questions.length > 0 &&
+            solveObjective ? (
             <ObjectivePaper
               studentId={session?.data?.user.id}
               questions={paperDetails.objective_questions}
