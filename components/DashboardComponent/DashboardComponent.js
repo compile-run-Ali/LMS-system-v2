@@ -9,8 +9,8 @@ export default function DashboardComponent({
   level,
 }) {
   const [open, setOpen] = useState(false);
-  const [exams, setExams] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const [exams, setExams] = useState(null);
+  const [courses, setCourses] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [paperapproval, setPaperApproval] = useState([]);
   const session = useSession();
@@ -24,6 +24,7 @@ export default function DashboardComponent({
       const sortedExams = exams_data.sort((a, b) =>
         a.course.course_name.localeCompare(b.course.course_name)
       );
+      console.log("sortedExams", sortedExams)
       setCourses(sortedExams);
       setSelectedCourse(localStorage.getItem("selectedCourse") || sortedExams[0]?.course.course_code || "");
       //set exam according to the selected course
@@ -43,7 +44,7 @@ export default function DashboardComponent({
       setPaperApproval(paperapproval_data.map((paper) => paper.paper));
     }
   }, [exams_data, paperapproval_data,selectedCourse]);
-
+console.log(exams_data)
   const toggleModal = () => {
     //throw notification if no course is selected
     if (selectedCourse === "") {
@@ -66,8 +67,9 @@ export default function DashboardComponent({
     );
     setExams(course.course.paper);
   };
-
+console.log("Exams in dash",exams)
   return (
+exams!==null && courses!==null && (
     <div>
       <div className="ml-6">
         <h1 className="text-2xl font-poppins font-bold">Courses List:</h1>
@@ -150,6 +152,6 @@ export default function DashboardComponent({
           )}
         </div>
       }
-    </div>
+    </div>)
   );
 }

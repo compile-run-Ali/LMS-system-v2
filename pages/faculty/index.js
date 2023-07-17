@@ -18,6 +18,7 @@ export default function Dashboard() {
         faculty_id: session.data.user.id,
       })
       .then((res) => {
+console.log(res,"check")
         setExams(res.data.courses);
         setPaperApproval(res.data.paperapproval);
         setLoading(false);
@@ -32,11 +33,11 @@ export default function Dashboard() {
       fetchExams();
     }
   }, [session]);
-
+console.log(exams,"exams to dsah")
   return (
     <BaseLayout title={"Dashboard"}>
       <DashboardLayout>
-        {loading ? (
+        {loading || exams===null ? (
           <Loader />
         ) : (
           <DashboardComponent

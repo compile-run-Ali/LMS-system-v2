@@ -44,6 +44,7 @@ const Index = () => {
       fetchIE();
     }
   }, [paperDetails]);
+  console.log(objectiveAnswers,"objans")
 
   useEffect(() => {
     setTimeout(() => {
@@ -77,6 +78,7 @@ const Index = () => {
         p_number: p_number,
         questions: questions,
       });
+	console.log(res,"impt")
       setObjectiveAnswers(res.data);
       setLoading(false);
     } catch (err) {
@@ -135,11 +137,12 @@ const Index = () => {
   }, [exam_id, p_number, router]);
 
 
-  useEffect(() => {
-    if (objectiveQuestions.length === 0 || subjectiveQuestions.length === 0)
-      return;
-    fetchObjectiveAttempts();
-    fetchSubjectiveAttempts();
+    useEffect(() => {
+    if (objectiveQuestions.length !== 0 ){
+      fetchObjectiveAttempts();
+    }
+    if (subjectiveQuestions.length !== 0)
+      fetchSubjectiveAttempts();
   }, [objectiveQuestions, subjectiveQuestions]);
   return (
     <div>

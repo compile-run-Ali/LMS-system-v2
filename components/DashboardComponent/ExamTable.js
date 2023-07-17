@@ -123,7 +123,7 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
   const handleExamClick = (paper_id) => {
     router.push(`/faculty/exam_details/${paper_id}`);
   };
-
+  console.log(exams_data,"exams_data")
   if (!exams_data || (exams_data && exams_data.length === 0)) {
     return (
       <div className="flex justify-center items-center w-full h-full">

@@ -20,7 +20,7 @@ export default function ReviewContainer() {
   const [subjectiveQuestions, setSubjectiveQuestions] = useState([]);
   const [paperDetails, setPaperDetails] = useState({});
   const [loading, setLoading] = useState(true);
-
+ console.log(objectiveAnswers)
   useEffect(() => {
     if (status === "authenticated") {
       setStudent(session.user.id);
