@@ -112,9 +112,10 @@ export default function ReviewContainer() {
       )}
 
       <CommentBox paper={paper} student={student} isStudent={true} />
-
+      
       <MarkPaper
         objectiveAnswers={objectiveAnswers}
+        paperDetails={paperDetails}
         subjectiveAnswers={subjectiveAnswers}
         objectiveQuestions={objectiveQuestions}
         subjectiveQuestions={subjectiveQuestions}

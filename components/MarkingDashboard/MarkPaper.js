@@ -22,7 +22,7 @@ const MarkPaper = ({
     localStorage.getItem("marksSet") === "true" // Retrieve marksSet value from local storage
   );
   useEffect(() => {
-    if (paperDetails.paper_type === "IE") {
+    if (paperDetails?.paper_type === "IE") {
       setObtainedMarks(Number(ieMarks));
     } else {
       if (
@@ -67,8 +67,8 @@ const MarkPaper = ({
 
   const getTotalMarks = () => {
     let total = 0;
-    if (paperDetails.paper_type === "IE") {
-      total = paperDetails.ie_questions[0].total_marks;
+    if (paperDetails?.paper_type === "IE") {
+      total = paperDetails?.ie_questions[0].total_marks;
     }
     else {
     objectiveQuestions.forEach((question) => {
