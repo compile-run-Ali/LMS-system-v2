@@ -73,6 +73,7 @@ export default function StudentDashboard({ session }) {
       setLivePapers(live);
       setUpcomingPapers(upcoming);
     } catch (err) {
+      console.log(err)
       alert("Please Enroll in a course!");
       return;
     }

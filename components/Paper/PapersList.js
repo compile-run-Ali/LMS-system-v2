@@ -58,6 +58,7 @@ export default function PapersList({ papers, status }) {
       <table className="table-auto rounded-md mt-2 mb-4 font-poppins w-full text-left">
         <thead>
           <tr className="bg-blue-800 rounded-md text-white">
+            <th className="border px-4 py-2">Course</th>
             <th className="border px-4 py-2">Name</th>
             <th className="border px-4 py-2">Type</th>
             <th className="border px-4 py-2">Date</th>
@@ -118,9 +119,10 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
       console.log(err);
     }
   };
-
+  
   return (
     <>
+      <td className="border px-4 py-2">{paper.course_code}</td>
       <td className="border px-4 py-2">{paper.paper_name}</td>
       <td className="border px-4 py-2">{paper.paper_type}</td>
       <td className="border px-4 py-2">{startDate}</td>
