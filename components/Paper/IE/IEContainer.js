@@ -16,12 +16,12 @@ export default function IEContainer({
   studentId,
   setIeMarks,
   faculty = false,
+  markTo=false
 }) {
   console.log(IeFiles,"iefiles")
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState({});
   const { data: session } = useSession();
-
   const handleFileUpload = (e) => {
     const newFile = e.target.files[0];
     setFiles([newFile]);
@@ -77,7 +77,7 @@ export default function IEContainer({
   const handleDownload = async (fileId) => {
     try {
       let response;
-      if(!faculty){
+      if(!faculty||markTo){
       response = await axios.get(`/api/paper/get_downloadIE`, {
         params: {
           fileId: fileId,
@@ -109,7 +109,7 @@ export default function IEContainer({
       console.error("Error downloading file:", error);
     }
   };
-
+  console.log(IeFiles,"iefiles")
   return (
     <>
       <Spinner loading={loading} />
@@ -123,7 +123,7 @@ export default function IEContainer({
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                 onClick={() => handleDownload(question.ie_id)}
               >
-                Download Exam {faculty&&"Attempt"}
+                Download Exam 
               </button>
             </div>
           ))}
@@ -165,7 +165,7 @@ export default function IEContainer({
           </div>
         )}
         {/* set Ie marks if faculty */}
-        {faculty && (
+        {faculty && !markTo &&(
           
           <div className="flex flex-col gap-2 text-white">
             <label className="text-xl font-bold">Set Marks</label>

@@ -44,7 +44,7 @@ const Index = () => {
       fetchIE();
     }
   }, [paperDetails]);
-  console.log(objectiveAnswers,"objans")
+  console.log(objectiveAnswers, "objans");
 
   useEffect(() => {
     setTimeout(() => {
@@ -78,7 +78,7 @@ const Index = () => {
         p_number: p_number,
         questions: questions,
       });
-	console.log(res,"impt")
+      console.log(res, "impt");
       setObjectiveAnswers(res.data);
       setLoading(false);
     } catch (err) {
@@ -127,7 +127,7 @@ const Index = () => {
         console.log("error in fetching paper details", err.message);
       });
   };
-  console.log(paperDetails, "paper details")
+  console.log(paperDetails, "paper details");
   useEffect(() => {
     if (exam_id && p_number) {
       setLoading(true);
@@ -136,13 +136,11 @@ const Index = () => {
     setLoading(false);
   }, [exam_id, p_number, router]);
 
-
-    useEffect(() => {
-    if (objectiveQuestions.length !== 0 ){
+  useEffect(() => {
+    if (objectiveQuestions.length !== 0) {
       fetchObjectiveAttempts();
     }
-    if (subjectiveQuestions.length !== 0)
-      fetchSubjectiveAttempts();
+    if (subjectiveQuestions.length !== 0) fetchSubjectiveAttempts();
   }, [objectiveQuestions, subjectiveQuestions]);
   return (
     <div>
@@ -168,7 +166,13 @@ const Index = () => {
                 />
               )}
               {paperDetails.paper_type === "IE" && (
-                <IEContainer IeFiles={IeFiles} faculty={true} paperId={paperDetails.paper_id} studentId={p_number} setIeMarks={setIeMarks} />
+                <IEContainer
+                  IeFiles={IeFiles}
+                  faculty={true}
+                  paperId={paperDetails.paper_id}
+                  studentId={p_number}
+                  setIeMarks={setIeMarks}
+                />
               )}
 
               <CommentBox student={p_number} paper={exam_id} />

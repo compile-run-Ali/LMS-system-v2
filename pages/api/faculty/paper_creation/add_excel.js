@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     try {
       const { paperId,total_marks } = fields;
-
+      const float_marks=parseFloat(total_marks)
       const file = files.files;
       const oldPath = file.filepath;
       const fileName = file.originalFilename;
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
         data: {
           fileName: fileName,
           fileUrl: newPath,
-          total_marks: total_marks,
+          total_marks:float_marks,
           paper: {
             connect: {
               paper_id: paperId,
@@ -43,6 +43,23 @@ export default async function handler(req, res) {
           },
         },
       });
+
+      //we will also have to update marks in paper table
+      const paper = await prisma.paper.findUnique({
+        where: {
+          paper_id: paperId,
+        },
+      });
+      const newMarks = paper.total_marks + float_marks;
+      const updatedPaper = await prisma.paper.update({
+        where: {
+          paper_id: paperId,
+        },
+        data: {
+          total_marks: newMarks,
+        },
+      });
+      console.log(updatedPaper);
 
       res.status(200).json(newIE);
     } catch (e) {

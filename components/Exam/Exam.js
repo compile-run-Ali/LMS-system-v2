@@ -6,6 +6,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 import Spinner from "../Loader/Spinner";
+import IEContainer from "../Paper/IE/IEContainer";
 
 export default function Exam({
   exam,
@@ -23,6 +24,7 @@ export default function Exam({
   const [faculties, setFaculties] = useState();
   const [selectedFaculty, setSelectedFaculty] = useState();
   const [access, setAccess] = useState(null);
+  const [ieFiles, setIeFiles] = useState(null);
   console.log(exam)
   useEffect(() => {
     setAccess(() => {
@@ -44,6 +46,26 @@ export default function Exam({
       }
     });
   }, [session]);
+
+  useEffect(() => {
+    if (exam) {
+      async function fetchIE() {
+        if (exam?.paper_type === "IE") {
+          try {
+            const res = await axios.get(`/api/faculty/get_ie_files`, {
+              params: {
+                paperId: exam.paper_id,
+              },
+            });
+            setIeFiles(res.data);
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }
+      fetchIE();
+    }
+  }, [exam]);
 
   const getComments = async () => {
     if (exam !== undefined) {
@@ -401,6 +423,14 @@ export default function Exam({
               <span className="ml-2">{exam.total_marks}</span>
             </div>
           </div>
+          {exam.paper_type === "IE" && (
+            <IEContainer
+              IeFiles={ieFiles}
+              faculty={true}
+              paperId={exam.paper_id}
+              markTo={true}
+            />
+          )}
           {exam.paper_type !== "IE" && (
             <div className="bg-gray-100 py-5 mt-5 px-5 border-b border-slate-400 border-opacity-50">
               <Accordion
