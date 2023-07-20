@@ -90,6 +90,15 @@ export default function Paper() {
   const handleSubmitObjective = async () => {
     const isObjective = paperDetails?.subjective_questions?.length === 0;
     //we will send marks by comparing the answers
+    const timeCompleted = new Date();
+    // get gmt offset in hours, and add that in startTime
+    const timeCompletedString = `${timeCompleted
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${timeCompleted
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
 
     await axios.post("/api/student/paper/update_attempt_status", {
       studentId: session.data.user.id,
@@ -97,6 +106,7 @@ export default function Paper() {
       objectiveSolved: true,
       status: isObjective ? "Marked" : "Attempted",
       obtainedMarks: score,
+      timeCompleted: timeCompletedString,
     });
 
     localStorage.removeItem("attempted_questions");

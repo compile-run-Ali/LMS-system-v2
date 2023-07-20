@@ -104,17 +104,18 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
         ))}
       </div>
       <label className="ml-2 inline-flex items-center justify-center px-4 py-2 bg-blue-800 text-white font-medium rounded cursor-pointer">
-        <span>Choose files</span>
+        <span>Upload Excel File</span>
         <input
           type="file"
           class="hidden"
+          accept=".xlsx,.numbers"
           onChange={handleFileUpload}
           multiple
         />
       </label>
       <div className="mt-5 flex">
-        <label className="block ">
-          Total Marks:
+        <label className="block text-lg font-bold">
+          Please Input total marks for this exam:
         </label>
         <input
           type="number"
@@ -122,7 +123,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
           id="total_marks"
           value={total_marks}
           onChange={(e) => setTotalMarks(e.target.value)}
-          className="ml-2 bg-white rounded-md"
+          className="ml-2 bg-white rounded-md border-blue-800 border-2 p-2"
         />
       </div>
 
