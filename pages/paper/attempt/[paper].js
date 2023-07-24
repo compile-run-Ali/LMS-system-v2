@@ -29,14 +29,12 @@ export default function Paper() {
   const [IE, setIE] = useState(null);
 
   const fetchPaper = async () => {
-    console.log("Fetch paper called");
     // fetch paper details from api
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
     setPaperDetails(res.data);
 
   };
-  console.log(score,"score")
   const getTimeCookie = () => {
     const studentIdCookie = document.cookie
       .split(";")
@@ -86,7 +84,6 @@ export default function Paper() {
   const handleSolveObjective = async () => {
     setObjectiveSubmitModal(true);
   };
-  console.log(paperDetails?.objective_questions)
   const handleSubmitObjective = async () => {
     const isObjective = paperDetails?.subjective_questions?.length === 0;
     //we will send marks by comparing the answers
@@ -113,7 +110,6 @@ export default function Paper() {
 
     const localPaper = JSON.parse(localStorage.getItem(`paper ${paper}`));
     localPaper.flags = [];
-    console.log("local paper", localPaper);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(localPaper));
     setObjectiveSubmitModal(false);
     setSolveObjective(false);

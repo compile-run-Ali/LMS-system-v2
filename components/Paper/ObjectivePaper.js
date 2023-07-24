@@ -47,7 +47,6 @@ export default function ObjectivePaper({
     const generator = seedrandom(studentId);
     const randomNumber = generator();
 
-    console.log(randomNumber);
     const shuffledArray = [...array];
     for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(randomNumber * (i + 1));

@@ -44,8 +44,8 @@ export default function OQContainer({
 
     // mark answer right here
     const score = markAnswer(
-      question.correct_answer,
-      selectedAnswer.join(","),
+      question.correct_answer.toLowerCase(),
+      selectedAnswer.join(",").toLowerCase(),
       question.marks
     );
     setScore(oldScore + score);
@@ -110,7 +110,6 @@ export default function OQContainer({
 
   const flagQuestion = (current) => {
     let f = flags;
-    console.log("flags", f);
     f.includes(current)
       ? (f = f.filter((flags) => flags !== current))
       : (f = [...flags, current]);
