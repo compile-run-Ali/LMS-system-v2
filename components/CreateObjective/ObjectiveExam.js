@@ -17,8 +17,6 @@ const MCQTable = ({
   setObjectiveQuestions,
   freeFlow,
 }) => {
-  
-  console.log(freeFlow)
   const [loading, setLoading] = useState({});
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
@@ -74,7 +72,7 @@ const MCQTable = ({
 
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
-
+  console.log(editing, "editing");
   const handleMultipleOptionsChange = (e) => {
     setMultipleOptions(e.target.checked);
   };
@@ -86,7 +84,20 @@ const MCQTable = ({
   const handleOptionChange = (index) => (e) => {
     const newOptions = [...currentMCQ.options];
     newOptions[index] = e.target.value.replace(/,/g, " ");
-    setCurrentMCQ({ ...currentMCQ, options: newOptions });
+    //if edited mcq is correct anser, then we need to update correct answer
+    if (currentMCQ.correct_answer === currentMCQ.options[index]) {
+      setCurrentMCQ({
+        ...currentMCQ,
+        options: newOptions,
+        correct_answer: e.target.value.replace(/,/g, " "),
+      });
+    }
+    else {
+      setCurrentMCQ({
+        ...currentMCQ,
+        options: newOptions,
+      });
+    }
   };
 
   const handleCorrectOptionChange = (e) => {
@@ -172,6 +183,8 @@ const MCQTable = ({
       setEditing(true);
       setIndex(index);
       setCurrentMCQ(mcqs[index]);
+      //if edited mcq is correct anser, then we need to update correct answer
+      console.log(mcqs[index], "aaaa");
     } else {
       alert(
         "Please save or cancel the current edit or add operation before editing another question."
@@ -199,6 +212,7 @@ const MCQTable = ({
     setLoading({
       message: "Updating Question",
     });
+    console.log(currentMCQ, "currentMCQ");
     const newMCQ = await axios.post("/api/faculty/edit_objective", {
       oq_id: mcqs[index].oq_id,
       paper_id: paperId,
@@ -208,7 +222,7 @@ const MCQTable = ({
       marks: currentMCQ.marks,
       timeAllowed: currentMCQ.timeAllowed || 60,
     });
-
+    console.log(newMCQ, "newMCQ");
     if (newMCQ.status === 200) {
       setLoading({});
       const newMCQs = [...mcqs];

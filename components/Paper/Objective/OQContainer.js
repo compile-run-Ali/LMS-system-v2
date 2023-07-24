@@ -44,8 +44,8 @@ export default function OQContainer({
 
     // mark answer right here
     const score = markAnswer(
-      question.correct_answer.toLowerCase(),
-      selectedAnswer.join(",").toLowerCase(),
+      question.correct_answer,
+      selectedAnswer.join(","),
       question.marks
     );
     setScore(oldScore + score);
