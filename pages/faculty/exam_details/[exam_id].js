@@ -27,7 +27,7 @@ export default function ExamPage() {
 
     let subjectiveQuestions = [];
 
-    if (examDetails.data.paper_type === "Subjective/Objective") {
+    if (examDetails.data.paper_type === "Subjective/Objective"||examDetails.data.paper_type === "Word") {
       const res = await axios.post("/api/faculty/get_subjective", {
         paper_id: exam_id,
       });
@@ -37,7 +37,6 @@ export default function ExamPage() {
     }
     setSubjectiveQuestions(subjectiveQuestions);
   };
-
   useEffect(() => {
     if (exam_id) {
       fetchExam();

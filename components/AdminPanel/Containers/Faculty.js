@@ -31,6 +31,7 @@ export default function Faculty({ faculty, setFaculty }) {
       
       router.reload();
     } catch (error) {
+      alert("Error in deleting faculty");
       console.log("An error occurred:", error);
     }
   };
