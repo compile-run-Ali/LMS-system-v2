@@ -164,7 +164,6 @@ export default function Form({
       });
     }
   };
-
   useEffect(() => {
     if (Object.keys(router.query).length > 1) {
       setEdit(true);
