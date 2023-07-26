@@ -36,6 +36,9 @@ function WordExam({
       reader.readAsText(file);
     }
   };
+  const handleDelete = () => {
+    setQuestions([]);
+  }
 
   const editExam = () => {
     console.log("pushing back");
@@ -95,6 +98,9 @@ function WordExam({
           >
             Back
           </button>
+          <button onClick={handleDelete} className="border-2 border-red-600 hover:bg-red-600 hover:text-white font-medium text-primary-black rounded-lg py-3 px-8">
+            Clear
+          </button>
           <label
             htmlFor="file-upload"
             className="cursor-pointer inline-flex items-center px-6 py-2.5 bg-green-600 border border-transparent rounded-md font-semibold text-white 
@@ -104,6 +110,7 @@ function WordExam({
             <FaFileUpload className="ml-2 inline" />
           </label>
           <input
+            key={Date.now()} // Add a unique key to trigger re-render when selecting a new file
             id="file-upload"
             type="file"
             onChange={handleFileUpload}

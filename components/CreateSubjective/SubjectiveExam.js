@@ -19,7 +19,6 @@ const SubjectiveExam = ({
     useState(subjective_questions);
   const [previousParent, setPreviousParent] = useState(null);
   const [longQuestion, setLongQuestion] = useState(true);
-
   const [currentQuestion, setCurrentQuestion] = useState({
     sq_id: "",
     question: "",
@@ -435,16 +434,16 @@ const SubjectiveExam = ({
       });
     }
   };
-
+  console.log(subjectivesLocal,"aaa")
   const updateMarks = () => {
     const totalMarks = subjectivesLocal.reduce(
       (total, subjectives) => total + subjectives.marks,
       0
     );
-    if (totalMarks !== exam.subjective_marks) {
-      setLoading({
-        message: "Saving...",
-      });
+    // if (totalMarks !== exam.subjective_marks) {
+    //   setLoading({
+    //     message: "Saving...",
+    //   });
 
       axios
         .post("/api/paper/update_total_marks", {
@@ -469,9 +468,7 @@ const SubjectiveExam = ({
           });
           console.log("Error in update_total_marks", err);
         });
-    } else {
-      setActive(4);
-    }
+    
   };
 
   return (

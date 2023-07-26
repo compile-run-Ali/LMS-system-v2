@@ -110,7 +110,7 @@ const fetchSubjectives = async () => {
     });
     const allQuestion = res.data;
     setSubjectives(res.data.filter((question) => !question.parent_sq_id));
-    // console.log("allQuestion", res.data);
+    console.log("allQuestion", res.data);
   } catch (err) {
     console.log(err);
   }

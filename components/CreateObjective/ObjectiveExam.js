@@ -26,7 +26,6 @@ const MCQTable = ({
       return mcq;
     })
   );
-
   const [currentMCQ, setCurrentMCQ] = useState({
     question: "",
     options: ["", "", "", ""],
