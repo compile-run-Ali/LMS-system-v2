@@ -61,7 +61,7 @@ export default function ObjectivePaper({
   if (!questions) {
     return <Loader />;
   }
-
+  
   return (
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">

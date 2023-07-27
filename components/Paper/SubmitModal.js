@@ -43,6 +43,9 @@ export default function SubmitModal({
       "papers after deleting",
       JSON.parse(localStorage.getItem("papers"))
     );
+    console.log("attempted questions before deleting", localStorage.getItem("attempted_questions"))
+    localStorage.removeItem("attempted_questions");
+    console.log("attempted questions after deleting", localStorage.getItem("attempted_questions"));
   };
 
   return (
