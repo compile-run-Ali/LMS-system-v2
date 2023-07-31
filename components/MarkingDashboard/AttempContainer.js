@@ -7,7 +7,7 @@ const AttempContainer = ({ question, isStudent }) => {
   const { p_number } = router.query;
   const [givenmarks, setGivenmarks] = useState(question.marksobtained);
   const [changed, setChanged] = useState(false);
-  const [saved, setSaved] = useState(true);
+  const [saved, setSaved] = useState(false);
   const markQuestion = async () => {
     await axios
       .post("/api/paper/marking/mark_question", {
@@ -22,6 +22,7 @@ const AttempContainer = ({ question, isStudent }) => {
       });
   };
   const setMarks = (e) => {
+
     if (e.target.value > question.marks) {
       setGivenmarks(question.marks);
       return;
@@ -31,7 +32,7 @@ const AttempContainer = ({ question, isStudent }) => {
   useEffect(() => {
     setGivenmarks(question.marksobtained);
   }, [question]);
-
+  console.log("is saved",saved)
   return (
     <div className="flex flex-col justify-between pt-0">
       <div>
