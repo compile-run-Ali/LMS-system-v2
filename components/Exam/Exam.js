@@ -117,19 +117,14 @@ export default function Exam({
   const isPaperDateNotToday = () => {
     const paperDate = new Date(exam.date);
     const today = new Date();
-    // get gmt offset in minutes and add in today
-    paperDate.setMinutes(
-      paperDate.getMinutes() + paperDate.getTimezoneOffset()
-    );
-
-    console.log("today is", today, "\npaper date is", paperDate);
-
-    return (
-      paperDate.getDate() < today.getDate() ||
-      paperDate.getMonth() < today.getMonth() ||
-      paperDate.getFullYear() < today.getFullYear()
-    );
+  
+    // Set hours, minutes, seconds, and milliseconds to 0 to ignore the time part
+    paperDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+    
+    return paperDate.getTime() < today.getTime();
   };
+  
 
   const showSpinner = () => {
     setLoading({
