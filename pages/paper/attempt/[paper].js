@@ -153,6 +153,8 @@ export default function Paper() {
 
   const updateStatus = () => {
     //update spa status to Attempted
+    const isObjective = paperDetails?.subjective_questions?.length === 0;
+
     const timeCompleted = new Date();
     // get gmt offset in hours, and add that in startTime
     const timeCompletedString = `${timeCompleted
@@ -167,6 +169,8 @@ export default function Paper() {
         studentId: session.data.user.id,
         paperId: paper,
         status: "Submitted",
+        status: isObjective ? "Marked" : "Attempted",
+        obtainedMarks: score,
         timeCompleted: timeCompletedString,
       })
       .then((res) => {
