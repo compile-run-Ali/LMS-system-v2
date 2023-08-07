@@ -366,8 +366,9 @@ const StudentsTable = ({
                   "border-b-gray-300 border-b"
                 }`}
               >
-                {student.status !== "Not Attempted" &&
-                  exam.status !== "Result Locked" ||user.level <1  && (
+
+                {(student.status !== "Not Attempted" &&
+                  exam.status !== "Result Locked" ||user.level <1)  && (
                     <Link
                       href={`/faculty/${user.level<1?"print_results":"mark_exam"}/${exam?.paper_id}/${student.p_number}`}
                     >
