@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 const MarkPaper = ({
+  print,
   objectiveAnswers,
   subjectiveAnswers,
   objectiveQuestions,
@@ -13,6 +15,9 @@ const MarkPaper = ({
 }) => {
   const router = useRouter();
   const { p_number, exam_id } = router.query;
+  const session = useSession();
+  console.log(session, "session");
+  const user = session?.data?.user;
   const [obtainedMarks, setObtainedMarks] = useState(0);
   const [objectiveMarks, setObjectiveMarks] = useState(0);
   const [subjectiveMarks, setSubjectiveMarks] = useState(0);
@@ -69,18 +74,17 @@ const MarkPaper = ({
     let total = 0;
     if (paperDetails?.paper_type === "IE") {
       total = paperDetails?.ie_questions[0].total_marks;
-    }
-    else {
-    objectiveQuestions.forEach((question) => {
-      total += question.marks;
-    });
-
-    subjectiveQuestions.forEach((question) => {
-      if (!question.parent_sq_id) {
+    } else {
+      objectiveQuestions.forEach((question) => {
         total += question.marks;
-      }
-    });
-  }
+      });
+
+      subjectiveQuestions.forEach((question) => {
+        if (!question.parent_sq_id) {
+          total += question.marks;
+        }
+      });
+    }
     setTotalMarks(total);
   };
 
@@ -116,7 +120,7 @@ const MarkPaper = ({
           {obtainedMarks.toFixed(2)} / {totalMarks.toFixed(2)}
         </h1>
       </div>
-      {!isStudent && (
+      {!isStudent && user?.level > 0 && (
         <div>
           <button
             className="p-2 w-32 bg-blue-900 text-white rounded-lg mr-4"
@@ -149,6 +153,14 @@ const MarkPaper = ({
             {saved ? <>Saving...</> : <>Save and Proceed</>}
           </button>
         </div>
+      )}
+      {user?.level < 1 && (
+        <button
+          onClick={print}
+          className="px-6 py-2 bg-blue-900 text-white rounded-lg ml-4"
+        >
+          Print
+        </button>
       )}
     </div>
   );

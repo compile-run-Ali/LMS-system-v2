@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-
+import { useSession } from "next-auth/react";
 const AttempContainer = ({ question, isStudent }) => {
   const router = useRouter();
   const { p_number } = router.query;
+  const session = useSession(); 
   const [givenmarks, setGivenmarks] = useState(question.marksobtained);
   const [changed, setChanged] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -70,18 +71,19 @@ const AttempContainer = ({ question, isStudent }) => {
                   }}
                   max={question.marks}
                   min={0}
-                  disabled={isStudent}
+                  disabled={isStudent||session?.data?.user?.level<1}
                 />
                 <span className="font-bold text-sm mr-2">
                   / <span>{question.marks}</span>
                 </span>
                 {!isStudent && (
                   <button
-                    className="bg-green-800 hover:bg-green-700 text-white py-1 px-2 rounded"
+                    className="bg-green-800 hover:bg-green-700 text-white py-1 px-2 rounded disabled:bg-gray-400 disabled:cursor-not-allowed"
                     onClick={() => {
                       setSaved(true);
                       markQuestion();
                     }}
+                    disabled={isStudent||session?.data?.user?.level<1}
                   >
                     {!saved ? <>Save Marks</> : <>Marked</>}
                   </button>

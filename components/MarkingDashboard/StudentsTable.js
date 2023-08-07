@@ -367,9 +367,9 @@ const StudentsTable = ({
                 }`}
               >
                 {student.status !== "Not Attempted" &&
-                  exam.status !== "Result Locked" && (
+                  exam.status !== "Result Locked" ||user.level <1  && (
                     <Link
-                      href={`/faculty/mark_exam/${exam?.paper_id}/${student.p_number}`}
+                      href={`/faculty/${user.level<1?"print_results":"mark_exam"}/${exam?.paper_id}/${student.p_number}`}
                     >
                       <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-2 text-sm rounded ">
                         Check Answers
