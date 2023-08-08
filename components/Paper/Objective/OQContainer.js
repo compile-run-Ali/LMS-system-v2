@@ -34,6 +34,7 @@ export default function OQContainer({
   const [changed, setChanged] = useState(false);
   const [attempted, setAttempted] = useState(false);
   const [savingAnswer, setSavingAnswer] = useState({});
+  const specialSequence="###"
   const saveAnswer = () => {
     const attemptDone =
       numSelected === question.correct_answer.split(",").length;
@@ -282,7 +283,7 @@ export default function OQContainer({
                     checked={selectedAnswer.includes(answer)} // set the checked attribute
                     readOnly // disable user input on this element
                   />
-                  <span>{answer}</span>
+                  <span>{answer.replace(specialSequence, ",")}</span>
                 </div>
               ))}
             </div>

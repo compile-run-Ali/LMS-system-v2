@@ -5,7 +5,7 @@ export default function ObjectiveQuestion({ question, qNumber }) {
   const answerArray = question.answers.split(",");
   const multipleAllowed = correctArray.length > 1;
   const correctAnswers = question.correct_answer?.split(",") || [];
-
+  const specialSequence="###"
   return (
     <div className="mx-auto my-10 bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="p-8">
@@ -40,7 +40,7 @@ export default function ObjectiveQuestion({ question, qNumber }) {
                   ${correctAnswers.includes(answer) && "font-bold"}
                 `}
                 >
-                  {answer}
+                  {answer.replace(specialSequence,",")}
                 </p>
               </div>
             );
@@ -51,7 +51,7 @@ export default function ObjectiveQuestion({ question, qNumber }) {
         <div className="flex justify-between items-center text-sm text-white">
           <p>
             Correct Answer:{" "}
-            <span className="font-medium">{question.correct_answer}</span>
+            <span className="font-medium">{question.correct_answer.replace(specialSequence,",")}</span>
           </p>
           <p>
             Marks:{" "}

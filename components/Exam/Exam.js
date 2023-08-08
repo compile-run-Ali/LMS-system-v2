@@ -25,7 +25,6 @@ export default function Exam({
   const [selectedFaculty, setSelectedFaculty] = useState();
   const [access, setAccess] = useState(null);
   const [ieFiles, setIeFiles] = useState(null);
-  console.log(exam)
   useEffect(() => {
     setAccess(() => {
       if (session.status === "authenticated" && exam !== undefined) {

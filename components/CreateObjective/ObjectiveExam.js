@@ -33,6 +33,7 @@ const MCQTable = ({
     marks: 1,
     timeAllowed: 60,
   });
+  const specialSequence="###"
 
   useEffect(() => {
     if (mcqs.length === 0) {
@@ -44,7 +45,7 @@ const MCQTable = ({
       );
     }
   }, [objective_questions]);
-
+  console.log(mcqs)
   useEffect(() => {
     if (
       currentMCQ.correct_answer &&
@@ -82,13 +83,13 @@ const MCQTable = ({
 
   const handleOptionChange = (index) => (e) => {
     const newOptions = [...currentMCQ.options];
-    newOptions[index] = e.target.value.replace(/,/g, " ");
+    newOptions[index] = e.target.value.replace(/,/g, specialSequence);
     //if edited mcq is correct anser, then we need to update correct answer
     if (currentMCQ.correct_answer === currentMCQ.options[index]) {
       setCurrentMCQ({
         ...currentMCQ,
         options: newOptions,
-        correct_answer: e.target.value.replace(/,/g, " "),
+        correct_answer: e.target.value.replace(/,/g, specialSequence),
       });
     }
     else {
@@ -368,7 +369,7 @@ const MCQTable = ({
                 <div key={index} className="mb-2 ">
                   <input
                     type="text"
-                    value={option}
+                    value={option.replace(specialSequence, ",")}
                     onChange={handleOptionChange(index)}
                     className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"
                   />
@@ -422,7 +423,7 @@ const MCQTable = ({
                   </option>
                   {currentMCQ.options.map((option, index) => (
                     <option key={index} value={option}>
-                      {option}
+                      {option.replace(specialSequence, ",")}
                     </option>
                   ))}
                 </select>
@@ -513,11 +514,11 @@ const MCQTable = ({
                   <td className="px-4 py-2">
                     <ol className="list-[lower-alpha] list-inside">
                       {mcq.options?.map((option, index) => (
-                        <li key={index}>{option}</li>
+                        <li key={index}>{option.replace(specialSequence, ",")}</li>
                       ))}
                     </ol>
                   </td>
-                  <td className="px-4 py-2">{mcq.correct_answer}</td>
+                  <td className="px-4 py-2">{mcq.correct_answer.replace(specialSequence, ",")}</td>
                   <td className="px-4 py-2">{mcq.marks}</td>
                   {freeFlow ? null : (
                     <td className="px-4 py-2">{mcq.timeAllowed}</td>

@@ -34,8 +34,8 @@ const MCQTable = ({ objective_questions, freeFlow }) => {
             <tr key={index} className="text-center">
               <td className=" px-4 py-2">{index + 1}</td>
               <td className=" px-4 py-2">{mcq.question}</td>
-              <td className=" px-4 py-2">{mcq.answers}</td>
-              <td className=" px-4 py-2">{mcq.correct_answer}</td>
+              <td className="px-4 py-2">{mcq.answers.replace(/###/g, ",")}</td>
+              <td className=" px-4 py-2">{mcq.correct_answer.replace(/###/g, ",")}</td>
               <td className=" px-4 py-2">{mcq.marks}</td>
               {!freeFlow &&(
               <td className=" px-4 py-2">{mcq.timeAllowed}</td>

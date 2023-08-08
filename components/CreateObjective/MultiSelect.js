@@ -5,7 +5,7 @@ const MultiSelectDropdown = ({ options, setCurrentMCQ, selected }) => {
     selected ? selected.split(",") : []
   );
   const [dropdown, setDropdown] = useState(false);
-
+  const specialSequence="###"
   useEffect(() => {
     if (selectedOptions.length > 0) {
       setCurrentMCQ((prev) => {
@@ -31,7 +31,7 @@ const MultiSelectDropdown = ({ options, setCurrentMCQ, selected }) => {
         className="bg-white p-2 px-5 rounded-lg border border-primary-black border-opacity-[0.15] w-full focus:outline-none focus:border-[#FEC703] text-left"
         onClick={() => setDropdown(!dropdown)}
       >
-        {selectedOptions.length ? selectedOptions.join(",") : "Select options"}
+        {selectedOptions.length ? selectedOptions.map((o) => o.replace(specialSequence,",")) : "Select"}
       </button>
       {dropdown && (
         <div className="absolute z-10 mt-2 w-full bg-white rounded border border-primary-black border-opacity-[0.15]">
@@ -46,7 +46,7 @@ const MultiSelectDropdown = ({ options, setCurrentMCQ, selected }) => {
                 }`}
                 onClick={() => handleOptionClick(option)}
               >
-                {option}
+                {option.replace(specialSequence,",")}
               </li>
             ))}
           </ul>
