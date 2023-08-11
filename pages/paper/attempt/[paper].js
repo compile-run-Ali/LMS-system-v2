@@ -101,7 +101,7 @@ export default function Paper() {
       studentId: session.data.user.id,
       paperId: paper,
       objectiveSolved: true,
-      status: isObjective ? "Marked" : "Attempted",
+      status: isObjective ? "Marked" : "Submitted",
       obtainedMarks: score,
       timeCompleted: timeCompletedString,
     });
@@ -168,8 +168,7 @@ export default function Paper() {
       .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.data.user.id,
         paperId: paper,
-        status: "Submitted",
-        status: isObjective ? "Marked" : "Attempted",
+        status: isObjective ? "Marked" : "Submitted",
         obtainedMarks: score,
         timeCompleted: timeCompletedString,
       })
