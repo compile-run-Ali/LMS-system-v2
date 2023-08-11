@@ -18,7 +18,7 @@ const SubjectiveExam = ({
   const [subjectivesLocal, setSubjectivesLocal] =
     useState(subjective_questions);
   const [previousParent, setPreviousParent] = useState(null);
-  const [longQuestion, setLongQuestion] = useState(true);
+  // const [longQuestion, setLongQuestion] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState({
     sq_id: "",
     question: "",

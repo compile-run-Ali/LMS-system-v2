@@ -55,14 +55,14 @@ const MarkPaper = ({
     axios
       .post("/api/student/paper/update_attempt_status", {
         studentId: p_number,
-        paperId: exam_id,
+        paperId: exam_id||paperDetails?.paper_id,
         status: "Marked",
         obtainedMarks: obtainedMarks,
       })
       .then((res) => {
         if (res) {
           console.log("status updated successfully", res.data);
-          router.push(`/faculty/mark_exam/${exam_id}`);
+          router.push(`/faculty/mark_exam/${exam_id||paperDetails?.paper_id}`);
         }
       })
       .catch((err) => {
