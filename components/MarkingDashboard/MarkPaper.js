@@ -117,7 +117,7 @@ const MarkPaper = ({
       <div>
         <h1 className="text-2xl ">
           <span className="font-bold">Marks: </span>
-          {obtainedMarks.toFixed(2)} / {totalMarks.toFixed(2)}
+          {obtainedMarks.toFixed(2)} / {totalMarks?.toFixed(2)}
         </h1>
       </div>
       {!isStudent && user?.level > 0 && (
