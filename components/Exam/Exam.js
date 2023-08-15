@@ -25,6 +25,7 @@ export default function Exam({
   const [selectedFaculty, setSelectedFaculty] = useState();
   const [access, setAccess] = useState(null);
   const [ieFiles, setIeFiles] = useState(null);
+  console.log(exam);
   useEffect(() => {
     setAccess(() => {
       if (session.status === "authenticated" && exam !== undefined) {
@@ -116,14 +117,13 @@ export default function Exam({
   const isPaperDateNotToday = () => {
     const paperDate = new Date(exam.date);
     const today = new Date();
-  
+
     // Set hours, minutes, seconds, and milliseconds to 0 to ignore the time part
     paperDate.setHours(0, 0, 0, 0);
     today.setHours(0, 0, 0, 0);
-    
+
     return paperDate.getTime() < today.getTime();
   };
-  
 
   const showSpinner = () => {
     setLoading({
@@ -140,7 +140,6 @@ export default function Exam({
     date.setHours(date.getHours() + 5);
     return date.toISOString();
   };
-
   const editExam = () => {
     if (setActive) {
       setActive(1);
@@ -151,7 +150,7 @@ export default function Exam({
           ? "objective"
           : exam.paper_type === "Subjective/Objective"
           ? "subjective"
-          : exam.paper_type === "I.E"
+          : exam.paper_type === "IE"
           ? "ie"
           : "word"
       }`,
@@ -318,13 +317,11 @@ export default function Exam({
       console.log("Exam Sent Forward");
       generateNotification();
       router.push("/");
-    }
-    else {
+    } else {
       setLoading({
         error: "Error sending forward",
       });
     }
-
   };
   const generateNotification = async () => {
     const res = await axios.post("/api/faculty/generate_notification", {
@@ -333,8 +330,7 @@ export default function Exam({
     });
     if (res.status === 200) {
       console.log("Notification sent");
-    }
-    else {
+    } else {
       console.log("Notification not sent, some error occured");
     }
   };
@@ -351,8 +347,7 @@ export default function Exam({
       if (res.status === 200) {
         setComments([...comments, res.data]);
         setComment("");
-      }
-      else {
+      } else {
         console.log("Error adding comment");
       }
       // setComments([...comments, new_comment])
@@ -362,7 +357,7 @@ export default function Exam({
   const handleSelectedFaculty = (e) => {
     setSelectedFaculty(e.target.value);
   };
-
+  console.log(ieFiles, "ieieie");
   return (
     <>
       <Spinner loading={loading} />
@@ -414,7 +409,11 @@ export default function Exam({
 
             <div className="pl-20">
               <span className=" font-medium">Total Marks:</span>
-              <span className="ml-2">{exam.total_marks}</span>
+              <span className="ml-2">
+                {exam.paper_type === "IE"
+                  ? ieFiles?.ie_questions?.[0]?.total_marks || ""
+                  : exam.total_marks}
+              </span>
             </div>
           </div>
           {exam.paper_type === "IE" && (

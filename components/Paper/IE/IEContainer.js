@@ -120,7 +120,7 @@ export default function IEContainer({
           {IeFiles?.ie_questions.map((question, index) => (
             <div key={index} className="flex">
               <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="bg-blue-500 hover:bg-blue-700 text-white text-lg font-bold py-2 px-20 mx-auto mb-10 rounded"
                 onClick={() => handleDownload(question.ie_id)}
               >
                 Download Exam 

@@ -97,6 +97,7 @@ export default function CreateExam({ paperType }) {
         paperId: paperId,
       },
     });
+    console.log(res,"resdata")
     setIeFiles(res.data);
     }catch(err){
       console.log(err);
@@ -132,9 +133,10 @@ const fetchSubjectives = async () => {
       fetchSubjectives();
     }
     if (paperType === "IE" && paperId) {
+      console.log("fetching ie files")
       fetchIeFiles();
     }
-  }, [paperId, exam, paperType]);
+  }, [paperId, exam, paperType,active]);
 
   return (
     <div className="w-full px-6 mt-2">

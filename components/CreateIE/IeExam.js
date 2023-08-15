@@ -13,6 +13,14 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
   console.log(ieFiles);
 
   const handleFileUpload = (e) => {
+    if(ieFiles.ie_questions.length > 0){
+      alert("You can only upload one file");
+      return;
+    }
+    if(files.length > 0){
+      alert("You can only upload one file");
+      return;
+    }
     const newFile = e.target.files[0];
     setFiles([newFile]);
   };
@@ -34,9 +42,30 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
     });
   };
 
+  const handleDelete = async (id) => {
+    try {
+      setLoading({
+        message: "Deleting Exam...",
+      });
+
+      const res = await axios.delete(
+        `/api/faculty/paper_creation/delete_excel?ie_id=${id}`
+      );
+      console.log(res);
+
+      setLoading({});
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+      setLoading({
+        error: "Error in Deleting Exam",
+      });
+    }
+  };
+
   const handleUpload = async () => {
     if (files.length < 1) {
-      alert("Please select a file");
+      
       return;
     }
     try {
@@ -74,21 +103,26 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
       <Spinner loading={loading} />
 
       <div className="flex flex-wrap gap-4">
-        {ieFiles.length > 0 && (
+        {ieFiles?.ie_questions?.length > 0 && (
           <table className="w-full mt-6 text-left table-collapse">
             <thead>
               <tr>
                 <th className="px-4 py-2">SR#</th>
                 <th className="px-4 py-2">File</th>
-                <th className="px-4 py-2">url</th>
+                <th className="px-4 py-2">Delete</th>
               </tr>
             </thead>
             <tbody>
-              {ieFiles.map((IE, index) => (
+              {ieFiles?.ie_questions?.map((IE, index) => (
                 <tr key={index} className="border-t">
                   <td className="px-4 py-2">{index + 1}</td>
                   <td className="px-4 py-2">{IE.fileName}</td>
-                  <td className="px-4 py-2">{IE.url}</td>
+                  <td
+                    className="px-4 py-2"
+                    onClick={() => handleDelete(IE.ie_id)}
+                  >
+                    Delete Icon
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -110,7 +144,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
           class="hidden"
           accept=".xlsx,.numbers"
           onChange={handleFileUpload}
-          multiple
+          multiple 
         />
       </label>
       <div className="mt-5 flex">
@@ -141,9 +175,11 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
         <button
           type="submit"
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-          onClick={() => {
-            handleUpload();
-            if (files.length > 0) setActive(3);
+          onClick={async () => {
+            await handleUpload(); // Wait for handleUpload to complete
+            if (ieFiles.ie_questions.length > 0 || files.length > 0) {
+              setActive(3);
+            }
           }}
         >
           Save and Proceed
