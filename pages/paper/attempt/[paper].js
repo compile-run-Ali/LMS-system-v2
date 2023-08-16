@@ -101,7 +101,7 @@ export default function Paper() {
       studentId: session.data.user.id,
       paperId: paper,
       objectiveSolved: true,
-      status: isObjective ? "Marked" : "Submitted",
+      status: isObjective ? "Marked" : "Attempted",
       obtainedMarks: score,
       timeCompleted: timeCompletedString,
     });
@@ -150,7 +150,7 @@ export default function Paper() {
     localStorage.removeItem(`paper ${paper}`);
     localStorage.removeItem(`attempted_questions`);
   };
-
+  console.log(paperDetails?.subjective_questions)
   const updateStatus = () => {
     //update spa status to Attempted
     const isObjective = paperDetails?.subjective_questions?.length === 0;
