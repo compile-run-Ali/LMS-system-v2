@@ -32,7 +32,7 @@ const ExamTable = ({
           ? "objective"
           : exam.paper_type === "Subjective/Objective"
           ? "subjective"
-          : exam.paper_type === "I.E"
+          : exam.paper_type === "IE"
           ? "ie"
           : "word"
       }`,

@@ -121,7 +121,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles }) => {
                     className="px-4 py-2"
                     onClick={() => handleDelete(IE.ie_id)}
                   >
-                    Delete Icon
+                    <MdDelete />
                   </td>
                 </tr>
               ))}
