@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 import { IncomingForm } from "formidable";
 import mv from "mv";
 
-
 export const config = {
   api: {
     bodyParser: false,
@@ -21,11 +20,10 @@ export default async function handler(req, res) {
     try {
       const { paperId, studentId } = fields;
 
-
       const file = files.files;
       const oldPath = file.filepath;
-      const fileName = file.originalFilename;
-      const newPath = `./public/attempts/${fileName}`;
+      const fileName = file.originalFilename.replace(/,/g, ""); // Remove commas from the filename
+      const newPath = `./public/attempts/${fileName.replace(/,/g, "")}`; // Remove commas from the path
       mv(oldPath, newPath, function (err) {
         if (err) {
           console.log(err);
@@ -36,8 +34,8 @@ export default async function handler(req, res) {
         data: {
           fileName: fileName,
           fileUrl: newPath,
-          paperId : paperId,
-          studentId : studentId,
+          paperId: paperId,
+          studentId: studentId,
         },
       });
 

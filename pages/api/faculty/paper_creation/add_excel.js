@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 import { IncomingForm } from "formidable";
 import mv from "mv";
 
-
 export const config = {
   api: {
     bodyParser: false,
@@ -19,23 +18,23 @@ export default async function handler(req, res) {
     }
 
     try {
-      const { paperId,total_marks } = fields;
-      const float_marks=parseFloat(total_marks)
+      const { paperId, total_marks } = fields;
+      const float_marks = parseFloat(total_marks);
       const file = files.files;
       const oldPath = file.filepath;
-      const fileName = file.originalFilename;
-      const newPath = `./public/excels/${fileName}`;
+      const fileName = file.originalFilename.replace(/,/g, ""); // Remove commas from the filename
+      const newPath = `./public/excels/${fileName.replace(/,/g, "")}`; // Remove commas from the path
       mv(oldPath, newPath, function (err) {
         if (err) {
           console.log(err);
         }
       });
-
+      console.log(fileName, newPath, float_marks, paperId)
       const newIE = await prisma.ieQuestion.create({
         data: {
           fileName: fileName,
           fileUrl: newPath,
-          total_marks:float_marks,
+          total_marks: float_marks,
           paper: {
             connect: {
               paper_id: paperId,
@@ -44,7 +43,7 @@ export default async function handler(req, res) {
         },
       });
 
-      //we will also have to update marks in paper table
+      // We will also have to update marks in the paper table
       const paper = await prisma.paper.findUnique({
         where: {
           paper_id: paperId,
