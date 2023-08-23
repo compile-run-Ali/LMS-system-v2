@@ -11,12 +11,14 @@ export default function Index() {
   const [faculty_data, setFacultyData] = useState([]);
   const [courses_data, setCoursesData] = useState([]);
   const [student_data, setStudentData] = useState([]);
+  const [ip_data, setIpData] = useState([]);
   const [exams_data, setExamsData] = useState([]);
   const [loading, setLoading] = useState({
     faculty: true,
     courses: true,
     student: true,
     exams: true,
+    ip_data: true,
   });
 
   const [error, setError] = useState({
@@ -96,6 +98,25 @@ export default function Index() {
         exams: "Error in loading exams data.",
       }));
     }
+
+    try {
+      const ip = await axios.get("/api/admin/ip/get_ip");
+      console.log(ip)
+      setIpData(ip.data);
+      setLoading((prevLoading) => ({
+        ...prevLoading,
+        ip: false,
+      }));
+
+    }
+    catch (ipError) {
+      console.log("error in api: /api/admin/ip/get_ip", ipError);
+      setError((prevError) => ({
+        ...prevError,
+        exams: "Error in loading ip data.",
+      }));
+    }
+    
   };
 
   useEffect(() => {
@@ -110,6 +131,7 @@ export default function Index() {
           courses_data={courses_data}
           student_data={student_data}
           exams_data={exams_data}
+          ip_data={ip_data}
           loading={loading}
           error={error}
         />
