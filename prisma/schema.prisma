@@ -111,6 +111,7 @@ model Paper {
   total_marks      Float          @default(0)
   objective_marks  Int            @default(0)
   subjective_marks Float          @default(0)
+  language         String         @default("English")
 
   subjective_questions SubjectiveQuestion[]
   objective_questions  ObjectiveQuestion[]
@@ -169,9 +170,9 @@ model ObjectiveQuestion {
 model IeQuestion {
   ie_id String @id @default(uuid())
 
-  fileName String
-  fileUrl  String
-  total_marks Float @default(0)
+  fileName    String
+  fileUrl     String
+  total_marks Float  @default(0)
 
   paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
   paper_id String

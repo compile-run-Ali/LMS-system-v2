@@ -24,6 +24,7 @@ const handle = async (req, res) => {
         paper_type: true,
         review: true,
         weightage: true,
+        language:true,
 
         objective_questions: {
           select: {
@@ -88,6 +89,7 @@ const handle = async (req, res) => {
       },
     });
     if (!paper) return res.status(404).json("Paper not found");
+    console.log(paper)
     res.status(200).json(paper);
   } catch (error) {
     console.log(

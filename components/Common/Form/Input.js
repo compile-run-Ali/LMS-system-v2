@@ -28,7 +28,7 @@ export default function Input({
         disabled={disabled}
         className={`
                 w-full  border  border-primary-black border-opacity-[0.15] rounded-md mt-2 px-3 py-2 
-                focus:border-[#FEC703] focus:outline-none bg-white dateSelectorColor 
+                focus:border-[#FEC703] focus:outline-none bg-white dateSelectorColor
                 ${disabled && "bg-gray-200 cursor-not-allowed"}
         `}
       />

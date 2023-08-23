@@ -21,6 +21,7 @@ export default function OQContainer({
   studentId,
   setScore,
   oldScore,
+  lang,
 }) {
   const router = useRouter();
   const session = useSession();
@@ -227,7 +228,7 @@ export default function OQContainer({
               {answers.map((answer, index) => (
                 <div
                   key={index}
-                  className={`w-full flex my-3 rounded-lg p-4 text-black transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 
+                  className={` w-full flex my-3 rounded-lg p-4 text-black ${lang==="urdu"?"justify-end":""} transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 
                     ${
                       attempted ? "bg-gray-200 pointer-events-none" : "bg-white"
                     }
@@ -279,7 +280,7 @@ export default function OQContainer({
                     type={multipleAllowed ? "checkbox" : "radio"}
                     name="answer"
                     value={answer}
-                    className="mr-4 accent-blue-700"
+                    className={`accent-blue-700  ${lang==="urdu"?"order-2 ml-4":"mr-4"} `}
                     checked={selectedAnswer.includes(answer)} // set the checked attribute
                     readOnly // disable user input on this element
                   />
@@ -290,7 +291,7 @@ export default function OQContainer({
           </div>
           <div
             className={`
-            flex mt-16 text-black mx-auto
+            flex mt-16 text-black mx-auto 
             ${freeFlow ? "w-full justify-between" : "w-1/2 justify-center"}
           `}
           >
