@@ -309,7 +309,8 @@ export default function OQContainer({
                       setCurrentQuestion(currentQuestion - 1);
                   }}
                 >
-                  Previous
+                     
+              {lang==="urdu"?"پچھلا":"Previous"}
                 </button>
                 <button
                   className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
@@ -320,9 +321,10 @@ export default function OQContainer({
               }`}
                   onClick={() => flagQuestion(String(currentQuestion))}
                 >
+                  
                   {flags.includes(String(currentQuestion))
-                    ? "Remove"
-                    : "Review"}
+                    ? (lang==="urdu"?"ہٹا دیں":"Remove")
+                    : (lang==="urdu"?"ریویو":"Review")}
                 </button>
               </>
             )}
@@ -335,16 +337,20 @@ export default function OQContainer({
                       setCurrentQuestion(currentQuestion + 1);
                     }}
                   >
-                    Next
+                    
+              {lang==="urdu"?"اگلے":"Next"}
+                
                   </button>
                 )}
               </>
             ) : (
               <button
-                className="bg-green-500 hover:bg-green-600 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500"
+                className={`bg-green-500 hover:bg-green-600 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500" `}
                 onClick={setSolveObjective}
+            
               >
-                Submit Objective
+              {lang==="urdu"?"مقصد جمع کروائیں۔":"Submit Objective"}
+                
               </button>
             )}
           </div>
