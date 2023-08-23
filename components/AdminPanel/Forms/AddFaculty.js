@@ -223,7 +223,29 @@ const AddFaculty = () => {
           />
         </div>
 
-         
+        <div className="mt-5">
+          <label className="block mb-2 text-primary-black" htmlFor="rank_input">
+            Rank
+          </label>
+          <select
+            required
+            className="block w-full text-sm text-gray-900 px-2 h-11 border border-primary-black border-opacity-[0.15] rounded-md cursor-pointer bg-white  focus:outline-none"
+            aria-describedby="rank_input_help"
+            id="rank_input"
+            value={rank}
+            disabled={selfEdit === "true"}
+            onChange={(event) => {
+              setRank(event.target.value);
+            }}
+          >
+            <option value="">Select Rank</option>
+            {ranks.map((rank) => (
+              <option value={rank} key={rank}>
+                {rank}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="mt-5">
           <label
             className="block mb-2 text-primary-black"
@@ -238,7 +260,6 @@ const AddFaculty = () => {
             aria-describedby="level_input_help"
             id="level_input"
             value={position}
-            
             onChange={(event) => {
               setPosition(event.target.value);
               setLevel(
