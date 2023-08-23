@@ -32,6 +32,7 @@ export default function Paper() {
     // fetch paper details from api
     const res = await axios.get(`/api/paper/${paper}`);
     localStorage.setItem(`paper ${paper}`, JSON.stringify(res.data));
+    console.log(res.data)
     setPaperDetails(res.data);
 
   };
@@ -194,7 +195,7 @@ export default function Paper() {
       };
     }
   }, [paperDetails]);
-
+  console.log(paperDetails,"agaga")
   useEffect(() => {
     if (attemptTime === -100 && paperDetails) {
       setAttemptTime(paperDetails.duration * 60);
@@ -249,6 +250,7 @@ export default function Paper() {
               isfreeFlow={paperDetails.freeflow}
               setSolveObjective={handleSolveObjective}
               paper={paper}
+              lang={paperDetails.language}
               attemptTime={attemptTime}
               startTime={startTime}
               submit={handleSubmitObjective}

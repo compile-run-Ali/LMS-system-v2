@@ -49,26 +49,26 @@ export default function CreateExam({ paperType }) {
   const [examDetails, setExamDetails] = useState(null);
   const [active, setActive] = useState(1);
   const [paperId, setPaperId] = useState(
-    Object.keys(router.query).length > 1 ? router.query.paper_id : 0
+    Object.keys(router.query).length > 1 && !router.query.language ? router.query.paper_id : 0
   );
   const [exam, setExam] = useState();
   const [mcqs, setMCQs] = useState([]);
   const [subjectives, setSubjectives] = useState([]);
   const [freeFlowGlobal, setFreeFlowGlobal] = useState(true);
   const [ieFiles, setIeFiles] = useState([]);
-
+    console.log(router.isReady,"isreadyh",paperId)
   useEffect(() => {
     if (router.isReady) {
       setPaperId(
-        Object.keys(router.query).length > 1 ? router.query.paper_id : 0
+        Object.keys(router.query).length >  1 && !router.query.language ? router.query.paper_id : 0
       );
       setExamDetails(
-        Object.keys(router.query).length > 1 ? router.query : null
+        Object.keys(router.query).length > 1 && !router.query.language ? router.query : null
       );
     }
   }, [router]);
-
   const fetchExam = async () => {
+    console.log("anc")
     try {
     const res = await axios.post("/api/faculty/get_exam", {
       paper_id: paperId,
@@ -117,9 +117,9 @@ const fetchSubjectives = async () => {
   }
 };
 
-
   useEffect(() => {
     if (paperId && !exam) {
+      console.log("abc")
       fetchExam();
     }
     if (paperType === "Objective" && paperId) {

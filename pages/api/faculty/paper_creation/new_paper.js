@@ -13,6 +13,7 @@ const handler = async (req, res) => {
         weightage: req.body.weightage,
         freeflow: req.body.freeflow,
         review: req.body.review,
+        language:req.body.language,
         course: {
           connect: {
             course_code: req.body.course_code,

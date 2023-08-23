@@ -34,12 +34,28 @@ export default function Modal({ open, setOpen, courseCode }) {
         query: {
           course_code: courseCode,
         },
+      });   
+    }
+
+    else if (examType === "Ot") {
+      // Redirect to create exam page for objective
+      //make api call to create a new paper using axios
+
+      //then redirect to create exam page for objectiv
+      router.push({
+        pathname: `/faculty/create_exam/objective`,
+        query: {
+          language: "urdu",
+          course_code: courseCode,
+        },
       });
     }
   };
 
   const handleInput = (e) => {
+
     setExamType(e.target.value);
+    console.log(e.target.value)
   };
 
   return (
@@ -126,6 +142,18 @@ export default function Modal({ open, setOpen, courseCode }) {
                               className="mr-2"
                             />
                             Objective Exam
+                          </button>
+                        </div>
+                        <div className="mt-2">
+                          <button type="button">
+                            <input
+                              type={"radio"}
+                              onChange={(e) => handleInput(e)}
+                              value="Ot"
+                              name="paperType"
+                              className="mr-2"
+                            />
+                            Urdu Objective Exam
                           </button>
                         </div>
                       </form>
