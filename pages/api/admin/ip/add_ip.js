@@ -19,7 +19,7 @@ const handler = async (req, res) => {
             }
             const ipData = {
                 ip_address: Number(fields.ip_address),
-                rank: fields.rank,
+                /* rank: fields.rank, */
                 role: fields.role,
             };
             try {
@@ -27,7 +27,7 @@ const handler = async (req, res) => {
                     .create({
                         data: {
                             ip_address: fields.ip_address,
-                            rank: fields.rank,
+                            /* rank: fields.rank, */
                             role: fields.role,
                         }
                     })

@@ -43,7 +43,7 @@ const AddIp = () => {
     console.log(role);
     formData.append("ip_address", ip_address);
     formData.append("rank", rank);
-    formData.append("role", role);
+    formData.append("role", "Faculty");
 
     if (adminEdit) {
       editIp(formData);
@@ -115,7 +115,7 @@ const AddIp = () => {
       <Spinner loading={loading} />
       <div className="p-4 grid grid-cols-2 gap-x-8 px-10">
 
-        <div className="mt-5">
+        {/* <div className="mt-5">
           <label
             className="block mb-2 text-primary-black"
             htmlFor="role_input"
@@ -141,7 +141,7 @@ const AddIp = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         <div className="mb-4">
           <Input
@@ -154,7 +154,7 @@ const AddIp = () => {
           />
         </div>
 
-        <div className="mt-5">
+        {/* <div className="mt-5">
           <label
             className="block mb-2 text-primary-black"
             htmlFor="rank_input"
@@ -178,7 +178,7 @@ const AddIp = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
       </div>
 
       <div className="flex justify-left ml-10 mt-10 ">

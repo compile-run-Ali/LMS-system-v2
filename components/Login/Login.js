@@ -37,7 +37,7 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
       username: email,
       password: password,
       role: facultyLogin ? "faculty" : "student",
-      ip: ip,
+      ip: facultyLogin ? ip : "none"
     });
     console.log(signin);
     if (signin.status === 200) {

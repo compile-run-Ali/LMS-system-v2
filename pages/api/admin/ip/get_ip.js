@@ -6,7 +6,7 @@ const handler = async (req, res) => {
     const ip = await prisma.Ip.findMany({
       select: {
         ip_address: true,
-        rank: true,
+        /* rank: true, */
         role: true,
       },
     });

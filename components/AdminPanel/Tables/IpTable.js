@@ -49,7 +49,7 @@ const IpTable = ({ ip, setSelectedIp, setOpen }) => {
         <tr className="bg-blue-800 rounded-md text-white">
           <th className="px-4 py-2 border border-gray-500">Role</th>
           <th className="px-4 py-2 border border-gray-500">IP Address</th>
-          <th className="px-4 py-2 border border-gray-500">Rank</th>
+          {/* <th className="px-4 py-2 border border-gray-500">Rank</th> */}
           <th className="px-4 py-2 border border-gray-500 text-center w-20">Edit</th>
           <th className="px-4 py-2 border border-gray-500 text-center w-20">Delete</th>
         </tr>
@@ -60,7 +60,7 @@ const IpTable = ({ ip, setSelectedIp, setOpen }) => {
             <tr key={index} className="bg-white">
               <td className=" px-4 py-2 border border-gray-500">{ip_bind.role}</td>
               <td className=" px-4 py-2 border border-gray-500">{ip_bind.ip_address}</td>
-              <td className=" px-4 py-2 border border-gray-500">{ip_bind.rank}</td>
+              {/* <td className=" px-4 py-2 border border-gray-500">{ip_bind.rank}</td> */}
               <td className="px-4 py-2 border border-gray-500 text-center w-20">
                 <button
                   onClick={handleEditIp(index)}
