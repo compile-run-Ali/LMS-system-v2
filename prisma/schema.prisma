@@ -10,6 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model Student {
   p_number String @id
 
@@ -39,6 +40,12 @@ model SRC {
   course_code String
 }
 
+model Ip {
+
+  ip_address String @unique @db.VarChar(10000)
+  rank String?
+  role String
+}
 model Course {
   course_code String @id @unique
 

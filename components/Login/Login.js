@@ -1,20 +1,32 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FaQuestionCircle } from "react-icons/fa";
 import Spinner from "../Loader/Spinner";
+import getUserIP from "@/utils/getIP";
 
 export default function Login({ facultyLogin, setFacultyLogin }) {
   const router = useRouter();
-
+  const [ip, SetIp] = useState();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState({
     show: false,
     message: "",
   });
+
+
+  useEffect(()=>{
+    getUserIP(function(ip){
+      
+      if(ip && ip.includes("192")){
+        SetIp(ip);
+        console.log("Ip: ",ip)
+      }
+    });
+  },[])
 
   const handleLogin = async () => {
     setLoading({
@@ -25,6 +37,7 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
       username: email,
       password: password,
       role: facultyLogin ? "faculty" : "student",
+      ip: facultyLogin ? ip : "none"
     });
     console.log(signin);
     if (signin.status === 200) {

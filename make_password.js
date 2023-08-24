@@ -9,4 +9,3 @@ const generatePassword = async () => {
 }
 
 generatePassword();
-

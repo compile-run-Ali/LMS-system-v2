@@ -8,27 +8,30 @@ import AssignedTable from "./Tables/AssignedTable";
 import Loader from "../Loader";
 import CreateWordButton from "./CreateWordButton";
 import ExamContainer from "./Containers/ExamContainer";
+import Ip_Binding from "./Containers/IpBinding";
 
 export default function AdminPanel({
   faculty_data,
   courses_data,
   exams_data,
   student_data,
+  ip_data,
   loading,
   error,
 }) {
   const [faculty, setFaculty] = useState([]);
+  const [ip, setIp] = useState([]);
   const [courses, setCourses] = useState([]);
   const [students, setStudents] = useState([]);
-  const [reload , setReload] = useState(true);
+  const [reload, setReload] = useState(true);
   const [exams, setExams] = useState([]);
-  const [active, setActive] = useState( "Faculty");
+  const [active, setActive] = useState("Faculty");
 
   useEffect(() => {
     const tab = localStorage.getItem('active');
     setActive(tab);
     setReload(false);
-  },[])
+  }, [])
 
   useEffect(() => {
     if ((faculty_data !== undefined, faculty_data !== null)) {
@@ -40,14 +43,18 @@ export default function AdminPanel({
     if ((exams_data !== undefined, exams_data !== null)) {
       setExams(exams_data);
     }
+    if ((ip_data !== undefined, ip_data !== null)) {
+      setIp(ip_data);
+    }
     if ((student_data !== undefined, student_data !== null)) {
       setStudents(student_data);
     }
-  }, [faculty_data, courses_data, exams_data, student_data]);
+  }, [faculty_data, courses_data, exams_data, student_data, ip_data]);
   useEffect(() => {
-    if(reload) return
+    if (reload) return
     localStorage.setItem('active', active);
-  }, [active]);    
+  }, [active]);
+
 
   return (
     <div className="w-full pr-10 mt-5 px-5">
@@ -108,6 +115,16 @@ export default function AdminPanel({
               setExams={setExams}
               faculty={faculty}
             />
+          )}
+        </>
+      )}
+
+      {active === "Ip_Binding" && (
+        <>
+          {loading.ip_data ? (
+            <Loader />
+          ) : (
+            <Ip_Binding ip={ip} setIp={setIp} />
           )}
         </>
       )}

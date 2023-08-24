@@ -3,6 +3,11 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import FacultyLogin from "./faculty_login";
 import StudentLogin from "./student_login";
 import AdminLogin from "./admin_login";
+import prisma from "@/lib/prisma";
+
+String.prototype.toProperCase = function () {
+  return this.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+};
 
 const configuration = {
   session: {
@@ -18,11 +23,46 @@ const configuration = {
       name: "credentials",
       credentials: {},
       async authorize(credentials, req) {
+
+        let ip;
+
+        ip = await prisma.Ip.findMany({
+          where: {
+            role: req.body.role.toProperCase(),
+          },
+          select: {
+            ip_address: true,
+            /* rank: true, */
+            role: true,
+          },
+        });
+        const ip_addresses = []
+        for (const ip_object of ip) {
+          const multiple_ips = ip_object.ip_address.split(',')
+          if (multiple_ips.length > 1) {
+            for (const address of multiple_ips) {
+              ip_addresses.push(address)
+            }
+          } else {
+            ip_addresses.push(multiple_ips[0])
+          }
+        }
+
+        console.log("IPs are", ip_addresses)
+
+
+        console.log(ip_addresses)
+        
+        if (!(ip_addresses.includes(req.body.ip)) && req.body.ip !== "none" && req.body.username !== "admin@email.com") {
+          console.log(ip,"abc")
+          console.log("Ip Address Does not match")
+          throw new Error("IP address does not match");
+        }
         try {
           if (req.body.role === "student") {
             const studentData = await StudentLogin(
               credentials.username,
-              credentials.password
+              credentials.password,
             );
             if (studentData) {
               return {
@@ -109,7 +149,7 @@ const configuration = {
 
       // Allows relative callback URLs
       if (url.startsWith("/")) return `${url}`
-      
+
       return url
     },
 

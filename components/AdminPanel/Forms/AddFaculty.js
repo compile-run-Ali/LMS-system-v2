@@ -122,7 +122,7 @@ const AddFaculty = () => {
     formData.append("password", password);
     formData.append("position", position);
     formData.append("rank", rank);
-    formData.append("profile_picture", profilePicture);
+    formData.append("profile_picture", profilePicture)
 
     if (adminEdit) {
       formData.append("faculty_id", router.query.faculty_id);

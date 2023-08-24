@@ -5,7 +5,7 @@ import React from 'react'
 
 export default function add_faculty() {
     return (
-        <BaseLayout title={'Add Faculty'}>
+        <BaseLayout title={'Add Course'}>
             <DashboardLayout>
                 <AddCourse />
             </DashboardLayout>
