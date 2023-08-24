@@ -52,7 +52,7 @@ const configuration = {
 
 
         console.log(ip_addresses)
-        
+        console.log(req.body.ip,"abcd")
         if (!(ip_addresses.includes(req.body.ip)) && req.body.ip !== "none" && req.body.username !== "admin@email.com") {
           console.log(ip,"abc")
           console.log("Ip Address Does not match")
