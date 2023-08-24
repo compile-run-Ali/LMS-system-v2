@@ -280,8 +280,16 @@ const StudentsTable = ({
             </th>
           </tr>
           <tr id="second-row" className="bg-blue-800 text-white font-medium ">
-            <th className="px-4 py-2">Army Number</th>
-            <th className="px-4 py-2">Student Name</th>
+            {
+              user.level < 1 ? (
+                <React.Fragment>
+                  <th className="px-4 py-2">Army Number</th>
+                  <th className="px-4 py-2">Student Name</th>
+                </React.Fragment>
+              ) :
+                <th className="px-4 py-2">Evaluation Code</th>
+            }
+
             <th className="px-4 py-2">Status</th>
             <th className="px-4 py-2">Marks</th>
             <th className="px-4 py-2">Remarks</th>
@@ -292,55 +300,59 @@ const StudentsTable = ({
           {students.map((student, index) => (
             <tr
               key={student.p_number}
-              className={`h-12 ${
-                student.status === "Marked"
+              className={`h-12 ${student.status === "Marked"
                   ? "bg-green-200"
                   : student.status === "Not Attempted"
-                  ? "bg-red-200"
-                  : student.status === "Re-Check"
-                  ? "bg-yellow-200"
-                  : "bg-gray-200"
-              }`}
+                    ? "bg-red-200"
+                    : student.status === "Re-Check"
+                      ? "bg-yellow-200"
+                      : "bg-gray-200"
+                }`}
             >
+              {user.level < 1 ? (
+                <React.Fragment>
+                  <td
+                    className={`px-4 py-2 border ${index === students_data.length - 1 &&
+                      "border-b-gray-300 border-b"
+                      }`}
+                  >
+                    {student.p_number}
+                  </td>
+                  <td
+                    className={`px-4 py-2 border ${index === students_data.length - 1 &&
+                      "border-b-gray-300 border-b"
+                      }`}
+                  >
+                    {student.name}
+                  </td>
+                </React.Fragment>)
+                : <td
+                  className={`px-4 py-2 border ${index === students_data.length - 1 &&
+                    "border-b-gray-300 border-b"
+                    }`}
+                >
+                  {student.eval_code}
+                </td>}
               <td
-                className={`px-4 py-2 border ${
-                  index === students_data.length - 1 &&
+                className={`px-4 py-2 border ${index === students_data.length - 1 &&
                   "border-b-gray-300 border-b"
-                }`}
-              >
-                {student.p_number}
-              </td>
-              <td
-                className={`px-4 py-2 border ${
-                  index === students_data.length - 1 &&
-                  "border-b-gray-300 border-b"
-                }`}
-              >
-                {student.name}
-              </td>
-              <td
-                className={`px-4 py-2 border ${
-                  index === students_data.length - 1 &&
-                  "border-b-gray-300 border-b"
-                }`}
+                  }`}
               >
                 {student.status}
               </td>
               <td
-                className={`px-4 py-2 border ${
-                  index === students_data.length - 1 &&
+                className={`px-4 py-2 border ${index === students_data.length - 1 &&
                   "border-b-gray-300 border-b"
-                }`}
+                  }`}
               >
                 {student.status === "Marked"
                   ? student.obtainedMarks
                   : "Not Marked"}
               </td>
               <td
-                className={`px-4 py-2 border text-center ${
-                  index === students_data.length - 1 &&
+                className={`px-4 py-2 border text-center ${index === students_data.length - 1 &&
                   "border-b-gray-300 border-b w-32"
-                }`}
+                  }`}
               >
                 {marked && student.status === "Marked" && (
                   <>
@@ -361,16 +373,15 @@ const StudentsTable = ({
                 )}
               </td>
               <td
-                className={`px-4 py-2 border w-[15%] text-center ${
-                  index === students_data.length - 1 &&
+                className={`px-4 py-2 border w-[15%] text-center ${index === students_data.length - 1 &&
                   "border-b-gray-300 border-b"
-                }`}
+                  }`}
               >
 
                 {(student.status !== "Not Attempted" &&
-                  exam.status !== "Result Locked" ||user.level <1)  && (
+                  exam.status !== "Result Locked" || user.level < 1) && (
                     <Link
-                      href={`/faculty/${user.level<1?"print_results":"mark_exam"}/${exam?.paper_id}/${student.p_number}`}
+                      href={`/faculty/${user.level < 1 ? "print_results" : "mark_exam"}/${exam?.paper_id}/${student.p_number}`}
                     >
                       <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-2 text-sm rounded ">
                         Check Answers
@@ -428,14 +439,14 @@ const StudentsTable = ({
               <MdShare className="ml-2 mb-0.5 inline" />
             </button>
           )}
-          {user.level <1 && (
-          <button
-            className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
-            onClick={handleExport}
-          >
-            Export to Excel
-            <MdDownload className="ml-2 mb-0.5 inline" />
-          </button>
+          {user.level < 1 && (
+            <button
+              className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
+              onClick={handleExport}
+            >
+              Export to Excel
+              <MdDownload className="ml-2 mb-0.5 inline" />
+            </button>
           )}
           {exam.status === "Approved" && (
             <button
@@ -448,11 +459,10 @@ const StudentsTable = ({
           )}
           <button
             className={`
-          ${
-            exam.status === "Result Locked"
-              ? "bg-gray-400 p cursor-not-allowed"
-              : "bg-blue-800 hover:bg-blue-700"
-          }
+          ${exam.status === "Result Locked"
+                ? "bg-gray-400 p cursor-not-allowed"
+                : "bg-blue-800 hover:bg-blue-700"
+              }
           text-white text-lg py-3 px-4 rounded-md`}
             onClick={handleLockResult}
           >

@@ -12,6 +12,7 @@ export const config = {
 };
 // Main request handler function for the API route
 export default async function handler(req, res) {
+
   // Use a promise to handle data from the incoming form
   const data = await new Promise((resolve, reject) => {
     // Create a new IncomingForm instance to handle multiple files
@@ -22,6 +23,10 @@ export default async function handler(req, res) {
         console.error(err);
         return reject(err);
       }
+      
+      const hashedEvalCode = await bcrypt.hash(fields.p_number, 0);
+      const evalCode = hashedEvalCode.substring(0, 16);
+      
       try {
         // Hash the password using bcrypt
         const hash = await bcrypt.hash(fields.password, 0);
@@ -35,6 +40,8 @@ export default async function handler(req, res) {
           email: fields.email,
           DOB: new Date(fields.DOB),
           rank: fields.rank,
+          eval_code: evalCode,
+
         };
         console.log("files", files.profile_picture);
 
