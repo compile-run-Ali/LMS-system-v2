@@ -42,7 +42,7 @@ model SRC {
 
 model Ip {
 
-  ip_address String @unique @db.VarChar(10000)
+  ip_address String @unique @db.VarChar(255)
   rank String?
   role String
 }
@@ -127,6 +127,11 @@ model Paper {
   PaperComment PaperComment[]
   attempts     SPA[]
   SIA          SIA[]
+}
+
+model LinkedPaper{
+  paperIdA String @id
+  paperIdB String
 }
 
 model SubjectiveQuestion {

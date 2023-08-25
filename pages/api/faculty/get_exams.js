@@ -22,6 +22,12 @@ const handler = async (req, res) => {
                 status: true,
                 total_marks: true,
                 course: true,
+                PaperComment: {
+                  select: {
+                    comment: true,
+                    user_generated: true,
+                  },
+                },
               },
             },
           },
@@ -45,6 +51,12 @@ const handler = async (req, res) => {
                     examofficer: true,
                     status: true,
                     total_marks: true,
+                    PaperComment: {
+                      select: {
+                        comment: true,
+                        user_generated: true,
+                      },
+                    },
                   },
                 },
               },
@@ -53,7 +65,6 @@ const handler = async (req, res) => {
         },
       },
     });
-    console.log(exams);
     res.status(200).json(exams);
   } catch (err) {
     throw new Error(err.message);
