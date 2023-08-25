@@ -133,7 +133,8 @@ model SubjectiveQuestion {
   sq_id String @id @default(uuid())
 
   questionnumber Int
-  question       String  @db.VarChar(10000)
+  question       String  @db.VarChar(5000)
+  answer       String?  @db.VarChar(5000)
   long_question  Boolean @default(true)
   marks          Float
 

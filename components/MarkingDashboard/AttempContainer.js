@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-const AttempContainer = ({ question, isStudent }) => {
+const AttempContainer = ({ question, isStudent, facultyAnswer }) => {
   const router = useRouter();
   const { p_number } = router.query;
-  const session = useSession(); 
+  const session = useSession();
   const [givenmarks, setGivenmarks] = useState(question.marksobtained);
   const [changed, setChanged] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -33,13 +33,17 @@ const AttempContainer = ({ question, isStudent }) => {
   useEffect(() => {
     setGivenmarks(question.marksobtained);
   }, [question]);
-  console.log("is saved",saved)
+  console.log("is saved", saved)
   return (
-    <div className="flex flex-col justify-between pt-0">
-      <div>
+
+    <div className="flex  pt-0 gap-x-2">
+
+      <div className="grow">
         <div className="text-2xl mb-2">
           <p>{question.questionnumber + ". " + question.question}</p>
         </div>
+
+
         {!question.children ? (
           <div className="px-4 py-2 bg-blue-900 rounded-lg space-y-2 flex flex-col">
             <label className="text-white">
@@ -50,7 +54,9 @@ const AttempContainer = ({ question, isStudent }) => {
                   (Max 50 characters)
                 </span>
               )}
+
             </label>
+
             <textarea
               className="border border-gray-300 bg-gray-300 rounded-md p-2 w-full text-gray-700 "
               value={question.answer || ""}
@@ -71,7 +77,7 @@ const AttempContainer = ({ question, isStudent }) => {
                   }}
                   max={question.marks}
                   min={0}
-                  disabled={isStudent||session?.data?.user?.level<1}
+                  disabled={isStudent || session?.data?.user?.level < 1}
                 />
                 <span className="font-bold text-sm mr-2">
                   / <span>{question.marks}</span>
@@ -83,7 +89,7 @@ const AttempContainer = ({ question, isStudent }) => {
                       setSaved(true);
                       markQuestion();
                     }}
-                    disabled={isStudent||session?.data?.user?.level<1}
+                    disabled={isStudent || session?.data?.user?.level < 1}
                   >
                     {!saved ? <>Save Marks</> : <>Marked</>}
                   </button>
@@ -103,7 +109,27 @@ const AttempContainer = ({ question, isStudent }) => {
           </div>
         )}
       </div>
+      <div className="mt-10 h-[347px] w-96 px-6 py-2 bg-blue-900 rounded-lg  flex flex-col">
+        <label className="text-white mt-0 mb-1">
+          Correct Answer
+
+
+        </label>
+        {!facultyAnswer && (
+                <span className="text-gray-200 text-sm">
+                  {" "}
+                  (Max 50 characters)
+                </span>
+              )}
+              <textarea
+              className="mt-1 border border-gray-300 bg-white rounded-md p-2 w-90 text-gray-700 "
+              value={facultyAnswer || ""}
+              disabled
+              rows={question.long_question ? 10 : 2}
+            />
+      </div>
     </div>
+
   );
 };
 

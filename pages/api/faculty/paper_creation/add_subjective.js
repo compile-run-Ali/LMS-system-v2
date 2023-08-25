@@ -11,6 +11,7 @@ const handler = async (req, res) => {
       const newSQ = await prisma.subjectiveQuestion.create({
         data: {
           question: req.body.question,
+          answer: req.body.answer,
           marks: req.body.marks,
           long_question: req.body.long_question,
           questionnumber: req.body.questionnumber,
@@ -44,6 +45,7 @@ const handler = async (req, res) => {
             parent_sq_id: true,
             questionnumber: true,
             child_question: true,
+            answer:true,
           },
         });
       }

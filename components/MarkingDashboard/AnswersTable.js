@@ -48,6 +48,7 @@ const AnswersTable = ({
           key={question.sq_id}
           question={question}
           isStudent={isStudent}
+          facultyAnswer={questions[index].answer}
         />
       ))}
     </div>
