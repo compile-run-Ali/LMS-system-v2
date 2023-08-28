@@ -98,6 +98,7 @@ export default function CreateExam({ paperType }) {
     });
     console.log(res,"resdata")
     setIeFiles(res.data);
+    setIeFilesWord(res.data);
     }catch(err){
       console.log(err);
     }
@@ -188,6 +189,7 @@ const fetchSubjectives = async () => {
             setActive={setActive}
             exam={exam}
             ieFiles={ieFiles}
+            ieFilesWord={ieFilesWord}
           />
         </div>
       )}

@@ -20,7 +20,7 @@ model Student {
   cgpa            Float
   email           String
   DOB             DateTime
-  eval_code       String?
+  eval_code       String
   rank            String?
   profile_picture String?
   
@@ -185,9 +185,11 @@ model ObjectiveQuestion {
 model IeQuestion {
   ie_id String @id @default(uuid())
 
-  fileName    String
-  fileUrl     String
-  total_marks Float  @default(0)
+  fileName     String
+  fileUrl      String
+  fileNameWord String?
+  fileUrlWord  String?
+  total_marks  Float   @default(0)
 
   paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
   paper_id String

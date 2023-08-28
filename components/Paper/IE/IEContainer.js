@@ -16,9 +16,8 @@ export default function IEContainer({
   studentId,
   setIeMarks,
   faculty = false,
-  markTo=false
+  markTo = false
 }) {
-  console.log(IeFiles,"iefiles")
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState({});
   const { data: session } = useSession();
@@ -92,10 +91,10 @@ export default function IEContainer({
           responseType: "blob",
         });
       }
-  
+
       const href = window.URL.createObjectURL(response.data);
       const link = document.createElement("a");
-      
+
       // Include student ID in the file name
       const fileNameWithStudentId = response.headers["content-disposition"].split("filename=")[1];
       link.href = href;
@@ -108,56 +107,115 @@ export default function IEContainer({
       console.error("Error downloading file:", error);
     }
   };
-  
-  console.log(IeFiles,"iefiles")
+
+  const handleDownloadWord = async (fileId) => { // Make sure you pass the studentId to the function
+    try {
+      let response;
+      response = await axios.get(`/api/paper/get_downloadIEWord`, {
+        params: {
+          fileId: fileId,
+        },
+        responseType: "blob",
+      });
+
+      const href = window.URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+
+      // Include student ID in the file name
+      const fileNameWithStudentId = response.headers["content-disposition"].split("filename=")[1];
+      link.href = href;
+      link.download = studentId + "_" + fileNameWithStudentId; // Add student ID to the filename
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(href);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  };
+
   return (
     <>
       <Spinner loading={loading} />
 
-      <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
-        <div className="flex flex-col gap-2">
-        <div className="flex flex-col gap-2">
-          {IeFiles?.ie_questions.map((question, index) => (
-            <div key={index} className="flex">
-              <button
-                className="bg-blue-500 hover:bg-blue-700 text-white text-lg font-bold py-2 px-20 mx-auto mb-10 rounded"
-                onClick={() => handleDownload(question.ie_id)}
-              >
-                Download Exam 
-              </button>
-            </div>
-          ))}
-        </div>
-        {!faculty && (
-        <div className="flex flex-col gap-2 text-white">
-          <label className="text-xl font-bold">Upload File</label>
-          <input
-            type="file"
-            onChange={handleFileUpload}
-            className="border-2 border-gray-300 p-2 rounded-lg"
-          />
-          <button
-            className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-            onClick={handleUpload}
-          >
-            Save and Proceed
-          </button>
-          <div className="flex flex-col gap-2">
-            {files.map((file, index) => (
-              <div key={index} className="flex">
-                <div className="flex flex-col gap-4">
-                  <div className="flex">
-                    <p className="text-xl font-bold">{file.name}</p>
-                    <button className="text-red-400 text-xl" onClick={() => handleFileRemove(index)}>
-                      <MdDelete />
-                    </button>
-                  </div>
+      <div className="flex gap-6 justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
+        <div className="flex gap-6">
+          <div className="flex flex-col">
+            {!faculty || markTo ? (
+              <div>
+                <div className="flex gap-2">
+                  {IeFiles?.ie_questions.map((question, index) => (
+                    <div key={index} className="flex">
+                      <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white text-lg font-bold py-2 px-20 mx-auto mb-10 rounded"
+                        onClick={() => handleDownload(question.ie_id)}
+                      >
+                        Download Exam
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  {IeFiles?.ie_questions.map((question, index) => (
+                    <div key={index} className="flex">
+                      <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white text-lg font-bold py-2 px-20 mx-auto mb-10 rounded"
+                        onClick={() => handleDownloadWord(question.ie_id)}
+                      >
+                        Download Word
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
+            ) : (
+              <div className="flex gap-2">
+                {IeFiles?.ie_questions.map((question, index) => (
+                  <div key={index} className="flex">
+                    <button
+                      className="bg-blue-500 hover:bg-blue-700 text-white text-lg font-bold py-2 px-20 mx-auto mb-10 rounded"
+                      onClick={() => handleDownload(question.ie_id)}
+                    >
+                      Download Exam
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )
+            }
+
           </div>
-        </div>
-        )}
+          {!faculty && (
+            <div className="flex flex-col gap-2 text-white">
+              <label className="text-xl font-bold">Upload File</label>
+              <input
+                type="file"
+                accept=".xlsx, .xls"
+                onChange={handleFileUpload}
+                className="border-2 border-gray-300 p-2 rounded-lg"
+              />
+              <button
+                className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+                onClick={handleUpload}
+              >
+                Save and Proceed
+              </button>
+              <div className="flex flex-col gap-2">
+                {files.map((file, index) => (
+                  <div key={index} className="flex">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex">
+                        <p className="text-xl font-bold">{file.name}</p>
+                        <button className="text-red-400 text-xl" onClick={() => handleFileRemove(index)}>
+                          <MdDelete />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         {!faculty && (
           <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
@@ -165,18 +223,18 @@ export default function IEContainer({
           </div>
         )}
         {/* set Ie marks if faculty */}
-        {faculty && !markTo &&(
-          
+        {faculty && !markTo && (
+
           <div className="flex flex-col gap-2 text-white">
             <label className="text-xl font-bold">Set Marks</label>
             <input
               type="number"
-              min = "0"
-              max =   {IeFiles?.ie_questions[0].total_marks }
+              min="0"
+              max={IeFiles?.ie_questions[0].total_marks}
               onChange={(e) => setIeMarks(e.target.value)}
               className="border-2 border-gray-300 p-2 rounded-lg"
             />
-             </div>
+          </div>
         )}
 
       </div>
