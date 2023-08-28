@@ -10,6 +10,7 @@ export default function Dashboard() {
   const session = useSession();
   const [exams, setExams] = useState(null);
   const [paperapproval, setPaperApproval] = useState(null);
+  const [comments, setComments] = useState(null); 
   const [loading, setLoading] = useState(true);
 
   const fetchExams = () => {

@@ -36,6 +36,7 @@ const handler = async (req, res) => {
             questionnumber: true,
             long_question: true,
             parent_sq_id: true,
+            answer:true,
           },
         },
         ie_questions: {

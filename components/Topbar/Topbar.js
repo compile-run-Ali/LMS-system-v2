@@ -111,7 +111,7 @@ export default function Topbar() {
               </div>
 
               {showNotification && (
-                <div className="fixed right-[180px] max-h-[300px] w-80">
+                <div className="absolute right-[180px] max-h-[300px] w-80">
                   <NotificationDropdown
                     notifications={notifications}
                     setNotifications={setNotifications}

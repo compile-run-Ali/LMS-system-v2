@@ -5,6 +5,7 @@ const handler = async (req, res) => {
   const {
     sq_id,
     question,
+    answer,
     marks,
     long_question,
     parent_sq_id,
@@ -20,6 +21,7 @@ const handler = async (req, res) => {
         },
         data: {
           question,
+          answer,
           marks,
           long_question,
           questionnumber,

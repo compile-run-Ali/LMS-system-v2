@@ -43,9 +43,10 @@ model SRC {
 }
 
 model Ip {
-  ip_address String  @unique @db.VarChar(10000)
-  rank       String?
-  role       String
+
+  ip_address String @unique @db.VarChar(255)
+  rank String?
+  role String
 }
 model Course {
   course_code String @id @unique
@@ -131,11 +132,17 @@ model Paper {
   SIA          SIA[]
 }
 
+model LinkedPaper{
+  paperIdA String @id
+  paperIdB String
+}
+
 model SubjectiveQuestion {
   sq_id String @id @default(uuid())
 
   questionnumber Int
-  question       String  @db.VarChar(10000)
+  question       String  @db.VarChar(5000)
+  answer       String?  @db.VarChar(5000)
   long_question  Boolean @default(true)
   marks          Float
 

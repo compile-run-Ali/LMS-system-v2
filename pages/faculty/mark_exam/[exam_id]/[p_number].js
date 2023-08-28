@@ -142,6 +142,7 @@ const Index = () => {
     }
     if (subjectiveQuestions.length !== 0) fetchSubjectiveAttempts();
   }, [objectiveQuestions, subjectiveQuestions]);
+  console.log("Sibjjj",subjectiveQuestions)
   return (
     <div>
       <BaseLayout title={"Mark Exam"}>
@@ -163,6 +164,7 @@ const Index = () => {
                 <AnswersTable
                   questions={subjectiveQuestions}
                   answers={subjectiveAnswers}
+                  
                 />
               )}
               {paperDetails?.paper_type === "IE" && (

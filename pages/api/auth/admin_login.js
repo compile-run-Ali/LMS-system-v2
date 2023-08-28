@@ -10,7 +10,6 @@ const confirmPasswordHash = (plainPassword, hashedPassword) => {
 };
 
 const handler = async (email, password) => {
-
   try {
     const admin = await prisma.faculty.findFirst({
       where: {

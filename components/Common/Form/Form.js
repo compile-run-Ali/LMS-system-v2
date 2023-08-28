@@ -33,6 +33,8 @@ export default function Form({
   const [selectedCourse, setSelectedCourse] = useState("");
   const [freeflow, setFreeflow] = useState(true);
   const [review, setReview] = useState(true);
+  const [linkedId, setLinkedId] = useState(null);
+  const [allExamsOfCourse, setAllExamsOfCourse] = useState([]);
 
   useEffect(() => {
     console.log(edit, examDetails, "some")
@@ -78,8 +80,29 @@ export default function Form({
           });
         });
     }
-  }, [edit, examDetails, copy]);
-
+    if (router.query.course_code) {
+      axios
+        .get("/api/faculty/paper_creation/get_all_papers", {
+          params: {
+            course_code: router.query.course_code,
+          },
+        })
+        .then((res) => {
+          setAllExamsOfCourse(res.data);
+          console.log(res.data);
+        })
+        .catch((err) => {
+          console.log(
+            "Error in /api/faculty/paper_creation/get_all_papers",
+            err
+          );
+          setLoading({
+            error: "Error in Loading Exams.",
+          });
+        });
+    }
+  }, [edit, examDetails, copy, router]);
+  console.log("allExamsOfCourse", allExamsOfCourse);
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
   };
@@ -163,6 +186,25 @@ export default function Form({
           ...res.data,
         }));
         console.log("paper made ", res.data);
+        console.log(linkedId, "anc");
+        const id = res.data.paper_id;
+        if (linkedId) {
+          try {
+            const res = await axios.post(
+              "/api/faculty/paper_creation/link_paper",
+              {
+                paperIdA: linkedId,
+                paperIdB: id,
+              }
+            );
+            console.log("linked paper", res.data);
+          } catch (err) {
+            console.log(err);
+            setLoading({
+              error: "Error in Linking Paper",
+            });
+          }
+        }
 
         setPaperId(res.data.paper_id);
         setActive(2);
@@ -174,6 +216,8 @@ export default function Form({
       });
     }
   };
+  console.log(linkedId);
+
   useEffect(() => {
     if (Object.keys(router.query).length > 1 && !router.query.language) {
       setEdit(true);
@@ -234,6 +278,11 @@ export default function Form({
       <div className="w-full grid grid-cols-2 pr-10 gap-x-5 mt-10 font-poppins">
         <Input
           text={router.query.language && router.query.language === "urdu" ? "Paper Name" : "Paper Name"}
+          text={
+            router.query.language && router.query.language === "urdu"
+              ? "Paper Name"
+              : "Paper Name"
+          }
           required={true}
           type={"text"}
           placeholder={"Ex: Mid-Term Exam"}
@@ -296,7 +345,24 @@ export default function Form({
           onChange={handlePaperTime}
           value={paperTime}
         />
-
+        {!copy && !edit && (
+          <select
+            className="    w-full  border  border-primary-black border-opacity-[0.15] rounded-md mt-14 px-3 py-2
+            focus:border-[#FEC703] focus:outline-none bg-white dateSelectorColor "
+            onChange={(e) => {
+              setLinkedId(e.target.value);
+            }}
+            value={linkedId}
+            
+          >
+            <option value={""}> Select Paper to Link</option>
+            {allExamsOfCourse.map((exam) => (
+              <option key={exam.paper_id} value={exam.paper_id}>
+                {exam.paper_name}
+              </option>
+            ))}
+          </select>
+        )}
         {copy && (
           <div className="w-full font-poppins mt-6">
             <label className="text-primary-black">New Course</label>
