@@ -171,7 +171,7 @@ export default function Form({
           paper_name: paperName,
           date: formatDate(dateOfExam, paperTime),
           duration: paperDuration,
-          objDuration : objDuration,
+          objDuration: objDuration,
           weightage: parseInt(weightage),
           paper_type: paperType,
           freeflow: freeflow,
@@ -278,11 +278,6 @@ export default function Form({
       <div className="w-full grid grid-cols-2 pr-10 gap-x-5 mt-10 font-poppins">
         <Input
           text={router.query.language && router.query.language === "urdu" ? "Paper Name" : "Paper Name"}
-          text={
-            router.query.language && router.query.language === "urdu"
-              ? "Paper Name"
-              : "Paper Name"
-          }
           required={true}
           type={"text"}
           placeholder={"Ex: Mid-Term Exam"}
@@ -291,15 +286,15 @@ export default function Form({
         />
         {paperType === "Subjective/Objective" ?
           <React.Fragment>
-          <Input
-            text={"Objective Paper Duration (in minutes)"}
-            required={true}
-            type={"number"}
-            value={objDuration}
-            min={0}
-            max={180}
-            onChange={handleObjDuration}
-          />
+            <Input
+              text={"Objective Paper Duration (in minutes)"}
+              required={true}
+              type={"number"}
+              value={objDuration}
+              min={0}
+              max={180}
+              onChange={handleObjDuration}
+            />
             < Input
               text={"Subjective Paper Duration (in minutes)"}
               required={true}
