@@ -15,6 +15,7 @@ const handler = async (req, res) => {
                   select: {
                     p_number: true,
                     name: true,
+                    eval_code: true,
                   },
                 },
               },

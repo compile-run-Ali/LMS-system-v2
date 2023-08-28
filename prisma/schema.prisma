@@ -20,8 +20,10 @@ model Student {
   cgpa            Float
   email           String
   DOB             DateTime
+  eval_code       String?
   rank            String?
   profile_picture String?
+  
 
   courses            SRC[]
   subjective_answers SSA[]
