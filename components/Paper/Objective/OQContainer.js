@@ -349,7 +349,7 @@ export default function OQContainer({
                 onClick={setSolveObjective}
             
               >
-              {lang==="urdu"?"مقصد جمع کروائیں۔":"Submit Objective"}
+              {lang==="urdu"?" جمع کروائیں۔":"Submit Objective"}
                 
               </button>
             )}

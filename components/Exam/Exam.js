@@ -26,6 +26,7 @@ export default function Exam({
   const [access, setAccess] = useState(null);
   const [ieFiles, setIeFiles] = useState(null);
   const [ieFilesWord, setIeFilesWord] = useState(null);
+  const [linkedId, setLinkedId] = useState(null);
   console.log(exam);
   useEffect(() => {
     setAccess(() => {
@@ -65,10 +66,28 @@ export default function Exam({
           }
         }
       }
+      async function getLinkedPaperId() {
+        console.log("Sending id ", exam.paper_id, "to get linked paper id");
+        try {
+          const res = await axios.get(
+            "/api/faculty/paper_creation/get_linked",
+            {
+              params: {
+                paperId: exam.paper_id,
+              },
+            }
+          );
+          console.log(res.data);
+          setLinkedId(res.data.paperId);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+      getLinkedPaperId();
       fetchIE();
     }
   }, [exam]);
-
+  console.log(linkedId, "linkedId", exam?.paper_id);
   const getComments = async () => {
     if (exam !== undefined) {
       try {
@@ -163,9 +182,10 @@ export default function Exam({
     });
   };
 
-  async function submitExamOrEditPaperApproval(apiEndpoint, data) {
+  async function submitExamOrEditPaperApproval(apiEndpoint, data, submit) {
     try {
       console.log(`calling ${apiEndpoint}`);
+
       const response = await axios.post(apiEndpoint, data);
       console.log(`${apiEndpoint} called`);
       setLoading({});
@@ -181,6 +201,43 @@ export default function Exam({
       });
       console.log("added comment");
       generateNotification();
+      if (linkedId) {
+        try {
+          let linkedData;
+          if (!submit) {
+            linkedData = {
+              paper_id: linkedId,
+              examofficer: selectedFaculty,
+              level: faculties.filter(
+                (faculty) => faculty.faculty_id === selectedFaculty
+              )[0].level,
+            };
+          } else {
+            linkedData = {
+              paper_id: linkedId,
+              faculty_id: selectedFaculty,
+              level: faculties.filter(
+                (faculty) => faculty.faculty_id === selectedFaculty
+              )[0].level,
+            };
+          }
+
+          const res = await axios.post(apiEndpoint, linkedData);
+          console.log("linked paper sent forward");
+          addComment({
+            comment: `Exam Sent Forward by ${session.data.user.name} to ${
+              faculties.filter(
+                (faculty) => faculty.faculty_id === selectedFaculty
+              )[0].name
+            }`,
+            faculty_id: session.data.user.id,
+            paper_id: linkedId,
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
       router.push("/");
     } catch (err) {
       console.log("error", err);
@@ -210,7 +267,8 @@ export default function Exam({
       };
       submitExamOrEditPaperApproval(
         "/api/faculty/edit_paperapproval",
-        editPaperApprovalData
+        editPaperApprovalData,
+        false
       );
     } else {
       console.log("exam officer DOES NOT exist");
@@ -221,7 +279,11 @@ export default function Exam({
           (faculty) => faculty.faculty_id === selectedFaculty
         )[0].level,
       };
-      submitExamOrEditPaperApproval("/api/faculty/submit_exam", submitExamData);
+      submitExamOrEditPaperApproval(
+        "/api/faculty/submit_exam",
+        submitExamData,
+        true
+      );
     }
   };
 
@@ -241,6 +303,18 @@ export default function Exam({
           faculty_id: session.data.user.id,
           paper_id: exam.paper_id,
         });
+        const approveLinkedExam = await axios.post("/api/faculty/update_exam_status", {
+          paper_id: linkedId,
+          status: "Un Approved",
+        });
+        if (approveLinkedExam.status === 200) {
+          addComment({
+            comment: `Exam Approved by ${session.data.user.name}`,
+            faculty_id: session.data.user.id,
+            paper_id: linkedId,
+          });
+        }
+
         router.push("/");
       }
     } catch (err) {
@@ -280,6 +354,17 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
+      const sendBackLinked = await axios.post("/api/faculty/edit_paperapproval", {
+        paper_id: linkedId,
+        examofficer: null,
+      });
+      if (sendBackLinked.status === 200) {
+        addComment({
+          comment: `Exam Sent Back by ${session.data.user.name}`,
+          faculty_id: session.data.user.id,
+          paper_id: linkedId,
+        });
+      }
 
       router.push("/");
     } else {
@@ -318,6 +403,36 @@ export default function Exam({
       });
       console.log("Exam Sent Forward");
       generateNotification();
+      if (linkedId) {
+        try {
+          const res = await axios.post("/api/faculty/edit_paperapproval", {
+            paper_id: linkedId,
+            examofficer: selectedFaculty,
+            level: faculties.filter(
+              (faculty) => faculty.faculty_id === selectedFaculty
+            )[0].level,
+          });
+          console.log("linked paper sent forward");
+          if (res.status === 200) {
+            addComment({
+              comment: `Exam Sent Forward by ${session.data.user.name} to ${
+                faculties.filter(
+                  (faculty) => faculty.faculty_id === selectedFaculty
+                )[0].name
+              }`,
+              faculty_id: session.data.user.id,
+              paper_id: linkedId,
+            });
+          } else {
+            setLoading({
+              error: "Error sending forward",
+            });
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
       router.push("/");
     } else {
       setLoading({
@@ -648,7 +763,7 @@ export default function Exam({
             )}
           </div>
         )}
-        {(session.data.user.level === 1 || session.data.user.level === 5) &&
+        {(session?.data?.user?.level === 1 || session?.data?.user?.level === 5) &&
           exam.status !== "Draft" &&
           exam.status !== "Pending Approval" && (
             <button

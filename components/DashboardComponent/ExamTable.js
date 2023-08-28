@@ -63,7 +63,6 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
       }
     });
   }, [exams_data]);
-
   const isPaperDatePast = (examDate) => {
     const paperDate = new Date(examDate);
     const today = new Date();
@@ -78,12 +77,27 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
       paperDate.getFullYear() < today.getFullYear()
     );
   };
-
-  const approveExam = (examId, date) => {
+  async function getLinkedPaperId(examId) {
+    console.log("Sending id ", examId, "to get linked paper id");
+    try {
+      const res = await axios.get("/api/faculty/paper_creation/get_linked", {
+        params: {
+          paperId: examId,
+        },
+      });
+      console.log(res.data);
+      return res.data.paperId;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  const approveExam = async (examId, date) => {
     if (isPaperDatePast(date)) {
       alert("Exam date is in the past. Please change the date and try again.");
       return;
     }
+    const linkedId = await getLinkedPaperId(examId);
+
     axios
       .put(`/api/faculty/update_exam_status`, {
         paper_id: examId,
@@ -96,6 +110,22 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
           faculty_id: session.user.id,
           paper_id: examId,
         });
+        try {
+          console.log("linked id is", linkedId);
+          if (linkedId) {
+            axios.put(`/api/faculty/update_exam_status`, {
+              paper_id: linkedId,
+              status: "Un Approved",
+            });
+            addComment({
+              comment: `Exam UnApproved by ${session.user.name}`,
+              faculty_id: session.user.id,
+              paper_id: linkedId,
+            });
+          }
+        } catch (err) {
+          console.log(err);
+        }
         router.reload();
       })
       .catch((error) => {
@@ -105,15 +135,14 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
 
   const addComment = (comment) => {
     if (session.user) {
-      try{
-      const response = axios
-        .post("/api/faculty/add_comment", {
+      try {
+        const response = axios.post("/api/faculty/add_comment", {
           paper_id: comment.paper_id,
           comment: comment.comment,
           faculty_id: session.user.id,
-        })
-          console.log("Comment added successfully");
-          console.log(response);
+        });
+        console.log("Comment added successfully");
+        console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -123,7 +152,7 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
   const handleExamClick = (paper_id) => {
     router.push(`/faculty/exam_details/${paper_id}`);
   };
-  console.log(exams_data,"exams_data")
+  console.log(exams_data, "exams_data");
   if (!exams_data || (exams_data && exams_data.length === 0)) {
     return (
       <div className="flex justify-center items-center w-full h-full">
@@ -138,6 +167,7 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
         <tr className="bg-blue-800 text-white font-medium ">
           <th className="px-4 py-2">Exam Name</th>
           <th className="px-4 py-2">Exam Type</th>
+          <th className="px-4 py-2">Comment</th>
           <th className="px-4 py-2">Duration</th>
           <th className="px-4 py-2">Date</th>
           <th className="px-4 py-2">Time</th>
@@ -159,6 +189,19 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
           >
             <td className="border px-4 py-2">{exam.paper_name}</td>
             <td className="border px-4 py-2">{exam.paper_type}</td>
+            <td className="border px-4 py-2">
+              {exam.PaperComment.some(
+                (comment) => comment.user_generated === true
+              )
+                ? exam.PaperComment.filter(
+                    (comment) => comment.user_generated === true
+                  )
+                    .slice(-1)
+                    .map((comment, index) => (
+                      <div key={index}>{comment.comment}</div>
+                    ))
+                : "No comments"}
+            </td>
             <td className="border px-4 py-2">{exam.duration} Minutes</td>
             <td className="border px-4 py-2">
               {convertDateTimeToStrings(exam.date, true)}

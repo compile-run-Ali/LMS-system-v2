@@ -15,6 +15,7 @@ export default function SQContainer({
   flags,
   setFlags,
   studentId,
+  index,
 }) {
   const router = useRouter();
   const session = useSession();
@@ -164,7 +165,7 @@ export default function SQContainer({
     },
     [answers]
   );
-
+console.log(question,index,"aaa")
   return (
     <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl text-white">
       <Spinner loading={loading} />
@@ -173,7 +174,7 @@ export default function SQContainer({
           <div>
             <div className="text-2xl mb-4">
               <div className="flex justify-between items-center">
-                <p>{question.questionnumber + ". " + question.question}</p>
+                <p>{(index+1) + ". " + question.question}</p>
                 <p className="text-base font-bold">({question.marks} Marks)</p>
               </div>
             </div>
