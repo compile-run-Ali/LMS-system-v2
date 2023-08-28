@@ -22,19 +22,23 @@ const SubjectiveExam = ({
   const [currentQuestion, setCurrentQuestion] = useState({
     sq_id: "",
     question: "",
+    answer: "",
     parent_sq_id: "",
     long_question: true,
     marks: 1,
     questionnumber: subjectivesLocal.length + 1,
   });
-
+  console.log(currentQuestion)
+ 
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
 
   const handleQuestionChange = (e) => {
     setCurrentQuestion({ ...currentQuestion, question: e.target.value });
   };
-
+  const handleAnswerChange = (e) => {
+    setCurrentQuestion({ ...currentQuestion, answer: e.target.value });
+  };
   const handleParentQuestionChange = (e) => {
     setCurrentQuestion({
       ...currentQuestion,
@@ -137,6 +141,7 @@ const SubjectiveExam = ({
       {
         paper_id: paperId,
         question: currentQuestion.question,
+        answer:currentQuestion.answer,
         parent_sq_id: currentQuestion.parent_sq_id,
         long_question: true,
         marks: currentQuestion.marks,
@@ -185,6 +190,7 @@ const SubjectiveExam = ({
         question: "",
         parent_sq_id: "",
         marks: 1,
+        answer:"",
         long_question: true,
         questionnumber: isChild ? prevLength + 1 : prevLength + 2,
       });
@@ -225,6 +231,7 @@ const SubjectiveExam = ({
         question: currentQuestion.question,
         parent_sq_id: currentQuestion.parent_sq_id,
         questionnumber: currentQuestion.questionnumber,
+        answer:currentQuestion.answer,
         long_question: true,
         marks: currentQuestion.marks,
       })
@@ -526,6 +533,14 @@ const SubjectiveExam = ({
               onChange={handleQuestionChange}
             />
           </div>
+          <div className="mb-4">
+            <TextArea
+              text={"Answer"}
+              required
+              value={currentQuestion.answer}
+              onChange={handleAnswerChange}
+            />
+          </div>
           <div className="flex w-full gap-x-5">
             <div className="mb-10 w-full mt-6">
               <label className="block mb-2">Parent Question</label>
@@ -611,9 +626,14 @@ const SubjectiveExam = ({
               className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
             >
               Add
+              
+              
             </button>
+            
           )}
+         
         </div>
+        
       )}
       <div className=" w-full pr-10 flex justify-end gap-x-10 mt-10">
         <button

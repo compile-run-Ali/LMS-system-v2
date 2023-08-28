@@ -3,6 +3,8 @@ import Loader from "../Loader";
 import NavigationGrid from "./NavigationGrid";
 import SQContainer from "./Subjective/SQContainer";
 import NewTimer from "./NewTimer";
+const seedrandom = require('seedrandom');
+
 
 export default function SubjectivePaper({
   submitted,
@@ -13,11 +15,18 @@ export default function SubjectivePaper({
   startTime,
   studentId,
 }) {
+  
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [flags, setFlags] = useState([]);
-  const [attempted, setAttempted] = useState([]);
+  const [attempted, setAttempted] = useState([]);  
+  const [randomizedQuestions, setRandomizedQuestions] = useState([]);  
 
   useEffect(() => {
+    if (questions && paper) {
+      setRandomizedQuestions(shuffleArray(questions));
+      const currentPaper = JSON.parse(localStorage.getItem(`paper ${paper}`));
+      setFlags(currentPaper ? currentPaper.flags : []);
+    }
     const attempted = JSON.parse(localStorage.getItem("attempted_questions"));
     setAttempted(attempted ? attempted : []);
   }, [currentQuestion]);
@@ -36,7 +45,23 @@ export default function SubjectivePaper({
       console.log(currentPaper);
       setFlags(currentPaper.flags || []);
     }
+
   }, [questions, paper]);
+
+  const shuffleArray = (array) => {
+    const generator = seedrandom(studentId);
+    const randomNumber = generator();
+
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(randomNumber * (i + 0));
+      [shuffledArray[i], shuffledArray[j]] = [
+        shuffledArray[j],
+        shuffledArray[i],
+      ];
+    }
+    return shuffledArray;
+  };
 
   if (!questions) {
     return <Loader />;
@@ -46,7 +71,8 @@ export default function SubjectivePaper({
       <div className="w-2/3  rounded-l-2xl">
         <SQContainer
           studentId={studentId}
-          question={questions[currentQuestion]}
+          question={randomizedQuestions[currentQuestion]}
+          index={currentQuestion}
           totalQuestions={questions.length}
           currentQuestion={currentQuestion}
           setCurrentQuestion={setCurrentAndLocal}

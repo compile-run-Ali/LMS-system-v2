@@ -760,7 +760,7 @@ export default function Exam({
             )}
           </div>
         )}
-        {(session.data.user.level === 1 || session.data.user.level === 5) &&
+        {(session?.data?.user?.level === 1 || session?.data?.user?.level === 5) &&
           exam.status !== "Draft" &&
           exam.status !== "Pending Approval" && (
             <button
