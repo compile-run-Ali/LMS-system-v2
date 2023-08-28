@@ -11,6 +11,7 @@ export default function SubjectivePaper({
   attemptTime,
   paper,
   startTime,
+  objTimeLeft,
   studentId,
 }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -57,7 +58,7 @@ export default function SubjectivePaper({
       </div>
       {currentQuestion !== questions.length && (
         <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
-          <NewTimer time={attemptTime} startTime={startTime} />
+          <NewTimer time={attemptTime} startTime={startTime} objTimeLeft={objTimeLeft} />
 
           <NavigationGrid
             totalQuestions={questions.length}

@@ -105,15 +105,15 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
 
   const addComment = (comment) => {
     if (session.user) {
-      try{
-      const response = axios
-        .post("/api/faculty/add_comment", {
-          paper_id: comment.paper_id,
-          comment: comment.comment,
-          faculty_id: session.user.id,
-        })
-          console.log("Comment added successfully");
-          console.log(response);
+      try {
+        const response = axios
+          .post("/api/faculty/add_comment", {
+            paper_id: comment.paper_id,
+            comment: comment.comment,
+            faculty_id: session.user.id,
+          })
+        console.log("Comment added successfully");
+        console.log(response);
       } catch (error) {
         console.log(error);
       }
@@ -123,7 +123,7 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
   const handleExamClick = (paper_id) => {
     router.push(`/faculty/exam_details/${paper_id}`);
   };
-  console.log(exams_data,"exams_data")
+  console.log(exams_data, "exams_data")
   if (!exams_data || (exams_data && exams_data.length === 0)) {
     return (
       <div className="flex justify-center items-center w-full h-full">
@@ -138,6 +138,8 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
         <tr className="bg-blue-800 text-white font-medium ">
           <th className="px-4 py-2">Exam Name</th>
           <th className="px-4 py-2">Exam Type</th>
+          <th className="px-4 py-2">Objective Duration</th>
+          <th className="px-4 py-2">Subjective Duration</th>
           <th className="px-4 py-2">Duration</th>
           <th className="px-4 py-2">Date</th>
           <th className="px-4 py-2">Time</th>
@@ -159,7 +161,20 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
           >
             <td className="border px-4 py-2">{exam.paper_name}</td>
             <td className="border px-4 py-2">{exam.paper_type}</td>
-            <td className="border px-4 py-2">{exam.duration} Minutes</td>
+            {exam.paper_type === "Subjective/Objective" ?
+              <React.Fragment>
+                <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
+                <td className="border px-4 py-2">{exam.duration} Minutes</td>
+                <td className="border text-center px-4 py-2">-</td>
+
+              </React.Fragment>
+              :
+              <React.Fragment>
+                <td className="border px-4 py-2">-</td>
+                <td className="border px-4 py-2">-</td>
+                <td className="border px-4 py-2">{exam.duration} Minutes</td>
+              </React.Fragment>
+            }
             <td className="border px-4 py-2">
               {convertDateTimeToStrings(exam.date, true)}
             </td>

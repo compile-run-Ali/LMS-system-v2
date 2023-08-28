@@ -63,7 +63,9 @@ export default function PapersList({ papers, status }) {
             <th className="border px-4 py-2">Type</th>
             <th className="border px-4 py-2">Date</th>
             <th className="border px-4 py-2">Live Time</th>
-            <th className="border px-4 py-2">Duration</th>
+            <th className="px-4 py-2">Objective Duration</th>
+            <th className="px-4 py-2">Subjective Duration</th>
+            <th className="px-4 py-2">Duration</th>
             <th className="border px-4 py-2">Status</th>
             <th className="border px-4 py-2 text-center">Action</th>
           </tr>
@@ -88,7 +90,7 @@ export default function PapersList({ papers, status }) {
 }
 
 const PaperRow = ({ paper, attemptStatus, status }) => {
-  const { start, end } = getPaperDateTime(paper.date, paper.duration);
+  const { start, end } = getPaperDateTime(paper.date, paper.duration, paper.objDuration);
   const startDate = returnDateInString(start, true);
   const startTime = convertDateTimeToStrings(start);
   const isLive = status === "Live Papers";
@@ -119,7 +121,7 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
       console.log(err);
     }
   };
-  
+
   return (
     <>
       <td className="border px-4 py-2">{paper.course_code}</td>
@@ -127,15 +129,28 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
       <td className="border px-4 py-2">{paper.paper_type}</td>
       <td className="border px-4 py-2">{startDate}</td>
       <td className="border px-4 py-2">{startTime}</td>
-      <td className="border px-4 py-2">{paper.duration} mins</td>
+      {paper.paper_type === "Subjective/Objective" ?
+        <React.Fragment>
+          <td className="border px-4 py-2">{paper.objDuration} Minutes</td>
+          <td className="border px-4 py-2">{paper.duration} Minutes</td>
+          <td className="border px-4 text-center py-2">-</td>
+
+        </React.Fragment>
+        :
+        <React.Fragment>
+          <td className="border px-4 text-center py-2">-</td>
+          <td className="border px-4 text-center py-2">-</td>
+          <td className="border px-4 py-2">{paper.duration} Minutes</td>
+        </React.Fragment>
+      }
       <td className="border px-4 py-2">
         {paper.status === "Approved" && isLive
           ? "Live"
           : paper.status === "Approved" && !isLive && !isPast
-          ? "Upcoming"
-          : paper.status === "Closed"
-          ? "Marking"
-          : paper.status}
+            ? "Upcoming"
+            : paper.status === "Closed"
+              ? "Marking"
+              : paper.status}
       </td>
       <td className="border px-4 py-2 text-center">
         {/* if paper is live and is submitted, show submitted button, else show attempt button */}
@@ -143,8 +158,8 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
         {/* else show view button */}
         {isLive ? (
           !attemptStatus &&
-          paper.status !== "Closed" &&
-          paper.status !== "Marked" ? (
+            paper.status !== "Closed" &&
+            paper.status !== "Marked" ? (
             <button
               className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded"
               onClick={() => attemptExam(paper.paper_id)}

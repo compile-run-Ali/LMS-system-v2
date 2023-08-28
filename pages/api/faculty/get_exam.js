@@ -19,6 +19,7 @@ const handler = async (req, res) => {
         paper_type: true,
         date: true,
         duration: true,
+        objDuration: true,
         weightage: true,
         freeflow: true,
         status: true,
@@ -29,6 +30,7 @@ const handler = async (req, res) => {
     });
     res.status(200).json(paper);
   } catch (err) {
+    console.log(err, 'Get Paper Error')
     res.status(500).json({ err });
   }
 };

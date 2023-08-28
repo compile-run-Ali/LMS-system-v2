@@ -19,14 +19,16 @@ export default function Paper() {
   const { paper } = router.query;
   const [paperDetails, setPaperDetails] = useState(null); // paper details
   const [attemptTime, setAttemptTime] = useState(NaN); // time left to attempt the paper
+  const [objAttempt, setObjAttempt] = useState(null);
   const session = useSession();
   const [solveObjective, setSolveObjective] = useState(true);
   const [startTime, setStartTime] = useState(null);
   const [paperAttempt, setPaperAttempt] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [objectiveSubmitModal, setObjectiveSubmitModal] = useState(false);
-  const [score,setScore] = useState(0);
+  const [score, setScore] = useState(0);
   const [IE, setIE] = useState(null);
+  const [ObjDone, setObjDone] = useState(null);
 
   const fetchPaper = async () => {
     // fetch paper details from api
@@ -94,9 +96,9 @@ export default function Paper() {
       .getHours()
       .toString()
       .padStart(2, "0")}:${timeCompleted
-      .getMinutes()
-      .toString()
-      .padStart(2, "0")}`;
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}`;
 
     await axios.post("/api/student/paper/update_attempt_status", {
       studentId: session.data.user.id,
@@ -110,10 +112,14 @@ export default function Paper() {
     localStorage.removeItem("attempted_questions");
 
     const localPaper = JSON.parse(localStorage.getItem(`paper ${paper}`));
-    localPaper.flags = [];
+    if (localPaper) {
+      localPaper.flags = [];
+    }
     localStorage.setItem(`paper ${paper}`, JSON.stringify(localPaper));
     setObjectiveSubmitModal(false);
     setSolveObjective(false);
+    setObjDone(true)
+
     isObjective && setSubmitted(true);
   };
 
@@ -129,21 +135,21 @@ export default function Paper() {
   useEffect(() => {
     if (paperDetails) {
       async function fetchIE() {
-      if(paperDetails?.paper_type === "IE"){
-        try {
-          const res = await axios.get(`/api/faculty/get_ie_files`,{
-            params: {
-              paperId: paper,
+        if (paperDetails?.paper_type === "IE") {
+          try {
+            const res = await axios.get(`/api/faculty/get_ie_files`, {
+              params: {
+                paperId: paper,
+              }
+            });
+            setIE(res.data);
           }
-          });
-          setIE(res.data);
-        }
-        catch(err){
-          console.log(err);
+          catch (err) {
+            console.log(err);
+          }
         }
       }
-    }
-    fetchIE();
+      fetchIE();
     }
   }, [paperDetails]);
 
@@ -162,9 +168,9 @@ export default function Paper() {
       .getHours()
       .toString()
       .padStart(2, "0")}:${timeCompleted
-      .getMinutes()
-      .toString()
-      .padStart(2, "0")}`;
+        .getMinutes()
+        .toString()
+        .padStart(2, "0")}`;
     axios
       .post(`/api/student/paper/update_attempt_status`, {
         studentId: session.data.user.id,
@@ -195,13 +201,31 @@ export default function Paper() {
       };
     }
   }, [paperDetails]);
-  console.log(paperDetails,"agaga")
   useEffect(() => {
     if (attemptTime === -100 && paperDetails) {
       setAttemptTime(paperDetails.duration * 60);
       return;
     }
-    if (attemptTime > 0) {
+    if (objAttempt === null && paperDetails) {
+      setObjAttempt(paperDetails.objDuration * 60);
+      return;
+    }
+
+    if (objAttempt > 0) {
+      setTimeout(() => {
+        setObjAttempt(objAttempt - 1);
+        var nowObj = new Date();
+        nowObj.setTime(nowObj.getTime() + 1 * 3600 * 1000);
+        document.cookie = `${paper}-time=${objAttempt}; expires=${nowObj.toUTCString()}; path=/`;
+        document.cookie = `studentId=${session.data.user.id}; expires=${nowObj.toUTCString()}; path=/`;
+      }, 1000);
+    } else if (objAttempt <= 0 && objAttempt > -100 && objAttempt !== null) {
+      console.log("obj attempt time is very high ", objAttempt);
+      //clearPaperFromLocal();
+      handleSubmitObjective();
+    }
+
+    if (ObjDone && attemptTime > 0) {
       setTimeout(() => {
         setAttemptTime(attemptTime - 1);
         var now = new Date();
@@ -215,7 +239,7 @@ export default function Paper() {
       updateStatus();
       setSubmitted(true);
     }
-  }, [attemptTime, paperDetails]);
+  }, [attemptTime, objAttempt, paperDetails,ObjDone]);
 
   if (!paperDetails) {
     return <Loader />;
@@ -234,40 +258,44 @@ export default function Paper() {
       <DashboardLayout>
         {!submitted ? (
           paperDetails.paper_type === "IE" ? (
-            <IEContainer 
-            IeFiles={IE}
-            attemptTime={attemptTime}
-            startTime={startTime}
-            paperId={paper}
-            setSubmitted={setSubmitted}
-            updateStatus={updateStatus}
-             />
+            <IEContainer
+              IeFiles={IE}
+              attemptTime={attemptTime}
+              startTime={startTime}
+              paperId={paper}
+              setSubmitted={setSubmitted}
+              updateStatus={updateStatus}
+            />
           ) :
-         paperDetails && paperDetails.objective_questions.length > 0 && solveObjective  ? (
-            <ObjectivePaper
-              studentId={session?.data?.user.id}
-              questions={paperDetails.objective_questions}
-              isfreeFlow={paperDetails.freeflow}
-              setSolveObjective={handleSolveObjective}
-              paper={paper}
-              lang={paperDetails.language}
-              attemptTime={attemptTime}
-              startTime={startTime}
-              submit={handleSubmitObjective}
-              setScore={setScore}
-              score={score}
-            />
-          ) : (
-            <SubjectivePaper
-              studentId={session?.data?.user.id}
-              submitted={submitted}
-              questions={paperDetails.subjective_questions}
-              isfreeFlow={paperDetails.freeflow}
-              attemptTime={attemptTime}
-              paper={paper}
-              startTime={startTime}
-            />
-          )
+            paperDetails && paperDetails.objective_questions.length > 0 && solveObjective ? (
+              <ObjectivePaper
+                studentId={session?.data?.user.id}
+                questions={paperDetails.objective_questions}
+                isfreeFlow={paperDetails.freeflow}
+                setSolveObjective={handleSolveObjective}
+                paper={paper}
+                lang={paperDetails.language}
+                paper_type={paperDetails.paper_type}
+                attemptTime={attemptTime}
+                startTime={startTime}
+                objTimeLeft={objAttempt}
+
+                submit={handleSubmitObjective}
+                setScore={setScore}
+                score={score}
+              />
+            ) : (
+              <SubjectivePaper
+                studentId={session?.data?.user.id}
+                submitted={submitted}
+                questions={paperDetails.subjective_questions}
+                isfreeFlow={paperDetails.freeflow}
+                paper_type={paperDetails.paper_type}
+                attemptTime={attemptTime}
+                paper={paper}
+                startTime={startTime}
+              />
+            )
         ) : (
           <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
             <div className="flex justify-center w-full">

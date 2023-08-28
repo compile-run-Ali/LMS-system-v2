@@ -57,7 +57,7 @@ export default function PaperDetails({
     }
   }, [studentId, paper]);
 
-  const paperDateTime = getPaperDateTime(paper.date, paper.duration);
+  const paperDateTime = getPaperDateTime(paper.date, paper.duration, paper.objDuration);
 
   return (
     <div className="mt-4 mb-10">
@@ -116,12 +116,31 @@ export default function PaperDetails({
               {convertDateTimeToStrings(paper.date, false)}
             </td>
           </tr>
-          <tr className="bg-blue-900 text-white">
-            <th className="text-left border px-4 py-2">Duration</th>
-            <td className="border text-center px-4 py-2">
-              {paper.duration} Minutes
-            </td>
-          </tr>
+          {paper.paper_type === "Subjective/Objective" ?
+            <React.Fragment>
+              <tr className="bg-blue-900 text-white">
+                <th className="text-left border px-4 py-2">Objective Duration</th>
+                <td className="border text-center px-4 py-2">
+                  {paper.objDuration} Minutes
+                </td>
+              </tr>
+              <tr className="bg-blue-900 text-white">
+                <th className="text-left border px-4 py-2">Subjective Duration</th>
+                <td className="border text-center px-4 py-2">
+                  {paper.duration} Minutes
+                </td>
+              </tr>
+            </React.Fragment>
+            :
+            <React.Fragment>
+              <tr className="bg-blue-900 text-white">
+                <th className="text-left border px-4 py-2">Duration</th>
+                <td className="border text-center px-4 py-2">
+                  {paper.duration} Minutes
+                </td>
+              </tr>
+            </React.Fragment>}
+
           <tr className="bg-blue-900 text-white">
             <th className="text-left border px-4 py-2">Attempt Started at</th>
             <td className="border text-center px-4 py-2">

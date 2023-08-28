@@ -17,11 +17,13 @@ export default function Form({
   const session = useSession();
   const level = session?.data?.user?.level;
   const [loading, setLoading] = useState({});
-  const [edit, setEdit] = useState(examDetails!==null ? true : false);
+  const [edit, setEdit] = useState(examDetails !== null ? true : false);
   const [copy, setCopy] = useState(examDetails?.is_copy ? true : false);
   const [paperName, setPaperName] = useState("");
   const [paperDuration, setPaperDuration] = useState(
-    router.query.is_edit === "true" ? null :180);
+    router.query.is_edit === "true" ? null : 180);
+  const [objDuration, setObjDuration] = useState(
+    router.query.is_edit === "true" ? null : 180);
   const [weightage, setWeightage] = useState("");
   const [dateOfExam, setDateOfExam] = useState(null);
   const [paperTime, setPaperTime] = useState(
@@ -33,7 +35,7 @@ export default function Form({
   const [review, setReview] = useState(true);
 
   useEffect(() => {
-    console.log(edit,examDetails,"some")
+    console.log(edit, examDetails, "some")
     if (edit) {
       setLoading({
         message: "Loading Exam Details...",
@@ -46,6 +48,7 @@ export default function Form({
           setPaperName(res.data.paper_name);
           console.log(res.data);
           setPaperDuration(res.data.duration);
+          setObjDuration(res.data.objDuration);
           setWeightage(res.data.weightage);
           setDateOfExam(new Date(res.data.date).toISOString().substr(0, 10));
           setPaperTime(new Date(res.data.date).toISOString().substr(11, 5));
@@ -87,6 +90,10 @@ export default function Form({
 
   const handleDuration = (e) => {
     setPaperDuration(parseInt(e.target.value));
+  };
+
+  const handleObjDuration = (e) => {
+    setObjDuration(parseInt(e.target.value));
   };
 
   const handleDateOfExam = (e) => {
@@ -136,16 +143,17 @@ export default function Form({
           course_code: copy
             ? selectedCourse
             : router.query.course_code
-            ? router.query.course_code
-            : null,
+              ? router.query.course_code
+              : null,
           paper_name: paperName,
           date: formatDate(dateOfExam, paperTime),
           duration: paperDuration,
+          objDuration : objDuration,
           weightage: parseInt(weightage),
           paper_type: paperType,
           freeflow: freeflow,
           review: review,
-          language:router.query.language?router.query.language:"English"
+          language: router.query.language ? router.query.language : "English"
         }
       );
       if (res.status === 200) {
@@ -167,7 +175,7 @@ export default function Form({
     }
   };
   useEffect(() => {
-    if (Object.keys(router.query).length > 1  && !router.query.language) {
+    if (Object.keys(router.query).length > 1 && !router.query.language) {
       setEdit(true);
     }
     if (examDetails?.is_copy ? true : false) {
@@ -225,23 +233,45 @@ export default function Form({
       <Spinner loading={loading} />
       <div className="w-full grid grid-cols-2 pr-10 gap-x-5 mt-10 font-poppins">
         <Input
-          text={router.query.language && router.query.language==="urdu"?"Paper Name":"Paper Name"}
+          text={router.query.language && router.query.language === "urdu" ? "Paper Name" : "Paper Name"}
           required={true}
           type={"text"}
           placeholder={"Ex: Mid-Term Exam"}
           onChange={handlePaperName}
           value={paperName}
         />
-        <Input
-          text={"Paper Duration (in minutes)"}
-          required={true}
-          type={"number"}
-          value={paperDuration}
-          min={0}
-          max={180}
-          onChange={handleDuration}
-        />
-
+        {paperType === "Subjective/Objective" ?
+          <React.Fragment>
+          <Input
+            text={"Objective Paper Duration (in minutes)"}
+            required={true}
+            type={"number"}
+            value={objDuration}
+            min={0}
+            max={180}
+            onChange={handleObjDuration}
+          />
+            < Input
+              text={"Subjective Paper Duration (in minutes)"}
+              required={true}
+              type={"number"}
+              value={paperDuration}
+              min={0}
+              max={180}
+              onChange={handleDuration}
+            />
+          </React.Fragment>
+          :
+          <Input
+            text={"Paper Duration (in minutes)"}
+            required={true}
+            type={"number"}
+            value={paperDuration}
+            min={0}
+            max={180}
+            onChange={handleDuration}
+          />
+        }
         <Input
           text={"Date of Exam"}
           required={true}

@@ -10,6 +10,7 @@ const handler = async (req, res) => {
         paper_type: req.body.paper_type,
         date: req.body.date,
         duration: req.body.duration,
+        objDuration: req.body.objDuration,
         weightage: req.body.weightage,
         freeflow: req.body.freeflow,
         review: req.body.review,

@@ -65,12 +65,12 @@ export default function Timer({ paper }) {
             setStartTimeString(paperStartTime);
             setStartTime(
               convertDateTimeToStrings(
-                getPaperDateTime(paperStartTime, paper.duration).start
+                getPaperDateTime(paperStartTime, paper.duration, paper.objDuration).start
               )
             );
             setEndTime(
               convertDateTimeToStrings(
-                getPaperDateTime(paperStartTime, paper.duration).end
+                getPaperDateTime(paperStartTime, paper.duration, objDuration).end
               )
             );
           }
@@ -83,7 +83,7 @@ export default function Timer({ paper }) {
       const interval = setInterval(() => {
         setTimeLeft(
           getRemainingTime(
-            getPaperDateTime(startTimeString, paper.duration).end
+            getPaperDateTime(startTimeString, paper.duration, paper.objDuration).end
           )
         );
         if (timeLeft === "00:00:00") {

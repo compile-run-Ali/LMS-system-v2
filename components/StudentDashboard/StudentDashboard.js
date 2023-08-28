@@ -48,22 +48,22 @@ export default function StudentDashboard({ session }) {
       for (const paper of approvedPapers) {
         if (
           compareDateTime(
-            getPaperDateTime(paper.date, paper.duration).start,
-            getPaperDateTime(paper.date, paper.duration).end
+            getPaperDateTime(paper.date, paper.duration, paper.objDuration).start,
+            getPaperDateTime(paper.date, paper.duration, paper.objDuration).end
           ) === "past"
         ) {
           past.push(paper);
         } else if (
           compareDateTime(
-            getPaperDateTime(paper.date, paper.duration).start,
-            getPaperDateTime(paper.date, paper.duration).end
+            getPaperDateTime(paper.date, paper.duration, paper.objDuration).start,
+            getPaperDateTime(paper.date, paper.duration, paper.objDuration).end
           ) === "live"
         ) {
           live.push(paper);
         } else if (
           compareDateTime(
-            getPaperDateTime(paper.date, paper.duration).start,
-            getPaperDateTime(paper.date, paper.duration).end
+            getPaperDateTime(paper.date, paper.duration, paper.objDuration).start,
+            getPaperDateTime(paper.date, paper.duration, paper.objDuration).end
           ) === "upcoming"
         ) {
           upcoming.push(paper);

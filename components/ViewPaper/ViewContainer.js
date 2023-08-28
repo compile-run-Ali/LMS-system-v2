@@ -41,7 +41,8 @@ export default function ViewContainer() {
 
             const paperDateTime = getPaperDateTime(
               requestedPaper.date,
-              requestedPaper.duration
+              requestedPaper.duration,
+              requestedPaper.objDuration
             );
             const paperStatus = compareDateTime(
               paperDateTime.start,
@@ -89,10 +90,20 @@ export default function ViewContainer() {
             </span>
           </div>
           <div className="pl-20">
-            <span className=" font-medium">Exam Duration:</span>
-            <span className="ml-2">{paperDetails.duration} minutes</span>
+            {paper_type === "Subjective/Objective" ?
+              <React.Fragment>
+                <span className=" font-medium">Objective Duration:</span>
+                <span className="ml-2">{paperDetails.objDuration} minutes</span>
+                <span className=" font-medium">Subjective Duration:</span>
+                <span className="ml-2">{paperDetails.duration} minutes</span>
+              </React.Fragment>
+              :
+              <React.Fragment>
+                <span className=" font-medium">Exam Duration:</span>
+                <span className="ml-2">{paperDetails.duration} minutes</span>
+              </React.Fragment>}
           </div>
-           <div className="pl-20">
+          <div className="pl-20">
             <span className=" font-medium">Marks:</span>
             <span className="ml-2">{paperDetails.total_marks}</span>
           </div>
