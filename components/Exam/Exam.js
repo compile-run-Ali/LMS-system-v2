@@ -25,6 +25,7 @@ export default function Exam({
   const [selectedFaculty, setSelectedFaculty] = useState();
   const [access, setAccess] = useState(null);
   const [ieFiles, setIeFiles] = useState(null);
+  const [ieFilesWord, setIeFilesWord] = useState(null);
   console.log(exam);
   useEffect(() => {
     setAccess(() => {
@@ -58,6 +59,7 @@ export default function Exam({
               },
             });
             setIeFiles(res.data);
+            console.log(res.data);
           } catch (err) {
             console.log(err);
           }
@@ -357,7 +359,7 @@ export default function Exam({
   const handleSelectedFaculty = (e) => {
     setSelectedFaculty(e.target.value);
   };
-  console.log(ieFiles, "ieieie");
+
   return (
     <>
       <Spinner loading={loading} />
@@ -419,6 +421,7 @@ export default function Exam({
           {exam.paper_type === "IE" && (
             <IEContainer
               IeFiles={ieFiles}
+              IeFilesWord={ieFilesWord}
               faculty={true}
               paperId={exam.paper_id}
               markTo={true}

@@ -56,6 +56,7 @@ export default function CreateExam({ paperType }) {
   const [subjectives, setSubjectives] = useState([]);
   const [freeFlowGlobal, setFreeFlowGlobal] = useState(true);
   const [ieFiles, setIeFiles] = useState([]);
+  const [ieFilesWord, setIeFilesWord] = useState([]);
     console.log(router.isReady,"isreadyh",paperId)
   useEffect(() => {
     if (router.isReady) {
@@ -99,6 +100,7 @@ export default function CreateExam({ paperType }) {
     });
     console.log(res,"resdata")
     setIeFiles(res.data);
+    setIeFilesWord(res.data);
     }catch(err){
       console.log(err);
     }
@@ -189,6 +191,7 @@ const fetchSubjectives = async () => {
             setActive={setActive}
             exam={exam}
             ieFiles={ieFiles}
+            ieFilesWord={ieFilesWord}
           />
         </div>
       )}

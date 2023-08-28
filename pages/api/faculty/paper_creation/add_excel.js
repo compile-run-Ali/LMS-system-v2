@@ -20,20 +20,37 @@ export default async function handler(req, res) {
     try {
       const { paperId, total_marks } = fields;
       const float_marks = parseFloat(total_marks);
-      const file = files.files;
-      const oldPath = file.filepath;
-      const fileName = file.originalFilename.replace(/,/g, ""); // Remove commas from the filename
+      const ExcelFile = files.Excel;
+      const WordFile = files.Word
+
+      const oldPath = ExcelFile.filepath;
+      let fileName = ExcelFile.originalFilename.replace(/,/g, ""); // Remove commas from the filename
       const newPath = `./public/excels/${fileName.replace(/,/g, "")}`; // Remove commas from the path
+
+      const oldPathWord = WordFile.filepath;
+      let fileNameWord = WordFile.originalFilename.replace(/,/g, ""); // Remove commas from the filename
+      const newPathWOrd = `./public/excels/${fileNameWord.replace(/,/g, "")}`; // Remove commas from the path
+
+      fileName = paperId + fileName;
+      fileNameWord = paperId + fileNameWord;
+
       mv(oldPath, newPath, function (err) {
         if (err) {
           console.log(err);
         }
       });
-      console.log(fileName, newPath, float_marks, paperId)
-      const newIE = await prisma.ieQuestion.create({
+
+      mv(oldPathWord, newPathWOrd, function (err) {
+        if (err) {
+          console.log(err);
+        }
+      });
+      const newIE = await prisma.IeQuestion.create({
         data: {
           fileName: fileName,
           fileUrl: newPath,
+          fileNameWord: fileNameWord,
+          fileUrlWord: newPathWOrd,
           total_marks: float_marks,
           paper: {
             connect: {
