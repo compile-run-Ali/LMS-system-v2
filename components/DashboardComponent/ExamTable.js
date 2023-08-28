@@ -115,7 +115,7 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
           if (linkedId) {
             axios.put(`/api/faculty/update_exam_status`, {
               paper_id: linkedId,
-              status: "Un Approved",
+              status: "Result Locked",
             });
             addComment({
               comment: `Exam UnApproved by ${session.user.name}`,

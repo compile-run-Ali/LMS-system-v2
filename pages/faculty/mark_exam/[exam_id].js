@@ -34,7 +34,8 @@ const MarkingPage = () => {
     const [studentSpa] = await Promise.all(promises2);
 
     // now join the two
-    students.data.course.students.forEach((student) => {
+    console.log(students)
+    students.data.forEach((student) => {
       if (
         studentSpa.data.find(
           (spa) => spa.studentId === student.student.p_number
@@ -54,15 +55,9 @@ const MarkingPage = () => {
         };
       }
     });
+    console.log(students, "students")
 
-
-    let students_data = [];
-    if (students.data.course && students.data.course.students.length > 0) {
-      students_data = students.data.course.students.map(
-        (student) => student.student
-      );
-    }
-    setStudentsData(students_data);
+    setStudentsData(students.data);
     setLoading(false);
   };
 
@@ -85,7 +80,7 @@ const MarkingPage = () => {
       fetchExamDetails();
     }
   }, [exam_id]);
-
+  console.log(studentsData, "studentsData")
   return (
     <BaseLayout title={"Mark Exam"}>
       <DashboardLayout>

@@ -10,7 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Student {
   p_number String @id
 
@@ -23,7 +22,6 @@ model Student {
   eval_code       String
   rank            String?
   profile_picture String?
-  
 
   courses            SRC[]
   subjective_answers SSA[]
@@ -43,11 +41,11 @@ model SRC {
 }
 
 model Ip {
-
-  ip_address String @unique @db.VarChar(255)
-  rank String?
-  role String
+  ip_address String  @unique @db.VarChar(255)
+  rank       String?
+  role       String
 }
+
 model Course {
   course_code String @id @unique
 
@@ -58,7 +56,8 @@ model Course {
   students SRC[]
   faculty  FTC[]
 
-  paper Paper[]
+  paper       Paper[]
+  CoursePaper CoursePaper[]
 }
 
 model Faculty {
@@ -129,9 +128,18 @@ model Paper {
   PaperComment PaperComment[]
   attempts     SPA[]
   SIA          SIA[]
+  CoursePaper  CoursePaper[]
 }
 
-model LinkedPaper{
+model CoursePaper {
+  id          Int    @id @default(autoincrement())
+  course      Course @relation(fields: [course_code], references: [course_code])
+  course_code String
+  paper       Paper  @relation(fields: [paper_id], references: [paper_id])
+  paper_id    String
+}
+
+model LinkedPaper {
   paperIdA String @id
   paperIdB String
 }
@@ -141,7 +149,7 @@ model SubjectiveQuestion {
 
   questionnumber Int
   question       String  @db.VarChar(5000)
-  answer       String?  @db.VarChar(5000)
+  answer         String? @db.VarChar(5000)
   long_question  Boolean @default(true)
   marks          Float
 

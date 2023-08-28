@@ -13,7 +13,7 @@ export default function PaperDetails({
   const [studentStatus, setStudentStatus] = useState({
     status: "Not Attempted",
   });
-  const [name, setName] = useState("Loading Name...");
+  const [eval_code, setName] = useState("Loading Name...");
 
   useEffect(() => {
     setPaper(initialPaper);
@@ -27,7 +27,7 @@ export default function PaperDetails({
         },
       })
       .then((res) => {
-        setName(res.data.name);
+        setName(res.data.eval_code);
       })
       .catch((err) => {
         console.log(err);
@@ -64,7 +64,7 @@ export default function PaperDetails({
       {studentId && (
         <div className="flex flex-col items-center justify-center mb-2">
           <h1 className="text-2xl font-bold text-gray-800">
-            {name} - {studentId}
+            {eval_code}
           </h1>
           <h1 className="text-xl font-bold text-gray-800">
             {studentStatus.status}

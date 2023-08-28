@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 export default async function handler(req, res) {
   const { index } = req.query;
   const p_number = index;
+
   try {
     // Fetch all the courses in which the student is enrolled
     const courses = await prisma.sRC.findMany({
@@ -28,7 +29,25 @@ export default async function handler(req, res) {
       },
     });
 
-    res.status(200).json(papers);
+    // Fetch data from the CoursePaper model
+    const coursePapers = await prisma.coursePaper.findMany({
+      where: {
+        course_code: {
+          in: courseCodes,
+        },
+      },
+      include: {
+        paper: true, // Include paper data associated with course papers
+      },
+    });
+    console.log(coursePapers, "coursePapers")
+    // Combine paper data with course paper data
+    const papersWithCoursePapers = coursePapers.map((paper) => {
+      return {
+        ...paper.paper,
+      };
+    });
+    res.status(200).json(papersWithCoursePapers);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
