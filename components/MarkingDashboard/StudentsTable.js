@@ -299,12 +299,12 @@ const StudentsTable = ({
         <tbody>
           {students.map((student, index) => (
             <tr
-              key={student.p_number}
-              className={`h-12 ${student.status === "Marked"
+              key={student.student.p_number}
+              className={`h-12 ${student.student.status === "Marked"
                   ? "bg-green-200"
-                  : student.status === "Not Attempted"
+                  : student.student.status === "Not Attempted"
                     ? "bg-red-200"
-                    : student.status === "Re-Check"
+                    : student.student.status === "Re-Check"
                       ? "bg-yellow-200"
                       : "bg-gray-200"
                 }`}
@@ -316,14 +316,14 @@ const StudentsTable = ({
                       "border-b-gray-300 border-b"
                       }`}
                   >
-                    {student.p_number}
+                    {student.student.p_number}
                   </td>
                   <td
                     className={`px-4 py-2 border ${index === students_data.length - 1 &&
                       "border-b-gray-300 border-b"
                       }`}
                   >
-                    {student.name}
+                    {student.student.name}
                   </td>
                 </React.Fragment>)
                 : <td
@@ -331,22 +331,22 @@ const StudentsTable = ({
                     "border-b-gray-300 border-b"
                     }`}
                 >
-                  {student.eval_code}
+                  {student.student.eval_code}
                 </td>}
               <td
                 className={`px-4 py-2 border ${index === students_data.length - 1 &&
                   "border-b-gray-300 border-b"
                   }`}
               >
-                {student.status}
+                {student.student.status}
               </td>
               <td
                 className={`px-4 py-2 border ${index === students_data.length - 1 &&
                   "border-b-gray-300 border-b"
                   }`}
               >
-                {student.status === "Marked"
-                  ? student.obtainedMarks
+                {student.student.status === "Marked"
+                  ? student.student.obtainedMarks
                   : "Not Marked"}
               </td>
               <td
@@ -354,14 +354,14 @@ const StudentsTable = ({
                   "border-b-gray-300 border-b w-32"
                   }`}
               >
-                {marked && student.status === "Marked" && (
+                {marked && student.student.status === "Marked" && (
                   <>
-                    {highestMarks === student.obtainedMarks ? (
+                    {highestMarks === student.student.obtainedMarks ? (
                       <>
                         Highest
                         <FaRegThumbsUp className="text-green-600 text-lg inline ml-2" />
                       </>
-                    ) : lowestMarks === student.obtainedMarks ? (
+                    ) : lowestMarks === student.student.obtainedMarks ? (
                       <>
                         Lowest
                         <FaRegThumbsDown className="text-red-600 text-lg inline ml-2" />
@@ -378,10 +378,10 @@ const StudentsTable = ({
                   }`}
               >
 
-                {(student.status !== "Not Attempted" &&
+                {(student.student.status !== "Not Attempted" &&
                   exam.status !== "Result Locked" || user.level < 1) && (
                     <Link
-                      href={`/faculty/${user.level < 1 ? "print_results" : "mark_exam"}/${exam?.paper_id}/${student.p_number}`}
+                      href={`/faculty/${user.level < 1 ? "print_results" : "mark_exam"}/${exam?.paper_id}/${student.student.p_number}`}
                     >
                       <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-2 text-sm rounded ">
                         Check Answers

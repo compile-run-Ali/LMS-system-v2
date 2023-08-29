@@ -35,6 +35,7 @@ export default function Form({
   const [review, setReview] = useState(true);
   const [linkedId, setLinkedId] = useState(null);
   const [allExamsOfCourse, setAllExamsOfCourse] = useState([]);
+  const [selectedCourses, setSelectedCourses] = useState([]);
 
   useEffect(() => {
     console.log(edit, examDetails, "some")
@@ -66,20 +67,18 @@ export default function Form({
           });
         });
     }
-    if (copy) {
-      // fetch name of all courses
-      axios
-        .get("/api/admin/course/get_courses")
-        .then((res) => {
-          setCourses(res.data);
-        })
-        .catch((err) => {
-          console.log("Error in /api/admin/course/get_courses", err);
-          setLoading({
-            error: "Error in Loading Courses.",
-          });
+    // fetch name of all courses
+    axios
+      .get("/api/admin/course/get_courses")
+      .then((res) => {
+        setCourses(res.data);
+      })
+      .catch((err) => {
+        console.log("Error in /api/admin/course/get_courses", err);
+        setLoading({
+          error: "Error in Loading Courses.",
         });
-    }
+      });
     if (router.query.course_code) {
       axios
         .get("/api/faculty/paper_creation/get_all_papers", {
@@ -103,6 +102,7 @@ export default function Form({
     }
   }, [edit, examDetails, copy, router]);
   console.log("allExamsOfCourse", allExamsOfCourse);
+  console.log("selectedCourses", selectedCourses);
   const handlePaperName = (e) => {
     setPaperName(e.target.value);
   };
@@ -176,7 +176,8 @@ export default function Form({
           paper_type: paperType,
           freeflow: freeflow,
           review: review,
-          language: router.query.language ? router.query.language : "English"
+          language: router.query.language ? router.query.language : "English",
+          selectedCourses: selectedCourses,
         }
       );
       if (res.status === 200) {
@@ -217,7 +218,7 @@ export default function Form({
     }
   };
   console.log(linkedId);
-
+  console.log(courses, "courses");
   useEffect(() => {
     if (Object.keys(router.query).length > 1 && !router.query.language) {
       setEdit(true);
@@ -272,6 +273,35 @@ export default function Form({
         });
       });
   };
+
+  useEffect(() => {
+    // When the component mounts or when router.query.course_code changes,
+    // add it to the selectedCourses array if it's not already there
+    if (!router.query.course_code) return;
+    if (
+      router.query.course_code &&
+      !selectedCourses.includes(router.query.course_code)
+    ) {
+      setSelectedCourses((prevSelectedCourses) => [
+        ...prevSelectedCourses,
+        router.query.course_code,
+      ]);
+    }
+  }, [router.query.course_code]);
+  const handleSelectedCourses = (e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions).map(
+      (option) => option.value
+    );
+
+    // Check if the deselected option matches router.query.course_code
+    if (selectedOptions.includes(router.query.course_code)) {
+      setSelectedCourses(selectedOptions);
+    } else {
+      // Prevent deselection of router.query.course_code
+      e.target.value = selectedCourses; // Reset the select to its current state
+    }
+  };
+
   return (
     <form>
       <Spinner loading={loading} />
@@ -341,22 +371,46 @@ export default function Form({
           value={paperTime}
         />
         {!copy && !edit && (
-          <select
-            className="    w-full  border  border-primary-black border-opacity-[0.15] rounded-md mt-14 px-3 py-2
+          <>
+            <select
+              className="    w-full  border  border-primary-black border-opacity-[0.15] rounded-md mt-14 px-3 py-2
             focus:border-[#FEC703] focus:outline-none bg-white dateSelectorColor "
-            onChange={(e) => {
-              setLinkedId(e.target.value);
-            }}
-            value={linkedId}
-            
-          >
-            <option value={""}> Select Paper to Link</option>
-            {allExamsOfCourse.map((exam) => (
-              <option key={exam.paper_id} value={exam.paper_id}>
-                {exam.paper_name}
-              </option>
-            ))}
-          </select>
+              onChange={(e) => {
+                setLinkedId(e.target.value);
+              }}
+              value={linkedId}
+            >
+              <option value={""}> Select Paper to Link</option>
+              {allExamsOfCourse.map((exam) => (
+                <option key={exam.paper_id} value={exam.paper_id}>
+                  {exam.paper_name}
+                </option>
+              ))}
+            </select>
+            <div className="w-full font-poppins mt-6">
+              <label className="text-primary-black">Select Courses</label>
+              <select
+                className="w-full border border-primary-black border-opacity-[0.15] rounded-md mt-2 px-3 py-2 
+  focus:border-[#FEC703] focus:outline-none bg-white dateSelectorColor"
+                onChange={handleSelectedCourses}
+                value={selectedCourses} // Make sure selectedCourses is an array
+                multiple // This attribute enables multiple selection
+              >
+                {/* Replace the options with your course data */}
+                {courses.map((course) => (
+                  <option key={course.course_code} value={course.course_code}>
+                    {course.course_code} - {course.course_name}
+                  </option>
+                ))}
+              </select>
+
+              <p className="bg-slate-100 rounded-lg text-red-600 mt-4 px-4 py-2">
+                <span className="text-black mr-1">Note: </span>Make sure to
+                carefully select the course(s) for this exam as they cannot be
+                changed later.
+              </p>
+            </div>
+          </>
         )}
         {copy && (
           <div className="w-full font-poppins mt-6">

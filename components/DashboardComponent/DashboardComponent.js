@@ -7,6 +7,7 @@ export default function DashboardComponent({
   exams_data,
   paperapproval_data,
   level,
+  setSelectedCourseDash
 }) {
   const [open, setOpen] = useState(false);
   const [exams, setExams] = useState(null);
@@ -27,6 +28,7 @@ export default function DashboardComponent({
       console.log("sortedExams", sortedExams)
       setCourses(sortedExams);
       setSelectedCourse(localStorage.getItem("selectedCourse") || sortedExams[0]?.course.course_code || "");
+      setSelectedCourseDash(localStorage.getItem("selectedCourse") || sortedExams[0]?.course.course_code || "");
       //set exam according to the selected course
       const course = sortedExams.find(
         (course) =>
@@ -60,6 +62,7 @@ console.log(exams_data)
       return;
     }
     setSelectedCourse(e.target.value);
+    setSelectedCourseDash(e.target.value);
     localStorage.setItem("selectedCourse", e.target.value);
     //console the localstorage
     const course = courses.find(
