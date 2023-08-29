@@ -167,7 +167,8 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
         <tr className="bg-blue-800 text-white font-medium ">
           <th className="px-4 py-2">Exam Name</th>
           <th className="px-4 py-2">Exam Type</th>
-          <th className="px-4 py-2">Comment</th>
+          <th className="px-4 py-2">Objective Duration</th>
+          <th className="px-4 py-2">Subjective Duration</th>
           <th className="px-4 py-2">Duration</th>
           <th className="px-4 py-2">Date</th>
           <th className="px-4 py-2">Time</th>
@@ -189,20 +190,20 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
           >
             <td className="border px-4 py-2">{exam.paper_name}</td>
             <td className="border px-4 py-2">{exam.paper_type}</td>
-            <td className="border px-4 py-2">
-              {exam.PaperComment.some(
-                (comment) => comment.user_generated === true
-              )
-                ? exam.PaperComment.filter(
-                    (comment) => comment.user_generated === true
-                  )
-                    .slice(-1)
-                    .map((comment, index) => (
-                      <div key={index}>{comment.comment}</div>
-                    ))
-                : "No comments"}
-            </td>
-            <td className="border px-4 py-2">{exam.duration} Minutes</td>
+            {exam.paper_type === "Subjective/Objective" ?
+              <React.Fragment>
+                <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
+                <td className="border px-4 py-2">{exam.duration} Minutes</td>
+                <td className="border text-center px-4 py-2">-</td>
+
+              </React.Fragment>
+              :
+              <React.Fragment>
+                <td className="border px-4 py-2">-</td>
+                <td className="border px-4 py-2">-</td>
+                <td className="border px-4 py-2">{exam.duration} Minutes</td>
+              </React.Fragment>
+            }
             <td className="border px-4 py-2">
               {convertDateTimeToStrings(exam.date, true)}
             </td>

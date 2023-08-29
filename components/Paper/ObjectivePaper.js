@@ -15,6 +15,7 @@ export default function ObjectivePaper({
   paper,
   lang,
   attemptTime,
+  objTimeLeft,
   startTime,
   submit,
   studentId,
@@ -86,7 +87,7 @@ export default function ObjectivePaper({
         />
       </div>
       <div className=" w-1/3 max-w-xs shadow-lg h-fit border-2 bg-zinc-100 p-8 shadow-black">
-        <NewTimer time={attemptTime} startTime={startTime} />
+        <NewTimer time={attemptTime} startTime={startTime} objTimeLeft={objTimeLeft} />
         {isfreeFlow && (
           <NavigationGrid
             totalQuestions={questions.length}

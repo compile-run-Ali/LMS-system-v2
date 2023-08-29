@@ -166,15 +166,14 @@ export default function Exam({
       setActive(1);
     }
     router.push({
-      pathname: `/faculty/create_exam/${
-        exam.paper_type === "Objective"
+      pathname: `/faculty/create_exam/${exam.paper_type === "Objective"
           ? "objective"
           : exam.paper_type === "Subjective/Objective"
-          ? "subjective"
-          : exam.paper_type === "IE"
-          ? "ie"
-          : "word"
-      }`,
+            ? "subjective"
+            : exam.paper_type === "IE"
+              ? "ie"
+              : "word"
+        }`,
       query: {
         paper_id: exam.paper_id,
         is_edit: true,
@@ -191,11 +190,10 @@ export default function Exam({
       setLoading({});
 
       addComment({
-        comment: `Exam Submitted by ${session.data.user.name} to ${
-          faculties.filter(
-            (faculty) => faculty.faculty_id === selectedFaculty
-          )[0].name
-        }`,
+        comment: `Exam Submitted by ${session.data.user.name} to ${faculties.filter(
+          (faculty) => faculty.faculty_id === selectedFaculty
+        )[0].name
+          }`,
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
@@ -393,11 +391,10 @@ export default function Exam({
     });
     if (sendForward.status === 200) {
       addComment({
-        comment: `Exam Sent Forward by ${session.data.user.name} to ${
-          faculties.filter(
-            (faculty) => faculty.faculty_id === selectedFaculty
-          )[0].name
-        }`,
+        comment: `Exam Sent Forward by ${session.data.user.name} to ${faculties.filter(
+          (faculty) => faculty.faculty_id === selectedFaculty
+        )[0].name
+          }`,
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
@@ -520,8 +517,15 @@ export default function Exam({
             </div>
 
             <div className="pl-20">
-              <span className=" font-medium">Exam Duration:</span>
-              <span className="ml-2">{exam.duration}</span>
+                <React.Fragment>
+                  <span className=" font-medium">Objective Duration:</span>
+                  <span className="ml-2">{exam.objDuration}</span>
+                  <span className=" font-medium">Subjective Duration:</span>
+                  <span className="ml-2">{exam.duration}</span>
+                
+                  <span className=" font-medium">Exam Duration:</span>
+                  <span className="ml-2">{exam.duration}</span>
+                </React.Fragment>
             </div>
 
             <div className="pl-20">

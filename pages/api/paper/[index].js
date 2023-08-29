@@ -14,6 +14,7 @@ const handle = async (req, res) => {
         paper_id: true,
         date: true,
         duration: true,
+        objDuration: true,
         attempts: true,
         course: true,
         freeflow: true,

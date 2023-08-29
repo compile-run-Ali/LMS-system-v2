@@ -11,6 +11,7 @@ const handler = async (req, res) => {
         course_code: req.body.course_code,
         date: req.body.date,
         duration: req.body.duration,
+        objDuration: req.body.objDuration,
         weightage: req.body.weightage,
         freeflow: req.body.freeflow,
         review: req.body.review,

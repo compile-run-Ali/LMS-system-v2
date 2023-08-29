@@ -114,6 +114,7 @@ model Paper {
   review           Boolean        @default(false)
   date             String
   duration         Int
+  objDuration      Int?
   weightage        Int?
   status           String         @default("Draft")
   total_marks      Float          @default(0)
