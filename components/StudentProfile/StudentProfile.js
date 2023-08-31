@@ -12,7 +12,7 @@ export default function StudentProfile({ student }) {
     router.push({
       pathname: "/change_password",
       query: {
-        student_id: student.id,
+        student_id: student.p_number,
         recovery: false,
         name: student.name,
       },

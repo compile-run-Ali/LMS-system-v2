@@ -199,9 +199,20 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
               </React.Fragment>
               :
               <React.Fragment>
-                <td className="border px-4 py-2">-</td>
-                <td className="border px-4 py-2">-</td>
-                <td className="border px-4 py-2">{exam.duration} Minutes</td>
+                {exam.paper_type === "Objective" ?
+                  <React.Fragment>
+                    <td className="border px-4 py-2">-</td>
+                    <td className="border px-4 py-2">-</td>
+                    <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
+                  </React.Fragment>
+                  :
+                  <React.Fragment>
+
+                    <td className="border px-4 py-2">-</td>
+                    <td className="border px-4 py-2">-</td>
+                    <td className="border px-4 py-2">{exam.duration} Minutes</td>
+                  </React.Fragment>
+                }
               </React.Fragment>
             }
             <td className="border px-4 py-2">

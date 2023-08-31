@@ -167,12 +167,12 @@ export default function Exam({
     }
     router.push({
       pathname: `/faculty/create_exam/${exam.paper_type === "Objective"
-          ? "objective"
-          : exam.paper_type === "Subjective/Objective"
-            ? "subjective"
-            : exam.paper_type === "IE"
-              ? "ie"
-              : "word"
+        ? "objective"
+        : exam.paper_type === "Subjective/Objective"
+          ? "subjective"
+          : exam.paper_type === "IE"
+            ? "ie"
+            : "word"
         }`,
       query: {
         paper_id: exam.paper_id,
@@ -223,11 +223,10 @@ export default function Exam({
           const res = await axios.post(apiEndpoint, linkedData);
           console.log("linked paper sent forward");
           addComment({
-            comment: `Exam Sent Forward by ${session.data.user.name} to ${
-              faculties.filter(
-                (faculty) => faculty.faculty_id === selectedFaculty
-              )[0].name
-            }`,
+            comment: `Exam Sent Forward by ${session.data.user.name} to ${faculties.filter(
+              (faculty) => faculty.faculty_id === selectedFaculty
+            )[0].name
+              }`,
             faculty_id: session.data.user.id,
             paper_id: linkedId,
           });
@@ -314,6 +313,7 @@ export default function Exam({
         }
 
         router.push("/");
+
       }
     } catch (err) {
       console.log(err);
@@ -412,11 +412,10 @@ export default function Exam({
           console.log("linked paper sent forward");
           if (res.status === 200) {
             addComment({
-              comment: `Exam Sent Forward by ${session.data.user.name} to ${
-                faculties.filter(
-                  (faculty) => faculty.faculty_id === selectedFaculty
-                )[0].name
-              }`,
+              comment: `Exam Sent Forward by ${session.data.user.name} to ${faculties.filter(
+                (faculty) => faculty.faculty_id === selectedFaculty
+              )[0].name
+                }`,
               faculty_id: session.data.user.id,
               paper_id: linkedId,
             });
@@ -515,17 +514,28 @@ export default function Exam({
                 {convertDateTimeToStrings(exam.date)}
               </span>
             </div>
-
             <div className="pl-20">
+              {exam.paper_type === "Subjective/Objective" ?
                 <React.Fragment>
                   <span className=" font-medium">Objective Duration:</span>
-                  <span className="ml-2">{exam.objDuration}</span>
-                  <span className=" font-medium">Subjective Duration:</span>
-                  <span className="ml-2">{exam.duration}</span>
-                
-                  <span className=" font-medium">Exam Duration:</span>
-                  <span className="ml-2">{exam.duration}</span>
+                  <span className="ml-2">{exam.objDuration} Minutes</span>
+                  <span className=" font-medium"><br />Subjective Duration:</span>
+                  <span className="ml-2">{exam.duration} Minutes</span>
                 </React.Fragment>
+                :
+                <React.Fragment>
+                  {exam.paper_type === "Objective" ?
+                    <React.Fragment>
+                      <span className=" font-medium">Exam Duration:</span>
+                      <span className="ml-2">{exam.objDuration} Minutes</span>
+                    </React.Fragment> :
+                    <React.Fragment>
+                      <span className=" font-medium">Exam Duration:</span>
+                      <span className="ml-2">{exam.duration} Minutes</span>
+                    </React.Fragment>
+                  }
+                </React.Fragment>
+              }
             </div>
 
             <div className="pl-20">
