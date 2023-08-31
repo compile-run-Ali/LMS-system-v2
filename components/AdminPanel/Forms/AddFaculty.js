@@ -107,6 +107,11 @@ const AddFaculty = () => {
       return;
     }
 
+    if (isNaN(phoneNumber)) {
+      alert("Phone Number should be a number.");
+      return;
+    }
+
     // if password and confirm password do not match give alert
     if (password !== cPassword) {
       alert("Password and Confirm Password do not match.");

@@ -181,21 +181,25 @@ const StudentsTable = ({
         // alert("Error while closing exam. Please try again later");
       });
   };
+  console.log(students_data.every(
+    (student) =>
+      student.student.status === "Marked" || student.status === "Not Attempted"
+  ),"ahahahaha")
   useEffect(() => {
     if (!exam) return;
     if (students_data) {
       setStudents(students_data);
 
       const totalMarks = students_data.reduce(
-        (sum, student) => sum + student.obtainedMarks,
+        (sum, student) => sum + student.student.obtainedMarks,
         0
       );
 
       const totalAttempts = students_data.reduce(
         (count, student) =>
-          student.status === "Marked"
+          student.student.status === "Marked"
             ? count + 1
-            : student.status === "Not Attempted"
+            : student.student.status === "Not Attempted"
             ? count
             : count + 1,
         0
@@ -204,7 +208,7 @@ const StudentsTable = ({
       setClassAverage(classAverage);
 
       const highestMarks = students_data.reduce(
-        (max, student) => Math.max(max, student.obtainedMarks),
+        (max, student) => Math.max(max, student.student.obtainedMarks),
         0
       );
       setHighestMarks(highestMarks);
@@ -214,14 +218,14 @@ const StudentsTable = ({
         (min, student) =>
           student.status === "Not Attempted"
             ? min
-            : Math.min(min, student.obtainedMarks),
+            : Math.min(min, student.student.obtainedMarks),
         100
       );
       setLowestMarks(lowestMarks);
 
       const isAllMarked = students_data.every(
         (student) =>
-          student.status === "Marked" || student.status === "Not Attempted"
+          student.student.status === "Marked" || student.student.status === "Not Attempted"
       );
       setMarked(isAllMarked);
 

@@ -56,6 +56,8 @@ export default function CreateExam({ paperType }) {
   const [subjectives, setSubjectives] = useState([]);
   const [freeFlowGlobal, setFreeFlowGlobal] = useState(true);
   const [ieFiles, setIeFiles] = useState([]);
+  const [ieFilesWord, setIeFilesWord] = useState([]);
+
   useEffect(() => {
     if (router.isReady) {
       setPaperId(

@@ -20,14 +20,7 @@ export default async function handler(req, res) {
     // Collect the course codes of all enrolled courses
     const courseCodes = courses.map((course) => course.course_code);
 
-    // Fetch all the papers for the student's enrolled courses
-    const papers = await prisma.paper.findMany({
-      where: {
-        course_code: {
-          in: courseCodes, // Filter papers for the student's enrolled course codes
-        },
-      },
-    });
+
 
     // Fetch data from the CoursePaper model
     const coursePapers = await prisma.coursePaper.findMany({
@@ -40,13 +33,26 @@ export default async function handler(req, res) {
         paper: true, // Include paper data associated with course papers
       },
     });
-    console.log(coursePapers, "coursePapers")
-    // Combine paper data with course paper data
-    const papersWithCoursePapers = coursePapers.map((paper) => {
-      return {
-        ...paper.paper,
-      };
-    });
+    
+    // Create an object to track unique papers using their paper_id
+    const uniquePapers = {};
+    
+    // Combine paper data with course paper data while avoiding duplicates
+    const papersWithCoursePapers = coursePapers.map((coursePaper) => {
+      const paper = coursePaper.paper;
+    
+      // Only process papers that haven't been added yet
+      if (!uniquePapers[paper.paper_id]) {
+        uniquePapers[paper.paper_id] = true; // Mark paper as added
+        return {
+          ...paper,
+        };
+      }
+      return null; // Skip duplicate papers
+    }).filter(Boolean); // Remove null (filtered out duplicates)
+    
+    console.log(papersWithCoursePapers, "papersWithCoursePapers");
+    
     res.status(200).json(papersWithCoursePapers);
   } catch (err) {
     console.log(err);

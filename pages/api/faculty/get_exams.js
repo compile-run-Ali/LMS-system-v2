@@ -70,6 +70,9 @@ const handler = async (req, res) => {
     });
 
     // Retrieve papers for the selected courses using the CoursePaper model
+    if(!req.body.course_code){
+      res.status(200).json(exams);
+    }else{
     const selectedCoursePapers = await prisma.coursePaper.findMany({
       where: {
         course_code: {
@@ -85,6 +88,7 @@ const handler = async (req, res) => {
             paper_type: true,
             date: true,
             duration: true,
+            objDuration: true,
             weightage: true,
             freeflow: true,
             status: true,
@@ -133,6 +137,7 @@ const handler = async (req, res) => {
 
     console.log(all_exams.courses[0].course.paper, "all_exams");
     res.status(200).json(all_exams);
+  }
   } catch (err) {
     throw new Error(err.message);
   }

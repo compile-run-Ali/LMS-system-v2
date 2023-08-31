@@ -138,9 +138,19 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
         </React.Fragment>
         :
         <React.Fragment>
-          <td className="border px-4 text-center py-2">-</td>
-          <td className="border px-4 text-center py-2">-</td>
-          <td className="border px-4 py-2">{paper.duration} Minutes</td>
+          {paper.paper_type === "Objective" ?
+            <React.Fragment>
+              <td className="border px-4 text-center py-2">-</td>
+              <td className="border px-4 text-center py-2">-</td>
+              <td className="border px-4 py-2">{paper.objDuration} Minutes</td>
+            </React.Fragment>
+            :
+            <React.Fragment>
+              <td className="border px-4 text-center py-2">-</td>
+              <td className="border px-4 text-center py-2">-</td>
+              <td className="border px-4 py-2">{paper.duration} Minutes</td>
+            </React.Fragment>
+          }
         </React.Fragment>
       }
       <td className="border px-4 py-2">

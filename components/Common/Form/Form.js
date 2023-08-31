@@ -298,9 +298,12 @@ export default function Form({
       setSelectedCourses(selectedOptions);
     } else {
       // Prevent deselection of router.query.course_code
-      e.target.value = selectedCourses; // Reset the select to its current state
+      const newSelectedOptions = [...selectedOptions, router.query.course_code];
+      e.target.value = newSelectedOptions; // Update the selected options directly
+      setSelectedCourses(newSelectedOptions);
     }
   };
+
 
   return (
     <form>
@@ -336,15 +339,29 @@ export default function Form({
             />
           </React.Fragment>
           :
-          <Input
+          <React.Fragment>
+            {paperType === "Objective" ? 
+            <Input
             text={"Paper Duration (in minutes)"}
             required={true}
             type={"number"}
-            value={paperDuration}
+            value={objDuration}
             min={0}
             max={180}
-            onChange={handleDuration}
+            onChange={handleObjDuration}
           />
+          :
+          <Input
+              text={"Paper Duration (in minutes)"}
+              required={true}
+              type={"number"}
+              value={paperDuration}
+              min={0}
+              max={180}
+              onChange={handleDuration}
+            />
+          }
+          </React.Fragment>
         }
         <Input
           text={"Date of Exam"}
@@ -373,8 +390,8 @@ export default function Form({
         {!copy && !edit && (
           <>
             <select
-              className="    w-full  border  border-primary-black border-opacity-[0.15] rounded-md mt-14 px-3 py-2
-            focus:border-[#FEC703] focus:outline-none bg-white dateSelectorColor "
+              className="w-full h-11  border  border-primary-black border-opacity-[0.15] rounded-md mt-14 px-3 py-2
+            focus:border-[#FEC703] focus:outline-none bg-white dateSelectorColor"
               onChange={(e) => {
                 setLinkedId(e.target.value);
               }}

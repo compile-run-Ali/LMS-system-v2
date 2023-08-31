@@ -90,7 +90,7 @@ export default function ViewContainer() {
             </span>
           </div>
           <div className="pl-20">
-            {paper_type === "Subjective/Objective" ?
+            {paperDetails.paper_type === "Subjective/Objective" ?
               <React.Fragment>
                 <span className=" font-medium">Objective Duration:</span>
                 <span className="ml-2">{paperDetails.objDuration} minutes</span>
@@ -99,9 +99,18 @@ export default function ViewContainer() {
               </React.Fragment>
               :
               <React.Fragment>
-                <span className=" font-medium">Exam Duration:</span>
-                <span className="ml-2">{paperDetails.duration} minutes</span>
-              </React.Fragment>}
+                {paperDetails.paper_type === "Objective" ?
+                  <React.Fragment>
+                    <span className=" font-medium">Exam Duration:</span>
+                    <span className="ml-2">{paperDetails.objDuration} minutes</span>
+                  </React.Fragment>
+                  :
+                  <React.Fragment>
+                    <span className=" font-medium">Exam Duration:</span>
+                    <span className="ml-2">{paperDetails.duration} minutes</span>
+                  </React.Fragment>}
+              </React.Fragment>
+            }
           </div>
           <div className="pl-20">
             <span className=" font-medium">Marks:</span>

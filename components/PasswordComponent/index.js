@@ -16,7 +16,7 @@ const PasswordComponent = () => {
     message: "",
   });
   const isStudent = router?.query?.student_id ? true : false;
-
+  console.log(router.query,"abc")
   const changePassword = async () => {
     console.log(router.query);
     if (newPassword !== confirmPassword) {
@@ -35,6 +35,7 @@ const PasswordComponent = () => {
         id: isStudent ? router.query.student_id : router.query.faculty_id,
       })
       .then((res) => {
+        console.log(res, "RESPONSEeEEE")
         console.log("data is", res.data?.notMatch);
         if (res.data?.notMatch) {
           setLoading({});
