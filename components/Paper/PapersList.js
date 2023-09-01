@@ -129,7 +129,7 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
       <td className="border px-4 py-2">{paper.paper_type}</td>
       <td className="border px-4 py-2">{startDate}</td>
       <td className="border px-4 py-2">{startTime}</td>
-      {paper.paper_type === "Subjective/Objective" ?
+      {paper.paper_type === "Subjective/Objective" || "Word" ?
         <React.Fragment>
           <td className="border px-4 py-2">{paper.objDuration} Minutes</td>
           <td className="border px-4 py-2">{paper.duration} Minutes</td>
