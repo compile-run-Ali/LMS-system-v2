@@ -73,9 +73,12 @@ export default function Paper() {
       if (getAttempt.data.status === "Attempted") {
         getTimeCookie();
       }
-      if (localStorage.getItem(`paper ${paper}`)) {
+      console.log(localStorage.getItem(`paper ${paper}`,"paper details from local storage"))
+      if (localStorage.getItem(`paper ${paper}`)!=="null") {
+        console.log("paper details from local storage", JSON.parse(localStorage.getItem(`paper ${paper}`)))
         setPaperDetails(JSON.parse(localStorage.getItem(`paper ${paper}`)));
       } else {
+        console.log("fetching paper details from api")
         fetchPaper();
       }
     } catch (err) {
@@ -88,6 +91,7 @@ export default function Paper() {
     setObjectiveSubmitModal(true);
   };
   const handleSubmitObjective = async () => {
+    console.log("submitting objective")
     const isObjective = paperDetails?.subjective_questions?.length === 0;
     //we will send marks by comparing the answers
     const timeCompleted = new Date();
@@ -104,7 +108,7 @@ export default function Paper() {
       studentId: session.data.user.id,
       paperId: paper,
       objectiveSolved: true,
-      status: isObjective ? "Marked" : "Attempted",
+      status: isObjective ? "Marked" : "Submitted",
       obtainedMarks: score,
       timeCompleted: timeCompletedString,
     });
