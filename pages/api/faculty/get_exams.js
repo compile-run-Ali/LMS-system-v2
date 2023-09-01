@@ -125,17 +125,24 @@ const handler = async (req, res) => {
     exams.courses.forEach((course) => {
       const courseCode = course.course.course_code;
       if (selectedCoursePapersByCourse[courseCode]) {
-        course.course.paper = selectedCoursePapersByCourse[courseCode];
+        console.log(selectedCoursePapersByCourse[courseCode], "selectedCoursePapersByCourse[courseCode]")
+        //check if paper of the course is already present in the exams
+        const paperIds = course.course.paper.map((paper) => paper.paper_id);
+        const newPapers = selectedCoursePapersByCourse[courseCode].filter(
+          (paper) => !paperIds.includes(paper.paper_id)
+        );
+        course.course.paper = [...course.course.paper, ...newPapers];
+        
       }
     });
 
     // Create the response object
     const all_exams = {
       ...exams,
-      selectedCoursePapers,
     };
+    // filter and remove duplicate papers in all_exams.selectedCoursePapers
 
-    console.log(all_exams.courses[0].course.paper, "all_exams");
+    // console.log(all_exams.selectedCoursePapers, "all_exams");
     res.status(200).json(all_exams);
   }
   } catch (err) {

@@ -134,11 +134,12 @@ model Paper {
 
 model CoursePaper {
   id          Int    @id @default(autoincrement())
-  course      Course @relation(fields: [course_code], references: [course_code])
+  course      Course @relation(fields: [course_code], references: [course_code], onDelete: Cascade)
   course_code String
-  paper       Paper  @relation(fields: [paper_id], references: [paper_id])
+  paper       Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
   paper_id    String
 }
+
 
 model LinkedPaper {
   paperIdA String @id
