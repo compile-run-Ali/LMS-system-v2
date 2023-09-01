@@ -317,7 +317,7 @@ export default function Form({
           onChange={handlePaperName}
           value={paperName}
         />
-        {paperType === "Subjective/Objective" ?
+        {paperType === "Subjective/Objective" || "Word"?
           <React.Fragment>
             <Input
               text={"Objective Paper Duration (in minutes)"}
@@ -350,7 +350,7 @@ export default function Form({
             max={180}
             onChange={handleObjDuration}
           />
-          :
+          :          
           <Input
               text={"Paper Duration (in minutes)"}
               required={true}

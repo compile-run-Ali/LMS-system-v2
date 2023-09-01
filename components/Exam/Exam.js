@@ -312,7 +312,6 @@ export default function Exam({
           });
         }
 
-        router.push("/");
 
       }
     } catch (err) {
@@ -515,7 +514,7 @@ export default function Exam({
               </span>
             </div>
             <div className="pl-20">
-              {exam.paper_type === "Subjective/Objective" ?
+              {exam.paper_type === "Subjective/Objective" || "Word" ?
                 <React.Fragment>
                   <span className=" font-medium">Objective Duration:</span>
                   <span className="ml-2">{exam.objDuration} Minutes</span>
@@ -767,6 +766,8 @@ export default function Exam({
                       onClick={() => {
                         // router.push("/");
                         approve();
+                        router.push("/");
+
                       }}
                     >
                       Save and Approve
