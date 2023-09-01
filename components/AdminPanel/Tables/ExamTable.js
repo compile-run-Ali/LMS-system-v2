@@ -74,19 +74,19 @@ const ExamTable = ({
           .map((exam, index) => (
             <tr key={index} className="bg-white ">
               <td className="border border-gray-500 px-4 py-3">
-                {exam.paper_name}
+                {exam?.paper_name}
               </td>
               <td className="border border-gray-500 px-4 py-3">
-                {exam.course.course_name}
+                {exam?.course?.course_name}
               </td>
               <td className="border border-gray-500 px-4 py-3">
-                {exam.paper_type}
+                {exam?.paper_type}
               </td>
               <td className="border border-gray-500 px-4 py-3">
-                {returnDateInString(exam.date, true)}
+                {returnDateInString(exam?.date, true)}
               </td>
               <td className="border border-gray-500 px-4 py-3">
-                {convertDateTimeToStrings(exam.date)}
+                {convertDateTimeToStrings(exam?.date)}
               </td>
               <td className="border border-gray-500 px-4 py-3">
                 {exam.status}{" "}
