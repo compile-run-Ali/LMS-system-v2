@@ -36,7 +36,6 @@ export default function Form({
   const [linkedId, setLinkedId] = useState(null);
   const [allExamsOfCourse, setAllExamsOfCourse] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
-
   useEffect(() => {
     console.log(edit, examDetails, "some")
     if (edit) {
@@ -317,52 +316,53 @@ export default function Form({
           onChange={handlePaperName}
           value={paperName}
         />
-        {paperType === "Subjective/Objective" || "Word"?
-          <React.Fragment>
-            <Input
-              text={"Objective Paper Duration (in minutes)"}
-              required={true}
-              type={"number"}
-              value={objDuration}
-              min={0}
-              max={180}
-              onChange={handleObjDuration}
-            />
-            < Input
-              text={"Subjective Paper Duration (in minutes)"}
-              required={true}
-              type={"number"}
-              value={paperDuration}
-              min={0}
-              max={180}
-              onChange={handleDuration}
-            />
-          </React.Fragment>
-          :
-          <React.Fragment>
-            {paperType === "Objective" ? 
-            <Input
-            text={"Paper Duration (in minutes)"}
-            required={true}
-            type={"number"}
-            value={objDuration}
-            min={0}
-            max={180}
-            onChange={handleObjDuration}
-          />
-          :          
-          <Input
-              text={"Paper Duration (in minutes)"}
-              required={true}
-              type={"number"}
-              value={paperDuration}
-              min={0}
-              max={180}
-              onChange={handleDuration}
-            />
-          }
-          </React.Fragment>
+        {
+          paperType === "Subjective/Objective" || paperType === "Word" ? (
+            <React.Fragment>
+              <Input
+                text={"Objective Paper Duration (in minutes)"}
+                required={true}
+                type={"number"}
+                value={objDuration}
+                min={0}
+                max={180}
+                onChange={handleObjDuration}
+              />
+              <Input
+                text={"Subjective Paper Duration (in minutes)"}
+                required={true}
+                type={"number"}
+                value={paperDuration}
+                min={0}
+                max={180}
+                onChange={handleDuration}
+              />
+            </React.Fragment>
+          ) : (
+            paperType === "Objective" ? (
+              <Input
+                text={"Paper Duration (in minutes)"}
+                required={true}
+                type={"number"}
+                value={objDuration}
+                min={0}
+                max={180}
+                onChange={handleObjDuration}
+              />
+            ) : (
+              <Input
+                text={"Paper Duration (in minutes)"}
+                required={true}
+                type={"number"}
+                value={paperDuration}
+                min={0}
+                max={180}
+                onChange={handleDuration}
+              />
+            )
+          )
         }
+
         <Input
           text={"Date of Exam"}
           required={true}

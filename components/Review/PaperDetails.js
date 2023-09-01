@@ -116,7 +116,7 @@ export default function PaperDetails({
               {convertDateTimeToStrings(paper.date, false)}
             </td>
           </tr>
-          {paper.paper_type === "Subjective/Objective" || "Word" ?
+          {paper.paper_type === "Subjective/Objective" || "Word" ? (
             <React.Fragment>
               <tr className="bg-blue-900 text-white">
                 <th className="text-left border px-4 py-2">Objective Duration</th>
@@ -131,9 +131,10 @@ export default function PaperDetails({
                 </td>
               </tr>
             </React.Fragment>
+            )
             :
-            <React.Fragment>
-              {paper.paper_type === "Objective" ?
+            (
+              paper.paper_type === "Objective" ? (
                 <React.Fragment>
                   <tr className="bg-blue-900 text-white">
                     <th className="text-left border px-4 py-2">Duration</th>
@@ -142,7 +143,9 @@ export default function PaperDetails({
                     </td>
                   </tr>
                 </React.Fragment>
+              )
                 :
+                (
                 <React.Fragment>
                   <tr className="bg-blue-900 text-white">
                     <th className="text-left border px-4 py-2">Duration</th>
@@ -150,8 +153,9 @@ export default function PaperDetails({
                       {paper.duration} Minutes
                     </td>
                   </tr>
-                </React.Fragment>}
-            </React.Fragment>
+                </React.Fragment>
+                )
+            )
           }
 
           <tr className="bg-blue-900 text-white">
@@ -168,6 +172,6 @@ export default function PaperDetails({
           </tr>
         </thead>
       </table>
-    </div>
+    </div >
   );
 }

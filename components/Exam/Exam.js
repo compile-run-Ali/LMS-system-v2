@@ -514,26 +514,32 @@ export default function Exam({
               </span>
             </div>
             <div className="pl-20">
-              {exam.paper_type === "Subjective/Objective" || "Word" ?
-                <React.Fragment>
-                  <span className=" font-medium">Objective Duration:</span>
-                  <span className="ml-2">{exam.objDuration} Minutes</span>
-                  <span className=" font-medium"><br />Subjective Duration:</span>
-                  <span className="ml-2">{exam.duration} Minutes</span>
-                </React.Fragment>
-                :
-                <React.Fragment>
-                  {exam.paper_type === "Objective" ?
-                    <React.Fragment>
-                      <span className=" font-medium">Exam Duration:</span>
-                      <span className="ml-2">{exam.objDuration} Minutes</span>
-                    </React.Fragment> :
-                    <React.Fragment>
-                      <span className=" font-medium">Exam Duration:</span>
-                      <span className="ml-2">{exam.duration} Minutes</span>
-                    </React.Fragment>
-                  }
-                </React.Fragment>
+              {
+                exam.paper_type === "Objective" ? (
+                  <React.Fragment>
+                    <span className=" font-medium">Exam Duration:</span>
+                    <span className="ml-2">{exam.objDuration} Minutes</span>
+                  </React.Fragment>
+                )
+                  :
+                  (
+                    exam.paper_type === "Subjective/Objective" || "Word" ? (
+                      <React.Fragment>
+                        <span className=" font-medium">Objective Duration:</span>
+                        <span className="ml-2">{exam.objDuration} Minutes</span>
+                        <span className=" font-medium"><br />Subjective Duration:</span>
+                        <span className="ml-2">{exam.duration} Minutes</span>
+                      </React.Fragment>
+                    )
+
+                      :
+                      (
+                        <React.Fragment>
+                          <span className=" font-medium">Exam Duration:</span>
+                          <span className="ml-2">{exam.duration} Minutes</span>
+                        </React.Fragment>
+                      )
+                  )
               }
             </div>
 

@@ -272,13 +272,13 @@ export default function PaperContainer({ startOfPage }) {
     return <Loader />;
   }
 
-  console.log(paperDetails.paper_type,"paper type" )
+  console.log(paperDetails.paper_type, "paper type")
 
   return (
     <div className="flex justify-between shadow-lg max-w-5xl font-poppins mt-28 mx-20 xl:mx-auto pt-20 pb-10 px-10 gradient rounded-2xl shadow-3xl shadow-black">
       <div className="w-2/3  rounded-l-2xl">
         {currentQuestion === questions.length &&
-        paperDetails.paper_type !== "IE" ? (
+          paperDetails.paper_type !== "IE" ? (
           <Submitted />
         ) : paperDetails.paper_type === "Objective" ? (
           <OQContainer
@@ -290,33 +290,35 @@ export default function PaperContainer({ startOfPage }) {
             flags={flags || []}
             setFlags={setFlags}
           />
-        ) : paperDetails.paper_type === "Subjective/Objective" ||
-          paperDetails.paper_type === "Word" ? (
-          <>
-            {currentQuestion < objectiveCount ? (
-              <OQContainer
-                question={questions[currentQuestion]}
-                totalQuestions={questions.length}
-                currentQuestion={currentQuestion}
-                setCurrentQuestion={setCurrentAndLocal}
-                freeFlow={paperDetails.freeflow}
-                flags={flags || []}
-                setFlags={setFlags}
-              />
-            ) : (
-              <SQContainer
-                question={questions[currentQuestion]}
-                totalQuestions={questions.length}
-                currentQuestion={currentQuestion}
-                setCurrentQuestion={setCurrentAndLocal}
-                freeFlow={paperDetails.freeflow}
-                flags={flags || []}
-                setFlags={setFlags}
-              />
-            )}
-          </>
         ) : (
-          <IEContainer excelData={excelData} />
+          paperDetails.paper_type === "Subjective/Objective" ||
+            paperDetails.paper_type === "Word" ? (
+            <>
+              {currentQuestion < objectiveCount ? (
+                <OQContainer
+                  question={questions[currentQuestion]}
+                  totalQuestions={questions.length}
+                  currentQuestion={currentQuestion}
+                  setCurrentQuestion={setCurrentAndLocal}
+                  freeFlow={paperDetails.freeflow}
+                  flags={flags || []}
+                  setFlags={setFlags}
+                />
+              ) : (
+                <SQContainer
+                  question={questions[currentQuestion]}
+                  totalQuestions={questions.length}
+                  currentQuestion={currentQuestion}
+                  setCurrentQuestion={setCurrentAndLocal}
+                  freeFlow={paperDetails.freeflow}
+                  flags={flags || []}
+                  setFlags={setFlags}
+                />
+              )}
+            </>
+          ) : (
+            <IEContainer excelData={excelData} />
+          )
         )}
       </div>
       <div className="w-1/3 max-w-xs shadow-lg h-fit border-2 border-zinc-100 bg-white p-8 shadow-black">
