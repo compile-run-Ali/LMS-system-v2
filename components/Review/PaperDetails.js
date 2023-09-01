@@ -131,21 +131,20 @@ export default function PaperDetails({
                 </td>
               </tr>
             </React.Fragment>
-            )
+          )
             :
-            (
-              paper.paper_type === "Objective" ? (
-                <React.Fragment>
-                  <tr className="bg-blue-900 text-white">
-                    <th className="text-left border px-4 py-2">Duration</th>
-                    <td className="border text-center px-4 py-2">
-                      {paper.objDuration} Minutes
-                    </td>
-                  </tr>
-                </React.Fragment>
-              )
-                :
-                (
+            paper.paper_type === "Objective" ? (
+              <React.Fragment>
+                <tr className="bg-blue-900 text-white">
+                  <th className="text-left border px-4 py-2">Duration</th>
+                  <td className="border text-center px-4 py-2">
+                    {paper.objDuration} Minutes
+                  </td>
+                </tr>
+              </React.Fragment>
+            )
+              :
+              (
                 <React.Fragment>
                   <tr className="bg-blue-900 text-white">
                     <th className="text-left border px-4 py-2">Duration</th>
@@ -154,8 +153,7 @@ export default function PaperDetails({
                     </td>
                   </tr>
                 </React.Fragment>
-                )
-            )
+              )
           }
 
           <tr className="bg-blue-900 text-white">

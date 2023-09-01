@@ -317,6 +317,7 @@ export default function Exam({
     } catch (err) {
       console.log(err);
     }
+    router.push("/");
   };
 
   const saveDraft = async () => {
@@ -339,7 +340,6 @@ export default function Exam({
     }
     hideSpinner();
   };
-
   const sendBack = async () => {
     const sendBack = await axios.post("/api/faculty/edit_paperapproval", {
       paper_id: exam.paper_id,
@@ -351,16 +351,18 @@ export default function Exam({
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
-      const sendBackLinked = await axios.post("/api/faculty/edit_paperapproval", {
-        paper_id: linkedId,
-        examofficer: null,
-      });
-      if (sendBackLinked.status === 200) {
-        addComment({
-          comment: `Exam Sent Back by ${session.data.user.name}`,
-          faculty_id: session.data.user.id,
+      if (linkedId) {
+        const sendBackLinked = await axios.post("/api/faculty/edit_paperapproval", {
           paper_id: linkedId,
+          examofficer: null,
         });
+        if (sendBackLinked.status === 200) {
+          addComment({
+            comment: `Exam Sent Back by ${session.data.user.name}`,
+            faculty_id: session.data.user.id,
+            paper_id: linkedId,
+          });
+        }
       }
 
       router.push("/");
@@ -522,24 +524,22 @@ export default function Exam({
                   </React.Fragment>
                 )
                   :
-                  (
-                    exam.paper_type === "Subjective/Objective" || "Word" ? (
+                  exam.paper_type === "Subjective/Objective" || "Word" && !"IE" ? (
+                    <React.Fragment>
+                      <span className=" font-medium">Objective Duration:</span>
+                      <span className="ml-2">{exam.objDuration} Minutes</span>
+                      <span className=" font-medium"><br />Subjective Duration:</span>
+                      <span className="ml-2">{exam.duration} Minutes</span>
+                    </React.Fragment>
+                  )
+
+                    :
+                    (
                       <React.Fragment>
-                        <span className=" font-medium">Objective Duration:</span>
-                        <span className="ml-2">{exam.objDuration} Minutes</span>
-                        <span className=" font-medium"><br />Subjective Duration:</span>
+                        <span className=" font-medium">Exam Duration:</span>
                         <span className="ml-2">{exam.duration} Minutes</span>
                       </React.Fragment>
                     )
-
-                      :
-                      (
-                        <React.Fragment>
-                          <span className=" font-medium">Exam Duration:</span>
-                          <span className="ml-2">{exam.duration} Minutes</span>
-                        </React.Fragment>
-                      )
-                  )
               }
             </div>
 

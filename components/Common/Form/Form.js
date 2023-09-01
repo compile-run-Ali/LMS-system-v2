@@ -57,6 +57,7 @@ export default function Form({
           setFreeflow(res.data.freeflow);
           setFreeFlowGlobal(res.data.freeflow);
           setReview(res.data.review);
+
           setLoading({});
         })
         .catch((err) => {
@@ -338,7 +339,7 @@ export default function Form({
                 onChange={handleDuration}
               />
             </React.Fragment>
-          ) : (
+          ) :
             paperType === "Objective" ? (
               <Input
                 text={"Paper Duration (in minutes)"}
@@ -360,7 +361,6 @@ export default function Form({
                 onChange={handleDuration}
               />
             )
-          )
         }
 
         <Input

@@ -99,21 +99,19 @@ export default function ViewContainer() {
               </React.Fragment>
             )
               :
-              (
-                paperDetails.paper_type === "Objective" ? (
+              paperDetails.paper_type === "Objective" ? (
+                <React.Fragment>
+                  <span className=" font-medium">Exam Duration:</span>
+                  <span className="ml-2">{paperDetails.objDuration} minutes</span>
+                </React.Fragment>
+              )
+                :
+                (
                   <React.Fragment>
                     <span className=" font-medium">Exam Duration:</span>
-                    <span className="ml-2">{paperDetails.objDuration} minutes</span>
+                    <span className="ml-2">{paperDetails.duration} minutes</span>
                   </React.Fragment>
                 )
-                  :
-                  (
-                    <React.Fragment>
-                      <span className=" font-medium">Exam Duration:</span>
-                      <span className="ml-2">{paperDetails.duration} minutes</span>
-                    </React.Fragment>
-                  )
-              )
             }
           </div>
           <div className="pl-20">
