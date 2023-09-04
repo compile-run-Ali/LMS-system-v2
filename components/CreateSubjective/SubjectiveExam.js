@@ -28,7 +28,6 @@ const SubjectiveExam = ({
     marks: 1,
     questionnumber: subjectivesLocal.length + 1,
   });
-  console.log(currentQuestion)
  
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);

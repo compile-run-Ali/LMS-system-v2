@@ -19,7 +19,6 @@ export default function Login({ facultyLogin, setFacultyLogin }) {
 
 
   useEffect(()=>{
-    console.log("abcbcbcbcbccbcb")
     getUserIP(function(ip){
       if(ip && ip.includes("192")){
         SetIp(ip);

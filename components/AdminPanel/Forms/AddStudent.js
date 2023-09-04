@@ -69,8 +69,6 @@ export default function AddStudent() {
     formData.append("rank", rank);
     formData.append("profile_picture", profilePicture);
 
-    console.log("RANK IS ", rank);
-
     if (edit) {
       formData.append("student_id", router.query.student_id);
       editStudent(formData);

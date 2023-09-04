@@ -37,7 +37,6 @@ export default function Form({
   const [allExamsOfCourse, setAllExamsOfCourse] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
   useEffect(() => {
-    console.log(edit, examDetails, "some")
     if (edit) {
       setLoading({
         message: "Loading Exam Details...",
@@ -187,7 +186,7 @@ export default function Form({
           ...res.data,
         }));
         console.log("paper made ", res.data);
-        console.log(linkedId, "anc");
+        console.log(linkedId, "Linked ID");
         const id = res.data.paper_id;
         if (linkedId) {
           try {
@@ -217,8 +216,7 @@ export default function Form({
       });
     }
   };
-  console.log(linkedId);
-  console.log(courses, "courses");
+  
   useEffect(() => {
     if (Object.keys(router.query).length > 1 && !router.query.language) {
       setEdit(true);

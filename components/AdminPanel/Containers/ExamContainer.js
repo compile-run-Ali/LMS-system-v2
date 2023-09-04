@@ -15,7 +15,6 @@ const ExamContainer = ({ courses, exams, setExams, faculty }) => {
     setLoading({
       message: "Deleting Exam...",
     });
-    console.log(selectedForDeletion);
     axios
       .post("/api/admin/paper/delete_exam", {
         paper_id: selectedForDeletion,
