@@ -190,32 +190,28 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
           >
             <td className="border px-4 py-2">{exam.paper_name}</td>
             <td className="border px-4 py-2">{exam.paper_type}</td>
-            {exam.paper_type === "Subjective/Objective" || "Word" ?
-              <React.Fragment>
-                <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
-                <td className="border px-4 py-2">{exam.duration} Minutes</td>
-                <td className="border text-center px-4 py-2">-</td>
-
-              </React.Fragment>
-              :
-              <React.Fragment>
-                {exam.paper_type === "Objective" ?
-                  <React.Fragment>
-                    <td className="border px-4 py-2">-</td>
-                    <td className="border px-4 py-2">-</td>
-                    <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
-                  </React.Fragment>
-                  :
-                  <React.Fragment>
-
-                        <td className="border px-4 py-2">-</td>
-                        <td className="border px-4 py-2">-</td>
-                        <td className="border px-4 py-2">{exam.duration} Minutes</td>
-                      </React.Fragment>
-                    }
-                  </React.Fragment>
-                
+            {
+              exam.paper_type === "Objective" ? (
+                <React.Fragment>
+                  <td className="border px-4 py-2">-</td>
+                  <td className="border px-4 py-2">-</td>
+                  <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
+                </React.Fragment>
+              ) : exam.paper_type === "Subjective/Objective" || exam.paper_type === "Word" && !"IE" ? (
+                <React.Fragment>
+                  <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
+                  <td className="border px-4 py-2">{exam.duration} Minutes</td>
+                  <td className="border text-center px-4 py-2">-</td>
+                </React.Fragment>
+              ) : 
+                <React.Fragment>
+                  <td className="border px-4 py-2">-</td>
+                  <td className="border px-4 py-2">-</td>
+                  <td className="border px-4 py-2">{exam.duration} Minutes</td>
+                </React.Fragment>
+              
             }
+
             <td className="border px-4 py-2">
               {convertDateTimeToStrings(exam.date, true)}
             </td>

@@ -9,7 +9,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles, ieFilesWord }) => {
   const [files, setFiles] = useState([]);
   const [filesWord, setFilesWord] = useState([]);
   const [loading, setLoading] = useState({});
-  const [total_marks, setTotalMarks] = useState(0);
+  const [total_marks, setTotalMarks] = useState(exam?exam.total_marks:0)
 
   console.log(ieFiles, ieFilesWord);
 
@@ -84,17 +84,14 @@ const IeExam = ({ paperId, setActive, exam, ieFiles, ieFilesWord }) => {
 
   const handleUpload = async () => {
     if (filesWord.length < 1) {
-      alert("Please Upload Word File.")
       return
     }
     
     if (files.length < 1) {
-      alert("Please Upload Excel File.")
       return
     }
 
     if (total_marks < 1) {
-      alert("Please Set Marks for the Eaxm.")
       return
     }
 

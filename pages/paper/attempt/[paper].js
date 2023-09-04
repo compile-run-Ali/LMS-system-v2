@@ -74,7 +74,7 @@ export default function Paper() {
         getTimeCookie();
       }
       console.log(localStorage.getItem(`paper ${paper}`,"paper details from local storage"))
-      if (localStorage.getItem(`paper ${paper}`)!=="null") {
+      if (localStorage.getItem(`paper ${paper}`)!=="null"&&localStorage.getItem(`paper ${paper}`)!==null) {
         console.log("paper details from local storage", JSON.parse(localStorage.getItem(`paper ${paper}`)))
         setPaperDetails(JSON.parse(localStorage.getItem(`paper ${paper}`)));
       } else {
@@ -108,7 +108,7 @@ export default function Paper() {
       studentId: session.data.user.id,
       paperId: paper,
       objectiveSolved: true,
-      status: isObjective ? "Marked" : "Submitted",
+      status: isObjective ? "Marked" : "Attempted",
       obtainedMarks: score,
       timeCompleted: timeCompletedString,
     });
@@ -147,6 +147,7 @@ export default function Paper() {
               }
             });
             setIE(res.data);
+            setObjDone(true)
           }
           catch (err) {
             console.log(err);
@@ -223,7 +224,7 @@ export default function Paper() {
         document.cookie = `${paper}-time=${objAttempt}; expires=${nowObj.toUTCString()}; path=/`;
         document.cookie = `studentId=${session.data.user.id}; expires=${nowObj.toUTCString()}; path=/`;
       }, 1000);
-    } else if (objAttempt <= 0 && objAttempt > -100 && objAttempt !== null) {
+    } else if (objAttempt <= 0 && objAttempt > -100 && objAttempt !== null &&!ObjDone) {
       console.log("obj attempt time is very high ", objAttempt);
       //clearPaperFromLocal();
       handleSubmitObjective();
