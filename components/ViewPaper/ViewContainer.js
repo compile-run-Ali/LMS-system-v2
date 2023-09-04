@@ -90,7 +90,7 @@ export default function ViewContainer() {
             </span>
           </div>
           <div className="pl-20">
-            {paperDetails.paper_type === "Subjective/Objective" || "Word" ? (
+            {paperDetails.paper_type === "Subjective/Objective" || "Word" && !"IE" ? (
               <React.Fragment>
                 <span className=" font-medium">Objective Duration:</span>
                 <span className="ml-2">{paperDetails.objDuration} minutes</span>

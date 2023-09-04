@@ -147,6 +147,7 @@ export default function Paper() {
               }
             });
             setIE(res.data);
+            setObjDone(true)
           }
           catch (err) {
             console.log(err);

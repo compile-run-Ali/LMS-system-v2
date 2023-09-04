@@ -138,7 +138,7 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
           </React.Fragment>
         )
           :
-          paper.paper_type === "Subjective/Objective" || "Word" ? (
+          paper.paper_type === "Subjective/Objective" || "Word" && !"IE" ? (
             <React.Fragment>
               <td className="border px-4 py-2">{paper.objDuration} Minutes</td>
               <td className="border px-4 py-2">{paper.duration} Minutes</td>
@@ -171,7 +171,8 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
         {isLive ? (
           !attemptStatus &&
             paper.status !== "Closed" &&
-            paper.status !== "Marked" ? (
+            paper.status !== "Marked" &&
+            paper.status !== "Result Locked" ? (
             <button
               className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded"
               onClick={() => attemptExam(paper.paper_id)}

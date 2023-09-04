@@ -116,7 +116,7 @@ export default function PaperDetails({
               {convertDateTimeToStrings(paper.date, false)}
             </td>
           </tr>
-          {paper.paper_type === "Subjective/Objective" || "Word" ? (
+          {paper.paper_type === "Subjective/Objective" || "Word" && !"IE" ? (
             <React.Fragment>
               <tr className="bg-blue-900 text-white">
                 <th className="text-left border px-4 py-2">Objective Duration</th>
