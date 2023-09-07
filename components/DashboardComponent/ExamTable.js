@@ -13,7 +13,6 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
   const router = useRouter();
   const [exams, setExams] = useState([]);
   const { data: session, status } = useSession();
-
   useEffect(() => {
     const updatedExams = exams_data.map((exam) => {
       const examDate = new Date(exam.date);
@@ -132,6 +131,7 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
         console.log(error);
       });
   };
+  // console.log(exams,"ainan")
 
   const addComment = (comment) => {
     if (session.user) {
@@ -170,6 +170,7 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
           <th className="px-4 py-2">Objective Duration</th>
           <th className="px-4 py-2">Subjective Duration</th>
           <th className="px-4 py-2">Duration</th>
+          <th className="px-4 py-2">Comments</th>
           <th className="px-4 py-2">Date</th>
           <th className="px-4 py-2">Time</th>
           <th className="px-4 py-2">Total Marks</th>
@@ -190,27 +191,35 @@ const ExamTable = ({ exams_data, approve_row, isPrevious = false }) => {
           >
             <td className="border px-4 py-2">{exam.paper_name}</td>
             <td className="border px-4 py-2">{exam.paper_type}</td>
-            {
-              exam.paper_type === "Objective" ? (
-                <React.Fragment>
-                  <td className="border px-4 py-2">-</td>
-                  <td className="border px-4 py-2">-</td>
-                  <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
-                </React.Fragment>
-              ) : exam.paper_type === "Subjective/Objective" || exam.paper_type === "Word" && !"IE" ? (
-                <React.Fragment>
-                  <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
-                  <td className="border px-4 py-2">{exam.duration} Minutes</td>
-                  <td className="border text-center px-4 py-2">-</td>
-                </React.Fragment>
-              ) : 
-                <React.Fragment>
-                  <td className="border px-4 py-2">-</td>
-                  <td className="border px-4 py-2">-</td>
-                  <td className="border px-4 py-2">{exam.duration} Minutes</td>
-                </React.Fragment>
-              
-            }
+            {exam.paper_type === "Objective" ? (
+              <React.Fragment>
+                <td className="border px-4 py-2">-</td>
+                <td className="border px-4 py-2">-</td>
+                <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
+              </React.Fragment>
+            ) : exam.paper_type === "Subjective/Objective" ||
+              (exam.paper_type === "Word" && !"IE") ? (
+              <React.Fragment>
+                <td className="border px-4 py-2">{exam.objDuration} Minutes</td>
+                <td className="border px-4 py-2">{exam.duration} Minutes</td>
+                <td className="border text-center px-4 py-2">-</td>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <td className="border px-4 py-2">-</td>
+                <td className="border px-4 py-2">-</td>
+                <td className="border px-4 py-2">{exam.duration} Minutes</td>
+              </React.Fragment>
+            )}
+            {/* display last PaperComment[].comment where user_generated is true */}
+            <td className="border px-4 py-2">
+              { exam?.PaperComment?.filter((comment) => comment.user_generated).length  > 0
+                ? exam.PaperComment.filter((comment) => comment.user_generated)
+                    .slice(-1) // Get the last comment from the filtered array
+                    .map((comment) => comment.comment)
+                    .join(", ") // Display the comment(s) separated by a comma
+                : "-"}
+            </td>
 
             <td className="border px-4 py-2">
               {convertDateTimeToStrings(exam.date, true)}
