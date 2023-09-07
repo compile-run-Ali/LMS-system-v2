@@ -29,7 +29,7 @@ export default function ObjectivePaper({
   const [attempted, setAttempted] = useState([])
 
   useEffect(() => {
-    const attempted = JSON.parse(localStorage.getItem("attempted_questions"));
+    const attempted = JSON.parse(localStorage.getItem(`attempted_questions_${paper}`));
     setAttempted(attempted ? attempted : [])
   }, [currentQuestion])
 

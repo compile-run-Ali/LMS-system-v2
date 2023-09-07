@@ -235,10 +235,10 @@ export default function OQContainer({
                   `}
                   onClick={() => {
                     localStorage.setItem(
-                      `attempted_questions`,
-                      localStorage.getItem(`attempted_questions`) ?
+                      `attempted_questions_${paper}`,
+                      localStorage.getItem(`attempted_questions_${paper}`) ?
                       JSON.stringify([
-                        ...JSON.parse(localStorage.getItem(`attempted_questions`)),
+                        ...JSON.parse(localStorage.getItem(`attempted_questions_${paper}`)),
                         currentQuestion,
                       ]):
                       JSON.stringify([currentQuestion])

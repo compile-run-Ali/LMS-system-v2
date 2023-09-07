@@ -113,7 +113,7 @@ export default function Paper() {
       timeCompleted: timeCompletedString,
     });
 
-    localStorage.removeItem("attempted_questions");
+    localStorage.removeItem(`attempted_questions_${paper}`);
 
     const localPaper = JSON.parse(localStorage.getItem(`paper ${paper}`));
     if (localPaper) {
@@ -160,7 +160,7 @@ export default function Paper() {
 
   const clearPaperFromLocal = () => {
     localStorage.removeItem(`paper ${paper}`);
-    localStorage.removeItem(`attempted_questions`);
+    localStorage.removeItem(`attempted_questions_${paper}`);
   };
   console.log(paperDetails?.subjective_questions)
   const updateStatus = () => {

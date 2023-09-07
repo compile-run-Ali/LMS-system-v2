@@ -28,7 +28,7 @@ export default function SubjectivePaper({
       const currentPaper = JSON.parse(localStorage.getItem(`paper ${paper}`));
       setFlags(currentPaper ? currentPaper.flags : []);
     }
-    const attempted = JSON.parse(localStorage.getItem("attempted_questions"));
+    const attempted = JSON.parse(localStorage.getItem(`attempted_questions_${paper}`));
     setAttempted(attempted ? attempted : []);
   }, [currentQuestion]);
 

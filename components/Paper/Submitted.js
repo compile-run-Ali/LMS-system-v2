@@ -9,7 +9,7 @@ export default function Submitted() {
   const session = useSession();
  const clearPaperFromLocal = () => {
    localStorage.removeItem(`paper ${paper}`);
-   localStorage.removeItem(`attempted_questions`);
+   localStorage.removeItem(`attempted_questions_${paper}`);
  };
 
   const handleGoBack = () => {
