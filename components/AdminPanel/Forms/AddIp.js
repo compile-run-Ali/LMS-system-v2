@@ -40,7 +40,6 @@ const AddIp = () => {
     event.preventDefault();
 
     const formData = new FormData();
-    console.log(role);
     formData.append("ip_address", ip_address);
     formData.append("rank", rank);
     formData.append("role", "Faculty");

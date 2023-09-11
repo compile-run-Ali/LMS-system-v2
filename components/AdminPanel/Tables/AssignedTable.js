@@ -13,7 +13,6 @@ const AssignedTable = ({ course_data }) => {
 
   const handleRemove = (courseToBeDeleted, faculty) => {
     if (!faculty) return alert("Please select a faculty to remove.");
-    console.log("faculty", faculty);
     //call api here to remove faculty
     try{
     axios

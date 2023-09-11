@@ -40,7 +40,7 @@ export default function Dashboard() {
       fetchExams();
     }
   }, [session]);
-  console.log(exams, "exams to dsah");
+  console.log(exams, "exams to dash");
   return (
     <BaseLayout title={"Dashboard"}>
       <DashboardLayout>
