@@ -35,7 +35,6 @@ const PasswordComponent = () => {
         id: isStudent ? router.query.student_id : router.query.faculty_id,
       })
       .then((res) => {
-        console.log(res, "RESPONSEeEEE")
         console.log("data is", res.data?.notMatch);
         if (res.data?.notMatch) {
           setLoading({});

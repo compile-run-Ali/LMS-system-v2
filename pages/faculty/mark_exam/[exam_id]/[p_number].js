@@ -142,7 +142,7 @@ const Index = () => {
     }
     if (subjectiveQuestions.length !== 0) fetchSubjectiveAttempts();
   }, [objectiveQuestions, subjectiveQuestions]);
-  console.log("Sibjjj",subjectiveQuestions)
+  console.log("Subj",subjectiveQuestions)
   return (
     <div>
       <BaseLayout title={"Mark Exam"}>

@@ -69,7 +69,6 @@ export default function CreateExam({ paperType }) {
     }
   }, [router]);
   const fetchExam = async () => {
-    console.log("anc")
     try {
     const res = await axios.post("/api/faculty/get_exam", {
       paper_id: paperId,
@@ -121,7 +120,6 @@ const fetchSubjectives = async () => {
 
   useEffect(() => {
     if (paperId && !exam) {
-      console.log("abc")
       fetchExam();
     }
     if (paperType === "Objective" && paperId) {

@@ -27,7 +27,6 @@ export default function Exam({
   const [ieFiles, setIeFiles] = useState(null);
   const [ieFilesWord, setIeFilesWord] = useState(null);
   const [linkedId, setLinkedId] = useState(null);
-  console.log(exam);
   useEffect(() => {
     setAccess(() => {
       if (session.status === "authenticated" && exam !== undefined) {

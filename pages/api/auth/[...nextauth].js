@@ -48,11 +48,7 @@ const configuration = {
           }
         }
 
-        console.log("IPs are", ip_addresses)
-
-
-        console.log(ip_addresses)
-        console.log(req.body.ip,"abcd")
+        console.log(req.body.ip,"ipppp")
         if (!(ip_addresses.includes(req.body.ip)) && req.body.ip !== "none" && req.body.username !== "admin@email.com") {
           console.log(ip,"User Ip")
           console.log("Ip Address Does not match")
