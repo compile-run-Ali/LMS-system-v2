@@ -302,7 +302,7 @@ export default function Exam({
         });
         const approveLinkedExam = await axios.post("/api/faculty/update_exam_status", {
           paper_id: linkedId,
-          status: "Result Locked",
+          status: "unapproved",
         });
         if (approveLinkedExam.status === 200) {
           addComment({

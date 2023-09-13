@@ -132,7 +132,7 @@ exams!==null && courses!==null && (
                 (paper) =>
                   (level < 3 &&
                     paper.status !== "Pending Approval" &&
-                    paper.status !== "Draft") ||
+                    paper.status !== "Draft" && paper.status !=="unapproved") ||
                   (level > 2 && paper.status === "Approved")
               )}
             />
