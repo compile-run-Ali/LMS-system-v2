@@ -34,7 +34,8 @@ const MarkingPage = () => {
     const [studentSpa] = await Promise.all(promises2);
 
     // now join the two
-    students.data.course.students.forEach((student) => {
+    console.log( students,"sitndnd")
+    students.data.forEach((student) => {
       if (
         studentSpa.data.find(
           (spa) => spa.studentId === student.student.p_number
@@ -57,11 +58,14 @@ const MarkingPage = () => {
 
 
     let students_data = [];
-    if (students.data.course && students.data.course.students.length > 0) {
-      students_data = students.data.course.students.map(
-        (student) => student.student
+    console.log(students,"students")
+    if (students.data&& students.data.length > 0) {
+      console.log("here")
+      students_data = students.data.map(
+        (student) => student
       );
     }
+    console.log(students_data,"students_data")
     setStudentsData(students_data);
     setLoading(false);
   };
