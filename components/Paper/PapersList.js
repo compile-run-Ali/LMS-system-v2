@@ -72,16 +72,20 @@ export default function PapersList({ papers, status }) {
         </thead>
         <tbody>
           {updatedPapers.map((paper, index) => {
-            return (
-              // add Link tag to live papers only and those with attempt status empty
-              <tr key={paper.paper_id}>
-                <PaperRow
-                  paper={paper}
-                  attemptStatus={paper.attemptStatus}
-                  status={status}
-                />
-              </tr>
-            );
+            // Check if the status is "unapproved" before rendering the row
+            if (paper.status !== "unapproved") {
+              return (
+                <tr key={paper.paper_id}>
+                  <PaperRow
+                    paper={paper}
+                    attemptStatus={paper.attemptStatus}
+                    status={status}
+                  />
+                </tr>
+              );
+            }
+            // Return null if status is "unapproved" to skip rendering
+            return null;
           })}
         </tbody>
       </table>
@@ -90,7 +94,11 @@ export default function PapersList({ papers, status }) {
 }
 
 const PaperRow = ({ paper, attemptStatus, status }) => {
-  const { start, end } = getPaperDateTime(paper.date, paper.duration, paper.objDuration);
+  const { start, end } = getPaperDateTime(
+    paper.date,
+    paper.duration,
+    paper.objDuration
+  );
   const startDate = returnDateInString(start, true);
   const startTime = convertDateTimeToStrings(start);
   const isLive = status === "Live Papers";
@@ -129,40 +137,33 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
       <td className="border px-4 py-2">{paper.paper_type}</td>
       <td className="border px-4 py-2">{startDate}</td>
       <td className="border px-4 py-2">{startTime}</td>
-      {
-        paper.paper_type === "Objective" ? (
-          <React.Fragment>
-            <td className="border px-4 text-center py-2">-</td>
-            <td className="border px-4 text-center py-2">-</td>
-            <td className="border px-4 py-2">{paper.objDuration} Minutes</td>
-          </React.Fragment>
-        )
-          :
-          paper.paper_type === "Subjective/Objective" || "Word" && !"IE" ? (
-            <React.Fragment>
-              <td className="border px-4 py-2">{paper.objDuration} Minutes</td>
-              <td className="border px-4 py-2">{paper.duration} Minutes</td>
-              <td className="border px-4 text-center py-2">-</td>
-
-            </React.Fragment>
-          )
-            :
-            (
-              <React.Fragment>
-                <td className="border px-4 text-center py-2">-</td>
-                <td className="border px-4 text-center py-2">-</td>
-                <td className="border px-4 py-2">{paper.duration} Minutes</td>
-              </React.Fragment>
-            )
-      }
+      {paper.paper_type === "Objective" ? (
+        <React.Fragment>
+          <td className="border px-4 text-center py-2">-</td>
+          <td className="border px-4 text-center py-2">-</td>
+          <td className="border px-4 py-2">{paper.objDuration} Minutes</td>
+        </React.Fragment>
+      ) : paper.paper_type === "Subjective/Objective" || ("Word" && !"IE") ? (
+        <React.Fragment>
+          <td className="border px-4 py-2">{paper.objDuration} Minutes</td>
+          <td className="border px-4 py-2">{paper.duration} Minutes</td>
+          <td className="border px-4 text-center py-2">-</td>
+        </React.Fragment>
+      ) : (
+        <React.Fragment>
+          <td className="border px-4 text-center py-2">-</td>
+          <td className="border px-4 text-center py-2">-</td>
+          <td className="border px-4 py-2">{paper.duration} Minutes</td>
+        </React.Fragment>
+      )}
       <td className="border px-4 py-2">
         {paper.status === "Approved" && isLive
           ? "Live"
           : paper.status === "Approved" && !isLive && !isPast
-            ? "Upcoming"
-            : paper.status === "Closed"
-              ? "Marking"
-              : paper.status}
+          ? "Upcoming"
+          : paper.status === "Closed"
+          ? "Marking"
+          : paper.status}
       </td>
       <td className="border px-4 py-2 text-center">
         {/* if paper is live and is submitted, show submitted button, else show attempt button */}
@@ -170,9 +171,9 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
         {/* else show view button */}
         {isLive ? (
           !attemptStatus &&
-            paper.status !== "Closed" &&
-            paper.status !== "Marked" &&
-            paper.status !== "Result Locked" ? (
+          paper.status !== "Closed" &&
+          paper.status !== "Marked" &&
+          paper.status !== "Result Locked" ? (
             <button
               className="bg-blue-800 hover:bg-blue-700 cursor-pointer text-white p-2 rounded"
               onClick={() => attemptExam(paper.paper_id)}

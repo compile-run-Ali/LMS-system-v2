@@ -181,10 +181,14 @@ const StudentsTable = ({
         // alert("Error while closing exam. Please try again later");
       });
   };
-  console.log(students_data.every(
-    (student) =>
-      student.student.status === "Marked" || student.status === "Not Attempted"
-  ),"ahahahaha")
+  console.log(
+    students_data.every(
+      (student) =>
+        student.student.status === "Marked" ||
+        student.status === "Not Attempted"
+    ),
+    "ahahahaha"
+  );
   useEffect(() => {
     if (!exam) return;
     if (students_data) {
@@ -225,7 +229,8 @@ const StudentsTable = ({
 
       const isAllMarked = students_data.every(
         (student) =>
-          student.student.status === "Marked" || student.student.status === "Not Attempted"
+          student.student.status === "Marked" ||
+          student.student.status === "Not Attempted"
       );
       setMarked(isAllMarked);
 
@@ -264,6 +269,32 @@ const StudentsTable = ({
   //     </div>
   //   );
   // }
+  const handleDownload = async () => {
+    // look thru all students
+    students.forEach(async (student) => {
+      if (student.student.status === "Not Attempted") return;
+      const response = await axios.get(`/api/paper/marking/download_IE_attempt`, {
+        params: {
+          paperId: exam.paper_id,
+          studentId: student.student.p_number,
+        },
+        responseType: "blob",
+      });
+
+      const href = window.URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+
+      // Include student ID in the file name
+      const fileNameWithStudentId =
+        response.headers["content-disposition"].split("filename=")[1];
+      link.href = href;
+      link.download = student.student.p_number + "_" + fileNameWithStudentId; // Add student ID to the filename
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(href);
+    });
+  };
 
   return (
     <div>
@@ -284,15 +315,14 @@ const StudentsTable = ({
             </th>
           </tr>
           <tr id="second-row" className="bg-blue-800 text-white font-medium ">
-            {
-              user.level < 1 ? (
-                <React.Fragment>
-                  <th className="px-4 py-2">Army Number</th>
-                  <th className="px-4 py-2">Student Name</th>
-                </React.Fragment>
-              ) :
-                <th className="px-4 py-2">Evaluation Code</th>
-            }
+            {user.level < 1 ? (
+              <React.Fragment>
+                <th className="px-4 py-2">Army Number</th>
+                <th className="px-4 py-2">Student Name</th>
+              </React.Fragment>
+            ) : (
+              <th className="px-4 py-2">Evaluation Code</th>
+            )}
 
             <th className="px-4 py-2">Status</th>
             <th className="px-4 py-2">Marks</th>
@@ -304,59 +334,68 @@ const StudentsTable = ({
           {students.map((student, index) => (
             <tr
               key={student.student.p_number}
-              className={`h-12 ${student.student.status === "Marked"
+              className={`h-12 ${
+                student.student.status === "Marked"
                   ? "bg-green-200"
                   : student.student.status === "Not Attempted"
-                    ? "bg-red-200"
-                    : student.student.status === "Re-Check"
-                      ? "bg-yellow-200"
-                      : "bg-gray-200"
-                }`}
+                  ? "bg-red-200"
+                  : student.student.status === "Re-Check"
+                  ? "bg-yellow-200"
+                  : "bg-gray-200"
+              }`}
             >
               {user.level < 1 ? (
                 <React.Fragment>
                   <td
-                    className={`px-4 py-2 border ${index === students_data.length - 1 &&
+                    className={`px-4 py-2 border ${
+                      index === students_data.length - 1 &&
                       "border-b-gray-300 border-b"
-                      }`}
+                    }`}
                   >
                     {student.student.p_number}
                   </td>
                   <td
-                    className={`px-4 py-2 border ${index === students_data.length - 1 &&
+                    className={`px-4 py-2 border ${
+                      index === students_data.length - 1 &&
                       "border-b-gray-300 border-b"
-                      }`}
+                    }`}
                   >
                     {student.student.name}
                   </td>
-                </React.Fragment>)
-                : <td
-                  className={`px-4 py-2 border ${index === students_data.length - 1 &&
+                </React.Fragment>
+              ) : (
+                <td
+                  className={`px-4 py-2 border ${
+                    index === students_data.length - 1 &&
                     "border-b-gray-300 border-b"
-                    }`}
+                  }`}
                 >
                   {student.student.eval_code}
-                </td>}
+                </td>
+              )}
               <td
-                className={`px-4 py-2 border ${index === students_data.length - 1 &&
+                className={`px-4 py-2 border ${
+                  index === students_data.length - 1 &&
                   "border-b-gray-300 border-b"
-                  }`}
+                }`}
               >
                 {student.student.status}
               </td>
               <td
-                className={`px-4 py-2 border ${index === students_data.length - 1 &&
+                className={`px-4 py-2 border ${
+                  index === students_data.length - 1 &&
                   "border-b-gray-300 border-b"
-                  }`}
+                }`}
               >
                 {student.student.status === "Marked"
                   ? student.student.obtainedMarks
                   : "Not Marked"}
               </td>
               <td
-                className={`px-4 py-2 border text-center ${index === students_data.length - 1 &&
+                className={`px-4 py-2 border text-center ${
+                  index === students_data.length - 1 &&
                   "border-b-gray-300 border-b w-32"
-                  }`}
+                }`}
               >
                 {marked && student.student.status === "Marked" && (
                   <>
@@ -377,21 +416,24 @@ const StudentsTable = ({
                 )}
               </td>
               <td
-                className={`px-4 py-2 border w-[15%] text-center ${index === students_data.length - 1 &&
+                className={`px-4 py-2 border w-[15%] text-center ${
+                  index === students_data.length - 1 &&
                   "border-b-gray-300 border-b"
-                  }`}
+                }`}
               >
-
-                {(student.student.status !== "Not Attempted" &&
-                  exam.status !== "Result Locked" || user.level < 1) && (
-                    <Link
-                      href={`/faculty/${user.level < 1 ? "print_results" : "mark_exam"}/${exam?.paper_id}/${student.student.p_number}`}
-                    >
-                      <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-2 text-sm rounded ">
-                        Check Answers
-                      </button>
-                    </Link>
-                  )}
+                {((student.student.status !== "Not Attempted" &&
+                  exam.status !== "Result Locked") ||
+                  user.level < 1) && (
+                  <Link
+                    href={`/faculty/${
+                      user.level < 1 ? "print_results" : "mark_exam"
+                    }/${exam?.paper_id}/${student.student.p_number}`}
+                  >
+                    <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-2 text-sm rounded ">
+                      Check Answers
+                    </button>
+                  </Link>
+                )}
               </td>
             </tr>
           ))}
@@ -463,10 +505,11 @@ const StudentsTable = ({
           )}
           <button
             className={`
-          ${exam.status === "Result Locked"
-                ? "bg-gray-400 p cursor-not-allowed"
-                : "bg-blue-800 hover:bg-blue-700"
-              }
+          ${
+            exam.status === "Result Locked"
+              ? "bg-gray-400 p cursor-not-allowed"
+              : "bg-blue-800 hover:bg-blue-700"
+          }
           text-white text-lg py-3 px-4 rounded-md`}
             onClick={handleLockResult}
           >
@@ -474,6 +517,15 @@ const StudentsTable = ({
 
             <MdLock className="ml-2 mb-0.5 inline" />
           </button>
+
+          {exam.paper_type === "IE" && (
+            <button 
+            onClick={handleDownload}
+            className="bg-red-800 hover:bg-red-700 text-white text-lg py-3 px-4 rounded-md">
+              Download All IE
+              <MdDownload className="ml-2 mb-0.5 inline" />
+            </button>
+          )}
         </div>
       )}
       {isPrinter && (

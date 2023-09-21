@@ -46,6 +46,8 @@ export default function StudentDashboard({ session }) {
       const upcoming = [];
 
       for (const paper of approvedPapers) {
+        console.log(paper, "paper")
+
         if (
           compareDateTime(
             getPaperDateTime(paper.date, paper.duration, paper.objDuration).start,
