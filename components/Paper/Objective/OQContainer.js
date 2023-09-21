@@ -35,7 +35,7 @@ export default function OQContainer({
   const [changed, setChanged] = useState(false);
   const [attempted, setAttempted] = useState(false);
   const [savingAnswer, setSavingAnswer] = useState({});
-  const specialSequence="###"
+  const specialSequence = "###";
   const saveAnswer = () => {
     const attemptDone =
       numSelected === question.correct_answer.split(",").length;
@@ -222,13 +222,24 @@ export default function OQContainer({
               )}
             </div>
             <p className="text-2xl justify-center h-32 flex items-center text-white">
-              {currentQuestion + 1 + ". " + question.question}
+              {lang === "urdu" ? (
+                <>
+                  <span className="mr-4">{question.question}</span>
+                  {"." + (currentQuestion + 1)}
+                </>
+              ) : (
+                currentQuestion + 1 + ". " + question.question
+              )}
+            
             </p>
+
             <div className="flex justify-between mt-6 flex-col">
               {answers.map((answer, index) => (
                 <div
                   key={index}
-                  className={` w-full flex my-3 rounded-lg p-4 text-black ${lang==="urdu"?"justify-end":""} transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 
+                  className={` w-full flex my-3 rounded-lg p-4 text-black ${
+                    lang === "urdu" ? "justify-end" : ""
+                  } transition-all cursor-pointer items-center shadow-md shadow-black duration-200 hover:bg-zinc-200 
                     ${
                       attempted ? "bg-gray-200 pointer-events-none" : "bg-white"
                     }
@@ -236,13 +247,17 @@ export default function OQContainer({
                   onClick={() => {
                     localStorage.setItem(
                       `attempted_questions_${paper}`,
-                      localStorage.getItem(`attempted_questions_${paper}`) ?
-                      JSON.stringify([
-                        ...JSON.parse(localStorage.getItem(`attempted_questions_${paper}`)),
-                        currentQuestion,
-                      ]):
-                      JSON.stringify([currentQuestion])
-                    )
+                      localStorage.getItem(`attempted_questions_${paper}`)
+                        ? JSON.stringify([
+                            ...JSON.parse(
+                              localStorage.getItem(
+                                `attempted_questions_${paper}`
+                              )
+                            ),
+                            currentQuestion,
+                          ])
+                        : JSON.stringify([currentQuestion])
+                    );
                     setChanged(selectedAnswer.includes(answer) ? false : true);
                     setSaved(selectedAnswer.includes(answer) ? true : false);
                     const input = document.querySelector(
@@ -280,7 +295,9 @@ export default function OQContainer({
                     type={multipleAllowed ? "checkbox" : "radio"}
                     name="answer"
                     value={answer}
-                    className={`accent-blue-700  ${lang==="urdu"?"order-2 ml-4":"mr-4"} `}
+                    className={`accent-blue-700  ${
+                      lang === "urdu" ? "order-2 ml-4" : "mr-4"
+                    } `}
                     checked={selectedAnswer.includes(answer)} // set the checked attribute
                     readOnly // disable user input on this element
                   />
@@ -309,8 +326,7 @@ export default function OQContainer({
                       setCurrentQuestion(currentQuestion - 1);
                   }}
                 >
-                     
-              {lang==="urdu"?"پچھلا":"Previous"}
+                  {lang === "urdu" ? "پچھلا" : "Previous"}
                 </button>
                 <button
                   className={` px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500
@@ -321,10 +337,13 @@ export default function OQContainer({
               }`}
                   onClick={() => flagQuestion(String(currentQuestion))}
                 >
-                  
                   {flags.includes(String(currentQuestion))
-                    ? (lang==="urdu"?"ہٹا دیں":"Remove")
-                    : (lang==="urdu"?"ریویو":"Review")}
+                    ? lang === "urdu"
+                      ? "ہٹا دیں"
+                      : "Remove"
+                    : lang === "urdu"
+                    ? "ریویو"
+                    : "Review"}
                 </button>
               </>
             )}
@@ -337,9 +356,7 @@ export default function OQContainer({
                       setCurrentQuestion(currentQuestion + 1);
                     }}
                   >
-                    
-              {lang==="urdu"?"اگلے":"Next"}
-                
+                    {lang === "urdu" ? "اگلے" : "Next"}
                   </button>
                 )}
               </>
@@ -347,10 +364,8 @@ export default function OQContainer({
               <button
                 className={`bg-green-500 hover:bg-green-600 px-3 py-2 w-24 rounded-lg shadow-md shadow-black duration-500" `}
                 onClick={setSolveObjective}
-            
               >
-              {lang==="urdu"?" جمع کروائیں۔":"Submit Objective"}
-                
+                {lang === "urdu" ? " جمع کروائیں۔" : "Submit Objective"}
               </button>
             )}
           </div>
