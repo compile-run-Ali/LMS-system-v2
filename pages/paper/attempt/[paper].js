@@ -77,12 +77,7 @@ export default function Paper() {
       if (getAttempt.data.status === "Attempted") {
         getTimeCookie();
       }
-      console.log(
-        localStorage.getItem(
-          `paper ${paper}`,
-          "paper details from local storage"
-        )
-      );
+
       if (
         localStorage.getItem(`paper ${paper}`) !== "null" &&
         localStorage.getItem(`paper ${paper}`) !== null
