@@ -73,7 +73,6 @@ export default function PapersList({ papers, status }) {
         <tbody>
           {updatedPapers.map((paper, index) => {
             // Check if the status is "unapproved" before rendering the row
-            if (paper.status !== "unapproved") {
               return (
                 <tr key={paper.paper_id}>
                   <PaperRow
@@ -83,7 +82,6 @@ export default function PapersList({ papers, status }) {
                   />
                 </tr>
               );
-            }
             // Return null if status is "unapproved" to skip rendering
             return null;
           })}

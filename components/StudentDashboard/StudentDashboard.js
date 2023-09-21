@@ -37,7 +37,7 @@ export default function StudentDashboard({ session }) {
       const studentexams = await axios.get(`/api/student/paper/${index}`);
       const approvedPapers = studentexams.data.filter(
         (paper) =>
-          paper.status !== "Draft" && paper.status !== "Pending Approval"
+          paper.status !== "Draft" && paper.status !== "Pending Approval" && paper.status !== "unapproved"
       );
 
       // categorize papers here
