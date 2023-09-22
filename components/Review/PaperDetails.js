@@ -116,7 +116,7 @@ export default function PaperDetails({
               {convertDateTimeToStrings(paper.date, false)}
             </td>
           </tr>
-          {paper.paper_type === "Subjective/Objective" || "Word" && !"IE" ? (
+          {paper.paper_type === "Subjective/Objective" || "Word" && !"IE" ?
             <React.Fragment>
               <tr className="bg-blue-900 text-white">
                 <th className="text-left border px-4 py-2">Objective Duration</th>
@@ -131,29 +131,44 @@ export default function PaperDetails({
                 </td>
               </tr>
             </React.Fragment>
-          )
             :
-            paper.paper_type === "Objective" ? (
+            paper.paper_type === "Word" || "Subjective/Objective" && !"IE" ?
               <React.Fragment>
                 <tr className="bg-blue-900 text-white">
-                  <th className="text-left border px-4 py-2">Duration</th>
+                  <th className="text-left border px-4 py-2">Objective Duration</th>
                   <td className="border text-center px-4 py-2">
                     {paper.objDuration} Minutes
                   </td>
                 </tr>
+                <tr className="bg-blue-900 text-white">
+                  <th className="text-left border px-4 py-2">Subjective Duration</th>
+                  <td className="border text-center px-4 py-2">
+                    {paper.duration} Minutes
+                  </td>
+                </tr>
               </React.Fragment>
-            )
               :
-              (
+              paper.paper_type === "Objective" ? (
                 <React.Fragment>
                   <tr className="bg-blue-900 text-white">
                     <th className="text-left border px-4 py-2">Duration</th>
                     <td className="border text-center px-4 py-2">
-                      {paper.duration} Minutes
+                      {paper.objDuration} Minutes
                     </td>
                   </tr>
                 </React.Fragment>
               )
+                :
+                (
+                  <React.Fragment>
+                    <tr className="bg-blue-900 text-white">
+                      <th className="text-left border px-4 py-2">Duration</th>
+                      <td className="border text-center px-4 py-2">
+                        {paper.duration} Minutes
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                )
           }
 
           <tr className="bg-blue-900 text-white">

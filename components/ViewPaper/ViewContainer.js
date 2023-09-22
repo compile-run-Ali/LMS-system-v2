@@ -90,28 +90,35 @@ export default function ViewContainer() {
             </span>
           </div>
           <div className="pl-20">
-            {paperDetails.paper_type === "Subjective/Objective" || "Word" && !"IE" ? (
+            {paperDetails.paper_type === "Subjective/Objective" || "Word" && !"IE" ?
               <React.Fragment>
                 <span className=" font-medium">Objective Duration:</span>
                 <span className="ml-2">{paperDetails.objDuration} minutes</span>
                 <span className=" font-medium">Subjective Duration:</span>
                 <span className="ml-2">{paperDetails.duration} minutes</span>
               </React.Fragment>
-            )
               :
-              paperDetails.paper_type === "Objective" ? (
+              paperDetails.paper_type === "Word" || "Subjective/Objective" && !"IE" ?
                 <React.Fragment>
-                  <span className=" font-medium">Exam Duration:</span>
+                  <span className=" font-medium">Objective Duration:</span>
                   <span className="ml-2">{paperDetails.objDuration} minutes</span>
+                  <span className=" font-medium">Subjective Duration:</span>
+                  <span className="ml-2">{paperDetails.duration} minutes</span>
                 </React.Fragment>
-              )
                 :
-                (
+                paperDetails.paper_type === "Objective" ? (
                   <React.Fragment>
                     <span className=" font-medium">Exam Duration:</span>
-                    <span className="ml-2">{paperDetails.duration} minutes</span>
+                    <span className="ml-2">{paperDetails.objDuration} minutes</span>
                   </React.Fragment>
                 )
+                  :
+                  (
+                    <React.Fragment>
+                      <span className=" font-medium">Exam Duration:</span>
+                      <span className="ml-2">{paperDetails.duration} minutes</span>
+                    </React.Fragment>
+                  )
             }
           </div>
           <div className="pl-20">

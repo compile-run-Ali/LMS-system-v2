@@ -138,22 +138,25 @@ const PaperRow = ({ paper, attemptStatus, status }) => {
           </React.Fragment>
         )
           :
-          paper.paper_type === "Subjective/Objective" || "Word" && !"IE" ? (
+          paper.paper_type === "Subjective/Objective" || "Word"  && !"IE" ?
             <React.Fragment>
               <td className="border px-4 py-2">{paper.objDuration} Minutes</td>
               <td className="border px-4 py-2">{paper.duration} Minutes</td>
               <td className="border px-4 text-center py-2">-</td>
-
             </React.Fragment>
-          )
             :
-            (
+            paper.paper_type === "Word" || "Subjective/Objective" && !"IE" ?
+              <React.Fragment>
+                <td className="border px-4 py-2">{paper.objDuration} Minutes</td>
+                <td className="border px-4 py-2">{paper.duration} Minutes</td>
+                <td className="border px-4 text-center py-2">-</td>
+              </React.Fragment>
+              :
               <React.Fragment>
                 <td className="border px-4 text-center py-2">-</td>
                 <td className="border px-4 text-center py-2">-</td>
                 <td className="border px-4 py-2">{paper.duration} Minutes</td>
               </React.Fragment>
-            )
       }
       <td className="border px-4 py-2">
         {paper.status === "Approved" && isLive
