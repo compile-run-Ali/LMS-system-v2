@@ -40,7 +40,7 @@ const AnswersTable = ({
 
     return subjectiveWithChild;
   };
-
+  console.log(questions,"quest in ans table")
   return (
     <div className="flex flex-col space-y-10">
       {questionsWithChild().map((question, index) => (
@@ -48,7 +48,8 @@ const AnswersTable = ({
           key={question.sq_id}
           question={question}
           isStudent={isStudent}
-          facultyAnswer={questions[index].answer}
+          // in faculty answer we will send questions[index].answer where sq_id=questions[index].sq_id only
+          facultyAnswer={questions.find((q) => q.sq_id === question.sq_id)?.answer}
         />
       ))}
     </div>

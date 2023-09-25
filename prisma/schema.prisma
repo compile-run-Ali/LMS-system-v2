@@ -19,7 +19,7 @@ model Student {
   cgpa            Float
   email           String
   DOB             DateTime
-  eval_code       String
+  eval_code       String?
   rank            String?
   profile_picture String?
 
