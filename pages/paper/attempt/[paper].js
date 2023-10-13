@@ -51,15 +51,21 @@ export default function Paper() {
           .split(";")
           .filter((item) => item.includes(`${paper}-time`))[0]
           .split("=")[1];
-        if (!ObjDone) setObjAttempt(timeLeft);
-        else setAttemptTime(timeLeft);
+        if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0) {
+          setAttemptTime(timeLeft);
+        }
+        else setObjAttempt(timeLeft);
       } else {
-        if (!ObjDone) setObjAttempt(-100);
-        else setAttemptTime(-100);
+        if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0) {
+          setAttemptTime(-100);
+        }
+        else setObjAttempt(-100);
       }
     } else {
-      if (!ObjDone) setObjAttempt(-100);
-      else setAttemptTime(-100);
+      if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0) {
+        setAttemptTime(-100);
+      }
+      else setObjAttempt(-100);
     }
   };
   console.log(attemptTime, "time left");
@@ -133,6 +139,7 @@ export default function Paper() {
     setObjectiveSubmitModal(false);
     setSolveObjective(false);
     setObjDone(true);
+    localStorage.setItem(`paper ${paper} student ${session.data.user.id} objDone`, "true");
 
     isObjective && setSubmitted(true);
   };
@@ -248,7 +255,7 @@ export default function Paper() {
       handleSubmitObjective();
     }
 
-    if (ObjDone && attemptTime > 0) {
+    if ( attemptTime > 0 &&(ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true") || paperDetails?.objective_questions?.length === 0) {
       setTimeout(() => {
         setAttemptTime(attemptTime - 1);
         var now = new Date();
