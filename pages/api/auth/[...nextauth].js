@@ -49,11 +49,11 @@ const configuration = {
         }
 
         console.log(req.body.ip,"ipppp")
-        // if (!(ip_addresses.includes(req.body.ip)) && req.body.ip !== "none" && req.body.username !== "admin@email.com") {
-        //   console.log(ip,"User Ip")
-        //   console.log("Ip Address Does not match")
-        //   throw new Error("IP address does not match");
-        // }
+        if (!(ip_addresses.includes(req.body.ip)) && req.body.ip !== "none" && req.body.username !== "admin@email.com") {
+          console.log(ip,"User Ip")
+          console.log("Ip Address Does not match")
+          throw new Error("IP address does not match");
+        }
         try {
           if (req.body.role === "student") {
             const studentData = await StudentLogin(
