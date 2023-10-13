@@ -189,7 +189,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles, ieFilesWord }) => {
       </div>
       <div>
         <label className="ml-2 inline-flex items-center justify-center px-4 py-2 bg-blue-800 text-white font-medium rounded cursor-pointer">
-          <span>Upload Excel File</span>
+          <span>Upload IE Format</span>
           <input
             type="file"
             class="hidden"
@@ -198,7 +198,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles, ieFilesWord }) => {
           />
         </label>
         <label className="ml-2 inline-flex items-center justify-center px-4 py-2 bg-blue-800 text-white font-medium rounded cursor-pointer">
-          <span>Upload Word File</span>
+          <span>Upload IE Narrative</span>
           <input
             type="file"
             class="hidden"

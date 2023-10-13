@@ -150,7 +150,7 @@ export default function IEContainer({
                         className="bg-blue-500 hover:bg-blue-700 text-white text-lg font-bold py-2 px-20 mx-auto mb-10 rounded"
                         onClick={() => handleDownload(question.ie_id)}
                       >
-                        Download Exam
+                        Download IE Format
                       </button>
                     </div>
                   ))}
@@ -162,7 +162,7 @@ export default function IEContainer({
                         className="bg-blue-500 hover:bg-blue-700 text-white text-lg font-bold py-2 px-20 mx-auto mb-10 rounded"
                         onClick={() => handleDownloadWord(question.ie_id)}
                       >
-                        Download Word
+                        Download IE Narrative
                       </button>
                     </div>
                   ))}
