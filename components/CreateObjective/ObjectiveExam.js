@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { ImCross } from "react-icons/im";
-
 import Input from "../Common/Form/Input";
 import MultiSelectDropdown from "./MultiSelect";
 import { useRouter } from "next/router";
@@ -183,6 +182,8 @@ const MCQTable = ({
       setEditing(true);
       setIndex(index);
       setCurrentMCQ(mcqs[index]);
+      // scroll to top
+      window.scrollTo(0, 0);
       //if edited mcq is correct anser, then we need to update correct answer
       console.log(mcqs[index], "aaaa");
     } else {
