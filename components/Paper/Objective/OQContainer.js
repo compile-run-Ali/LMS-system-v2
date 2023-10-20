@@ -230,7 +230,6 @@ export default function OQContainer({
               ) : (
                 currentQuestion + 1 + ". " + question.question
               )}
-            
             </p>
 
             <div className="flex justify-between mt-6 flex-col">
@@ -261,8 +260,9 @@ export default function OQContainer({
                     setChanged(selectedAnswer.includes(answer) ? false : true);
                     setSaved(selectedAnswer.includes(answer) ? true : false);
                     const input = document.querySelector(
-                      `input[value="${answer}"]`
+                      `input[value="${answer.replace(/"/g, '\\"')}"]`
                     );
+
                     if (!multipleAllowed) {
                       setSelectedAnswer([answer]);
                       setNumSelected(1);
