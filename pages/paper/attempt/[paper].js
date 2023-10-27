@@ -165,6 +165,7 @@ export default function Paper() {
             });
             setIE(res.data);
             setObjDone(true);
+            getTimeCookie()
           } catch (err) {
             console.log(err);
           }
