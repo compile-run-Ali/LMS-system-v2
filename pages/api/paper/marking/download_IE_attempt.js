@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     if (!file) {
       return res.status(404).json({ error: "File not found" });
     }
-
+    console.log(file)
     // Construct the absolute file path on the server
     const filePath = path.join(process.cwd(), file[0].fileUrl);
 
