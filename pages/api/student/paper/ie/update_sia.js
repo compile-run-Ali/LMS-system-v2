@@ -22,7 +22,9 @@ export default async function handler(req, res) {
 
       const file = files.files;
       const oldPath = file.filepath;
-      const fileName = `${studentId}-${paperId}.xlsx`; // Combine studentId and paperId in the filename
+      const originalEnd = file.originalFilename.split(".");
+      console.log(originalEnd,"originalEnd")
+      const fileName = `${studentId}-${paperId}.${originalEnd[1]}`; // Combine studentId and paperId in the filename
       const newPath = `./public/attempts/${fileName.replace(/,/g, "")}`; // Remove commas from the path
       mv(oldPath, newPath, function (err) {
         if (err) {
