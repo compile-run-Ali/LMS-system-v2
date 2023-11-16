@@ -216,15 +216,23 @@ const StudentsTable = ({
         0
       );
       setHighestMarks(highestMarks);
+      console.log(highestMarks, "highestMarks", "student:", students_data.find(
+        (student) => student.student.obtainedMarks === highestMarks
+
+      ))
 
       // do not include marks of student whos status is Not Attempted
       const lowestMarks = students_data.reduce(
         (min, student) =>
-          student.status === "Not Attempted"
+          student.student.status === "Not Attempted"
             ? min
             : Math.min(min, student.student.obtainedMarks),
         100
       );
+      // the student whogot lowest marks is
+      console.log(lowestMarks, "lowestMarks", "student:", students_data.find(
+        (student) => student.student.obtainedMarks === lowestMarks
+      ))
       setLowestMarks(lowestMarks);
 
       const isAllMarked = students_data.every(
@@ -280,6 +288,8 @@ const StudentsTable = ({
         },
         responseType: "blob",
       });
+      if (response === "No file uploaded")
+        return
 
       const href = window.URL.createObjectURL(response.data);
       const link = document.createElement("a");

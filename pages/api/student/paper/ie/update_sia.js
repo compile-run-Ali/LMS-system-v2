@@ -27,7 +27,7 @@ export default async function handler(req, res) {
       const oldPath = file.filepath;
       const originalEnd = file.originalFilename.split(".");
       console.log(originalEnd,"originalEnd")
-      const fileName = `${studentId}-${paperId}-${originalEnd[0]}.${originalEnd[1]}`; // Combine studentId and paperId in the filename
+      const fileName = `${studentId}-${paperId}-${file.originalFilename}`;
       const newPath = `./public/attempts/${fileName.replace(/,/g, "")}`; // Remove commas from the path
       mv(oldPath, newPath, function (err) {
         if (err) {

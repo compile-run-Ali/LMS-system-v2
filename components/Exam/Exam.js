@@ -558,6 +558,7 @@ export default function Exam({
               faculty={true}
               paperId={exam.paper_id}
               markTo={true}
+              studentId={null}
             />
           )}
           {exam.paper_type !== "IE" && (

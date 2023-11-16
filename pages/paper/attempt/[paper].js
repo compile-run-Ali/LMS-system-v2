@@ -297,6 +297,7 @@ export default function Paper() {
               attemptTime={attemptTime}
               startTime={startTime}
               paperId={paper}
+              studentId={session?.data?.user.id}
               setSubmitted={setSubmitted}
               updateStatus={updateStatus}
             />
