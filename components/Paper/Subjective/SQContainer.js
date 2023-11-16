@@ -165,7 +165,6 @@ export default function SQContainer({
     },
     [answers]
   );
-console.log(question,index,"aaa")
   return (
     <div className="flex flex-col justify-between p-10 pt-0 max-w-4xl text-white">
       <Spinner loading={loading} />

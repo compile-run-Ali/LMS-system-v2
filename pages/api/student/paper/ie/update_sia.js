@@ -19,12 +19,15 @@ export default async function handler(req, res) {
 
     try {
       const { paperId, studentId } = fields;
-
+      // if no file is uploaded, return error
+      if (!files.files) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
       const file = files.files;
       const oldPath = file.filepath;
       const originalEnd = file.originalFilename.split(".");
       console.log(originalEnd,"originalEnd")
-      const fileName = `${studentId}-${paperId}.${originalEnd[1]}`; // Combine studentId and paperId in the filename
+      const fileName = `${studentId}-${paperId}-${originalEnd[0]}.${originalEnd[1]}`; // Combine studentId and paperId in the filename
       const newPath = `./public/attempts/${fileName.replace(/,/g, "")}`; // Remove commas from the path
       mv(oldPath, newPath, function (err) {
         if (err) {

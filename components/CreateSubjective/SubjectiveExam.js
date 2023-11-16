@@ -361,6 +361,7 @@ const SubjectiveExam = ({
         setSubjectiveQuestions(updatedSubjectives);
         setCurrentQuestion({
           sq_id: "",
+          answer:"",
           question: "",
           parent_sq_id: "",
           marks: 1,
@@ -433,6 +434,7 @@ const SubjectiveExam = ({
         question: "",
         parent_sq_id: "",
         marks: 1,
+        answer:"",
         long_question: true,
         questionnumber: isChild
           ? subjectivesLocal.length + 1
@@ -440,7 +442,7 @@ const SubjectiveExam = ({
       });
     }
   };
-  console.log(subjectivesLocal,"aaa")
+  console.log(currentQuestion,"aaa")
   const updateMarks = () => {
     const totalMarks = subjectivesLocal.reduce(
       (total, subjectives) => total + subjectives.marks,
@@ -512,6 +514,7 @@ const SubjectiveExam = ({
                   question: "",
                   parent_sq_id: "",
                   marks: 1,
+                  answer:"",
                   long_question: true,
                   questionnumber: subjectivesLocal.length + 1,
                 });
