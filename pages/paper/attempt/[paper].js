@@ -51,18 +51,18 @@ export default function Paper() {
           .split(";")
           .filter((item) => item.includes(`${paper}-time`))[0]
           .split("=")[1];
-        if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0) {
+        if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 || paperDetails?.paper_type==="IE" ) {
           setAttemptTime(timeLeft);
         }
         else setObjAttempt(timeLeft);
       } else {
-        if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0) {
+        if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 || paperDetails?.paper_type==="IE") {
           setAttemptTime(-100);
         }
         else setObjAttempt(-100);
       }
     } else {
-      if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0) {
+      if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 || paperDetails?.paper_type==="IE") {
         setAttemptTime(-100);
       }
       else setObjAttempt(-100);
@@ -165,6 +165,7 @@ export default function Paper() {
             });
             setIE(res.data);
             setObjDone(true);
+            localStorage.setItem(`paper ${paper} student ${session.data.user.id} objDone`, "true");
           } catch (err) {
             console.log(err);
           }
@@ -254,10 +255,10 @@ export default function Paper() {
       //clearPaperFromLocal();
       handleSubmitObjective();
     }
-    if(paperDetails?.paper_type==="IE"){
-      return
-    }
-    if ( attemptTime > 0 &&(ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true") || paperDetails?.objective_questions?.length === 0) {
+    // if(paperDetails?.paper_type==="IE"){
+    //   return
+    // }
+    if ( attemptTime > 0 &&(ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true") || paperDetails?.objective_questions?.length === 0 || paperDetails?.paper_type==="IE") {
       setTimeout(() => {
         setAttemptTime(attemptTime - 1);
         var now = new Date();
