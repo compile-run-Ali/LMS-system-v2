@@ -258,7 +258,7 @@ export default function Paper() {
     // if(paperDetails?.paper_type==="IE"){
     //   return
     // }
-    if ( attemptTime > 0 &&(ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true") || paperDetails?.objective_questions?.length === 0 || paperDetails?.paper_type==="IE") {
+    if ( attemptTime > 0 &&(ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 || paperDetails?.paper_type==="IE")) {
       setTimeout(() => {
         setAttemptTime(attemptTime - 1);
         var now = new Date();
