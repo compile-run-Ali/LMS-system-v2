@@ -688,6 +688,7 @@ const SubjectiveExam = ({
                 <th className="px-4">Q#</th>
                 <th className="px-4">Part</th>
                 <th className="px-4 py-2 w-1/3">Question</th>
+                <th className="px-4 py-2">Answer</th>
                 <th className="px-4 py-2">Parent Question</th>
                 <th className="px-4 py-2">Marks</th>
                 <th className="px-4 py-2">Edit</th>
@@ -711,6 +712,8 @@ const SubjectiveExam = ({
                       <td className="px-6">{index+1}</td>
                       <td className="px-6"></td>
                       <td className="px-4 py-2">{subjective.question}</td>
+                      {/* cut answer short and show ... */}
+                      <td className="px-4 py-2">{subjective.answer?.slice(0, 20)}...</td>
                       <td className="px-4 py-2">
                         {subjective.parent_sq_id?.question}
                       </td>

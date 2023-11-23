@@ -21,9 +21,11 @@ export default function Form({
   const [copy, setCopy] = useState(examDetails?.is_copy ? true : false);
   const [paperName, setPaperName] = useState("");
   const [paperDuration, setPaperDuration] = useState(
-    router.query.is_edit === "true" ? null : 180);
+    router.query.is_edit === "true" ? null : 180
+  );
   const [objDuration, setObjDuration] = useState(
-    router.query.is_edit === "true" ? null : 180);
+    router.query.is_edit === "true" ? null : 180
+  );
   const [weightage, setWeightage] = useState("");
   const [dateOfExam, setDateOfExam] = useState(null);
   const [paperTime, setPaperTime] = useState(
@@ -165,8 +167,8 @@ export default function Form({
           course_code: copy
             ? selectedCourse
             : router.query.course_code
-              ? router.query.course_code
-              : null,
+            ? router.query.course_code
+            : null,
           paper_name: paperName,
           date: formatDate(dateOfExam, paperTime),
           duration: paperDuration,
@@ -216,7 +218,7 @@ export default function Form({
       });
     }
   };
-  
+
   useEffect(() => {
     if (Object.keys(router.query).length > 1 && !router.query.language) {
       setEdit(true);
@@ -302,64 +304,64 @@ export default function Form({
     }
   };
 
-
   return (
     <form>
       <Spinner loading={loading} />
       <div className="w-full grid grid-cols-2 pr-10 gap-x-5 mt-10 font-poppins">
         <Input
-          text={router.query.language && router.query.language === "urdu" ? "Paper Name" : "Paper Name"}
+          text={
+            router.query.language && router.query.language === "urdu"
+              ? "Paper Name"
+              : "Paper Name"
+          }
           required={true}
           type={"text"}
           placeholder={"Ex: Mid-Term Exam"}
           onChange={handlePaperName}
           value={paperName}
         />
-        {
-          paperType === "Subjective/Objective" || paperType === "Word" ? (
-            <React.Fragment>
-              <Input
-                text={"Objective Paper Duration (in minutes)"}
-                required={true}
-                type={"number"}
-                value={objDuration}
-                min={0}
-                max={180}
-                onChange={handleObjDuration}
-              />
-              <Input
-                text={"Subjective Paper Duration (in minutes)"}
-                required={true}
-                type={"number"}
-                value={paperDuration}
-                min={0}
-                max={180}
-                onChange={handleDuration}
-              />
-            </React.Fragment>
-          ) :
-            paperType === "Objective" ? (
-              <Input
-                text={"Paper Duration (in minutes)"}
-                required={true}
-                type={"number"}
-                value={objDuration}
-                min={0}
-                max={180}
-                onChange={handleObjDuration}
-              />
-            ) : (
-              <Input
-                text={"Paper Duration (in minutes)"}
-                required={true}
-                type={"number"}
-                value={paperDuration}
-                min={0}
-                max={180}
-                onChange={handleDuration}
-              />
-            )
-        }
+        {paperType === "Subjective/Objective" || paperType === "Word" ? (
+          <React.Fragment>
+            <Input
+              text={"Objective Paper Duration (in minutes)"}
+              required={true}
+              type={"number"}
+              value={objDuration}
+              min={0}
+              max={180}
+              onChange={handleObjDuration}
+            />
+            <Input
+              text={"Subjective Paper Duration (in minutes)"}
+              required={true}
+              type={"number"}
+              value={paperDuration}
+              min={0}
+              max={180}
+              onChange={handleDuration}
+            />
+          </React.Fragment>
+        ) : paperType === "Objective" ? (
+          <Input
+            text={"Paper Duration (in minutes)"}
+            required={true}
+            type={"number"}
+            value={objDuration}
+            min={0}
+            max={180}
+            onChange={handleObjDuration}
+          />
+        ) : (
+          <Input
+            text={"Paper Duration (in minutes)"}
+            required={true}
+            type={"number"}
+            value={paperDuration}
+            min={0}
+            max={180}
+            onChange={handleDuration}
+          />
+        )}
 
         <Input
           text={"Date of Exam"}
@@ -385,23 +387,23 @@ export default function Form({
           onChange={handlePaperTime}
           value={paperTime}
         />
+        <select
+          className="w-full h-11  border  border-primary-black border-opacity-[0.15] rounded-md mt-14 px-3 py-2
+            focus:border-[#FEC703] focus:outline-none bg-white dateSelectorColor"
+          onChange={(e) => {
+            setLinkedId(e.target.value);
+          }}
+          value={linkedId}
+        >
+          <option value={""}> Select Paper to Link</option>
+          {allExamsOfCourse.map((exam) => (
+            <option key={exam.paper_id} value={exam.paper_id}>
+              {exam.paper_name}
+            </option>
+          ))}
+        </select>
         {!copy && !edit && (
           <>
-            <select
-              className="w-full h-11  border  border-primary-black border-opacity-[0.15] rounded-md mt-14 px-3 py-2
-            focus:border-[#FEC703] focus:outline-none bg-white dateSelectorColor"
-              onChange={(e) => {
-                setLinkedId(e.target.value);
-              }}
-              value={linkedId}
-            >
-              <option value={""}> Select Paper to Link</option>
-              {allExamsOfCourse.map((exam) => (
-                <option key={exam.paper_id} value={exam.paper_id}>
-                  {exam.paper_name}
-                </option>
-              ))}
-            </select>
             <div className="w-full font-poppins mt-6">
               <label className="text-primary-black">Select Courses</label>
               <select

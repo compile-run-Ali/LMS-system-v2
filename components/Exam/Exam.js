@@ -160,6 +160,7 @@ export default function Exam({
     date.setHours(date.getHours() + 5);
     return date.toISOString();
   };
+  console.log(exam, "exam")
   const editExam = () => {
     if (setActive) {
       setActive(1);
@@ -176,6 +177,7 @@ export default function Exam({
       query: {
         paper_id: exam.paper_id,
         is_edit: true,
+        course_code: exam.course.course_code,
       },
     });
   };

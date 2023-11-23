@@ -195,10 +195,10 @@ export default function IEContainer({
                 className="border-2 border-gray-300 p-2 rounded-lg"
               />
               <button
-                className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+                className="bg-green-700 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8 mt-12"
                 onClick={handleUpload}
               >
-                Save and Proceed
+                Save and Submit
               </button>
               <div className="flex flex-col gap-2">
                 {files.map((file, index) => (
