@@ -1,19 +1,21 @@
 import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  console.log("Add Objective Question", req.body);
+  console.log("Add Objective Question request body", req.body);
+  console.log("Add Objective Question requests.btn_call: ", req.body.btn_call);
+  console.log("Add Objective Question requests.question_info: ", req.body.question_info);
   try {
     //Create New Objective Question
     const newObjective = await prisma.objectiveQuestion.create({
       data: {
-        question: req.body.question,
-        answers: req.body.answers,
-        marks: req.body.marks,
-        correct_answer: req.body.correct_answer,
-        timeAllowed: req.body.timeAllowed,
+        question: req.body.question_info.question,
+        answers: req.body.question_info.answers,
+        marks: req.body.question_info.marks,
+        correct_answer: req.body.question_info.correct_answer,
+        timeAllowed: req.body.question_info.timeAllowed,
         paper: {
           connect: {
-            paper_id: req.body.paper_id,
+            paper_id: req.body.question_info.paper_id,
           },
         },
       },

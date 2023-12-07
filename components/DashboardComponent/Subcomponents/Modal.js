@@ -3,7 +3,8 @@ import { Dialog, Transition } from "@headlessui/react";
 import { IoIosPaper } from "react-icons/io";
 import { useRouter } from "next/router";
 
-export default function Modal({ open, setOpen, courseCode }) {
+export default function Modal({ open, setOpen, courseCode, btn_call}) {
+  console.log("btn call to model of create question", btn_call)
   const [examType, setExamType] = useState("I.E");
   const router = useRouter();
   const cancelButtonRef = useRef(null);
@@ -17,24 +18,45 @@ export default function Modal({ open, setOpen, courseCode }) {
         },
       });
     } else if (examType === "SO") {
-      // Redirect to create exam page for subjective/objective
-      router.push({
-        pathname: `/faculty/create_exam/subjective`,
-        query: {
-          course_code: courseCode,
-        },
-      });
+      if (btn_call === "Create Question"){
+        // router.push({
+        //   pathname: `/faculty/create_exam/subjective`,
+        //   query: {
+        //     course_code: courseCode,
+        //   },
+        // })
+      }
+      else{
+        // Redirect to create exam page for subjective/objective
+        router.push({
+          pathname: `/faculty/create_exam/subjective`,
+          query: {
+            course_code: courseCode,
+          },
+        });
+      }
     } else if (examType === "O") {
-      // Redirect to create exam page for objective
-      //make api call to create a new paper using axios
+      if (btn_call === "Create Question"){
+        router.push({
+          pathname: `/question/objective`,
+          query: {
+            course_code: courseCode,
+            btn_call: btn_call
+          },
+        })
+      }
+      else{
+        // Redirect to create exam page for objective
+        //make api call to create a new paper using axios
 
-      //then redirect to create exam page for objectiv
-      router.push({
-        pathname: `/faculty/create_exam/objective`,
-        query: {
-          course_code: courseCode,
-        },
-      });   
+        //then redirect to create exam page for objectiv
+        router.push({
+          pathname: `/faculty/create_exam/objective`,
+          query: {
+            course_code: courseCode,
+          },
+        });
+      }
     }
 
     else if (examType === "Ot") {
@@ -103,9 +125,10 @@ export default function Modal({ open, setOpen, courseCode }) {
                         as="h3"
                         className="text-lg font-medium leading-6 text-gray-900"
                       >
-                        Select Exam Type
+                        {btn_call === "Create Question" ? "Select Question Type": "Select Exam Type"}
                       </Dialog.Title>
                       <form>
+                        { btn_call !== "Create Question" &&
                         <div className="mt-4">
                           <button type="button">
                             <input
@@ -119,6 +142,7 @@ export default function Modal({ open, setOpen, courseCode }) {
                             I.E Exam
                           </button>
                         </div>
+                        }
                         <div className="mt-2">
                           <button type="button">
                             <input
@@ -128,7 +152,7 @@ export default function Modal({ open, setOpen, courseCode }) {
                               name="paperType"
                               className="mr-2"
                             />
-                            Subjective/Objective Exam
+                            {btn_call === "Create Question" ? "Subjective Question" : "Subjective/Objective Exam"}
                           </button>
                         </div>
 
@@ -141,9 +165,10 @@ export default function Modal({ open, setOpen, courseCode }) {
                               name="paperType"
                               className="mr-2"
                             />
-                            Objective Exam
+                            { btn_call === "Create Question" ? "Objective Question" : "Objective Exam"}
                           </button>
                         </div>
+                        { btn_call !== "Create Question" &&
                         <div className="mt-2">
                           <button type="button">
                             <input
@@ -156,6 +181,7 @@ export default function Modal({ open, setOpen, courseCode }) {
                             Urdu Objective Exam
                           </button>
                         </div>
+                        }
                       </form>
                     </div>
                   </div>

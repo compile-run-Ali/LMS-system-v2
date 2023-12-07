@@ -39,7 +39,7 @@ export default function Form({
   const [allExamsOfCourse, setAllExamsOfCourse] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
   useEffect(() => {
-    if (edit) {
+    if (edit && !router.query.random) {
       setLoading({
         message: "Loading Exam Details...",
       });

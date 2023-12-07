@@ -45,12 +45,14 @@ const wizardItemsSubjective = [
 
 export default function CreateExam({ paperType }) {
   const router = useRouter();
+  console.log("query into create exam: ", router.query)
 
   const [examDetails, setExamDetails] = useState(null);
   const [active, setActive] = useState(1);
   const [paperId, setPaperId] = useState(
     Object.keys(router.query).length > 1 && !router.query.language ? router.query.paper_id : 0
   );
+
   const [exam, setExam] = useState();
   const [mcqs, setMCQs] = useState([]);
   const [subjectives, setSubjectives] = useState([]);
@@ -119,7 +121,7 @@ const fetchSubjectives = async () => {
 };
 
   useEffect(() => {
-    if (paperId && !exam) {
+    if (paperId && !exam && !router.query.random) {
       fetchExam();
     }
     if (paperType === "Objective" && paperId) {

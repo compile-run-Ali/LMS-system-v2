@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 
 import CreateWordButton from "../CreateWordButton";
+import GenerateRandomPaperButton from "../GenerateRandomPaperButton";
+import CreateQuestionButton from "../CreateQuestionButton";
 import ExamTable from "../Tables/ExamTable";
 import DeleteModal from "../Modals/DeleteModal";
 import Spinner from "@/components/Loader/Spinner";
@@ -40,7 +42,11 @@ const ExamContainer = ({ courses, exams, setExams, faculty }) => {
         isOpen={open}
         handleDelete={handleDelete}
       />
-      <CreateWordButton courses={courses} />
+      <div className="flex flex-row justify-end">
+        <CreateQuestionButton courses={courses}/>
+        <GenerateRandomPaperButton courses={courses} />
+        <CreateWordButton courses={courses} />
+      </div>
       <ExamTable
         exams_data={exams}
         faculty={faculty}

@@ -2,9 +2,10 @@ import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import { Fragment, useState } from "react";
 
-export default function SelectCourseModal({ isOpen, setIsOpen, courses }) {
+export default function SelectCourseModal({ isOpen, setIsOpen, courses, btn_call_heading}) {
   const router = useRouter();
   const [selectedCourseCode, setSelectedCourseCode] = useState("");
+  let model_heading;
 
   console.log("courses:", selectedCourseCode);
 
@@ -12,11 +13,16 @@ export default function SelectCourseModal({ isOpen, setIsOpen, courses }) {
     if (!selectedCourseCode) {
       alert("Please select a course.");
     } else {
+      let query_obj;
+      if (btn_call_heading === "Generate Random Paper"){
+        query_obj = {course_code: selectedCourseCode, random: "random_true"}
+      }
+      else{
+        query_obj = {course_code: selectedCourseCode}
+      }
       router.push({
         pathname: `/faculty/create_exam/word`,
-        query: {
-          course_code: selectedCourseCode,
-        },
+        query: query_obj,
       });
     }
   };
@@ -56,7 +62,7 @@ export default function SelectCourseModal({ isOpen, setIsOpen, courses }) {
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  Create Word Exam
+                  {btn_call_heading}
                 </Dialog.Title>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">Choose a course:</p>

@@ -15,7 +15,9 @@ const MCQTable = ({
   objective_questions,
   setObjectiveQuestions,
   freeFlow,
+  btn_call
 }) => {
+  console.log("in mcq table, btn_call: ", btn_call)
   const [loading, setLoading] = useState({});
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
@@ -145,14 +147,16 @@ const MCQTable = ({
       const newMCQ = await axios.post(
         "/api/faculty/paper_creation/add_objective",
         {
-          paper_id: paperId,
+          btn_call,
+          question_info: {paper_id: paperId,
           question: currentMCQ.question,
           answers: currentMCQ.options.toString(),
           correct_answer: currentMCQ.correct_answer,
           marks: currentMCQ.marks,
-          timeAllowed: currentMCQ.timeAllowed || 60,
+          timeAllowed: currentMCQ.timeAllowed || 60,}
         }
       );
+      console.log("got response of addMCQ:", newMCQ)
       setLoading({
         show: false,
         message: "",

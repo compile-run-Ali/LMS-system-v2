@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import SelectCourseModal from "./Modals/SelectCourseModal";
 
-const CreateWordButton = ({ courses }) => {
+const CreateQuestionButton = ({ courses }) => {
   const [showModal, setShowModal] = useState(false);
 
   return (
@@ -11,7 +11,7 @@ const CreateWordButton = ({ courses }) => {
           courses={courses}
           isOpen={showModal}
           setIsOpen={setShowModal}
-          btn_call_heading={"Create Word Exam"}
+          btn_call_heading={"Create Question"}
         />
       )}
 
@@ -19,10 +19,10 @@ const CreateWordButton = ({ courses }) => {
         onClick={() => setShowModal(true)}
         className="bg-blue-800 hover:bg-blue-700 transition-all text-white border rounded-md px-3 py-2"
       >
-        Create Word Exam
+        Create Question
       </button>
     </div>
   );
 };
 
-export default CreateWordButton;
+export default CreateQuestionButton;

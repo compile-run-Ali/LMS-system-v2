@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ExamTable from "./ExamTable";
 import Modal from "./Subcomponents/Modal";
+import DashboardButton from "./DashboardButton";
 import { useSession } from "next-auth/react";
 
 export default function DashboardComponent({
@@ -9,7 +10,7 @@ export default function DashboardComponent({
   level,
   setSelectedCourseDash,
 }) {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [exams, setExams] = useState(null);
   const [courses, setCourses] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState("");
@@ -57,14 +58,14 @@ export default function DashboardComponent({
     }
   }, [exams_data, paperapproval_data, selectedCourse]);
   console.log(exams_data);
-  const toggleModal = () => {
-    //throw notification if no course is selected
-    if (selectedCourse === "") {
-      alert("Please select a course first");
-      return;
-    }
-    setOpen(!open);
-  };
+  // const toggleModal = () => {
+  //   //throw notification if no course is selected
+  //   if (selectedCourse === "") {
+  //     alert("Please select a course first");
+  //     return;
+  //   }
+  //   setOpen(!open);
+  // };
 
   const handleCourseChange = (e) => {
     if (e.target.value === "") {
@@ -108,16 +109,21 @@ export default function DashboardComponent({
           </select>
         </div>
         {courses.length > 0 && level < 3 && (
-          <div>
-            <div className="flex w-full justify-end pr-10 font-poppins">
+          <div className="flex flex-row justify-end pr-10">
+            {/* <DashboardButton open={open} setOpen={setOpen} courseCode={selectedCourse} btn_text="Create Question"/> */}
+            <DashboardButton courseCode={selectedCourse} btn_text="Create Question"/>
+            <DashboardButton courseCode={selectedCourse} btn_text="Generate Random Paper"/>
+            <DashboardButton courseCode={selectedCourse} btn_text="Create Paper"/>
+
+            {/* <div className="flex justify-end pr-10 font-poppins mt-10 ml-2">
               <button
                 onClick={toggleModal}
-                className="bg-blue-900 text-white border rounded-md px-3 py-2"
+                className="bg-blue-800 hover:bg-blue-700 transition-all text-white border rounded-md px-3 py-2"
               >
                 Create Paper
               </button>
             </div>
-            <Modal open={open} setOpen={setOpen} courseCode={selectedCourse} />
+            <Modal open={open} setOpen={setOpen} courseCode={selectedCourse} /> */}
           </div>
         )}
         {paperapproval_data && paperapproval_data.length > 0 && (
