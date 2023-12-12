@@ -36,7 +36,7 @@ export default function Modal({ open, setOpen, courseCode, btn_call}) {
         });
       }
     } else if (examType === "O") {
-      if (btn_call === "Create Question"){
+      if (btn_call === "Create Question" && courseCode === null){
         router.push({
           pathname: `/question/objective`,
           query: {

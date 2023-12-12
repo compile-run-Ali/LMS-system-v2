@@ -5,8 +5,11 @@ const DashboardButton = ({courseCode, btn_text}) => {
   const [open, setOpen] = useState(false);
 
   const toggleModal = () => {
+    if (btn_text === "Create Question" && courseCode === null){
+      setOpen(!open);
+    }
     //throw notification if no course is selected
-    if (courseCode === "") {
+    else if (courseCode === "") {
       alert("Please select a course first");
       return;
     }
@@ -17,14 +20,14 @@ const DashboardButton = ({courseCode, btn_text}) => {
 
   return (
     <div className="flex justify-end font-poppins ml-2">
-        <Modal open={open} setOpen={setOpen} courseCode={courseCode} btn_call={btn_text}/>
+      <Modal open={open} setOpen={setOpen} courseCode={courseCode} btn_call={btn_text}/>
 
-        <button
-        onClick={toggleModal}
-        className="bg-blue-800 hover:bg-blue-700 transition-all text-white border rounded-md px-3 py-2"
-        >
-        {btn_text}
-        </button>
+      <button
+      onClick={toggleModal}
+      className="bg-blue-800 hover:bg-blue-700 transition-all text-white border rounded-md px-3 py-2"
+      >
+      {btn_text}
+      </button>
     </div>
   );
 };

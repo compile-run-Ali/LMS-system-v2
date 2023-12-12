@@ -4,6 +4,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { ImCross } from "react-icons/im";
 import Input from "../Common/Form/Input";
 import MultiSelectDropdown from "./MultiSelect";
+import NewQuestionInput from "./NewQuestionInput";
 import { useRouter } from "next/router";
 import Spinner from "../Loader/Spinner";
 
@@ -33,6 +34,10 @@ const MCQTable = ({
     correct_answer: "",
     marks: 1,
     timeAllowed: 60,
+    difficulty: "",
+    course: "",
+    subject: "",
+    topic: ""
   });
   const specialSequence="###"
 
@@ -78,6 +83,12 @@ const MCQTable = ({
     setMultipleOptions(e.target.checked);
   };
 
+  function handleNewQustionInputChange(event){
+    const {id, value} = event.target
+    setCurrentMCQ({...currentMCQ, [id]: value})
+  }
+
+
   const handleQuestionChange = (e) => {
     setCurrentMCQ({ ...currentMCQ, question: e.target.value });
   };
@@ -122,6 +133,7 @@ const MCQTable = ({
   const handleTimeAllowedChange = (e) => {
     setCurrentMCQ({ ...currentMCQ, timeAllowed: parseInt(e.target.value) });
   };
+
   const handleAddMCQ = async () => {
     if (
       currentMCQ.question === "" ||
@@ -132,6 +144,23 @@ const MCQTable = ({
     ) {
       alert("Please fill all the fields");
       return;
+    }
+
+    if(btn_call === "Create Question"){
+      if (
+        currentMCQ.question === "" ||
+        currentMCQ.options.includes("") ||
+        currentMCQ.correct_answer === "" ||
+        currentMCQ.marks === "" ||
+        currentMCQ.difficulty === "" ||
+        currentMCQ.course === "" ||
+        currentMCQ.subject === "" ||
+        currentMCQ.topic === "" ||
+        (!freeFlow && !currentMCQ.timeAllowed)
+      ) {
+        alert("Please fill all the fields");
+        return;
+      }
     }
 
     if (currentMCQ.options.length !== new Set(currentMCQ.options).size) {
@@ -153,7 +182,11 @@ const MCQTable = ({
           answers: currentMCQ.options.toString(),
           correct_answer: currentMCQ.correct_answer,
           marks: currentMCQ.marks,
-          timeAllowed: currentMCQ.timeAllowed || 60,}
+          timeAllowed: currentMCQ.timeAllowed || 60,
+          difficulty: currentMCQ.difficulty,
+          course: currentMCQ.course,
+          subject: currentMCQ.subject,
+          topic: currentMCQ.topic}
         }
       );
       console.log("got response of addMCQ:", newMCQ)
@@ -351,6 +384,10 @@ const MCQTable = ({
                     correct_answer: "",
                     marks: 1,
                     timeAllowed: currentMCQ.timeAllowed || 60,
+                    difficulty: "",
+                    course: "",
+                    subject: "",
+                    topic: ""
                   });
                 }}
               >
@@ -454,6 +491,14 @@ const MCQTable = ({
               />
             )}
           </div>
+
+          {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between">
+            <NewQuestionInput label={"Difficulty"} options={["", "Easy", "Medium", "Hard"]} id={"difficulty"} handleChange={handleNewQustionInputChange} value={currentMCQ.difficulty}/>
+            <NewQuestionInput label={"Course"} options={["", "C1", "C2", "C3", "C4"]} id={"course"} handleChange={handleNewQustionInputChange} value={currentMCQ.course}/>
+            <NewQuestionInput label={"Subject"} options={["", "ABC", "EFG", "HIJ"]} id={"subject"} handleChange={handleNewQustionInputChange} value={currentMCQ.subject}/>
+            <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={currentMCQ.topic}/>
+          </div>}
+
           {editing ? (
             <button
               onClick={() => {

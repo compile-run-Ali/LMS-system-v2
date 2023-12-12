@@ -111,7 +111,7 @@ export default function DashboardComponent({
         {courses.length > 0 && level < 3 && (
           <div className="flex flex-row justify-end pr-10">
             {/* <DashboardButton open={open} setOpen={setOpen} courseCode={selectedCourse} btn_text="Create Question"/> */}
-            <DashboardButton courseCode={selectedCourse} btn_text="Create Question"/>
+            <DashboardButton courseCode={null} btn_text="Create Question"/>
             <DashboardButton courseCode={selectedCourse} btn_text="Generate Random Paper"/>
             <DashboardButton courseCode={selectedCourse} btn_text="Create Paper"/>
 
