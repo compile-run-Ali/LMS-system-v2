@@ -7,11 +7,6 @@ import { useState } from "react";
 export default function CreateObjectiveQuestions(){
     const router = useRouter();
     console.log("query to create objective question: ", router.query);
-
-    // const [exam, setExam] = useState();
-    // const [mcqs, setMCQs] = useState([]);
-    // const [freeFlowGlobal, setFreeFlowGlobal] = useState(true);
-    // console.log("router query", router.query);
     
     const exam = null;
     const setExam = null;

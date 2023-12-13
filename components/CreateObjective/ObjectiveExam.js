@@ -7,6 +7,7 @@ import MultiSelectDropdown from "./MultiSelect";
 import NewQuestionInput from "./NewQuestionInput";
 import { useRouter } from "next/router";
 import Spinner from "../Loader/Spinner";
+import Link from "next/link";
 
 const MCQTable = ({
   exam,
@@ -37,7 +38,8 @@ const MCQTable = ({
     difficulty: "",
     course: "",
     subject: "",
-    topic: ""
+    topic: "",
+    type: "objective"
   });
   const specialSequence="###"
 
@@ -186,7 +188,8 @@ const MCQTable = ({
           difficulty: currentMCQ.difficulty,
           course: currentMCQ.course,
           subject: currentMCQ.subject,
-          topic: currentMCQ.topic}
+          topic: currentMCQ.topic,
+          type: currentMCQ.type}
         }
       );
       console.log("got response of addMCQ:", newMCQ)
@@ -197,7 +200,7 @@ const MCQTable = ({
       newMCQ.data.options = newMCQ.data.answers.split(",");
       setMultipleOptions(false);
       setMCQs([...mcqs, newMCQ.data]);
-      setObjectiveQuestions([...mcqs, newMCQ.data]);
+      btn_call === "Create Question" ? "" : setObjectiveQuestions([...mcqs, newMCQ.data]);
       setCurrentMCQ({
         question: "",
         options: ["", "", "", ""],
@@ -207,7 +210,7 @@ const MCQTable = ({
       });
       setAdding(false);
     } catch (err) {
-      console.log(err);
+      console.log("err: ", err);
       setLoading({
         error: "Error in Adding Question.",
       });
@@ -518,7 +521,11 @@ const MCQTable = ({
           )}
         </div>
       )}
-      <div className="mt-10 w-full pr-10 flex justify-end gap-x-10">
+      <div className="mt-10 w-full pr-10 flex justify-end gap-x-5">
+        
+        {btn_call === "Create Question" ? 
+        <Link href="/faculty" className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8">Back</Link>
+        : 
         <button
           type="button"
           className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
@@ -528,7 +535,11 @@ const MCQTable = ({
           }}
         >
           Back
-        </button>
+        </button>}
+
+        {btn_call === "Create Question" ? 
+        <Link href="/faculty" className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8">Done</Link>
+        : 
         <button
           type="submit"
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
@@ -537,7 +548,7 @@ const MCQTable = ({
           }}
         >
           Save and Proceed
-        </button>
+        </button>}
       </div>
       {mcqs.length > 0 && (
         <>

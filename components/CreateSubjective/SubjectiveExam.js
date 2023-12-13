@@ -5,6 +5,8 @@ import axios from "axios";
 import { ImCross } from "react-icons/im";
 import Spinner from "../Loader/Spinner";
 import TextArea from "../Common/Form/TextArea";
+import NewQuestionInput from "../CreateObjective/NewQuestionInput";
+import Link from "next/link";
 
 const SubjectiveExam = ({
   exam,
@@ -13,7 +15,10 @@ const SubjectiveExam = ({
   setActive,
   subjective_questions,
   setSubjectiveQuestions,
+  btn_call
 }) => {
+  console.log("in subjective exam, btn_call: ", btn_call)
+
   const [loading, setLoading] = useState({});
   const [subjectivesLocal, setSubjectivesLocal] =
     useState(subjective_questions);
@@ -27,10 +32,20 @@ const SubjectiveExam = ({
     long_question: true,
     marks: 1,
     questionnumber: subjectivesLocal.length + 1,
+    difficulty: "",
+    course: "",
+    subject: "",
+    topic: "",
+    type: "subjective"
   });
  
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
+
+  function handleNewQustionInputChange(event){
+    const {id, value} = event.target
+    setCurrentQuestion({...currentQuestion, [id]: value})
+  }
 
   const handleQuestionChange = (e) => {
     setCurrentQuestion({ ...currentQuestion, question: e.target.value });
@@ -105,6 +120,78 @@ const SubjectiveExam = ({
     }
     return true;
   };
+
+  async function handleAddSubjective(){
+    console.log("handle add subjective accessed")
+    if (
+      currentQuestion.question === "" ||
+      currentQuestion.answer === "" ||
+      currentQuestion.marks === "" ||
+      currentQuestion.difficulty === "" ||
+      currentQuestion.course === "" ||
+      currentQuestion.subject === "" ||
+      currentQuestion.topic === ""
+    ) {
+      alert("Please fill all the fields");
+      return;
+    }
+
+    setLoading({
+      message: "Adding Question",
+    });
+
+
+    try {
+      const newSubjective = await axios.post(
+        "/api/faculty/paper_creation/add_subjective",
+        {
+          btn_call,
+          question_info: {
+          question: currentQuestion.question,
+          answer: currentQuestion.answer,
+          marks: currentQuestion.marks,
+          difficulty: currentQuestion.difficulty,
+          course: currentQuestion.course,
+          subject: currentQuestion.subject,
+          topic: currentQuestion.topic,
+          type: currentQuestion.type}
+        }
+      );
+      console.log("got response of addSubjective:", newSubjective)
+      setLoading({
+        show: false,
+        message: "",
+      });
+      
+      let updatedSubjectiveQuestions = [];
+      
+      updatedSubjectiveQuestions = [
+        ...subjectivesLocal,
+        newSubjective.data,
+      ].sort((a, b) => a.questionnumber - b.questionnumber);
+      setSubjectivesLocal(updatedSubjectiveQuestions);
+
+      const prevLength = subjectivesLocal.length;
+
+      setCurrentQuestion({
+        sq_id: "",
+        question: "",
+        parent_sq_id: "",
+        marks: 1,
+        answer:"",
+        long_question: true,
+        questionnumber: prevLength + 1,
+      });
+
+      setAdding(false);
+    } catch (err) {
+      console.log("err: ", err);
+      setLoading({
+        error: "Error in Adding Question.",
+      });
+    }
+
+  }
 
   const handleAddMCQ = async () => {
     let nextsibling;
@@ -543,8 +630,8 @@ const SubjectiveExam = ({
               onChange={handleAnswerChange}
             />
           </div>
-          <div className="flex w-full gap-x-5">
-            <div className="mb-10 w-full mt-6">
+          <div className="flex w-full gap-x-5 pb-10">
+            {btn_call !== "Create Question" && <div className="mb-10 w-full mt-6">
               <label className="block mb-2">Parent Question</label>
 
               <select
@@ -566,7 +653,7 @@ const SubjectiveExam = ({
                     </option>
                   ))}
               </select>
-            </div>
+            </div>}
 
             <Input
               text={"Marks"}
@@ -581,7 +668,7 @@ const SubjectiveExam = ({
                 })
               }
             />
-            {!currentQuestion.parent_sq_id && (
+            {!currentQuestion.parent_sq_id && btn_call !== "Create Question" && (
               <Input
                 // if parent exists the question number will be called part number other wise, question number
                 text={
@@ -600,6 +687,14 @@ const SubjectiveExam = ({
               />
             )}
           </div>
+
+          {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between">
+          <NewQuestionInput label={"Difficulty"} options={["", "Easy", "Medium", "Hard"]} id={"difficulty"} handleChange={handleNewQustionInputChange} value={currentQuestion.difficulty}/>
+          <NewQuestionInput label={"Course"} options={["", "C1", "C2", "C3", "C4"]} id={"course"} handleChange={handleNewQustionInputChange} value={currentQuestion.course}/>
+          <NewQuestionInput label={"Subject"} options={["", "ABC", "EFG", "HIJ"]} id={"subject"} handleChange={handleNewQustionInputChange} value={currentQuestion.subject}/>
+          <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={currentQuestion.topic}/>
+          </div>}
+
           {/* <div className="flex items-center gap-x-3 ml-2">
             <label className="block">Long Question?</label>
             <input
@@ -624,7 +719,7 @@ const SubjectiveExam = ({
             </button>
           ) : (
             <button
-              onClick={handleAddMCQ}
+              onClick={btn_call === "Create Question" ? handleAddSubjective : handleAddMCQ}
               className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
             >
               Add
@@ -637,14 +732,21 @@ const SubjectiveExam = ({
         </div>
         
       )}
-      <div className=" w-full pr-10 flex justify-end gap-x-10 mt-10">
+      <div className=" w-full pr-10 flex justify-end gap-x-5 mt-10">
+        {btn_call === "Create Question" ? 
+        <Link href="/faculty" className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8">Back</Link>
+        :
         <button
           type="button"
           className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
           onClick={() => setActive(2)}
         >
           Back
-        </button>
+        </button>}
+
+        {btn_call === "Create Question" ? 
+        <Link href="/faculty" className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8">Done</Link>
+        :
         <button
           type="submit"
           className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
@@ -675,7 +777,7 @@ const SubjectiveExam = ({
           }}
         >
           Save and Proceed
-        </button>
+        </button>}
       </div>
 
       {subjectivesLocal.length > 0 && (

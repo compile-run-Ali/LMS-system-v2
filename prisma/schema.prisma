@@ -274,15 +274,16 @@ model SIA {
   paper   Paper   @relation(fields: [paperId], references: [paper_id], onDelete: Cascade)
 }
 
-model DataBankQuestions {
-  id             String @id @default(uuid())
-  question       String @db.VarChar(10000)
-  answers        String @db.VarChar(1000)
-  correct_answer String
+model DataBankQuestion {
+  id             String  @id @default(uuid())
+  question       String  @db.VarChar(10000)
+  answers        String? @db.VarChar(1000)
+  correct_answer String  @db.VarChar(4000)
   marks          Int
-  timeAllowed    Int    @default(0)
+  timeAllowed    Int?    @default(0)
   difficulty     String
   course         String
   subject        String
   topic          String
+  type           String
 }

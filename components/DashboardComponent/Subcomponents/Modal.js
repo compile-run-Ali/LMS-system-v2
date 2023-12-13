@@ -18,13 +18,14 @@ export default function Modal({ open, setOpen, courseCode, btn_call}) {
         },
       });
     } else if (examType === "SO") {
-      if (btn_call === "Create Question"){
-        // router.push({
-        //   pathname: `/faculty/create_exam/subjective`,
-        //   query: {
-        //     course_code: courseCode,
-        //   },
-        // })
+      if (btn_call === "Create Question" && courseCode === null){
+        router.push({
+          pathname: `/question/subjective`,
+          query: {
+            course_code: courseCode,
+            btn_call: btn_call
+          },
+        })
       }
       else{
         // Redirect to create exam page for subjective/objective

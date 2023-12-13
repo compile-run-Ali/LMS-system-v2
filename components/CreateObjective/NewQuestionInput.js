@@ -1,5 +1,4 @@
 export default function NewQuestionInput({label, options, id, handleChange, value}){
-    console.log({value})
     return(
         <div className="w-3/12">
             <label className="block mb-2">{label}</label>
@@ -9,8 +8,8 @@ export default function NewQuestionInput({label, options, id, handleChange, valu
             onChange={handleChange}
             value={value}
             >
-                {options.map((option) => (
-                    <option value={option}>{option === "" ? "Select option" : option}</option>
+                {options.map((option, index) => (
+                    <option key={index} value={option}>{option === "" ? "Select option" : option}</option>
                 ))}
             </select>
         </div>
