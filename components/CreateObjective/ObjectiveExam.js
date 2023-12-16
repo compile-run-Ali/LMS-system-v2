@@ -150,10 +150,15 @@ const MCQTable = ({
 
     if(btn_call === "Create Question"){
       if (
+        currentMCQ.question === "" ||
+        currentMCQ.options.includes("") ||
+        currentMCQ.correct_answer === "" ||
+        currentMCQ.marks === "" ||
         currentMCQ.difficulty === "" ||
         currentMCQ.course === "" ||
         currentMCQ.subject === "" ||
-        currentMCQ.topic === ""
+        currentMCQ.topic === "" ||
+        (!freeFlow && !currentMCQ.timeAllowed)
       ) {
         alert("Please fill all the fields");
         return;
@@ -195,7 +200,7 @@ const MCQTable = ({
       newMCQ.data.options = newMCQ.data.answers.split(",");
       setMultipleOptions(false);
       setMCQs([...mcqs, newMCQ.data]);
-      btn_call !== "Create Question" && setObjectiveQuestions([...mcqs, newMCQ.data])
+      btn_call === "Create Question" ? "" : setObjectiveQuestions([...mcqs, newMCQ.data]);
       setCurrentMCQ({
         question: "",
         options: ["", "", "", ""],
@@ -240,18 +245,6 @@ const MCQTable = ({
       return;
     }
 
-    if(btn_call === "Create Question"){
-      if (        
-        currentMCQ.difficulty === "" ||
-        currentMCQ.course === "" ||
-        currentMCQ.subject === "" ||
-        currentMCQ.topic === ""
-      ) {
-        alert("Please fill all the fields");
-        return;
-      }
-    }
-
     if (currentMCQ.options.length !== new Set(currentMCQ.options).size) {
       alert("Please remove duplicate options, and reselect correct option.");
       return;
@@ -261,34 +254,15 @@ const MCQTable = ({
       message: "Updating Question",
     });
     console.log(currentMCQ, "currentMCQ");
-    let newMCQ = {}
-    if(btn_call === "Create Question"){
-      newMCQ = await axios.post("/api/faculty/edit_objective", {
-        btn_call,
-        question_info: {id: currentMCQ.id,
-        question: currentMCQ.question,
-        answers: currentMCQ.options.toString(),
-        correct_answer: currentMCQ.correct_answer,
-        marks: currentMCQ.marks,
-        timeAllowed: currentMCQ.timeAllowed || 60,
-        difficulty: currentMCQ.difficulty,
-        course: currentMCQ.course,
-        subject: currentMCQ.subject,
-        topic: currentMCQ.topic,
-        type: currentMCQ.type}
-      });
-    }
-    else{
-      newMCQ = await axios.post("/api/faculty/edit_objective", {
-        oq_id: mcqs[index].oq_id,
-        paper_id: paperId,
-        question: currentMCQ.question,
-        answers: currentMCQ.options.toString(),
-        correct_answer: currentMCQ.correct_answer,
-        marks: currentMCQ.marks,
-        timeAllowed: currentMCQ.timeAllowed || 60,
-      });
-    }
+    const newMCQ = await axios.post("/api/faculty/edit_objective", {
+      oq_id: mcqs[index].oq_id,
+      paper_id: paperId,
+      question: currentMCQ.question,
+      answers: currentMCQ.options.toString(),
+      correct_answer: currentMCQ.correct_answer,
+      marks: currentMCQ.marks,
+      timeAllowed: currentMCQ.timeAllowed || 60,
+    });
     console.log(newMCQ, "newMCQ");
     if (newMCQ.status === 200) {
       setLoading({});
@@ -300,7 +274,7 @@ const MCQTable = ({
       newMCQs[index] = newWithOptions;
 
       setMCQs(newMCQs);
-      btn_call !== "Create Question" && setObjectiveQuestions(newMCQs);
+      setObjectiveQuestions(newMCQs);
       setMultipleOptions(false);
       setCurrentMCQ({
         question: "",
@@ -323,26 +297,16 @@ const MCQTable = ({
       message: "Deleting Question",
     });
 
-    let res = {}
-    if(btn_call === "Create Question"){
-      res = await axios.post("/api/faculty/remove_objective", {
-        btn_call,
-        question_info: {id: mcqs[index].id,}
-      });
-    }
-    else{
-      res = await axios.post("/api/faculty/remove_objective", {
-        oq_id: mcqs[index].oq_id,
-      });
-    }
-
+    const res = await axios.post("/api/faculty/remove_objective", {
+      oq_id: mcqs[index].oq_id,
+    });
 
     if (res.status === 200) {
       setLoading({});
       const newMCQs = [...mcqs];
       newMCQs.splice(index, 1);
       setMCQs(newMCQs);
-      btn_call !== "Create Question" && setObjectiveQuestions(newMCQs);
+      setObjectiveQuestions(newMCQs);
     } else {
       setLoading({
         error: "Error in Deleting Question.",
