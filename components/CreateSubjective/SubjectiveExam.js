@@ -181,6 +181,10 @@ const SubjectiveExam = ({
         answer:"",
         long_question: true,
         questionnumber: prevLength + 1,
+        difficulty: "",
+        course: "",
+        subject: "",
+        topic: "subjective"
       });
 
       setAdding(false);
@@ -299,6 +303,80 @@ const SubjectiveExam = ({
       );
     }
   };
+
+  async function handleUpdateSubjective(subjectiveQuestion){
+    console.log("QUESTION to update: ", subjectiveQuestion)
+    if (
+      subjectiveQuestion.question === "" ||
+      subjectiveQuestion.correct_answer === "" ||
+      subjectiveQuestion.marks === "" ||
+      subjectiveQuestion.difficulty === "" ||
+      subjectiveQuestion.course === "" ||
+      subjectiveQuestion.subject === "" ||
+      subjectiveQuestion.topic === ""
+    ) {
+      alert("Please fill all the fields");
+      return;
+    }
+
+    setLoading({
+      message: "Updating Question...",
+    });
+
+    try {
+      const newSubjective = await axios.post(
+        "/api/faculty/edit_subjective",
+        {
+          btn_call,
+          question_info: {
+          question: subjectiveQuestion.question,
+          answer: subjectiveQuestion.correct_answer,
+          marks: subjectiveQuestion.marks,
+          difficulty: subjectiveQuestion.difficulty,
+          course: subjectiveQuestion.course,
+          subject: subjectiveQuestion.subject,
+          topic: subjectiveQuestion.topic,
+          type: subjectiveQuestion.type}
+        }
+      );
+      console.log("got response of edit_subjective:", newSubjective)
+      setLoading({
+        show: false,
+        message: "",
+      });
+      
+      let updatedSubjectiveQuestions = [];
+      
+      updatedSubjectives = updatedSubjectives.sort(
+        (a, b) => a.questionnumber - b.questionnumber
+      );
+      setSubjectivesLocal(updatedSubjectiveQuestions);
+
+      const prevLength = subjectivesLocal.length;
+
+      setCurrentQuestion({
+        sq_id: "",
+        question: "",
+        parent_sq_id: "",
+        marks: 1,
+        answer:"",
+        long_question: true,
+        questionnumber: subjectivesLocal.length + 1,
+        difficulty: "",
+        course: "",
+        subject: "",
+        topic: "subjective"
+      });
+
+      setEditing(false);
+    } catch (err) {
+      console.log("err: ", err);
+      setLoading({
+        error: "Error in Editing Question.",
+      });
+    }
+
+  }
 
   const handleUpdateMCQ = async (question) => {
     // variable to check if now has parent
@@ -711,7 +789,7 @@ const SubjectiveExam = ({
           {editing ? (
             <button
               onClick={() => {
-                handleUpdateMCQ(currentQuestion);
+                btn_call === "Create Question" ? handleUpdateSubjective(currentQuestion) : handleUpdateMCQ(currentQuestion);
               }}
               className="bg-blue-800 text-white p-2 rounded hover:bg-blue-700"
             >
