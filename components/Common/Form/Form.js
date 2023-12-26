@@ -12,7 +12,12 @@ export default function Form({
   paperType,
   setFreeFlowGlobal,
   setExam,
+  btn_call
 }) {
+  console.log("in form")
+  console.log("examDetails: ", examDetails)
+  console.log("btn_call:", btn_call)
+
   const router = useRouter();
   const session = useSession();
   const level = session?.data?.user?.level;
@@ -39,6 +44,7 @@ export default function Form({
   const [allExamsOfCourse, setAllExamsOfCourse] = useState([]);
   const [selectedCourses, setSelectedCourses] = useState([]);
   useEffect(() => {
+    console.log("edit:", edit)
     if (edit && !router.query.random) {
       setLoading({
         message: "Loading Exam Details...",
@@ -220,7 +226,7 @@ export default function Form({
   };
 
   useEffect(() => {
-    if (Object.keys(router.query).length > 1 && !router.query.language) {
+    if (Object.keys(router.query).length > 1 && btn_call !== "Generate Random Paper" && !router.query.language) {
       setEdit(true);
     }
     if (examDetails?.is_copy ? true : false) {
