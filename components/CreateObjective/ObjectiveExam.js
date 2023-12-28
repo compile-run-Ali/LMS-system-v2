@@ -658,7 +658,7 @@ const MCQTable = ({
           <div className="flex flex-row gap-x-4">
             <NoOfQuestions label={"Easy"} id={"no_of_easy"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.no_of_easy}/>
             <NoOfQuestions label={"Medium"} id={"no_of_medium"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.no_of_medium}/>
-            <NoOfQuestions label={"Easy"} id={"no_of_hard"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.no_of_hard}/>
+            <NoOfQuestions label={"Hard"} id={"no_of_hard"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.no_of_hard}/>
           </div>
 
         </div>
