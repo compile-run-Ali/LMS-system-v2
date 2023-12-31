@@ -256,6 +256,8 @@ const SubjectiveExam = ({
         rest_ids.splice(indexes[i]-i, 1)
       }
 
+      new_subs.map((sub, index) => {sub.questionnumber = index+1})
+
       try{
         const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID, flag: "regen", subs_to_regen_ids})
         console.log("res from get_questions_databank in regen: ", res.data)
