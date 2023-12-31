@@ -23,6 +23,7 @@ const MCQTable = ({
 }) => {
   console.log("in mcq table, btn_call: ", btn_call)
   console.log("in mcq table, paperId: ", paperId)
+  console.log("in mcq table, objective_questions: ", objective_questions)
 
   const [loading, setLoading] = useState({});
   const [multipleOptions, setMultipleOptions] = useState(false);
@@ -34,6 +35,7 @@ const MCQTable = ({
       return mcq;
     })
   );
+
   const [currentMCQ, setCurrentMCQ] = useState({
     question: "",
     options: ["", "", "", ""],
@@ -44,7 +46,8 @@ const MCQTable = ({
     course: "",
     subject: "",
     topic: "",
-    type: "objective"
+    type: "objective",
+    checked: false
   });
   const specialSequence="###"
 
@@ -72,7 +75,7 @@ const MCQTable = ({
       );
     }
   }, [objective_questions]);
-  console.log(mcqs)
+  // console.log(mcqs)
   useEffect(() => {
     if (
       currentMCQ.correct_answer &&
@@ -181,7 +184,7 @@ const MCQTable = ({
           type: question.type}
         }
       );
-      console.log("got response of addMCQ:", newMCQ.data)
+      // console.log("["+i+"] - " + "got response of addMCQ:", newMCQ.data)
       
       newMCQ.data.options = newMCQ.data.answers.split(",");
       setMultipleOptions(false);
@@ -196,7 +199,8 @@ const MCQTable = ({
         course: "",
         subject: "",
         topic: "",
-        type: "objective"
+        type: "objective",
+        checked: false
       });
       return newMCQ.data
 
@@ -210,7 +214,7 @@ const MCQTable = ({
 
   const deleteCurrentQuestions = async(mcqs_ids_array) => {
     try{
-      console.log("mcqs in deleteCurrentQuestions: ", mcqs)
+      console.log("mcqs in deleteCurrentQuestions: ", mcqs_ids_array)
       const res = await axios.post("/api/faculty/remove_objective", {
         flag: "deleteCurrentQuestions",
         mcqs_ids_array: mcqs_ids_array
@@ -222,54 +226,91 @@ const MCQTable = ({
     }
   }
 
-  // const regenerate_questions = async() => {
-  //   setLoading({
-  //     message: "Fetching questions from Data Bank",
-  //   });
+  function handleSelectMCQ(input_index){
+    console.log("input_index: ", input_index)
+    // const checkedMCQs = mcqs.map((mcq, index) => {index === input_index ? !mcq.checked : mcq})
+    const checkedMCQs = [...mcqs]
+    console.log("checkedMCQs in handleSelectMCQ: ", checkedMCQs)
+    checkedMCQs[input_index].checked = !checkedMCQs[input_index].checked
+    // console.log("checkedMCQs: ", checkedMCQs)
+    setMCQs(checkedMCQs)
+  }
 
+  async function handleRegenQuestions(){
+    console.log("ids of current questions: ", prevMCQsID)
+    console.log("mcqs: ", mcqs)
+    console.log("oq_ids of current questions: ", mcqs.map((mcq) => {return mcq.oq_id}))
+    const mcqs_to_regen = mcqs.filter((mcq) => {return mcq.checked === true})
+    const mcqs_to_regen_oq_ids = mcqs_to_regen.map((mcq) => {return mcq.oq_id})
+    
+    console.log("mcqs_to_regen: ", mcqs_to_regen)
+    console.log("mcqs_to_regen_oq_ids: ", mcqs_to_regen_oq_ids)
 
-  //   let mcqs_ids_array = []
-  //   for(let i = 0; i < mcqs.length; i++){
-  //     mcqs_ids_array = [...mcqs_ids_array, mcqs[i].oq_id]
-  //   }
-  //   console.log("mcqs_ids_array: ", mcqs_ids_array)
-  //   if (mcqs_ids_array.length > 0) {deleteCurrentQuestions(mcqs_ids_array)}
+    if (mcqs_to_regen.length === 0) {
+      alert("No questions selected to regenerate");
+      return;
+    }
+    else{
+      setLoading({
+        message: "Regenerating selected questions",
+      });
 
-  //   try{
-  //     const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID})
-  //     console.log("res from get_questions_databank: ", res.data)
+      let indexes = []
+      let mcqs_to_regen_ids = []
+      for (let i = 0; i < mcqs_to_regen.length; i++){
+        indexes = [...indexes, mcqs.indexOf(mcqs_to_regen[i])]
+        mcqs_to_regen_ids = [...mcqs_to_regen_ids, prevMCQsID[indexes[indexes.length-1]]]
+      }
 
-  //     let ids_array = []
-  //     let mcqs_array = []
-  //     let mmcq;
+      console.log("indexes: ", indexes)
+      console.log("mcqs_to_regen_ids: ", mcqs_to_regen_ids)
+      
+      deleteCurrentQuestions(mcqs_to_regen_oq_ids)
+      const new_mcqs = [...mcqs]
+      const rest_ids = [...prevMCQsID]
+      for(let i = 0; i < indexes.length; i++){
+        new_mcqs.splice(indexes[i]-i, 1)
+        rest_ids.splice(indexes[i]-i, 1)
+      }
 
-  //     for (let i = 0; i < res.data.length; i++) {
-  //       ids_array = [...ids_array, res.data[i].id]
-  //       mmcq = addQuestion(i, res.data[i])
-  //       mcqs_array = [...mcqs_array, mmcq]
-  //     }
-  //     const resolvedMcqs = await Promise.all(mcqs_array);
-  //     setPrevMCQsID(ids_array)
-  //     setMCQs(resolvedMcqs);
-  //     setObjectiveQuestions(resolvedMcqs);
-  //     console.log("ids_array: ", ids_array)
-  //     console.log("mcqs_array: ", resolvedMcqs)
+      try{
+        const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID, flag: "regen", mcqs_to_regen_ids})
+        console.log("res from get_questions_databank in regen: ", res.data)
+        console.log("mcqs in regen: ", mcqs)
+        console.log("objective_questions in regen: ", objective_questions)
+  
+        let ids_array = [...rest_ids]
+        let mcqs_array = [...new_mcqs]
+        let mmcq;
+  
+        for (let i = 0; i < res.data.length; i++) {
+          ids_array = [...ids_array, res.data[i].id]
+          mmcq = addQuestion(i, res.data[i])
+          mcqs_array = [...mcqs_array, mmcq]
+        }
+        const resolvedMcqs = await Promise.all(mcqs_array);
+        console.log("mcqs_array: ", resolvedMcqs)
+        resolvedMcqs.map((mcq) => {mcq.checked = false})
+        console.log("mcqs_array after adding checked: ", resolvedMcqs)
+        setPrevMCQsID(ids_array)
+        setMCQs(resolvedMcqs);
+        setObjectiveQuestions(resolvedMcqs);
+        console.log("ids of current questions: ", ids_array)
+  
+        setLoading({
+          show: false,
+          message: "",
+        });
+  
+      }
+      catch (err) {
+        console.log("err: ", err);
+        setLoading({error: "Error in regenerating Question."})
+      }
+    }
 
-  //     setLoading({
-  //       show: false,
-  //       message: "",
-  //     });
-
-  //     setAdding(false);
-  //     setControl(false);
-  //     setControl_2(true);
-
-  //   }
-  //   catch (err) {
-  //     console.log("err: ", err);
-  //     setLoading({error: "Error in Fetching Question."})
-  //   }
-  // }
+  }
+  
 
   const handleGetQuestions = async() => {
     if(btn_call === "Generate Random Paper"){
@@ -311,11 +352,13 @@ const MCQTable = ({
         mcqs_array = [...mcqs_array, mmcq]
       }
       const resolvedMcqs = await Promise.all(mcqs_array);
+      console.log("mcqs_array: ", resolvedMcqs)
+      resolvedMcqs.map((mcq) => {mcq.checked = false})
+      console.log("mcqs_array after adding checked: ", resolvedMcqs)
       setPrevMCQsID(ids_array)
       setMCQs(resolvedMcqs);
       setObjectiveQuestions(resolvedMcqs);
       console.log("ids_array: ", ids_array)
-      console.log("mcqs_array: ", resolvedMcqs)
 
       setLoading({
         show: false,
@@ -404,7 +447,8 @@ const MCQTable = ({
         course: "",
         subject: "",
         topic: "",
-        type: "objective"
+        type: "objective",
+        checked: false
       });
       setAdding(false);
     } catch (err) {
@@ -483,18 +527,36 @@ const MCQTable = ({
       }
     });
 
-    console.log(newMCQ, "newMCQ");
+    console.log(newMCQ.data, "newMCQ");
+    console.log("index: ", index)
+
     if (newMCQ.status === 200) {
       setLoading({});
       const newMCQs = [...mcqs];
-      const newWithOptions = {
-        options: newMCQ.data.answers.split(","),
-        ...newMCQ.data,
-      };
-      newMCQs[index] = newWithOptions;
+      if(btn_call !== "Generate Random Paper"){
+        const newWithOptions = {
+          options: newMCQ.data.answers.split(","),
+          ...newMCQ.data,
+        };
+        newMCQs[index] = newWithOptions;
+      }
+      else if(btn_call === "Generate Random Paper"){
+        newMCQs[index] = newMCQ.data;
+      }
 
+      
+      // const newWithOptions = {
+      //   options: newMCQ.data.answers.split(","),
+      //   ...newMCQ.data,
+      // };
+      // newMCQs[index] = newWithOptions;
+      
+
+      console.log("newMCQs in edit: ", newMCQs)
       setMCQs(newMCQs);
-      btn_call === "Create Question" ? "" : setObjectiveQuestions(newMCQ);
+      console.log("new mcqs after edit: ", mcqs)
+      btn_call === "Create Question" ? "" : setObjectiveQuestions(newMCQs);
+      console.log("objective_questions after edit: ", objective_questions)
       // setObjectiveQuestions(newMCQs);
       setMultipleOptions(false);
       setCurrentMCQ({
@@ -507,7 +569,8 @@ const MCQTable = ({
         course: "",
         subject: "",
         topic: "",
-        type: "objective"
+        type: "objective",
+        checked: false
       });
       setEditing(false);
       setIndex(null);
@@ -605,10 +668,10 @@ const MCQTable = ({
         </button>}
         
         {!control && control_2 && <button
-          onClick={handleGetQuestions}
+          onClick={handleRegenQuestions}
           className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
         >
-          Regenerate Questions
+          Regenerate Selected Questions
         </button>}
 
       </div>
@@ -870,8 +933,10 @@ const MCQTable = ({
                 <th className="px-4 py-2">Correct Option</th>
                 <th className="px-4 py-2">Marks</th>
                 {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
-                {btn_call !== "Generate Random Paper" && <th className="px-4 py-2">Edit</th>}
-                <th className="px-4 py-2">Delete</th>
+                <th className="px-4 py-2">Edit</th>
+                {btn_call === "Generate Random Paper" 
+                ? <th className="px-4 py-2">Select</th> 
+                : <th className="px-4 py-2">Delete</th>}
               </tr>
             </thead>
             <tbody>
@@ -891,23 +956,25 @@ const MCQTable = ({
                   {freeFlow ? null : (
                     <td className="px-4 py-2">{mcq.timeAllowed}</td>
                   )}
-                  {btn_call !== "Generate Random Paper" && <td className="px-4 py-2">
+                  <td className="px-4 py-2">
                     <button
                       onClick={handleEditMCQ(index)}
                       className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                     >
                       <MdEdit />
                     </button>
-                  </td>}
+                  </td>
                   <td className="px-4 py-2">
-                    <button
+                    {btn_call === "Generate Random Paper" 
+                    ? <input type="checkbox" onClick={() => {handleSelectMCQ(index)}} checked={mcq.checked}/>
+                    : <button
                       onClick={() => {
                         handleDeleteMCQ(index);
                       }}
                       className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                     >
                       <MdDelete />
-                    </button>
+                    </button>}
                   </td>
                 </tr>
               ))}

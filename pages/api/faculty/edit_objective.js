@@ -5,7 +5,7 @@ const handler = async (req, res) => {
   console.log("Edit Objective Question requests.btn_call: ", req.body.btn_call);
   console.log("Edit Objective Question requests.question_info: ", req.body.question_info);
   try {
-    if(req.body.btn_call === "Create Question" || req.body.btn_call === "Generate Random Paper"){
+    if(req.body.btn_call === "Create Question"){
       const updatedOQ = await prisma.DataBankQuestion.update({
         where: {
           id: req.body.question_info.id

@@ -38,7 +38,8 @@ const SubjectiveExam = ({
     course: "",
     subject: "",
     topic: "",
-    type: "subjective"
+    type: "subjective",
+    checked: false
   });
 
   const [randomPaperConfig, setRandomPaperConfig] = useState({
@@ -190,7 +191,8 @@ const SubjectiveExam = ({
         course: "",
         subject: "",
         topic: "",
-        type: "subjective"
+        type: "subjective",
+        checked: false      
       });
       return newSubjective.data
       ////
@@ -214,6 +216,91 @@ const SubjectiveExam = ({
       console.log("err: ", err);
       setLoading({error: "Error in Deleting current Question."})
     }
+  }
+
+  async function handleRegenQuestions(){
+    console.log("ids of current questions: ", prevMCQsID)
+    console.log("subjectivesLocal: ", subjectivesLocal)
+    console.log("sq_ids of current questions: ", subjectivesLocal.map((sub) => {return sub.sq_id}))
+
+    const subs_to_regen = subjectivesLocal.filter((sub) => {return sub.checked === true})
+    const subs_to_regen_sq_ids = subs_to_regen.map((sub) => {return sub.sq_id})
+    
+    console.log("subs_to_regen: ", subs_to_regen)
+    console.log("subs_to_regen_sq_ids: ", subs_to_regen_sq_ids)
+
+    if (subs_to_regen.length === 0) {
+      alert("No questions selected to regenerate");
+      return;
+    }
+    else{
+      setLoading({
+        message: "Regenerating selected questions",
+      });
+
+      let indexes = []
+      let subs_to_regen_ids = []
+      for (let i = 0; i < subs_to_regen.length; i++){
+        indexes = [...indexes, subjectivesLocal.indexOf(subs_to_regen[i])]
+        subs_to_regen_ids = [...subs_to_regen_ids, prevMCQsID[indexes[indexes.length-1]]]
+      }
+
+      console.log("indexes: ", indexes)
+      console.log("subs_to_regen_ids: ", subs_to_regen_ids)
+      
+      deleteCurrentQuestions(subs_to_regen_sq_ids)
+      const new_subs = [...subjectivesLocal]
+      const rest_ids = [...prevMCQsID]
+      for(let i = 0; i < indexes.length; i++){
+        new_subs.splice(indexes[i]-i, 1)
+        rest_ids.splice(indexes[i]-i, 1)
+      }
+
+      try{
+        const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID, flag: "regen", subs_to_regen_ids})
+        console.log("res from get_questions_databank in regen: ", res.data)
+        console.log("subjectivesLocal in regen: ", subjectivesLocal)
+  
+        let ids_array = [...rest_ids]
+        let mcqs_array = [...new_subs]
+        let mmcq;
+  
+        for (let i = 0; i < res.data.length; i++) {
+          ids_array = [...ids_array, res.data[i].id]
+          mmcq = addQuestion(i, res.data[i])
+          mcqs_array = [...mcqs_array, mmcq]
+        }
+        const resolvedMcqs = await Promise.all(mcqs_array);
+        console.log("mcqs_array: ", resolvedMcqs)
+        resolvedMcqs.map((mcq) => {mcq.checked = false})
+        console.log("mcqs_array after adding checked: ", resolvedMcqs)
+
+        setSubjectivesLocal(resolvedMcqs);
+        setSubjectiveQuestions(resolvedMcqs)
+        setPrevMCQsID(ids_array)
+        console.log("ids of current questions: ", ids_array)
+
+  
+        setLoading({
+          show: false,
+          message: "",
+        });
+  
+      }
+      catch (err) {
+        console.log("err: ", err);
+        setLoading({error: "Error in regenerating Question."})
+      }
+    }
+
+  }
+
+  function handleSelectMCQ(input_index){
+    console.log("input_index: ", input_index)
+    const checkedsubjectivesLocal = [...subjectivesLocal]
+    console.log("checkedsubjectivesLocal in handleSelectMCQ: ", checkedsubjectivesLocal)
+    checkedsubjectivesLocal[input_index].checked = !checkedsubjectivesLocal[input_index].checked
+    setSubjectivesLocal(checkedsubjectivesLocal)
   }
 
   const handleGetQuestions = async() => {
@@ -256,13 +343,11 @@ const SubjectiveExam = ({
         mcqs_array = [...mcqs_array, mmcq]
       }
       const resolvedMcqs = await Promise.all(mcqs_array);
-
+      resolvedMcqs.map((mcq) => {mcq.checked = false})
       setSubjectivesLocal(resolvedMcqs);
       setSubjectiveQuestions(resolvedMcqs)
 
       setPrevMCQsID(ids_array)
-      // setMCQs(resolvedMcqs);
-      // setObjectiveQuestions(resolvedMcqs);
       console.log("ids_array: ", ids_array)
       console.log("mcqs_array: ", resolvedMcqs)
 
@@ -354,7 +439,8 @@ const SubjectiveExam = ({
         course: "",
         subject: "",
         topic: "",
-        type: "subjective"
+        type: "subjective",
+        checked: false
       });
 
       setAdding(false);
@@ -466,7 +552,8 @@ const SubjectiveExam = ({
         course: "",
         subject: "",
         topic: "",
-        type: "subjective"
+        type: "subjective",
+        checked: false
       });
       setAdding(false);
     } else {
@@ -558,7 +645,8 @@ const SubjectiveExam = ({
         course: "",
         subject: "",
         topic: "",
-        type: "subjective"
+        type: "subjective",
+        checked: false
       });
 
       setEditing(false);
@@ -727,6 +815,12 @@ const SubjectiveExam = ({
           marks: 1,
           long_question: true,
           questionnumber: subjectivesLocal.length + 1,
+          difficulty: "",
+          course: "",
+          subject: "",
+          topic: "",
+          type: "subjective",
+          checked: false
         });
 
         setEditing(false);
@@ -821,7 +915,8 @@ const SubjectiveExam = ({
         course: "",
         subject: "",
         topic: "",
-        type: "subjective"
+        type: "subjective",
+        checked: false
       });
     }
   };
@@ -888,10 +983,10 @@ const SubjectiveExam = ({
         </button>
 
         {!control && control_2 && <button
-          onClick={handleGetQuestions}
+          onClick={handleRegenQuestions}
           className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
         >
-          Regenerate Questions
+          Regenerate Selected Questions
         </button>}
       </div>
 
@@ -1171,8 +1266,10 @@ const SubjectiveExam = ({
                 <th className="px-4 py-2">Answer</th>
                 <th className="px-4 py-2">Parent Question</th>
                 <th className="px-4 py-2">Marks</th>
-                {btn_call !== "Generate Random Paper" && <th className="px-4 py-2">Edit</th>}
-                <th className="px-4 py-2">Delete</th>
+                <th className="px-4 py-2">Edit</th>
+                {btn_call === "Generate Random Paper" 
+                ? <th className="px-4 py-2">Select</th> 
+                : <th className="px-4 py-2">Delete</th>}
               </tr>
             </thead>
             <tbody>
@@ -1198,16 +1295,18 @@ const SubjectiveExam = ({
                         {subjective.parent_sq_id?.question}
                       </td>
                       <td className="px-4 py-2">{subjective.marks}</td>
-                      {btn_call !== "Generate Random Paper" && <td className="px-4 py-2">
+                      <td className="px-4 py-2">
                         <button
                           onClick={handleEditMCQ(subjective)}
                           className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                         >
                           <MdEdit />
                         </button>
-                      </td>}
+                      </td>
                       <td className="px-4 py-2">
-                        <button
+                        {btn_call === "Generate Random Paper" 
+                        ?  <input type="checkbox" onClick={() => {handleSelectMCQ(index)}} checked={subjective.checked}/>
+                        : <button
                           onClick={() => {
                             btn_call === "Create Question" 
                             ? handleDeleteSubjective(subjective.id) 
@@ -1216,7 +1315,7 @@ const SubjectiveExam = ({
                           className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                         >
                           <MdDelete />
-                        </button>
+                        </button>}
                       </td>
                     </tr>
                     {subjective.child_question

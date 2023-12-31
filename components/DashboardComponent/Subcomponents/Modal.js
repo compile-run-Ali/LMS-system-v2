@@ -5,7 +5,8 @@ import { useRouter } from "next/router";
 
 export default function Modal({ open, setOpen, courseCode, btn_call}) {
   console.log("btn call to model of create question: ", btn_call)
-  const [examType, setExamType] = useState("I.E");
+  const [examType, setExamType] = btn_call === "Create Question" || btn_call === "Generate Random Paper" ? useState("SO") : useState("I.E");
+  console.log("examType in Modal: ", examType)
   const router = useRouter();
   const cancelButtonRef = useRef(null);
   const handleNext = async () => {
@@ -180,6 +181,7 @@ export default function Modal({ open, setOpen, courseCode, btn_call}) {
                               type={"radio"}
                               value="SO"
                               onChange={(e) => handleInput(e)}
+                              checked={examType === "SO"}
                               name="paperType"
                               className="mr-2"
                             />
