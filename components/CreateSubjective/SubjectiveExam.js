@@ -6,6 +6,7 @@ import { ImCross } from "react-icons/im";
 import Spinner from "../Loader/Spinner";
 import TextArea from "../Common/Form/TextArea";
 import NewQuestionInput from "../CreateObjective/NewQuestionInput";
+import NoOfQuestions from "../CreateObjective/NoOfQuestions";
 import Link from "next/link";
 
 const SubjectiveExam = ({
@@ -19,6 +20,7 @@ const SubjectiveExam = ({
 }) => {
   console.log("in subjective exam, btn_call: ", btn_call)
 
+  const [control, setControl] = useState(false)
   const [loading, setLoading] = useState({});
   const [subjectivesLocal, setSubjectivesLocal] =
     useState(subjective_questions);
@@ -36,22 +38,41 @@ const SubjectiveExam = ({
     course: "",
     subject: "",
     topic: "",
-    type: "subjective"
+    type: "subjective",
+    checked: false
   });
+
+  const [randomPaperConfig, setRandomPaperConfig] = useState({
+    no_of_easy: "",
+    no_of_medium: "",
+    no_of_hard: "",
+    course: "",
+    subject: "",
+    topic: "",
+    type: "subjective"
+  })
  
   const [editing, setEditing] = useState(false);
   const [adding, setAdding] = useState(false);
+  
+  const [prevMCQsID, setPrevMCQsID] = useState([])
+  const [control_2, setControl_2] = useState(false)
 
   function handleNewQustionInputChange(event){
     const {id, value} = event.target
-    setCurrentQuestion({...currentQuestion, [id]: value})
+    {btn_call === "Generate Random Paper" 
+    ? setRandomPaperConfig({...randomPaperConfig, [id]: value})
+    : setCurrentQuestion({...currentQuestion, [id]: value})}
+    // console.log("in handleNewQustionInputChange -> currentQuestion: ", currentQuestion)
+    // console.log("in handleNewQustionInputChange -> randomPaperConfig: ", randomPaperConfig)
   }
+
 
   const handleQuestionChange = (e) => {
     setCurrentQuestion({ ...currentQuestion, question: e.target.value });
   };
   const handleAnswerChange = (e) => {
-    setCurrentQuestion({ ...currentQuestion, answer: e.target.value });
+    setCurrentQuestion(btn_call === "Create Question" ? { ...currentQuestion, correct_answer: e.target.value } : { ...currentQuestion, answer: e.target.value });
   };
   const handleParentQuestionChange = (e) => {
     setCurrentQuestion({
@@ -121,25 +142,8 @@ const SubjectiveExam = ({
     return true;
   };
 
-  async function handleAddSubjective(){
-    console.log("handle add subjective accessed")
-    if (
-      currentQuestion.question === "" ||
-      currentQuestion.answer === "" ||
-      currentQuestion.marks === "" ||
-      currentQuestion.difficulty === "" ||
-      currentQuestion.course === "" ||
-      currentQuestion.subject === "" ||
-      currentQuestion.topic === ""
-    ) {
-      alert("Please fill all the fields");
-      return;
-    }
-
-    setLoading({
-      message: "Adding Question",
-    });
-
+  async function addQuestion(i, question){
+    console.log("["+i+"] - " + "current question in addQuestion: ", question)
 
     try {
       const newSubjective = await axios.post(
@@ -147,29 +151,31 @@ const SubjectiveExam = ({
         {
           btn_call,
           question_info: {
-          question: currentQuestion.question,
-          answer: currentQuestion.answer,
-          marks: currentQuestion.marks,
-          difficulty: currentQuestion.difficulty,
-          course: currentQuestion.course,
-          subject: currentQuestion.subject,
-          topic: currentQuestion.topic,
-          type: currentQuestion.type}
+            paper_id: paperId,
+            question: question.question,
+            answer: question.correct_answer,
+            parent_sq_id: "",
+            long_question: true,
+            marks: question.marks,
+            questionnumber: i+1
+            }
         }
       );
-      console.log("got response of addSubjective:", newSubjective)
-      setLoading({
-        show: false,
-        message: "",
-      });
+      console.log("got response of newSubjective:", newSubjective)
+      // setLoading({
+      //   show: false,
+      //   message: "",
+      // });
+
       
-      let updatedSubjectiveQuestions = [];
+      ////
+      // let updatedSubjectiveQuestions = [];
       
-      updatedSubjectiveQuestions = [
-        ...subjectivesLocal,
-        newSubjective.data,
-      ].sort((a, b) => a.questionnumber - b.questionnumber);
-      setSubjectivesLocal(updatedSubjectiveQuestions);
+      // updatedSubjectiveQuestions = [
+      //   ...subjectivesLocal,
+      //   newSubjective.data,
+      // ].sort((a, b) => a.questionnumber - b.questionnumber);
+      // setSubjectivesLocal(updatedSubjectiveQuestions);
 
       const prevLength = subjectivesLocal.length;
 
@@ -184,10 +190,268 @@ const SubjectiveExam = ({
         difficulty: "",
         course: "",
         subject: "",
-        topic: "subjective"
+        topic: "",
+        type: "subjective",
+        checked: false      
+      });
+      return newSubjective.data
+      ////
+    } catch (err) {
+      console.log("err: ", err);
+      setLoading({
+        error: "Error in Adding Question.",
+      });
+    }
+  }
+
+  const deleteCurrentQuestions = async(subjectives_ids_array) => {
+    try{
+      console.log("subjectives_ids_array in deleteCurrentQuestions: ", subjectives_ids_array)
+      const res = await axios.post("/api/faculty/remove_subjective", {
+        flag: "deleteCurrentQuestions",
+        subjectives_ids_array: subjectives_ids_array
+      });
+    }
+    catch (err) {
+      console.log("err: ", err);
+      setLoading({error: "Error in Deleting current Question."})
+    }
+  }
+
+  async function handleRegenQuestions(){
+    console.log("ids of current questions: ", prevMCQsID)
+    console.log("subjectivesLocal: ", subjectivesLocal)
+    console.log("sq_ids of current questions: ", subjectivesLocal.map((sub) => {return sub.sq_id}))
+
+    const subs_to_regen = subjectivesLocal.filter((sub) => {return sub.checked === true})
+    const subs_to_regen_sq_ids = subs_to_regen.map((sub) => {return sub.sq_id})
+    
+    console.log("subs_to_regen: ", subs_to_regen)
+    console.log("subs_to_regen_sq_ids: ", subs_to_regen_sq_ids)
+
+    if (subs_to_regen.length === 0) {
+      alert("No questions selected to regenerate");
+      return;
+    }
+    else{
+      setLoading({
+        message: "Regenerating selected questions",
+      });
+
+      let indexes = []
+      let subs_to_regen_ids = []
+      for (let i = 0; i < subs_to_regen.length; i++){
+        indexes = [...indexes, subjectivesLocal.indexOf(subs_to_regen[i])]
+        subs_to_regen_ids = [...subs_to_regen_ids, prevMCQsID[indexes[indexes.length-1]]]
+      }
+
+      console.log("indexes: ", indexes)
+      console.log("subs_to_regen_ids: ", subs_to_regen_ids)
+      
+      deleteCurrentQuestions(subs_to_regen_sq_ids)
+      const new_subs = [...subjectivesLocal]
+      const rest_ids = [...prevMCQsID]
+      for(let i = 0; i < indexes.length; i++){
+        new_subs.splice(indexes[i]-i, 1)
+        rest_ids.splice(indexes[i]-i, 1)
+      }
+
+      new_subs.map((sub, index) => {sub.questionnumber = index+1})
+
+      try{
+        const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID, flag: "regen", subs_to_regen_ids})
+        console.log("res from get_questions_databank in regen: ", res.data)
+        console.log("subjectivesLocal in regen: ", subjectivesLocal)
+  
+        let ids_array = [...rest_ids]
+        let mcqs_array = [...new_subs]
+        let mmcq;
+  
+        for (let i = 0; i < res.data.length; i++) {
+          ids_array = [...ids_array, res.data[i].id]
+          mmcq = addQuestion(i, res.data[i])
+          mcqs_array = [...mcqs_array, mmcq]
+        }
+        const resolvedMcqs = await Promise.all(mcqs_array);
+        console.log("mcqs_array: ", resolvedMcqs)
+        resolvedMcqs.map((mcq) => {mcq.checked = false})
+        console.log("mcqs_array after adding checked: ", resolvedMcqs)
+
+        setSubjectivesLocal(resolvedMcqs);
+        setSubjectiveQuestions(resolvedMcqs)
+        setPrevMCQsID(ids_array)
+        console.log("ids of current questions: ", ids_array)
+
+  
+        setLoading({
+          show: false,
+          message: "",
+        });
+  
+      }
+      catch (err) {
+        console.log("err: ", err);
+        setLoading({error: "Error in regenerating Question."})
+      }
+    }
+
+  }
+
+  function handleSelectMCQ(input_index){
+    console.log("input_index: ", input_index)
+    const checkedsubjectivesLocal = [...subjectivesLocal]
+    console.log("checkedsubjectivesLocal in handleSelectMCQ: ", checkedsubjectivesLocal)
+    checkedsubjectivesLocal[input_index].checked = !checkedsubjectivesLocal[input_index].checked
+    setSubjectivesLocal(checkedsubjectivesLocal)
+  }
+
+  const handleGetQuestions = async() => {
+    if(btn_call === "Generate Random Paper"){
+      if (
+        randomPaperConfig.no_of_easy === "" ||
+        randomPaperConfig.no_of_medium === "" ||
+        randomPaperConfig.no_of_hard === "" ||
+        randomPaperConfig.course === "" ||
+        randomPaperConfig.subject === "" ||
+        randomPaperConfig.topic === ""
+      ) {
+        alert("Please fill all the fields");
+        return;
+      }
+    }
+
+    setLoading({
+      message: "Fetching questions from Data Bank",
+    });
+
+    let subjectives_ids_array = []
+    for(let i = 0; i < subjectivesLocal.length; i++){
+      subjectives_ids_array = [...subjectives_ids_array, subjectivesLocal[i].sq_id]
+    }
+    console.log("subjectives_ids_array: ", subjectives_ids_array)
+    if (subjectives_ids_array.length > 0) {deleteCurrentQuestions(subjectives_ids_array)}
+
+    try{
+      const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID})
+      console.log("res from get_questions_databank: ", res.data)
+
+      let ids_array = []
+      let mcqs_array = []
+      let mmcq;
+
+      for (let i = 0; i < res.data.length; i++) {
+        ids_array = [...ids_array, res.data[i].id]
+        mmcq = addQuestion(i, res.data[i])
+        mcqs_array = [...mcqs_array, mmcq]
+      }
+      const resolvedMcqs = await Promise.all(mcqs_array);
+      resolvedMcqs.map((mcq) => {mcq.checked = false})
+      setSubjectivesLocal(resolvedMcqs);
+      setSubjectiveQuestions(resolvedMcqs)
+
+      setPrevMCQsID(ids_array)
+      console.log("ids_array: ", ids_array)
+      console.log("mcqs_array: ", resolvedMcqs)
+
+
+      setLoading({
+        show: false,
+        message: "",
       });
 
       setAdding(false);
+      setControl(false);
+      setControl_2(true);
+
+    }
+    catch (err) {
+      console.log("err: ", err);
+      setLoading({error: "Error in Fetching Question."})
+    }
+  }
+
+  async function handleAddSubjective(){
+    console.log("handle add subjective accessed")
+    if (
+      currentQuestion.question === "" ||
+      currentQuestion.correct_answer === "" ||
+      currentQuestion.marks === "" ||
+      currentQuestion.difficulty === "" ||
+      currentQuestion.course === "" ||
+      currentQuestion.subject === "" ||
+      currentQuestion.topic === ""
+    ) {
+      alert("Please fill all the fields");
+      return;
+    }
+
+    setLoading({
+      message: "Adding Question",
+    });
+
+    console.log("currentQuestion in handleAddSubjective before: ", currentQuestion)
+    console.log("currentQuestion.questionnumber in handleAddSubjective before: ", subjectivesLocal.length)
+    console.log("subjectivesLocal in handleAddSubjective before: ", subjectivesLocal)
+    console.log("subjective_questions in handleAddSubjective before: ", subjective_questions)
+
+    try {
+      const newSubjective = await axios.post(
+        "/api/faculty/paper_creation/add_subjective",
+        {
+          btn_call,
+          question_info: {
+          question: currentQuestion.question,
+          answer: currentQuestion.correct_answer,
+          marks: currentQuestion.marks,
+          difficulty: currentQuestion.difficulty,
+          course: currentQuestion.course,
+          subject: currentQuestion.subject,
+          topic: currentQuestion.topic,
+          type: currentQuestion.type}
+        }
+      );
+      console.log("got response of addSubjective:", newSubjective.data)
+      setLoading({
+        show: false,
+        message: "",
+      });
+      
+      let updatedSubjectiveQuestions = [];
+      
+      updatedSubjectiveQuestions = [
+        ...subjectivesLocal,
+        newSubjective.data,
+      ].sort((a, b) => a.questionnumber - b.questionnumber);
+      setSubjectivesLocal(updatedSubjectiveQuestions);
+      // setSubjectiveQuestions(updatedSubjectiveQuestions);
+
+      console.log("updatedSubjectiveQuestions in handleAddSubjective: ", updatedSubjectiveQuestions)
+
+      const prevLength = subjectivesLocal.length;
+
+      setCurrentQuestion({
+        sq_id: "",
+        question: "",
+        parent_sq_id: "",
+        marks: 1,
+        answer:"",
+        long_question: true,
+        questionnumber: prevLength + 1,
+        difficulty: "",
+        course: "",
+        subject: "",
+        topic: "",
+        type: "subjective",
+        checked: false
+      });
+
+      setAdding(false);
+
+      console.log("currentQuestion in handleAddSubjective after: ", currentQuestion)
+      console.log("currentQuestion.questionnumber in handleAddSubjective after: ", subjectivesLocal.length)
+      console.log("subjectivesLocal in handleAddSubjective after: ", subjectivesLocal)
+      console.log("subjective_questions in handleAddSubjective after: ", subjective_questions)
+
     } catch (err) {
       console.log("err: ", err);
       setLoading({
@@ -229,15 +493,18 @@ const SubjectiveExam = ({
     const newSubjective = await axios.post(
       "/api/faculty/paper_creation/add_subjective",
       {
-        paper_id: paperId,
-        question: currentQuestion.question,
-        answer:currentQuestion.answer,
-        parent_sq_id: currentQuestion.parent_sq_id,
-        long_question: true,
-        marks: currentQuestion.marks,
-        questionnumber: currentQuestion.parent_sq_id
-          ? nextsibling
-          : currentQuestion.questionnumber,
+        btn_call,
+        question_info: {
+          paper_id: paperId,
+          question: currentQuestion.question,
+          answer:currentQuestion.answer,
+          parent_sq_id: currentQuestion.parent_sq_id,
+          long_question: true,
+          marks: currentQuestion.marks,
+          questionnumber: currentQuestion.parent_sq_id
+            ? nextsibling
+            : currentQuestion.questionnumber,
+        }
       }
     );
     if (newSubjective.status === 200) {
@@ -283,6 +550,12 @@ const SubjectiveExam = ({
         answer:"",
         long_question: true,
         questionnumber: isChild ? prevLength + 1 : prevLength + 2,
+        difficulty: "",
+        course: "",
+        subject: "",
+        topic: "",
+        type: "subjective",
+        checked: false
       });
       setAdding(false);
     } else {
@@ -304,55 +577,63 @@ const SubjectiveExam = ({
     }
   };
 
-  async function handleUpdateSubjective(subjectiveQuestion){
-    console.log("QUESTION to update: ", subjectiveQuestion)
+  const handleUpdateSubjective = async (question) => {
+    console.log("in handleUpdateSubjective")
+    console.log("question in handleUpdateSubjective: ", question)
+    console.log("currentQuestion: ", currentQuestion)
     if (
-      subjectiveQuestion.question === "" ||
-      subjectiveQuestion.correct_answer === "" ||
-      subjectiveQuestion.marks === "" ||
-      subjectiveQuestion.difficulty === "" ||
-      subjectiveQuestion.course === "" ||
-      subjectiveQuestion.subject === "" ||
-      subjectiveQuestion.topic === ""
+      question.question === "" ||
+      question.correct_answer === "" ||
+      question.marks === "" ||
+      question.difficulty === "" ||
+      question.course === "" ||
+      question.subject === "" ||
+      question.topic === ""
     ) {
       alert("Please fill all the fields");
       return;
     }
 
     setLoading({
-      message: "Updating Question...",
-    });
+      message: "Updating Question",
+    })
 
-    try {
-      const newSubjective = await axios.post(
-        "/api/faculty/edit_subjective",
-        {
-          btn_call,
-          question_info: {
-          question: subjectiveQuestion.question,
-          answer: subjectiveQuestion.correct_answer,
-          marks: subjectiveQuestion.marks,
-          difficulty: subjectiveQuestion.difficulty,
-          course: subjectiveQuestion.course,
-          subject: subjectiveQuestion.subject,
-          topic: subjectiveQuestion.topic,
-          type: subjectiveQuestion.type}
-        }
-      );
-      console.log("got response of edit_subjective:", newSubjective)
+    try{
+      const res = await axios.post("/api/faculty/edit_subjective",
+      {
+        btn_call,
+        id: question.id,
+        question: question.question,
+        correct_answer: question.correct_answer,
+        marks: question.marks,
+        difficulty: question.difficulty,
+        course: question.course,
+        subject: question.subject,
+        topic: question.topic
+      })
+
+      console.log("got response of edit_subjective:", res.data)
+      
       setLoading({
         show: false,
         message: "",
       });
+
+      console.log("subjectivesLocal in handleUpdateSubjective: ", subjectivesLocal)
       
-      let updatedSubjectiveQuestions = [];
-      
+      let updatedSubjectives = []
+      updatedSubjectives = subjectivesLocal.map((subjective) => {
+        if (subjective.id === question.id) {
+          return question;
+        }
+        return subjective;
+      });
       updatedSubjectives = updatedSubjectives.sort(
         (a, b) => a.questionnumber - b.questionnumber
-      );
-      setSubjectivesLocal(updatedSubjectiveQuestions);
+      )
+      console.log("updatedSubjectives in handleUpdateSubjective: ", updatedSubjectives)
 
-      const prevLength = subjectivesLocal.length;
+      setSubjectivesLocal(updatedSubjectives);
 
       setCurrentQuestion({
         sq_id: "",
@@ -365,15 +646,19 @@ const SubjectiveExam = ({
         difficulty: "",
         course: "",
         subject: "",
-        topic: "subjective"
+        topic: "",
+        type: "subjective",
+        checked: false
       });
 
       setEditing(false);
-    } catch (err) {
-      console.log("err: ", err);
+      
+    }
+    catch (err) {
       setLoading({
-        error: "Error in Editing Question.",
+        error: "Error updating question.",
       });
+      console.log("Error updating question", err);
     }
 
   }
@@ -532,6 +817,12 @@ const SubjectiveExam = ({
           marks: 1,
           long_question: true,
           questionnumber: subjectivesLocal.length + 1,
+          difficulty: "",
+          course: "",
+          subject: "",
+          topic: "",
+          type: "subjective",
+          checked: false
         });
 
         setEditing(false);
@@ -564,12 +855,20 @@ const SubjectiveExam = ({
     setLoading({
       message: "Deleting Question...",
     });
+    
+    let post_obj = {}
+
+    if (btn_call === "Create Question"){
+      post_obj = {btn_call, id: sq_id}
+    }
+    else{
+      post_obj = {btn_call, sq_id: sq_id}
+    }
     const deletedSubjective = await axios.post(
       "/api/faculty/remove_subjective",
-      {
-        sq_id: sq_id,
-      }
-    );
+      post_obj
+    )
+
     if (deletedSubjective.status === 200) {
       setLoading({});
       if (isChild) {
@@ -587,12 +886,22 @@ const SubjectiveExam = ({
         setSubjectiveQuestions(newMCQs);
       } else {
         const newMCQs = [...subjectivesLocal];
-        const index = newMCQs.findIndex(
-          (subjective) => subjective.sq_id === sq_id
-        );
+        
+        let index;
+
+        if (btn_call === "Create Question"){
+          index = newMCQs.findIndex(
+            (subjective) => subjective.id === sq_id
+          )
+        }
+        else{
+          index = newMCQs.findIndex(
+            (subjective) => subjective.sq_id === sq_id
+          )
+        }
         newMCQs.splice(index, 1);
         setSubjectivesLocal(newMCQs);
-        setSubjectiveQuestions(newMCQs);
+        btn_call !== "Create Question" ? setSubjectiveQuestions(newMCQs) : ""
       }
       setCurrentQuestion({
         sq_id: "",
@@ -604,10 +913,16 @@ const SubjectiveExam = ({
         questionnumber: isChild
           ? subjectivesLocal.length + 1
           : subjectivesLocal.length,
+          difficulty: "",
+        course: "",
+        subject: "",
+        topic: "",
+        type: "subjective",
+        checked: false
       });
     }
   };
-  console.log(currentQuestion,"aaa")
+  // console.log(currentQuestion,"aaa")
   const updateMarks = () => {
     const totalMarks = subjectivesLocal.reduce(
       (total, subjectives) => total + subjectives.marks,
@@ -648,11 +963,16 @@ const SubjectiveExam = ({
     <div className="flex font-poppins flex-col items-center p-6">
       <Spinner loading={loading} />
 
-      <div className="w-full flex justify-center">
+      <div className="w-4/12 flex flex-col justify-center gap-y-4">
         <button
           onClick={() => {
             if (!editing && !adding) {
-              setAdding(true);
+              if (btn_call === "Generate Random Paper"){
+                setControl(true)
+              }
+              else{
+                setAdding(true);
+              }
             } else {
               alert(
                 "Please save or cancel the current edit or add operation before editing another question."
@@ -661,9 +981,84 @@ const SubjectiveExam = ({
           }}
           className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
         >
-          Add Subjective
+          {btn_call === "Generate Random Paper" ? "Load Subjectives from Data Bank" : "Add Subjective"}
         </button>
+
+        {!control && control_2 && <button
+          onClick={handleRegenQuestions}
+          className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
+        >
+          Regenerate Selected Questions
+        </button>}
       </div>
+
+      {control && 
+      <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl flex flex-col justify-center">
+        <div className="flex justify-between">
+          <h2 className="text-xl font-bold mb-4">
+            Add Subjective Questions
+          </h2>
+          <div className="rounded-full text-white bg-red-500 my-auto flex justify-between items-center p-2 cursor-pointer">
+            <button
+              onClick={() => {
+                setEditing(false);
+                setAdding(false);
+                setControl(false)
+                setCurrentQuestion({
+                  sq_id: "",
+                  question: "",
+                  parent_sq_id: "",
+                  marks: 1,
+                  answer:"",
+                  long_question: true,
+                  questionnumber: subjectivesLocal.length + 1,
+                  difficulty: "",
+                  course: "",
+                  subject: "",
+                  topic: "",
+                  type: "subjective"
+                });
+                setRandomPaperConfig({
+                  no_of_easy: "",
+                  no_of_medium: "",
+                  no_of_hard: "",
+                  course: "",
+                  subject: "",
+                  topic: "",
+                  type: "subjective"  
+                })
+              }}
+            >
+              <ImCross />
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-10 mt-3">
+          <p className="block mb-2 font-bold">No of Questions</p>
+          <div className="flex flex-row gap-x-4">
+            <NoOfQuestions label={"Easy"} id={"no_of_easy"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.no_of_easy}/>
+            <NoOfQuestions label={"Medium"} id={"no_of_medium"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.no_of_medium}/>
+            <NoOfQuestions label={"Hard"} id={"no_of_hard"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.no_of_hard}/>
+          </div>
+
+        </div>
+
+        <div className="mb-10 gap-x-4 flex justify-between">
+          <NewQuestionInput label={"Course"} options={["", "C1", "C2", "C3", "C4"]} id={"course"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.course} btn_call={btn_call}/>
+          <NewQuestionInput label={"Subject"} options={["", "ABC", "EFG", "HIJ"]} id={"subject"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.subject} btn_call={btn_call}/>
+          <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.topic} btn_call={btn_call}/>
+        </div>
+
+        <button 
+        className="mt-5 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700 w-48 self-center"
+        onClick={handleGetQuestions}>
+          Get Questions
+        </button>
+        
+      </div>}
+
+
       {(editing || adding) && (
         <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl">
           <div className="w-full justify-between flex">
@@ -704,7 +1099,7 @@ const SubjectiveExam = ({
             <TextArea
               text={"Answer"}
               required
-              value={currentQuestion.answer}
+              value={btn_call === "Create Question" ? currentQuestion.correct_answer : currentQuestion.answer}
               onChange={handleAnswerChange}
             />
           </div>
@@ -789,7 +1184,9 @@ const SubjectiveExam = ({
           {editing ? (
             <button
               onClick={() => {
-                btn_call === "Create Question" ? handleUpdateSubjective(currentQuestion) : handleUpdateMCQ(currentQuestion);
+                btn_call === "Create Question" 
+                ? handleUpdateSubjective(currentQuestion)
+                : handleUpdateMCQ(currentQuestion);
               }}
               className="bg-blue-800 text-white p-2 rounded hover:bg-blue-700"
             >
@@ -872,7 +1269,9 @@ const SubjectiveExam = ({
                 <th className="px-4 py-2">Parent Question</th>
                 <th className="px-4 py-2">Marks</th>
                 <th className="px-4 py-2">Edit</th>
-                <th className="px-4 py-2">Delete</th>
+                {btn_call === "Generate Random Paper" 
+                ? <th className="px-4 py-2">Select</th> 
+                : <th className="px-4 py-2">Delete</th>}
               </tr>
             </thead>
             <tbody>
@@ -907,14 +1306,18 @@ const SubjectiveExam = ({
                         </button>
                       </td>
                       <td className="px-4 py-2">
-                        <button
+                        {btn_call === "Generate Random Paper" 
+                        ?  <input type="checkbox" onClick={() => {handleSelectMCQ(index)}} checked={subjective.checked}/>
+                        : <button
                           onClick={() => {
-                            handleDeleteSubjective(subjective.sq_id);
+                            btn_call === "Create Question" 
+                            ? handleDeleteSubjective(subjective.id) 
+                            : handleDeleteSubjective(subjective.sq_id);
                           }}
                           className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                         >
                           <MdDelete />
-                        </button>
+                        </button>}
                       </td>
                     </tr>
                     {subjective.child_question

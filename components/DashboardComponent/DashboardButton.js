@@ -5,7 +5,7 @@ const DashboardButton = ({courseCode, btn_text}) => {
   const [open, setOpen] = useState(false);
 
   const toggleModal = () => {
-    if (btn_text === "Create Question" && courseCode === null){
+    if (btn_text === "Create Question" || btn_text === "Generate Random Paper" && courseCode === null){
       setOpen(!open);
     }
     //throw notification if no course is selected

@@ -33,14 +33,14 @@ const handler = async (req, res) => {
         // Create new SQ and connect to paper
         const newSQ = await prisma.subjectiveQuestion.create({
           data: {
-            question: req.body.question,
-            answer: req.body.answer,
-            marks: req.body.marks,
-            long_question: req.body.long_question,
-            questionnumber: req.body.questionnumber,
+            question: req.body.question_info.question,
+            answer: req.body.question_info.answer,
+            marks: req.body.question_info.marks,
+            long_question: req.body.question_info.long_question,
+            questionnumber: req.body.question_info.questionnumber,
             paper: {
               connect: {
-                paper_id: req.body.paper_id,
+                paper_id: req.body.question_info.paper_id,
               },
             },
           },
@@ -51,7 +51,7 @@ const handler = async (req, res) => {
         if (req.body.parent_sq_id) {
           await prisma.subjectiveQuestion.update({
             where: {
-              sq_id: req.body.parent_sq_id,
+              sq_id: req.body.question_info.parent_sq_id,
             },
             data: {
               child_question: {
@@ -78,7 +78,7 @@ const handler = async (req, res) => {
 
       res.status(200).json({
         ...result,
-        parent_sq_id: req.body.parent_sq_id,
+        parent_sq_id: req.body.question_info.parent_sq_id,
       });
     }
   } 

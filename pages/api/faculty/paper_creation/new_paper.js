@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-  console.log(req.body);
+  console.log("new_paper request:", req.body);
   try {
     // Create Paper
     const paper = await prisma.paper.create({

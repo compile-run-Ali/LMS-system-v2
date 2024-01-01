@@ -4,8 +4,9 @@ import { IoIosPaper } from "react-icons/io";
 import { useRouter } from "next/router";
 
 export default function Modal({ open, setOpen, courseCode, btn_call}) {
-  console.log("btn call to model of create question", btn_call)
-  const [examType, setExamType] = useState("I.E");
+  console.log("btn call to model of create question: ", btn_call)
+  const [examType, setExamType] = btn_call === "Create Question" || btn_call === "Generate Random Paper" ? useState("SO") : useState("I.E");
+  console.log("examType in Modal: ", examType)
   const router = useRouter();
   const cancelButtonRef = useRef(null);
   const handleNext = async () => {
@@ -27,6 +28,15 @@ export default function Modal({ open, setOpen, courseCode, btn_call}) {
           },
         })
       }
+      else if(btn_call === "Generate Random Paper"){
+        router.push({
+          pathname: `/faculty/create_exam/random_subjective`,
+          query: {
+            course_code: courseCode,
+            btn_call: btn_call
+          },
+        })
+      }
       else{
         // Redirect to create exam page for subjective/objective
         router.push({
@@ -40,6 +50,15 @@ export default function Modal({ open, setOpen, courseCode, btn_call}) {
       if (btn_call === "Create Question" && courseCode === null){
         router.push({
           pathname: `/question/objective`,
+          query: {
+            course_code: courseCode,
+            btn_call: btn_call
+          },
+        })
+      }
+      else if(btn_call === "Generate Random Paper"){
+        router.push({
+          pathname: `/faculty/create_exam/random_objective`,
           query: {
             course_code: courseCode,
             btn_call: btn_call
@@ -80,6 +99,18 @@ export default function Modal({ open, setOpen, courseCode, btn_call}) {
     setExamType(e.target.value);
     console.log(e.target.value)
   };
+
+  // function return_examtype(btn_call){
+  //   if(btn_call === "Create Question"){
+  //     return "Subjective Question"
+  //   }
+  //   else if (btn_call === "Generate Random Paper"){
+  //     return "Subjective Exam"
+  //   }
+  //   else{
+  //     return "Subjective/Objective Exam"
+  //   }
+  // }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -129,7 +160,7 @@ export default function Modal({ open, setOpen, courseCode, btn_call}) {
                         {btn_call === "Create Question" ? "Select Question Type": "Select Exam Type"}
                       </Dialog.Title>
                       <form>
-                        { btn_call !== "Create Question" &&
+                        { btn_call !== "Create Question" && btn_call !== "Generate Random Paper" &&
                         <div className="mt-4">
                           <button type="button">
                             <input
@@ -150,10 +181,13 @@ export default function Modal({ open, setOpen, courseCode, btn_call}) {
                               type={"radio"}
                               value="SO"
                               onChange={(e) => handleInput(e)}
+                              checked={examType === "SO"}
                               name="paperType"
                               className="mr-2"
                             />
+                            {/* {return_examtype(btn_call)} */}
                             {btn_call === "Create Question" ? "Subjective Question" : "Subjective/Objective Exam"}
+                            {}
                           </button>
                         </div>
 
@@ -169,7 +203,7 @@ export default function Modal({ open, setOpen, courseCode, btn_call}) {
                             { btn_call === "Create Question" ? "Objective Question" : "Objective Exam"}
                           </button>
                         </div>
-                        { btn_call !== "Create Question" &&
+                        { btn_call !== "Create Question" && btn_call !== "Generate Random Paper" &&
                         <div className="mt-2">
                           <button type="button">
                             <input

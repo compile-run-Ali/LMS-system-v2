@@ -2,25 +2,41 @@ import prisma from "@/lib/prisma";
 
 
 const handler = async (req, res) => {
-  console.log("Add Subjective Question request body", req.body);
-  console.log("Add Subjective Question requests.btn_call: ", req.body.btn_call);
-  console.log("Add Subjective Question requests.question_info: ", req.body.question_info);
+  console.log("Edit Subjective Question request body", req.body);
+  console.log("Edit Subjective Question requests.btn_call: ", req.body.btn_call);
+
+  const {
+    sq_id,
+    question,
+    answer,
+    marks,
+    long_question,
+    parent_sq_id,
+    questionnumber,
+  } = req.body;
 
   try {
     if(req.body.btn_call === "Create Question"){
-      console.log("btn call recived at update subjective")
+      console.log("in edit subjective via Create Question")
+
+      const updatedSQ = await prisma.DataBankQuestion.update({
+        where: {
+          id: req.body.id
+        },
+        data: {
+          question: req.body.question,
+          correct_answer: req.body.correct_answer,
+          marks: req.body.marks,
+          difficulty: req.body.difficulty,
+          course: req.body.course,
+          subject: req.body.subject,
+          topic: req.body.topic,
+        },
+      })
+      
+      res.status(200).json(updatedSQ);
     }
     else{
-      const {
-        sq_id,
-        question,
-        answer,
-        marks,
-        long_question,
-        parent_sq_id,
-        questionnumber,
-      } = req.body;
-
       const updatedQuestion = await prisma.$transaction(async (prisma) => {
         // Update the subjective question
         const updatedSQ = await prisma.subjectiveQuestion.update({
@@ -96,7 +112,6 @@ const handler = async (req, res) => {
 
         return updatedSQ;
       });
-
       res.status(200).json(updatedQuestion);
     }
   } catch (err) {

@@ -4,6 +4,8 @@ const handler = async (req, res) => {
   console.log("Add Objective Question request body", req.body);
   console.log("Add Objective Question requests.btn_call: ", req.body.btn_call);
   console.log("Add Objective Question requests.question_info: ", req.body.question_info);
+  console.log("Add Objective Question requests.question_info.paper_id: ", req.body.question_info.paper_id);
+
   try {
     if (req.body.btn_call === "Create Question"){
       console.log("access to control create question")
@@ -25,6 +27,7 @@ const handler = async (req, res) => {
       res.status(200).json(newObjective);
     }
     else{
+      console.log("NO access to control create question")
       //Create New Objective Question
       const newObjective = await prisma.objectiveQuestion.create({
         data: {
