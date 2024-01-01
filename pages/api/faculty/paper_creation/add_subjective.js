@@ -83,8 +83,8 @@ const handler = async (req, res) => {
     }
   } 
   catch (err) {
-    console.log(err);
-  }
+    console.log(err)
+    res.status(500).json({ error: "Failed to add" });  }
 };
 
 export default handler;

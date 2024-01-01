@@ -37,8 +37,8 @@ const handler = async (req, res) => {
 
     res.status(200).json(paper);
   } catch (err) {
-    throw new Error(err.message);
-  }
+    console.log(err)
+    res.status(500).json({ error: "Failed to create" });  }
 };
 
 export default handler;

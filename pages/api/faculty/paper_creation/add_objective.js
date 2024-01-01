@@ -59,7 +59,8 @@ const handler = async (req, res) => {
     //   },
     // })
   } catch (err) {
-    throw new Error(err.message);
+    console.log(err)
+    res.status(500).json({ error: "Failed to add" });
   }
 };
 
