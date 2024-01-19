@@ -15,12 +15,13 @@ export default async function handler(req, res) {
         studentId  : studentId,
       },
     });
+    console.log("file from prisma: ", file)
     // if file[0].fileUrl is null, return error
     if ( !file[0]?.fileUrl ) {
       // dont throw error, just return
       return "No file uploaded"
     }
-    console.log(file)
+    // console.log(file)
     // Construct the absolute file path on the server
     const filePath = path.join(process.cwd(), file[0]?.fileUrl);
 
