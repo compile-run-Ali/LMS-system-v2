@@ -193,7 +193,7 @@ const IeExam = ({ paperId, setActive, exam, ieFiles, ieFilesWord }) => {
           <input
             type="file"
             class="hidden"
-            accept=".xlsx,.numbers,.xls"
+            accept=".xlsx,.numbers,.xls, .zip, .rar"
             onChange={handleFileUpload}
           />
         </label>
