@@ -16,8 +16,11 @@ const MarkingPage = () => {
 
   const fetchStudents = async () => {
     // first fetch students
-    const studentsPromise = axios.post("/api/paper/marking/get_students", {
+    const course=localStorage.getItem("selectedCourse");
+    console.log(course, "course")
+    const studentsPromise = axios.post("/api/paper/marking/get_student_by_course", {
       paper_id: router.query.exam_id,
+      course_code: course
     });
     const promises = [studentsPromise];
     const [students] = await Promise.all(promises);
