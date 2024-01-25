@@ -25,6 +25,15 @@ const MCQTable = ({
   console.log("in mcq table, paperId: ", paperId)
   console.log("in mcq table, objective_questions: ", objective_questions)
 
+  const [difficultys, setDifficultys] = useState(["", "Easy", "Medium", "Hard"])
+  const [topics, setTopics] = useState([""])
+  const [subjects, setSubjects] = useState([""])
+  const [courses, setCourses] = useState([""])
+  const [selectedCourse, setSelectedCourse] = useState("")
+  const [selectedSubject, setSelectedSubject] = useState("")
+  const [selectedTopic, setSelectedTopic] = useState("")
+  const [selectedDifficulty, setSelectedDifficulty] = useState("")
+
   const [loading, setLoading] = useState({});
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
@@ -107,8 +116,149 @@ const MCQTable = ({
     setMultipleOptions(e.target.checked);
   };
 
+
+  async function getCoursesList(){
+    try{
+        const coursesList = await axios.get("/api/courses_subjects_topics/get_courses")
+        let courses_names = coursesList.data.map((course) => {return course.name})
+        console.log("courses_names: ", [...courses_names])
+        setCourses(["", ...courses_names])
+    }
+    catch(error){
+        console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    console.log("courses in useEffect: ", courses)
+  }, [courses])
+
+  useEffect(() => {
+    if (selectedCourse !== "" && selectedCourse !== undefined) {
+      console.log("selectedCourse: ", selectedCourse)
+      btn_call === "Generate Random Paper" 
+      ? setRandomPaperConfig({...randomPaperConfig, ["course"]: selectedCourse})
+      : setCurrentMCQ({...currentMCQ, ["course"]: selectedCourse})
+      getSubjectList()
+    }
+  }, [selectedCourse])
+
+  useEffect(() => {
+    console.log("subjects in useEffect: ", subjects)
+  }, [subjects])
+
+  useEffect(() => {
+    if (selectedSubject !== "" && selectedSubject !== undefined) {
+      console.log("selectedSubject: ", selectedSubject)
+      btn_call === "Generate Random Paper" 
+      ? setRandomPaperConfig({...randomPaperConfig, ["subject"]: selectedSubject})
+      : setCurrentMCQ({...currentMCQ, ["subject"]: selectedSubject})
+      getTopicList()
+    }
+  }, [selectedSubject])
+
+  useEffect(() => {
+    console.log("topics in useEffect: ", topics)
+  }, [topics])
+
+  useEffect(() => {
+    if (selectedTopic !== "" && selectedTopic !== undefined) {
+      console.log("selectedTopic: ", selectedTopic)
+      btn_call === "Generate Random Paper" 
+      ? setRandomPaperConfig({...randomPaperConfig, ["topic"]: selectedTopic})
+      : setCurrentMCQ({...currentMCQ, ["topic"]: selectedTopic})
+    }
+  }, [selectedTopic])
+
+  useEffect(() => {
+    if (selectedDifficulty !== "" && selectedDifficulty !== undefined) {
+      console.log("selectedDifficulty: ", selectedDifficulty)
+      setCurrentMCQ({...currentMCQ, ["difficulty"]: selectedDifficulty})
+    }
+  }, [selectedDifficulty])
+
+  useEffect(() => {
+    console.log("in useEffect, currentMCQ: ", currentMCQ)
+  }, [currentMCQ])
+
+  useEffect(() => {
+    console.log("in useEffect, randomPaperConfig: ", randomPaperConfig)
+  }, [randomPaperConfig])
+
+
+  async function getSubjectList(){
+      console.log("selectedCourse in getSubjectList: ", selectedCourse)
+      try{
+          const subjectList = await axios.get("/api/courses_subjects_topics/get_subjects",{
+              params:{
+                  selectedCourse: selectedCourse
+              }
+          })
+          let subjects_names = subjectList.data.map((subject) => {return subject.name})
+          console.log("subjects_names: ", [...subjects_names])
+          setSubjects(["", ...subjects_names])
+      }
+      catch(error){
+          console.log(error)
+      }
+  }
+
+  async function getTopicList(){
+      console.log("selectedSubject in getSubjectList: ", selectedSubject)
+      try{
+          const topicList = await axios.get("/api/courses_subjects_topics/get_topics",{
+              params:{
+                  selectedCourse: selectedCourse,
+                  selectedSubject: selectedSubject
+              }
+          })
+          let topics_names = topicList.data.map((topic) => {return topic.name})
+          console.log("topics_names: ", [...topics_names])
+          setTopics(["", ...topics_names])
+      }
+      catch(error){
+          console.log(error)
+      }
+  }
+
+  function handleSelect(event){
+    console.log("event in handleSelect: ", event.target.value)
+      //setError("")
+      if(event.target.id === "course"){
+        setSelectedCourse(event.target.value)
+        // handleCourseInput(event)
+        // handleNewQustionInputChange(event)
+      }
+      else if(event.target.id === "subject"){
+        setSelectedSubject(event.target.value)
+        // handleNewQustionInputChange(event)
+      }
+      else if(event.target.id === "topic"){
+        setSelectedTopic(event.target.value)
+        // handleNewQustionInputChange(event)
+      }
+      else if(event.target.id === "difficulty"){
+        setSelectedDifficulty(event.target.value)
+        // handleNewQustionInputChange(event)
+      }
+      console.log("in handleSelect, currentMCQ: ", currentMCQ)
+  }
+
+  function reset(){
+    setCourses([""])
+    setSubjects([""])
+    setTopics([""])
+    setSelectedDifficulty("")
+    setSelectedCourse("")
+    setSelectedSubject("")
+    setSelectedTopic("")
+  }
+
+
   function handleNewQustionInputChange(event){
     const {id, value} = event.target
+    console.log("in handleNewQustionInputChange => ID: ", id)
+    console.log("in handleNewQustionInputChange => VALUE: ", value)
     {btn_call === "Generate Random Paper" 
     ? setRandomPaperConfig({...randomPaperConfig, [id]: value})
     : setCurrentMCQ({...currentMCQ, [id]: value})}
@@ -368,7 +518,7 @@ const MCQTable = ({
       setAdding(false);
       setControl(false);
       setControl_2(true);
-
+      reset()
     }
     catch (err) {
       console.log("err: ", err);
@@ -451,6 +601,7 @@ const MCQTable = ({
         checked: false
       });
       setAdding(false);
+      reset()
     } catch (err) {
       console.log("err: ", err);
       setLoading({
@@ -651,9 +802,11 @@ const MCQTable = ({
           onClick={() => {
             if (!adding && !editing) {
               if (btn_call === "Generate Random Paper"){
+                getCoursesList()
                 setControl(true)
               }
               else{
+                getCoursesList()
                 setAdding(true);
               }
             } else {
@@ -727,9 +880,14 @@ const MCQTable = ({
         </div>
 
         <div className="mb-10 gap-x-4 flex justify-between">
-          <NewQuestionInput label={"Course"} options={["", "C1", "C2", "C3", "C4"]} id={"course"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.course} btn_call={btn_call}/>
+          {/* <NewQuestionInput label={"Course"} options={["", "C1", "C2", "C3", "C4"]} id={"course"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.course} btn_call={btn_call}/>
           <NewQuestionInput label={"Subject"} options={["", "ABC", "EFG", "HIJ"]} id={"subject"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.subject} btn_call={btn_call}/>
-          <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.topic} btn_call={btn_call}/>
+          <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.topic} btn_call={btn_call}/> */}
+          
+          {/* <NewQuestionInput label={"Difficulty"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/> */}
+          <NewQuestionInput label={"Course"} options={courses} id={"course"} handleChange={(e)=>handleSelect(e)} value={selectedCourse} btn_call={btn_call}/>
+          <NewQuestionInput label={"Subject"} options={subjects} id={"subject"} handleChange={(e)=>handleSelect(e)} value={selectedSubject} btn_call={btn_call}/>
+          <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={(e)=>handleSelect(e)} value={selectedTopic} btn_call={btn_call}/>
         </div>
 
         <button 
@@ -866,10 +1024,15 @@ const MCQTable = ({
           </div>
 
           {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between">
-            <NewQuestionInput label={"Difficulty"} options={["", "Easy", "Medium", "Hard"]} id={"difficulty"} handleChange={handleNewQustionInputChange} value={currentMCQ.difficulty} btn_call={btn_call}/>
+            {/* <NewQuestionInput label={"Difficulty"} options={["", "Easy", "Medium", "Hard"]} id={"difficulty"} handleChange={handleNewQustionInputChange} value={currentMCQ.difficulty} btn_call={btn_call}/>
             <NewQuestionInput label={"Course"} options={["", "C1", "C2", "C3", "C4"]} id={"course"} handleChange={handleNewQustionInputChange} value={currentMCQ.course} btn_call={btn_call}/>
             <NewQuestionInput label={"Subject"} options={["", "ABC", "EFG", "HIJ"]} id={"subject"} handleChange={handleNewQustionInputChange} value={currentMCQ.subject} btn_call={btn_call}/>
-            <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={currentMCQ.topic} btn_call={btn_call}/>
+            <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={currentMCQ.topic} btn_call={btn_call}/> */}
+            
+            <NewQuestionInput label={"Difficulty"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/>
+            <NewQuestionInput label={"Course"} options={courses} id={"course"} handleChange={(e)=>handleSelect(e)} value={selectedCourse} btn_call={btn_call}/>
+            <NewQuestionInput label={"Subject"} options={subjects} id={"subject"} handleChange={(e)=>handleSelect(e)} value={selectedSubject} btn_call={btn_call}/>
+            <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={(e)=>handleSelect(e)} value={selectedTopic} btn_call={btn_call}/>
           </div>}
 
           {editing ? (
