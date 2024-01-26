@@ -24,6 +24,8 @@ export default function CourseModal({setActive}){
             try{
                 const res = await axios.post("/api/courses_subjects_topics/save_course", {course})
                 setActive(0)
+                window.location.reload()
+
             }
             catch(error){
                 console.log(error)

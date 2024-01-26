@@ -97,6 +97,8 @@ export default function TopicModal({setActive}){
             try{
                 const res = await axios.post("/api/courses_subjects_topics/save_topic", {selectedCourse, selectedSubject, topic})
                 setActive(0)
+                window.location.reload()
+
             }
             catch(error){
                 console.log(error)

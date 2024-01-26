@@ -60,6 +60,8 @@ export default function SubjectModal({setActive}){
                 const res = await axios.post("/api/courses_subjects_topics/save_subject", {selectedCourse, subject})
                 setActive(0)
                 console.log("res in save subject: ", res)
+                window.location.reload()
+
             }
             catch(error){
                 console.log("error: ", error.response.data.error.meta.target)
