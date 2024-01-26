@@ -6,6 +6,7 @@ import Faculty from "./Containers/Faculty";
 import Tabs from "./Tabs";
 import AssignedTable from "./Tables/AssignedTable";
 import Loader from "../Loader";
+import Courses_Subjects_Topics from "./Containers/Courses_Subjects_Topics";
 import CreateWordButton from "./CreateWordButton";
 import ExamContainer from "./Containers/ExamContainer";
 import Ip_Binding from "./Containers/IpBinding";
@@ -126,6 +127,12 @@ export default function AdminPanel({
           ) : (
             <Ip_Binding ip={ip} setIp={setIp} />
           )}
+        </>
+      )}
+
+      {active === "Courses_Subjects_Topics" && (
+        <>
+          <Courses_Subjects_Topics />
         </>
       )}
     </div>

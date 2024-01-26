@@ -47,6 +47,11 @@ export default function Tabs({ active, setActive }) {
                         IP Binding
                     </a>
                 </li>
+                <li className="mr-2 cursor-pointer" onClick={() => setActive("Courses_Subjects_Topics")}>
+                    <a href="#" className={`inline-flex p-4 border-b-2 border-transparent rounded-t-lg group ${active === "Courses_Subjects_Topics" ? "text-blue-800 border-b-2 border-blue-800" : ""}`}>
+                        Courses_Subjects_Topics
+                    </a>
+                </li>
             </ul>
         </div>
 
