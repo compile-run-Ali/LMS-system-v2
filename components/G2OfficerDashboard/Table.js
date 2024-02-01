@@ -3,7 +3,7 @@ import { MdPrint } from "react-icons/md";
 import { convertDateTimeToStrings } from "@/lib/TimeCalculations";
 import { useRouter } from "next/router";
 
-const Table = ({ exams }) => {
+const Table = ({ exams,selectedCourse }) => {
   const router = useRouter();
   console.log(
     exams[0]
@@ -29,7 +29,7 @@ const Table = ({ exams }) => {
           .map((exam, index) => (
             <tr key={index} className="bg-white ">
               <td className=" px-4 py-3 border">{index+1}</td>
-              <td className=" px-4 py-3 border">{exam.course_code}</td>
+              <td className=" px-4 py-3 border">{selectedCourse}</td>
               <td className=" px-4 py-3 border">{exam.paper_name}</td>
               <td className=" px-4 py-3 border">{exam.course.course_name}</td>
               <td className=" px-4 py-3 border">{exam.paper_type}</td>
@@ -40,7 +40,7 @@ const Table = ({ exams }) => {
               <td className="px-4 text-center">
                 <button
                   onClick={() => {
-                    router.push(`/faculty/print_results/${exam.paper_id}`);
+                    router.push(`/faculty/print_results/${exam.paper_id +"_"+ selectedCourse}`);
                   }}
                   className="hover:bg-blue-900 bg-blue-800 text-white p-2 rounded-md transition-colors "
                 >
