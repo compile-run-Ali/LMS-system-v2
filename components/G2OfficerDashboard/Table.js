@@ -5,9 +5,9 @@ import { useRouter } from "next/router";
 
 const Table = ({ exams,selectedCourse }) => {
   const router = useRouter();
-  console.log(
-    exams[0]
-  );
+  // console.log(
+  //   exams[0]
+  // );
   return (
     <table className="table-auto rounded-md font-poppins w-full text-left">
       <thead>

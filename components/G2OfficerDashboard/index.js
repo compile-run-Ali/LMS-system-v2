@@ -13,24 +13,30 @@ const G2OfficerDashboard = () => {
   const [loading, setLoading] = useState({});
   const [selectedCourse, setSelectedCourse] = useState(null); // [course_code, course_name
   const [courses, setCourses] = useState(null);
+  
   useEffect(() => {
-    setLoading(true);
-    axios
-      .get("/api/admin/paper/get_exams", {
-        faculty_id: session?.data?.user?.id,
-        course_code: selectedCourse,
-      })
-      .then((res) => {
-        setLoading(false);
-        setExams(res.data.filter((exam) => exam.status === "Result Locked"));
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-        setSpinner({
-          error: "Error in loading exams.",
+    if(selectedCourse !== "" && selectedCourse !== null && selectedCourse !== undefined){
+      console.log("in get_exams pre: ", selectedCourse)
+      setLoading(true);
+      axios
+        .get("/api/admin/paper/get_exams", {
+          params:{
+            faculty_id: session?.data?.user?.id,
+            course_code: selectedCourse
+          }
+        })
+        .then((res) => {
+          setLoading(false);
+          setExams(res.data.filter((exam) => exam.status === "Result Locked"));
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+          setSpinner({
+            error: "Error in loading exams.",
+          });
         });
-      });
+    }
   }, [selectedCourse]);
 
   useEffect(() => {
@@ -62,7 +68,7 @@ const G2OfficerDashboard = () => {
         onChange={handleCourseChange}
         value={selectedCourse}
       >
-        {courses && courses.length > 0 ? (
+        {/* {courses && courses.length > 0 ? (
           courses
             .sort((a, b) =>
               a.course.course_name.localeCompare(b.course.course_name)
@@ -74,7 +80,22 @@ const G2OfficerDashboard = () => {
             ))
         ) : (
           <option value="">No Courses</option>
+        )} */}
+
+        {courses && courses.length > 0 ? (
+          courses
+            .sort((a, b) =>
+              a.course_name.localeCompare(b.course_name)
+            )
+            .map((course, index) => (
+              <option key={index} value={course.course_code}>
+                {course.course_code} - {course.course_name}
+              </option>
+            ))
+        ) : (
+          <option value="">No Courses</option>
         )}
+
       </select>
       <Spinner loading={spinning} />
       <div className="text-4xl mt-10 mb-4 font-poppins">Print Results</div>
