@@ -157,7 +157,8 @@ export default function Form({
 
   const submitForm = async (e) => {
     e.preventDefault();
-    if (paperName === "" || dateOfExam === "" || (copy && !selectedCourse)) {
+    // if (paperName === "" || dateOfExam === "" || (copy && !selectedCourse)) {
+    if (paperName === "" || dateOfExam === "" || selectedCourses.length === 0) {
       alert("Please fill all the fields");
       return;
     }
@@ -171,7 +172,8 @@ export default function Form({
         {
           paper_id: examDetails ? examDetails.paper_id : null,
           course_code: copy
-            ? selectedCourse
+            // ? selectedCourse
+            ? selectedCourses
             : router.query.course_code
             ? router.query.course_code
             : null,
@@ -308,7 +310,27 @@ export default function Form({
       e.target.value = newSelectedOptions; // Update the selected options directly
       setSelectedCourses(newSelectedOptions);
     }
+    console.log("selectedOptions in not copy: ", selectedOptions)
   };
+
+
+  // const handleSelectedCourses_inCopy = (e) => {
+  //   const selectedOptions = Array.from(e.target.selectedOptions).map(
+  //     (option) => option.value
+  //   );
+  //   setSelectedCourses(selectedOptions);
+  //   console.log("selectedOptions: ", selectedOptions)
+  // };
+
+
+  function handleSelectedCourses_inCopy(e){
+    // console.log("multi options: ", e.target.selectedOptions)
+    const selectedOptions = Array.from(e.target.selectedOptions).map(
+      (option) => option.value
+    );
+    setSelectedCourses(selectedOptions);
+    console.log("selectedOptions in handleSelectedCourses_inCopy: ", selectedOptions)
+  }
 
   return (
     <form>
@@ -441,10 +463,13 @@ export default function Form({
             <select
               className="    w-full  border  border-primary-black border-opacity-[0.15] rounded-md mt-2 px-3 py-2 
             focus:border-[#FEC703] focus:outline-none bg-white dateSelectorColor "
-              onChange={(e) => {
-                setSelectedCourse(e.target.value);
-              }}
-              value={selectedCourse}
+              // onChange={(e) => {
+              //   setSelectedCourse(e.target.value);
+              // }}
+              onChange={handleSelectedCourses_inCopy}
+              // value={selectedCourse}
+              value={selectedCourses}
+              multiple={true}
             >
               <option value={""}> Select Course to Copy Exam</option>
               {courses.map((course) => (

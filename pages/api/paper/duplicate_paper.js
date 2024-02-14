@@ -60,26 +60,6 @@ export default async function handler(req, res) {
       },
     });
 
-    //getting the list of courses connected to original paper
-    console.log("original paper_id: ", paper_id)
-    console.log("new paper_id: ", createdPaper.paper_id)
-    const courses = await prisma.coursePaper.findMany({
-      where: {paper_id: paper_id}
-    })
-    console.log("courses having orignial paper_id: ", courses)
-    //copying the paper_id of the new paper with the same courses
-    courses.map(async (course) => {
-      const course_paper = await prisma.coursePaper.create({
-        data: {
-          course_code: course.course_code,
-          paper_id: createdPaper.paper_id
-        }
-      })
-      console.log("CoursesPaper copy: ", course_paper)
-    })
-
-
-
     const createdObjectiveQuestions = await prisma.objectiveQuestion.createMany(
       {
         data: newObjectiveQuestions.map((question) => ({
