@@ -118,7 +118,7 @@ model Paper {
   weightage        Int?
   status           String         @default("Draft")
   total_marks      Float          @default(0)
-  objective_marks  Int            @default(0)
+  objective_marks  Float            @default(0)
   subjective_marks Float          @default(0)
   language         String         @default("English")
 
@@ -182,7 +182,7 @@ model ObjectiveQuestion {
   question       String @db.VarChar(10000)
   answers        String @db.VarChar(1000)
   correct_answer String
-  marks          Int
+  marks          Float
   timeAllowed    Int    @default(0)
 
   paper    Paper  @relation(fields: [paper_id], references: [paper_id], onDelete: Cascade)
@@ -279,7 +279,7 @@ model DataBankQuestion {
   question       String  @db.VarChar(10000)
   answers        String? @db.VarChar(1000)
   correct_answer String  @db.VarChar(4000)
-  marks          Int
+  marks          Float
   timeAllowed    Int?    @default(0)
   difficulty     String
   course         String
