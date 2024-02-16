@@ -295,7 +295,7 @@ const MCQTable = ({
   };
 
   const handleMarksChange = (e) => {
-    setCurrentMCQ({ ...currentMCQ, marks: parseInt(e.target.value) });
+    setCurrentMCQ({ ...currentMCQ, marks: parseFloat(e.target.value) });
   };
 
   const handleOptionAddition = () => {
