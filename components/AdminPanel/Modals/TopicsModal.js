@@ -2,7 +2,7 @@ import axios from "axios"
 import { useState } from "react"
 import { useEffect } from "react"
 
-export default function TopicModal({setActive}){
+export default function TopicModal({setActive, getTopicList}){
     const [topic, setTopic] = useState("")
     const [subjects, setSubjects] = useState([])
     const [error, setError] = useState("")
@@ -97,7 +97,8 @@ export default function TopicModal({setActive}){
             try{
                 const res = await axios.post("/api/courses_subjects_topics/save_topic", {selectedCourse, selectedSubject, topic})
                 setActive(0)
-                window.location.reload()
+                // window.location.reload()
+                getTopicList()
 
             }
             catch(error){

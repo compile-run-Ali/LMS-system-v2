@@ -2,7 +2,7 @@ import axios from "axios"
 import { useState } from "react"
 import { useEffect } from "react"
 
-export default function SubjectModal({setActive}){
+export default function SubjectModal({setActive, getSubjectList}){
     const [subject, setSubject] = useState("")
     const [error, setError] = useState("")
     const [courses, setCourses] = useState([])
@@ -60,8 +60,8 @@ export default function SubjectModal({setActive}){
                 const res = await axios.post("/api/courses_subjects_topics/save_subject", {selectedCourse, subject})
                 setActive(0)
                 console.log("res in save subject: ", res)
-                window.location.reload()
-
+                // window.location.reload()
+                getSubjectList()
             }
             catch(error){
                 console.log("error: ", error.response.data.error.meta.target)

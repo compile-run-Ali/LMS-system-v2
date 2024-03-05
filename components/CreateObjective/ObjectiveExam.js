@@ -476,6 +476,13 @@ const MCQTable = ({
         return;
       }
     }
+    if(
+      randomPaperConfig.no_of_easy < 0 ||
+      randomPaperConfig.no_of_medium < 0 ||
+      randomPaperConfig.no_of_hard < 0){
+        alert("No of questions can't be negative");
+      return;
+    }
 
     setLoading({
       message: "Fetching questions from Data Bank",
@@ -1029,7 +1036,7 @@ const MCQTable = ({
             <NewQuestionInput label={"Subject"} options={["", "ABC", "EFG", "HIJ"]} id={"subject"} handleChange={handleNewQustionInputChange} value={currentMCQ.subject} btn_call={btn_call}/>
             <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={currentMCQ.topic} btn_call={btn_call}/> */}
             
-            <NewQuestionInput label={"Difficulty"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/>
+            <NewQuestionInput label={"Difficulty Level"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/>
             <NewQuestionInput label={"Course"} options={courses} id={"course"} handleChange={(e)=>handleSelect(e)} value={selectedCourse} btn_call={btn_call}/>
             <NewQuestionInput label={"Subject"} options={subjects} id={"subject"} handleChange={(e)=>handleSelect(e)} value={selectedSubject} btn_call={btn_call}/>
             <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={(e)=>handleSelect(e)} value={selectedTopic} btn_call={btn_call}/>

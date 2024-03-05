@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useState } from "react"
 
-export default function CourseModal({setActive}){
+export default function CourseModal({setActive, getCoursesList}){
     const [course, setCourse] = useState("")
     const [error, setError] = useState("")
 
@@ -24,8 +24,8 @@ export default function CourseModal({setActive}){
             try{
                 const res = await axios.post("/api/courses_subjects_topics/save_course", {course})
                 setActive(0)
-                window.location.reload()
-
+                // window.location.reload()
+                getCoursesList()
             }
             catch(error){
                 console.log(error)
@@ -37,8 +37,7 @@ export default function CourseModal({setActive}){
     return(
         <div className="shadow-lg border border-slate-400 rounded-md flex flex-col self-center w-2/6 px-3 py-3 my-9">
             <label className="block mb-2">Course Name</label>
-            <input type="text" id="course" value={course} onChange={handleChange}
-                   className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 mb-2 py-2"/>
+            <input type="text" id="course" value={course} onChange={handleChange} className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 mb-2 py-2"/>
             {error !== "" && <p className=" text-orange-700 text-sm">{error}</p>}
             <div className="flex flex-row">
                 <button className="w-1/2 bg-blue-800 hover:bg-blue-700 transition-all text-white border rounded-md px-5 mt-2 mb-1 py-2 mr-1"

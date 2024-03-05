@@ -465,6 +465,13 @@ const SubjectiveExam = ({
         return;
       }
     }
+    if(
+      randomPaperConfig.no_of_easy < 0 ||
+      randomPaperConfig.no_of_medium < 0 ||
+      randomPaperConfig.no_of_hard < 0){
+        alert("No of questions can't be negative");
+      return;
+    }
 
     setLoading({
       message: "Fetching questions from Data Bank",
@@ -1311,7 +1318,7 @@ const SubjectiveExam = ({
           </div>
 
           {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between">
-          <NewQuestionInput label={"Difficulty"} options={difficultys} id={"difficulty"} handleChange={handleSelect} value={selectedDifficulty}/>
+          <NewQuestionInput label={"Difficulty Level"} options={difficultys} id={"difficulty"} handleChange={handleSelect} value={selectedDifficulty}/>
           <NewQuestionInput label={"Course"} options={courses} id={"course"} handleChange={handleSelect} value={selectedCourse} btn_call={btn_call}/>
           <NewQuestionInput label={"Subject"} options={subjects} id={"subject"} handleChange={handleSelect} value={selectedSubject} btn_call={btn_call}/>
           <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={handleSelect} value={selectedTopic} btn_call={btn_call}/>

@@ -2,92 +2,104 @@ import { useState } from "react"
 import { useEffect } from "react"
 import axios from "axios"
 
-export default function View_Courses_Subjects_Topics(){
-    const [topics, setTopics] = useState([])
-    const [subjects, setSubjects] = useState([])
-    const [error, setError] = useState("")
-    const [courses, setCourses] = useState([])
-    const [selectedCourse, setSelectedCourse] = useState("")
-    const [selectedSubject, setSelectedSubject] = useState("")
-    const [selectedTopic, setSelectedTopic] = useState("")
+export default function View_Courses_Subjects_Topics({
+    courses,
+    subjects,
+    topics,
+    selectedCourse,
+    selectedSubject,
+    selectedTopic,
+    setSelectedCourse,
+    setSelectedSubject,
+    setSelectedTopic,
+    error,
+    setError
+}){
+    // const [topics, setTopics] = useState([])
+    // const [subjects, setSubjects] = useState([])
+    // const [error, setError] = useState("")
+    // const [courses, setCourses] = useState([])
+    // const [selectedCourse, setSelectedCourse] = useState("")
+    // const [selectedSubject, setSelectedSubject] = useState("")
+    // const [selectedTopic, setSelectedTopic] = useState("")
 
-    async function getCoursesList(){
-        try{
-            const coursesList = await axios.get("/api/courses_subjects_topics/get_courses")
-            // console.log(coursesList.data)
-            setCourses(coursesList.data.map((course) => {return course.name}))
-            // console.log("courses: ", courses)
-        }
-        catch(error){
-            console.log(error)
-            setError("-- Can't fetch courses list --")
-        }
-    }
+    // async function getCoursesList(){
+    //     try{
+    //         const coursesList = await axios.get("/api/courses_subjects_topics/get_courses")
+    //         // console.log(coursesList.data)
+    //         setCourses(coursesList.data.map((course) => {return course.name}))
+    //         // console.log("courses: ", courses)
+    //     }
+    //     catch(error){
+    //         console.log(error)
+    //         setError("-- Can't fetch courses list --")
+    //     }
+    // }
 
-    async function getSubjectList(){
-        console.log("selectedCourse in getSubjectList: ", selectedCourse)
-        try{
-            const subjectList = await axios.get("/api/courses_subjects_topics/get_subjects",{
-                params:{
-                    selectedCourse: selectedCourse
-                }
-            })
-            // console.log("subjectList.data: ", subjectList.data)
-            setSubjects(subjectList.data.map((subject) => {return subject.name}))
-            // console.log("subjects in getSubjectList: ", subjects)
-        }
-        catch(error){
-            console.log(error)
-            setError("-- Can't fetch subjects list --")
-        }
-    }
+    // async function getSubjectList(){
+    //     console.log("selectedCourse in getSubjectList: ", selectedCourse)
+    //     try{
+    //         const subjectList = await axios.get("/api/courses_subjects_topics/get_subjects",{
+    //             params:{
+    //                 selectedCourse: selectedCourse
+    //             }
+    //         })
+    //         // console.log("subjectList.data: ", subjectList.data)
+    //         setSubjects(subjectList.data.map((subject) => {return subject.name}))
+    //         // console.log("subjects in getSubjectList: ", subjects)
+    //     }
+    //     catch(error){
+    //         console.log(error)
+    //         setError("-- Can't fetch subjects list --")
+    //     }
+    // }
 
-    async function getTopicList(){
-        // console.log("selectedCourse in getSubjectList: ", selectedCourse)
-        try{
-            const topicList = await axios.get("/api/courses_subjects_topics/get_topics",{
-                params:{
-                    selectedCourse: selectedCourse,
-                    selectedSubject: selectedSubject
-                }
-            })
-            console.log("topicList.data: ", topicList.data)
-            setTopics(topicList.data.map((topic) => {return topic.name}))
-            console.log("topics in gettopicsList: ", topics)
-        }
-        catch(error){
-            console.log(error)
-            setError("-- Can't fetch topic list --")
-        }
-    }
+    // async function getTopicList(){
+    //     // console.log("selectedCourse in getSubjectList: ", selectedCourse)
+    //     try{
+    //         const topicList = await axios.get("/api/courses_subjects_topics/get_topics",{
+    //             params:{
+    //                 selectedCourse: selectedCourse,
+    //                 selectedSubject: selectedSubject
+    //             }
+    //         })
+    //         console.log("topicList.data: ", topicList.data)
+    //         setTopics(topicList.data.map((topic) => {return topic.name}))
+    //         console.log("topics in gettopicsList: ", topics)
+    //     }
+    //     catch(error){
+    //         console.log(error)
+    //         setError("-- Can't fetch topic list --")
+    //     }
+    // }
 
-    useEffect(() => {
-        getCoursesList()
-    }, [])
+    // useEffect(() => {
+    //     getCoursesList()
+    // }, [])
 
-    useEffect(() => {
-        console.log("courses: ", courses)
-        setSelectedCourse(courses[0])
-        console.log("selectedCourse: ", selectedCourse)
-        // getSubjectList()
-    }, [courses])
+    // useEffect(() => {
+    //     console.log("courses: ", courses)
+    //     setSelectedCourse(courses[0])
+    //     console.log("selectedCourse: ", selectedCourse)
+    //     // getSubjectList()
+    // }, [courses])
     
-    useEffect(() => {
-        getSubjectList()
-    }, [selectedCourse])
+    // useEffect(() => {
+    //     getSubjectList()
+    // }, [selectedCourse])
 
-    useEffect(() => {
-        console.log("subjects in useEffect: ", subjects)
-        setSelectedSubject(subjects[0])
-    }, [subjects])
+    // useEffect(() => {
+    //     console.log("subjects in useEffect: ", subjects)
+    //     setSelectedSubject(subjects[0])
+    // }, [subjects])
 
-    useEffect(() => {
-        getTopicList()
-    }, [selectedSubject])
+    // useEffect(() => {
+    //     getTopicList()
+    // }, [selectedSubject])
 
-    useEffect(() => {
-        setSelectedTopic(topics[0])
-    }, [topics])
+    // useEffect(() => {
+    //     setSelectedTopic(topics[0])
+    // }, [topics])
 
     function handleSelect(event){
         setError("")
@@ -105,6 +117,7 @@ export default function View_Courses_Subjects_Topics(){
                 className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
                 id="Courses_List"
                 onChange={handleSelect}
+                // onClick={getCoursesList}
                 value={selectedCourse}
                 >
                     {courses.map((course, index) => (

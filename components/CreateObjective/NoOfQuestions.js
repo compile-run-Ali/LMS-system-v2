@@ -3,6 +3,7 @@ export default function NoOfQuestions({label, id, handleChange, value}){
         <div className="w-4/12">
             <label className="block mb-2">{label}</label>
             <input type="number"
+            min="0"
             className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
             id={id}
             onChange={handleChange}
