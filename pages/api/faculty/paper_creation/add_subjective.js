@@ -16,8 +16,8 @@ const handler = async (req, res) => {
           marks: req.body.question_info.marks,
           difficulty: req.body.question_info.difficulty,
           course: req.body.question_info.course,
-          subject: req.body.question_info.subject,
-          topic: req.body.question_info.topic,
+          subject: req.body.question_info.subject[0],
+          topic: req.body.question_info.topic[0],
           type: req.body.question_info.type
         }
       })

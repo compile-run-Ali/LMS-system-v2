@@ -9,6 +9,7 @@ import NoOfQuestions from "./NoOfQuestions";
 import { useRouter } from "next/router";
 import Spinner from "../Loader/Spinner";
 import Link from "next/link";
+import Info_Modal from "./Info_Modal";
 
 const MCQTable = ({
   exam,
@@ -73,6 +74,7 @@ const MCQTable = ({
   const [control, setControl] = useState(false)
   const [prevMCQsID, setPrevMCQsID] = useState([])
   const [control_2, setControl_2] = useState(false)
+  const [modalControl, setModalControl] = useState(true) //used to control info_model visibility
 
   useEffect(() => {
     if (mcqs.length === 0) {
@@ -186,6 +188,10 @@ const MCQTable = ({
   }, [randomPaperConfig])
 
 
+  useEffect(() => {
+    if(btn_call === "Create Question"){getCoursesList()}
+  }, [])
+
   async function getSubjectList(){
       console.log("selectedCourse in getSubjectList: ", selectedCourse)
       try{
@@ -196,7 +202,9 @@ const MCQTable = ({
           })
           let subjects_names = subjectList.data.map((subject) => {return subject.name})
           console.log("subjects_names: ", [...subjects_names])
+          console.log("subjects_names[0]: ", subjects_names[0])
           setSubjects(["", ...subjects_names])
+          // setSubjects([...subjects_names])
       }
       catch(error){
           console.log(error)
@@ -212,9 +220,11 @@ const MCQTable = ({
                   selectedSubject: selectedSubject
               }
           })
+          console.log("topicList.data in getTopicList: ", topicList.data)
           let topics_names = topicList.data.map((topic) => {return topic.name})
           console.log("topics_names: ", [...topics_names])
           setTopics(["", ...topics_names])
+          // setTopics([...topics_names])
       }
       catch(error){
           console.log(error)
@@ -226,20 +236,23 @@ const MCQTable = ({
       //setError("")
       if(event.target.id === "course"){
         setSelectedCourse(event.target.value)
-        // handleCourseInput(event)
-        // handleNewQustionInputChange(event)
       }
       else if(event.target.id === "subject"){
-        setSelectedSubject(event.target.value)
-        // handleNewQustionInputChange(event)
+        // setSelectedSubject(event.target.value)
+        const selectedSubjects = Array.from(event.target.selectedOptions).map(
+          (option) => option.value
+        )
+        setSelectedSubject(selectedSubjects)
       }
       else if(event.target.id === "topic"){
-        setSelectedTopic(event.target.value)
-        // handleNewQustionInputChange(event)
+        // setSelectedTopic(event.target.value)
+        const selectedTopics = Array.from(event.target.selectedOptions).map(
+          (option) => option.value
+        )
+        setSelectedTopic(selectedTopics)
       }
       else if(event.target.id === "difficulty"){
         setSelectedDifficulty(event.target.value)
-        // handleNewQustionInputChange(event)
       }
       console.log("in handleSelect, currentMCQ: ", currentMCQ)
   }
@@ -345,10 +358,10 @@ const MCQTable = ({
         correct_answer: "",
         marks: 1,
         timeAllowed: currentMCQ.timeAllowed || 60,
-        difficulty: "",
-        course: "",
-        subject: "",
-        topic: "",
+        difficulty: selectedDifficulty,
+        course: selectedCourse,
+        subject: selectedSubject,
+        topic: selectedTopic,
         type: "objective",
         checked: false
       });
@@ -454,8 +467,8 @@ const MCQTable = ({
   
       }
       catch (err) {
-        console.log("err: ", err);
-        setLoading({error: "Error in regenerating Question."})
+        console.log("Error in regenerating Question: ", err);
+        // setLoading({error: "Error in regenerating Question."})
       }
     }
 
@@ -463,6 +476,7 @@ const MCQTable = ({
   
 
   const handleGetQuestions = async() => {
+    console.log("randomPaperConfig in handleGetQuestions: ", randomPaperConfig)
     if(btn_call === "Generate Random Paper"){
       if (
         randomPaperConfig.no_of_easy === "" ||
@@ -600,15 +614,15 @@ const MCQTable = ({
         correct_answer: "",
         marks: 1,
         timeAllowed: currentMCQ.timeAllowed || 60,
-        difficulty: "",
-        course: "",
-        subject: "",
-        topic: "",
+        difficulty: selectedDifficulty,
+        course: selectedCourse,
+        subject: selectedSubject,
+        topic: selectedTopic,
         type: "objective",
         checked: false
       });
       setAdding(false);
-      reset()
+      // reset()
     } catch (err) {
       console.log("err: ", err);
       setLoading({
@@ -723,10 +737,10 @@ const MCQTable = ({
         correct_answer: "",
         marks: 1,
         timeAllowed: currentMCQ.timeAllowed || 60,
-        difficulty: "",
-        course: "",
-        subject: "",
-        topic: "",
+        difficulty: selectedDifficulty,
+        course: selectedCourse,
+        subject: selectedSubject,
+        topic: selectedTopic,
         type: "objective",
         checked: false
       });
@@ -836,6 +850,22 @@ const MCQTable = ({
 
       </div>
 
+      {btn_call === "Create Question" && modalControl &&
+      <div className="w-full h-full backdrop-blur bg-black/50 fixed inset-0 flex items-center justify-center">
+        <Info_Modal 
+          difficultys={difficultys} 
+          courses={courses} 
+          subjects={subjects}
+          topics={topics}
+          handleSelect={handleSelect}
+          selectedDifficulty={selectedDifficulty}
+          selectedCourse={selectedCourse}
+          selectedSubject={selectedSubject}
+          selectedTopic={selectedTopic}
+          btn_call={btn_call}
+          setModalControl={setModalControl}/>
+      </div>}
+
       {control && 
       <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl flex flex-col justify-center">
         <div className="flex justify-between">
@@ -854,10 +884,10 @@ const MCQTable = ({
                   correct_answer: "",
                   marks: 1,
                   timeAllowed: currentMCQ.timeAllowed || 60,
-                  difficulty: "",
-                  course: "",
-                  subject: "",
-                  topic: "",
+                  difficulty: selectedDifficulty,
+                  course: selectedCourse,
+                  subject: selectedSubject,
+                  topic: selectedTopic,
                   type: "objective"
                 })
                 setRandomPaperConfig({
@@ -922,10 +952,10 @@ const MCQTable = ({
                     correct_answer: "",
                     marks: 1,
                     timeAllowed: currentMCQ.timeAllowed || 60,
-                    difficulty: "",
-                    course: "",
-                    subject: "",
-                    topic: ""
+                    difficulty: selectedDifficulty,
+                    course: selectedCourse,
+                    subject: selectedSubject,
+                    topic: selectedTopic
                   });
                 }}
               >
@@ -1030,17 +1060,25 @@ const MCQTable = ({
             )}
           </div>
 
-          {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between">
-            {/* <NewQuestionInput label={"Difficulty"} options={["", "Easy", "Medium", "Hard"]} id={"difficulty"} handleChange={handleNewQustionInputChange} value={currentMCQ.difficulty} btn_call={btn_call}/>
-            <NewQuestionInput label={"Course"} options={["", "C1", "C2", "C3", "C4"]} id={"course"} handleChange={handleNewQustionInputChange} value={currentMCQ.course} btn_call={btn_call}/>
-            <NewQuestionInput label={"Subject"} options={["", "ABC", "EFG", "HIJ"]} id={"subject"} handleChange={handleNewQustionInputChange} value={currentMCQ.subject} btn_call={btn_call}/>
-            <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={currentMCQ.topic} btn_call={btn_call}/> */}
+          {/* {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between"> */}
             
-            <NewQuestionInput label={"Difficulty Level"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/>
+            {/* <NewQuestionInput label={"Difficulty Level"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/>
             <NewQuestionInput label={"Course"} options={courses} id={"course"} handleChange={(e)=>handleSelect(e)} value={selectedCourse} btn_call={btn_call}/>
             <NewQuestionInput label={"Subject"} options={subjects} id={"subject"} handleChange={(e)=>handleSelect(e)} value={selectedSubject} btn_call={btn_call}/>
-            <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={(e)=>handleSelect(e)} value={selectedTopic} btn_call={btn_call}/>
-          </div>}
+            <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={(e)=>handleSelect(e)} value={selectedTopic} btn_call={btn_call}/> */}
+
+            {/* <Info_Modal 
+              difficultys={difficultys} 
+              courses={courses} 
+              subjects={subjects}
+              topics={topics}
+              handleSelect={handleSelect}
+              selectedDifficulty={selectedDifficulty}
+              selectedCourse={selectedCourse}
+              selectedSubject={selectedSubject}
+              selectedTopic={selectedTopic}
+              btn_call={btn_call}/> */}
+          {/* </div>} */}
 
           {editing ? (
             <button

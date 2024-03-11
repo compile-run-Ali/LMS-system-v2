@@ -102,8 +102,15 @@ export default function TopicModal({setActive, getTopicList}){
 
             }
             catch(error){
-                console.log(error)
-                setError("-- Error adding topic --")
+                // console.log(error)
+                // setError("-- Error adding topic --")
+                console.log("error: ", error.response.data.error.meta.target)
+                if (error.response.data.error.meta.target === "DbTopic_name_key"){
+                    setError("-- Topic with the same name is already registered --")
+                }
+                else{
+                    setError("-- Error adding topic --")
+                }
             }
         }
     }

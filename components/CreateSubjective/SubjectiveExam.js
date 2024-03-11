@@ -8,6 +8,7 @@ import TextArea from "../Common/Form/TextArea";
 import NewQuestionInput from "../CreateObjective/NewQuestionInput";
 import NoOfQuestions from "../CreateObjective/NoOfQuestions";
 import Link from "next/link";
+import Info_Modal from "../CreateObjective/Info_Modal";
 
 const SubjectiveExam = ({
   exam,
@@ -66,6 +67,7 @@ const SubjectiveExam = ({
   
   const [prevMCQsID, setPrevMCQsID] = useState([])
   const [control_2, setControl_2] = useState(false)
+  const [modalControl, setModalControl] = useState(true) //used to control info_model visibility
 
 
 
@@ -137,6 +139,10 @@ const SubjectiveExam = ({
     console.log("in useEffect, randomPaperConfig: ", randomPaperConfig)
   }, [randomPaperConfig])
 
+  useEffect(() => {
+    if(btn_call === "Create Question"){getCoursesList()}
+  }, [])
+
 
   async function getSubjectList(){
       console.log("selectedCourse in getSubjectList: ", selectedCourse)
@@ -149,6 +155,7 @@ const SubjectiveExam = ({
           let subjects_names = subjectList.data.map((subject) => {return subject.name})
           console.log("subjects_names: ", [...subjects_names])
           setSubjects(["", ...subjects_names])
+          // setSubjects([...subjects_names])
       }
       catch(error){
           console.log(error)
@@ -167,6 +174,7 @@ const SubjectiveExam = ({
           let topics_names = topicList.data.map((topic) => {return topic.name})
           console.log("topics_names: ", [...topics_names])
           setTopics(["", ...topics_names])
+          // setTopics([...topics_names])
       }
       catch(error){
           console.log(error)
@@ -180,10 +188,18 @@ const SubjectiveExam = ({
         setSelectedCourse(event.target.value)
       }
       else if(event.target.id === "subject"){
-        setSelectedSubject(event.target.value)
+        // setSelectedSubject(event.target.value)
+        const selectedSubjects = Array.from(event.target.selectedOptions).map(
+          (option) => option.value
+        )
+        setSelectedSubject(selectedSubjects)
       }
       else if(event.target.id === "topic"){
-        setSelectedTopic(event.target.value)
+        // setSelectedTopic(event.target.value)
+        const selectedTopics = Array.from(event.target.selectedOptions).map(
+          (option) => option.value
+        )
+        setSelectedTopic(selectedTopics)
       }
       else if(event.target.id === "difficulty"){
         setSelectedDifficulty(event.target.value)
@@ -333,10 +349,10 @@ const SubjectiveExam = ({
         answer:"",
         long_question: true,
         questionnumber: prevLength + 1,
-        difficulty: "",
-        course: "",
-        subject: "",
-        topic: "",
+        difficulty: selectedDifficulty,
+        course: selectedCourse,
+        subject: selectedSubject,
+        topic: selectedTopic,
         type: "subjective",
         checked: false      
       });
@@ -590,14 +606,14 @@ const SubjectiveExam = ({
         answer:"",
         long_question: true,
         questionnumber: prevLength + 1,
-        difficulty: "",
-        course: "",
-        subject: "",
-        topic: "",
+        difficulty: selectedDifficulty,
+        course: selectedCourse,
+        subject: selectedSubject,
+        topic: selectedTopic,
         type: "subjective",
         checked: false
       });
-      reset()
+      // reset()
       setAdding(false);
 
       console.log("currentQuestion in handleAddSubjective after: ", currentQuestion)
@@ -703,15 +719,15 @@ const SubjectiveExam = ({
         answer:"",
         long_question: true,
         questionnumber: isChild ? prevLength + 1 : prevLength + 2,
-        difficulty: "",
-        course: "",
-        subject: "",
-        topic: "",
+        difficulty: selectedDifficulty,
+        course: selectedCourse,
+        subject: selectedSubject,
+        topic: selectedTopic,
         type: "subjective",
         checked: false
       });
       setAdding(false);
-      reset()
+      // reset()
     } else {
       alert("Error adding question");
     }
@@ -797,10 +813,10 @@ const SubjectiveExam = ({
         answer:"",
         long_question: true,
         questionnumber: subjectivesLocal.length + 1,
-        difficulty: "",
-        course: "",
-        subject: "",
-        topic: "",
+        difficulty: selectedDifficulty,
+        course: selectedCourse,
+        subject: selectedSubject,
+        topic: selectedTopic,
         type: "subjective",
         checked: false
       });
@@ -971,10 +987,10 @@ const SubjectiveExam = ({
           marks: 1,
           long_question: true,
           questionnumber: subjectivesLocal.length + 1,
-          difficulty: "",
-          course: "",
-          subject: "",
-          topic: "",
+          difficulty: selectedDifficulty,
+          course: selectedCourse,
+          subject: selectedSubject,
+          topic: selectedTopic,
           type: "subjective",
           checked: false
         });
@@ -1067,10 +1083,10 @@ const SubjectiveExam = ({
         questionnumber: isChild
           ? subjectivesLocal.length + 1
           : subjectivesLocal.length,
-          difficulty: "",
-        course: "",
-        subject: "",
-        topic: "",
+          difficulty: selectedDifficulty,
+        course: selectedCourse,
+        subject: selectedSubject,
+        topic: selectedTopic,
         type: "subjective",
         checked: false
       });
@@ -1148,6 +1164,22 @@ const SubjectiveExam = ({
         </button>}
       </div>
 
+      {btn_call === "Create Question" && modalControl &&
+        <div className="w-full h-full backdrop-blur bg-black/50 fixed inset-0 flex items-center justify-center">
+          <Info_Modal 
+            difficultys={difficultys} 
+            courses={courses} 
+            subjects={subjects}
+            topics={topics}
+            handleSelect={handleSelect}
+            selectedDifficulty={selectedDifficulty}
+            selectedCourse={selectedCourse}
+            selectedSubject={selectedSubject}
+            selectedTopic={selectedTopic}
+            btn_call={btn_call}
+            setModalControl={setModalControl}/>
+        </div>}
+
       {control && 
       <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl flex flex-col justify-center">
         <div className="flex justify-between">
@@ -1168,10 +1200,10 @@ const SubjectiveExam = ({
                   answer:"",
                   long_question: true,
                   questionnumber: subjectivesLocal.length + 1,
-                  difficulty: "",
-                  course: "",
-                  subject: "",
-                  topic: "",
+                  difficulty: selectedDifficulty,
+                  course: selectedCourse,
+                  subject: selectedSubject,
+                  topic: selectedTopic,
                   type: "subjective"
                 });
                 setRandomPaperConfig({
@@ -1317,12 +1349,12 @@ const SubjectiveExam = ({
             )}
           </div>
 
-          {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between">
+          {/* {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between">
           <NewQuestionInput label={"Difficulty Level"} options={difficultys} id={"difficulty"} handleChange={handleSelect} value={selectedDifficulty}/>
           <NewQuestionInput label={"Course"} options={courses} id={"course"} handleChange={handleSelect} value={selectedCourse} btn_call={btn_call}/>
           <NewQuestionInput label={"Subject"} options={subjects} id={"subject"} handleChange={handleSelect} value={selectedSubject} btn_call={btn_call}/>
           <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={handleSelect} value={selectedTopic} btn_call={btn_call}/>
-          </div>}
+          </div>} */}
 
           {/* <div className="flex items-center gap-x-3 ml-2">
             <label className="block">Long Question?</label>

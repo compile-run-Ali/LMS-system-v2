@@ -48,12 +48,13 @@ export default function Courses_Subjects_Topics(){
     }
 
     async function getTopicList(){
-        // console.log("selectedCourse in getSubjectList: ", selectedCourse)
+        console.log("selectedCourse in getSubjectList: ", selectedCourse)
         try{
             const topicList = await axios.get("/api/courses_subjects_topics/get_topics",{
                 params:{
                     selectedCourse: selectedCourse,
-                    selectedSubject: selectedSubject
+                    selectedSubject: selectedSubject,
+                    flag: "admin"
                 }
             })
             console.log("topicList.data: ", topicList.data)
