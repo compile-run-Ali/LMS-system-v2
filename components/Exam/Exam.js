@@ -14,6 +14,7 @@ export default function Exam({
   objectiveQuestions,
   isEdit,
   setActive,
+  btn_call
 }) {
   const session = useSession();
   const router = useRouter();
@@ -162,6 +163,7 @@ export default function Exam({
   };
   console.log(exam, "exam")
   const editExam = () => {
+    console.log("in editExam, exam: ", exam)
     if (setActive) {
       setActive(1);
     }
@@ -177,7 +179,10 @@ export default function Exam({
       query: {
         paper_id: exam.paper_id,
         is_edit: true,
-        course_code: exam.course.course_code,
+        course_code: exam.course ? exam.course.course_code : exam.course_code,
+        // course_code: exam.course.course_code,
+        // course_code: exam.course_code,
+        // btn_call: btn_call
       },
     });
   };

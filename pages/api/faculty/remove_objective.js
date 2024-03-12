@@ -35,7 +35,8 @@ const handler = async (req, res) => {
       //Remove Faculty
       await prisma.objectiveQuestion.delete({
         where: {
-          oq_id: req.body.id,
+          // oq_id: req.body.id,
+          oq_id: req.body.oq_id,
         },
       });
     }

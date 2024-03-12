@@ -16,7 +16,7 @@ export default function ExamPage() {
     const examDetails = await axios.post("/api/faculty/get_exam", {
       paper_id: exam_id,
     });
-
+    console.log("examDetails in exam: ", examDetails)
     setExamDetails(examDetails.data);
 
     const objectiveQuestions = await axios.post("/api/faculty/get_objective", {

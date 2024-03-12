@@ -539,7 +539,7 @@ const MCQTable = ({
       setAdding(false);
       setControl(false);
       setControl_2(true);
-      reset()
+      // reset()
     }
     catch (err) {
       console.log("err: ", err);
@@ -769,7 +769,7 @@ const MCQTable = ({
       const newMCQs = [...mcqs];
       newMCQs.splice(index, 1);
       setMCQs(newMCQs);
-      btn_call === "Create Question" || btn_call === "Generate Random Paper" ? "" : setObjectiveQuestions(newMCQ);
+      btn_call === "Create Question" || btn_call === "Generate Random Paper" ? "" : setObjectiveQuestions(newMCQs);
       // setObjectiveQuestions(newMCQs);
     } else {
       setLoading({

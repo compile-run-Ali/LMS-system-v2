@@ -55,7 +55,7 @@ export default function Form({
         })
         .then((res) => {
           setPaperName(res.data.paper_name);
-          console.log(res.data);
+          console.log("res.data in Form: ", res.data);
           setPaperDuration(res.data.duration);
           setObjDuration(res.data.objDuration);
           setWeightage(res.data.weightage);

@@ -531,7 +531,7 @@ const SubjectiveExam = ({
       setAdding(false);
       setControl(false);
       setControl_2(true);
-      reset()
+      // reset()
     }
     catch (err) {
       console.log("err: ", err);
