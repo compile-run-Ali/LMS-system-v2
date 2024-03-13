@@ -62,9 +62,9 @@ const MCQTable = ({
   const specialSequence="###"
 
   const [randomPaperConfig, setRandomPaperConfig] = useState({
-    no_of_easy: "",
-    no_of_medium: "",
-    no_of_hard: "",
+    no_of_easy: 3,
+    no_of_medium: 3,
+    no_of_hard: 3,
     course: "",
     subject: "",
     topic: "",
@@ -438,6 +438,11 @@ const MCQTable = ({
 
       try{
         const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID, flag: "regen", mcqs_to_regen_ids})
+        // if(res.status === 503){
+        //   alert("503 error")
+        //   console.log("res in get_questions_databank: ", res)
+        //   return
+        // }
         console.log("res from get_questions_databank in regen: ", res.data)
         console.log("mcqs in regen: ", mcqs)
         console.log("objective_questions in regen: ", objective_questions)
@@ -542,8 +547,17 @@ const MCQTable = ({
       // reset()
     }
     catch (err) {
-      console.log("err: ", err);
-      setLoading({error: "Error in Fetching Question."})
+      if(err.response.status === 503){
+        alert(err.response.data.message)
+        setLoading({
+          show: false,
+          message: "",
+        });
+      }
+      else{
+        console.log("error in handleGetQuestions: ", err);
+        setLoading({error: "Error in Fetching Question."})
+      }
     }
   }
 
@@ -891,9 +905,9 @@ const MCQTable = ({
                   type: "objective"
                 })
                 setRandomPaperConfig({
-                  no_of_easy: "",
-                  no_of_medium: "",
-                  no_of_hard: "",
+                  no_of_easy: 3,
+                  no_of_medium: 3,
+                  no_of_hard: 3,
                   course: selectedCourse,
                   subject: selectedSubject,
                   topic: selectedTopic,
