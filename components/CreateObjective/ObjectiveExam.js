@@ -894,9 +894,9 @@ const MCQTable = ({
                   no_of_easy: "",
                   no_of_medium: "",
                   no_of_hard: "",
-                  course: "",
-                  subject: "",
-                  topic: "",
+                  course: selectedCourse,
+                  subject: selectedSubject,
+                  topic: selectedTopic,
                   type: "objective"  
                 })
               }}
