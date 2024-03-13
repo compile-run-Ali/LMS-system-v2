@@ -10,6 +10,13 @@ const handler = async (req, res) => {
     req.body.type === "objective" ? console.log("prevMCQsID: ", req.body.prevMCQsID) : console.log("subjective")
 
     try{
+
+    }
+    catch(error){
+
+    }
+
+    try{
         if(req.body.flag === "regen"){
             let new_questions = []
             let total_ids = [...req.body.prevMCQsID]
@@ -73,6 +80,10 @@ const handler = async (req, res) => {
                 easy_questions = [...easy_questions, ...fetched_questions]
             }
             console.log("easy_questions in get_databank_questions: ", easy_questions)
+            if(Array.isArray(easy_questions) && easy_questions.length < req.body.randomPaperConfig.no_of_easy){
+                res.status(503).json({message: "Not enough questions for easy category for the selected topics."});
+                return
+            }
 
             let medium_questions = []
             for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
@@ -84,10 +95,14 @@ const handler = async (req, res) => {
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 
-                        LIMIT ${parseInt(req.body.randomPaperConfig.no_of_easy)}`;
+                        LIMIT ${parseInt(req.body.randomPaperConfig.no_of_medium)}`;
                 medium_questions = [...medium_questions, ...fetched_questions]
             }
             console.log("medium_questions in get_databank_questions: ", medium_questions)
+            if(Array.isArray(medium_questions) && medium_questions.length < req.body.randomPaperConfig.no_of_medium){
+                res.status(503).json({message: "Not enough questions for medium category for the selected topics."});
+                return
+            }
 
             let hard_questions = []
             for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
@@ -99,10 +114,14 @@ const handler = async (req, res) => {
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 
-                        LIMIT ${parseInt(req.body.randomPaperConfig.no_of_easy)}`;
+                        LIMIT ${parseInt(req.body.randomPaperConfig.no_of_hard)}`;
                 hard_questions = [...hard_questions, ...fetched_questions]
             }
             console.log("hard_questions in get_databank_questions: ", hard_questions)
+            if(Array.isArray(hard_questions) && hard_questions.length < req.body.randomPaperConfig.no_of_hard){
+                res.status(503).json({message: "Not enough questions for hard category for the selected topics."});
+                return
+            }
 
             // const easy_questions = await prisma.$queryRaw
             // `SELECT * FROM DataBankQuestion

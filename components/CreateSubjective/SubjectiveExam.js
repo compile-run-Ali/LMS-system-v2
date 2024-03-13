@@ -53,9 +53,9 @@ const SubjectiveExam = ({
   });
 
   const [randomPaperConfig, setRandomPaperConfig] = useState({
-    no_of_easy: "",
-    no_of_medium: "",
-    no_of_hard: "",
+    no_of_easy: 3,
+    no_of_medium: 3,
+    no_of_hard: 3,
     course: "",
     subject: "",
     topic: "",
@@ -534,8 +534,17 @@ const SubjectiveExam = ({
       // reset()
     }
     catch (err) {
-      console.log("err: ", err);
-      setLoading({error: "Error in Fetching Question."})
+      if(err.response.status === 503){
+        alert(err.response.data.message)
+        setLoading({
+          show: false,
+          message: "",
+        });
+      }
+      else{
+        console.log("error in handleGetQuestions: ", err);
+        setLoading({error: "Error in Fetching Question."})
+      }
     }
   }
 
@@ -1207,9 +1216,9 @@ const SubjectiveExam = ({
                   type: "subjective"
                 });
                 setRandomPaperConfig({
-                  no_of_easy: "",
-                  no_of_medium: "",
-                  no_of_hard: "",
+                  no_of_easy: 3,
+                  no_of_medium: 3,
+                  no_of_hard: 3,
                   course: selectedCourse,
                   subject: selectedSubject,
                   topic: selectedTopic,
