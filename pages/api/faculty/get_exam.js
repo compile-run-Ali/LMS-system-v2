@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
+  console.log("req.body in get_exam: ", req.body)
   try {
     //get all papers
     const paper = await prisma.paper.findUnique({
@@ -28,6 +29,7 @@ const handler = async (req, res) => {
         total_marks: true,
       },
     });
+    console.log("paper in get_exam: ", paper)
     res.status(200).json(paper);
   } catch (err) {
     console.log(err, 'Get Paper Error')

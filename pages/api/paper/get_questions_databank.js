@@ -1,13 +1,20 @@
 import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-    console.log(req.body)
+    console.log("req.body in get_questions_databank: ", req.body)
     console.log("easy, medium, hard: ",
                 parseInt(req.body.randomPaperConfig.no_of_easy), 
                 parseInt(req.body.randomPaperConfig.no_of_medium), 
                 parseInt(req.body.randomPaperConfig.no_of_hard))
     
-    req.body.type === "objective" ? console.log("prevMCQsID: ", req.body.prevMCQsID) : ""
+    req.body.type === "objective" ? console.log("prevMCQsID: ", req.body.prevMCQsID) : console.log("subjective")
+
+    try{
+
+    }
+    catch(error){
+
+    }
 
     try{
         if(req.body.flag === "regen"){
@@ -36,6 +43,7 @@ const handler = async (req, res) => {
 
                 const new_question = await prisma.DataBankQuestion.findFirst({
                     where:{
+                        difficulty: question.difficulty,
                         course: question.course,
                         subject: question.subject,
                         topic: question.topic,
@@ -43,57 +51,141 @@ const handler = async (req, res) => {
                         id: {notIn: total_ids}
                     }
                 })
+                console.log("new_question in regen: ", new_question)
+                if(new_question === null || new_question === undefined){
+                    console.log("skipping")
+                    continue
+                }
                 total_ids = [...total_ids, new_question.id]
 
-                console.log("new_question in regen: ", new_question)
+                // console.log("new_question in regen: ", new_question)
                 new_questions = [...new_questions, new_question]
             }
             console.log("new_questions after concat["+new_questions.length+"]: ", new_questions)
             res.status(200).json(new_questions);
         }
         else{
-            const easy_questions = await prisma.$queryRaw
-            `SELECT * FROM DataBankQuestion
-            WHERE difficulty = "Easy" AND
-            course = ${req.body.randomPaperConfig.course} AND
-            subject = ${req.body.randomPaperConfig.subject} AND
-            topic = ${req.body.randomPaperConfig.topic} AND
-            type = ${req.body.randomPaperConfig.type} AND
-            id NOT IN (${req.body.prevMCQsID.join(',')})
-            ORDER BY RAND() 
-            LIMIT ${parseInt(req.body.randomPaperConfig.no_of_easy)}`;
+            let easy_questions = []
+            for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
+                console.log("topic: ", req.body.randomPaperConfig.topic[i])
+                const fetched_questions = await prisma.$queryRaw
+                        `SELECT * FROM DataBankQuestion
+                        WHERE difficulty = "Easy" AND
+                        topic = ${req.body.randomPaperConfig.topic[i]} AND
+                        type = ${req.body.randomPaperConfig.type} AND
+                        id NOT IN (${req.body.prevMCQsID.join(',')})
+                        ORDER BY RAND() 
+                        LIMIT ${parseInt(req.body.randomPaperConfig.no_of_easy)}`;
+                console.log("fetched_questions: ", fetched_questions)
+                easy_questions = [...easy_questions, ...fetched_questions]
+            }
+            console.log("easy_questions in get_databank_questions: ", easy_questions)
+            if(Array.isArray(easy_questions) && easy_questions.length < req.body.randomPaperConfig.no_of_easy){
+                res.status(503).json({message: "Not enough questions for easy category for the selected topics."});
+                return
+            }
 
-            const medium_questions = await prisma.$queryRaw
-                        `SELECT * FROM DataBankQuestion 
+            let medium_questions = []
+            for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
+                console.log("topic: ", req.body.randomPaperConfig.topic[i])
+                const fetched_questions = await prisma.$queryRaw
+                        `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Medium" AND
-                        course = ${req.body.randomPaperConfig.course} AND
-                        subject = ${req.body.randomPaperConfig.subject} AND
-                        topic = ${req.body.randomPaperConfig.topic} AND
+                        topic = ${req.body.randomPaperConfig.topic[i]} AND
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 
                         LIMIT ${parseInt(req.body.randomPaperConfig.no_of_medium)}`;
+                medium_questions = [...medium_questions, ...fetched_questions]
+            }
+            console.log("medium_questions in get_databank_questions: ", medium_questions)
+            if(Array.isArray(medium_questions) && medium_questions.length < req.body.randomPaperConfig.no_of_medium){
+                res.status(503).json({message: "Not enough questions for medium category for the selected topics."});
+                return
+            }
 
-            const hard_questions = await prisma.$queryRaw
-                        `SELECT * FROM DataBankQuestion 
+            let hard_questions = []
+            for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
+                console.log("topic: ", req.body.randomPaperConfig.topic[i])
+                const fetched_questions = await prisma.$queryRaw
+                        `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Hard" AND
-                        course = ${req.body.randomPaperConfig.course} AND
-                        subject = ${req.body.randomPaperConfig.subject} AND
-                        topic = ${req.body.randomPaperConfig.topic} AND
+                        topic = ${req.body.randomPaperConfig.topic[i]} AND
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 
                         LIMIT ${parseInt(req.body.randomPaperConfig.no_of_hard)}`;
+                hard_questions = [...hard_questions, ...fetched_questions]
+            }
+            console.log("hard_questions in get_databank_questions: ", hard_questions)
+            if(Array.isArray(hard_questions) && hard_questions.length < req.body.randomPaperConfig.no_of_hard){
+                res.status(503).json({message: "Not enough questions for hard category for the selected topics."});
+                return
+            }
+
+            // const easy_questions = await prisma.$queryRaw
+            // `SELECT * FROM DataBankQuestion
+            // WHERE difficulty = "Easy" AND
+            // course = ${req.body.randomPaperConfig.course} AND
+            // subject = ${req.body.randomPaperConfig.subject} AND
+            // topic = ${req.body.randomPaperConfig.topic} AND
+            // type = ${req.body.randomPaperConfig.type} AND
+            // id NOT IN (${req.body.prevMCQsID.join(',')})
+            // ORDER BY RAND() 
+            // LIMIT ${parseInt(req.body.randomPaperConfig.no_of_easy)}`;
+
+            // const medium_questions = await prisma.$queryRaw
+            //             `SELECT * FROM DataBankQuestion 
+            //             WHERE difficulty = "Medium" AND
+            //             course = ${req.body.randomPaperConfig.course} AND
+            //             subject = ${req.body.randomPaperConfig.subject} AND
+            //             topic = ${req.body.randomPaperConfig.topic} AND
+            //             type = ${req.body.randomPaperConfig.type} AND
+            //             id NOT IN (${req.body.prevMCQsID.join(',')})
+            //             ORDER BY RAND() 
+            //             LIMIT ${parseInt(req.body.randomPaperConfig.no_of_medium)}`;
+
+            // const hard_questions = await prisma.$queryRaw
+            //             `SELECT * FROM DataBankQuestion 
+            //             WHERE difficulty = "Hard" AND
+            //             course = ${req.body.randomPaperConfig.course} AND
+            //             subject = ${req.body.randomPaperConfig.subject} AND
+            //             topic = ${req.body.randomPaperConfig.topic} AND
+            //             type = ${req.body.randomPaperConfig.type} AND
+            //             id NOT IN (${req.body.prevMCQsID.join(',')})
+            //             ORDER BY RAND() 
+            //             LIMIT ${parseInt(req.body.randomPaperConfig.no_of_hard)}`;
 
             // console.log("questions fetched from DataBankQuestions: ", questions)
-            console.log("EASY questions fetched from DataBankQuestions: ", easy_questions)
-            console.log("MEDIUM questions fetched from DataBankQuestions: ", medium_questions)
-            console.log("HARD questions fetched from DataBankQuestions: ", hard_questions)
 
-            let questions = [...easy_questions, ...medium_questions, ...hard_questions]
+            let easy_questions_final = []
+            for(let i = 0; i < req.body.randomPaperConfig.no_of_easy; i++) {
+                let randomIndex = Math.floor(Math.random() * easy_questions.length);
+                easy_questions_final = [...easy_questions_final, easy_questions[randomIndex]]
+            }
+
+            let medium_questions_final = []
+            for(let i = 0; i < req.body.randomPaperConfig.no_of_medium; i++) {
+                let randomIndex = Math.floor(Math.random() * medium_questions.length);
+                medium_questions_final = [...medium_questions_final, medium_questions[randomIndex]]
+            }
+
+            let hard_questions_final = []
+            for(let i = 0; i < req.body.randomPaperConfig.no_of_hard; i++) {
+                let randomIndex = Math.floor(Math.random() * hard_questions.length);
+                hard_questions_final = [...hard_questions_final, hard_questions[randomIndex]]
+            }
+
+
+            console.log("EASY questions fetched from DataBankQuestions: ", easy_questions_final)
+            console.log("MEDIUM questions fetched from DataBankQuestions: ", medium_questions_final)
+            console.log("HARD questions fetched from DataBankQuestions: ", hard_questions_final)
+
+            let questions = [...easy_questions_final, ...medium_questions_final, ...hard_questions_final]
+            questions = questions.filter((ques) => {if(ques !== null && ques !== undefined){return ques}})
             console.log("questions after concat["+questions.length+"]: ", questions)
 
-            let ids = questions.map(obj => obj.id);
+            let ids = questions.filter(obj => {if(obj !== null && obj !== undefined){ return obj.id}});
             console.log("ids of new questions: ", ids)
             console.log("ids of prevquestions: ", req.body.prevMCQsID)
 

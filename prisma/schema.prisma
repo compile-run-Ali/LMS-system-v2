@@ -306,7 +306,7 @@ model DbSubject {
 
 model DbTopic {
   id      String @id @default(uuid())
-  name    String @db.VarChar(100)
+  name    String @unique @db.VarChar(100)
   course  String
   subject String
 

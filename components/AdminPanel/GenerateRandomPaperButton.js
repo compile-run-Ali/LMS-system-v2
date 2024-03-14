@@ -19,7 +19,7 @@ const GenerateRandomPaperButton = ({ courses }) => {
         onClick={() => setShowModal(true)}
         className="bg-blue-800 hover:bg-blue-700 transition-all text-white border rounded-md px-3 py-2"
       >
-        Generate Random Paper
+        Auto Generate Paper
       </button>
     </div>
   );

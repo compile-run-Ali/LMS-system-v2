@@ -50,7 +50,8 @@ export default function CreateExam({ paperType }) {
   const [examDetails, setExamDetails] = useState(null);
   const [active, setActive] = useState(1);
   const [paperId, setPaperId] = useState(
-    Object.keys(router.query).length > 1 && router.query.btn_call !== "Generate Random Paper" && !router.query.language ? router.query.paper_id : 0
+    // Object.keys(router.query).length > 1 && router.query.btn_call !== "Generate Random Paper" && !router.query.language ? router.query.paper_id : 0
+    Object.keys(router.query).length > 1 && !router.query.language ? router.query.paper_id : 0
   );
 
   const [exam, setExam] = useState();
@@ -76,10 +77,12 @@ export default function CreateExam({ paperType }) {
     if (router.isReady) {
       console.log("router is ready")
       setPaperId(
-        Object.keys(router.query).length >  1 && router.query.btn_call !== "Generate Random Paper" && !router.query.language ? router.query.paper_id : 0
+        // Object.keys(router.query).length >  1 && router.query.btn_call !== "Generate Random Paper" && !router.query.language ? router.query.paper_id : 0
+        Object.keys(router.query).length >  1 && !router.query.language ? router.query.paper_id : 0
       );
       setExamDetails(
-        Object.keys(router.query).length > 1 && router.query.btn_call !== "Generate Random Paper" && !router.query.language ? router.query : null
+        // Object.keys(router.query).length > 1 && router.query.btn_call !== "Generate Random Paper" && !router.query.language ? router.query : null
+        Object.keys(router.query).length > 1 && !router.query.language ? router.query : null
       );
     }
     console.log("paper id after useEffect: ", paperId)
@@ -240,6 +243,7 @@ const fetchSubjectives = async () => {
               subjectiveQuestions={subjectives}
               isEdit={true}
               setActive={setActive}
+              btn_call={router.query.btn_call}
             />
           </div>
         )}
@@ -272,6 +276,7 @@ const fetchSubjectives = async () => {
               subjectiveQuestions={subjectives}
               isEdit={true}
               setActive={setActive}
+              btn_call={router.query.btn_call}
             />
           </div>
         )}

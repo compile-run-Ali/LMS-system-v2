@@ -2,7 +2,8 @@ import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
   try {
-    console.log("req.body.course_code in edit[", req.body.course_code.length, "]: ", req.body.course_code)
+    console.log("req.body in edit paper: ", req.body)
+    // console.log("req.body.course_code in edit[", req.body.course_code.length, "]: ", req.body.course_code)
     const copyData = req.body.course_code
       ? {
           paper_name: req.body.paper_name,
@@ -12,7 +13,7 @@ const handler = async (req, res) => {
           weightage: req.body.weightage,
           freeflow: req.body.freeflow,
           review: req.body.review,
-          course_code: req.body.course_code.length > 1 ? req.body.course_code[0] : req.body.course_code,
+          course_code: Array.isArray(req.body.course_code) ? req.body.course_code[0] : req.body.course_code,
         }
       : {
           paper_name: req.body.paper_name,
@@ -34,7 +35,7 @@ const handler = async (req, res) => {
       },
     });
 
-    if (req.body.course_code.length > 1) {
+    if (Array.isArray(req.body.course_code)) {
       const createCoursePapers = req.body.course_code.map(async (courseCode) => {
         await prisma.coursePaper.create({
           data: {
