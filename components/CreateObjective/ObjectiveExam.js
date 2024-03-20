@@ -56,6 +56,7 @@ const MCQTable = ({
     course: "",
     subject: "",
     topic: "",
+    authority: "",
     type: "objective",
     checked: false
   });
@@ -568,6 +569,7 @@ const MCQTable = ({
       currentMCQ.options.includes("") ||
       currentMCQ.correct_answer === "" ||
       currentMCQ.marks === "" ||
+      currentMCQ.authority === "" ||
       (!freeFlow && !currentMCQ.timeAllowed)
     ) {
       alert("Please fill all the fields");
@@ -606,6 +608,7 @@ const MCQTable = ({
           correct_answer: currentMCQ.correct_answer,
           marks: currentMCQ.marks,
           timeAllowed: currentMCQ.timeAllowed || 60,
+          authority: currentMCQ.authority,
           difficulty: currentMCQ.difficulty,
           course: currentMCQ.course,
           subject: currentMCQ.subject,
@@ -628,6 +631,7 @@ const MCQTable = ({
         correct_answer: "",
         marks: 1,
         timeAllowed: currentMCQ.timeAllowed || 60,
+        authority: "",
         difficulty: selectedDifficulty,
         course: selectedCourse,
         subject: selectedSubject,
@@ -667,6 +671,7 @@ const MCQTable = ({
       currentMCQ.options.includes("") ||
       currentMCQ.correct_answer === "" ||
       currentMCQ.marks === "" ||
+      currentMCQ.authority === "" ||
       (!freeFlow && !currentMCQ.timeAllowed)
     ) {
       alert("Please fill all the fields");
@@ -705,6 +710,7 @@ const MCQTable = ({
         answers: currentMCQ.options.toString(),
         correct_answer: currentMCQ.correct_answer,
         marks: currentMCQ.marks,
+        authority: currentMCQ.authority,
         timeAllowed: currentMCQ.timeAllowed || 60,
         difficulty: currentMCQ.difficulty,
         course: currentMCQ.course,
@@ -751,6 +757,7 @@ const MCQTable = ({
         correct_answer: "",
         marks: 1,
         timeAllowed: currentMCQ.timeAllowed || 60,
+        authority: "",
         difficulty: selectedDifficulty,
         course: selectedCourse,
         subject: selectedSubject,
@@ -897,6 +904,7 @@ const MCQTable = ({
                   options: ["", "", "", ""],
                   correct_answer: "",
                   marks: 1,
+                  authority: "",
                   timeAllowed: currentMCQ.timeAllowed || 60,
                   difficulty: selectedDifficulty,
                   course: selectedCourse,
@@ -965,6 +973,7 @@ const MCQTable = ({
                     options: ["", "", "", ""],
                     correct_answer: "",
                     marks: 1,
+                    authority: "",
                     timeAllowed: currentMCQ.timeAllowed || 60,
                     difficulty: selectedDifficulty,
                     course: selectedCourse,
@@ -1072,6 +1081,18 @@ const MCQTable = ({
                 onChange={handleTimeAllowedChange}
               />
             )}
+
+            <div className="flex flex-col w-full mt-6">
+              <label htmlFor="">Authority</label>
+              <input 
+                type="text"
+                id="authority"
+                value={currentMCQ.authority}
+                onChange={handleNewQustionInputChange}
+                className="mt-2 bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+              />
+            </div>
+            
           </div>
 
           {/* {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between"> */}

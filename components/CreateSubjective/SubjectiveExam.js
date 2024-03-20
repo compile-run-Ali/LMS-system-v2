@@ -44,6 +44,7 @@ const SubjectiveExam = ({
     long_question: true,
     marks: 1,
     questionnumber: subjectivesLocal.length + 1,
+    authority: "",
     difficulty: "",
     course: "",
     subject: "",
@@ -352,6 +353,7 @@ const SubjectiveExam = ({
         answer:"",
         long_question: true,
         questionnumber: prevLength + 1,
+        authority: "",
         difficulty: selectedDifficulty,
         course: selectedCourse,
         subject: selectedSubject,
@@ -557,6 +559,7 @@ const SubjectiveExam = ({
       currentQuestion.question === "" ||
       currentQuestion.correct_answer === "" ||
       currentQuestion.marks === "" ||
+      currentQuestion.authority === "" ||
       currentQuestion.difficulty === "" ||
       currentQuestion.course === "" ||
       currentQuestion.subject === "" ||
@@ -584,6 +587,7 @@ const SubjectiveExam = ({
           question: currentQuestion.question,
           answer: currentQuestion.correct_answer,
           marks: currentQuestion.marks,
+          authority: currentQuestion.authority,
           difficulty: currentQuestion.difficulty,
           course: currentQuestion.course,
           subject: currentQuestion.subject,
@@ -616,6 +620,7 @@ const SubjectiveExam = ({
         parent_sq_id: "",
         marks: 1,
         answer:"",
+        authority: "",
         long_question: true,
         questionnumber: prevLength + 1,
         difficulty: selectedDifficulty,
@@ -679,6 +684,7 @@ const SubjectiveExam = ({
           paper_id: paperId,
           question: currentQuestion.question,
           answer:currentQuestion.answer,
+          authority: currentQuestion.authority,
           parent_sq_id: currentQuestion.parent_sq_id,
           long_question: true,
           marks: currentQuestion.marks,
@@ -729,6 +735,7 @@ const SubjectiveExam = ({
         parent_sq_id: "",
         marks: 1,
         answer:"",
+        authority: "",
         long_question: true,
         questionnumber: isChild ? prevLength + 1 : prevLength + 2,
         difficulty: selectedDifficulty,
@@ -767,6 +774,7 @@ const SubjectiveExam = ({
       question.question === "" ||
       question.correct_answer === "" ||
       question.marks === "" ||
+      question.authority === "" ||
       question.difficulty === "" ||
       question.course === "" ||
       question.subject === "" ||
@@ -788,6 +796,7 @@ const SubjectiveExam = ({
         question: question.question,
         correct_answer: question.correct_answer,
         marks: question.marks,
+        authority: question.authority,
         difficulty: question.difficulty,
         course: question.course,
         subject: question.subject,
@@ -823,6 +832,7 @@ const SubjectiveExam = ({
         parent_sq_id: "",
         marks: 1,
         answer:"",
+        authority: "",
         long_question: true,
         questionnumber: subjectivesLocal.length + 1,
         difficulty: selectedDifficulty,
@@ -996,6 +1006,7 @@ const SubjectiveExam = ({
           answer:"",
           question: "",
           parent_sq_id: "",
+          authority: "",
           marks: 1,
           long_question: true,
           questionnumber: subjectivesLocal.length + 1,
@@ -1090,6 +1101,7 @@ const SubjectiveExam = ({
         question: "",
         parent_sq_id: "",
         marks: 1,
+        authority: "",
         answer:"",
         long_question: true,
         questionnumber: isChild
@@ -1209,6 +1221,7 @@ const SubjectiveExam = ({
                   question: "",
                   parent_sq_id: "",
                   marks: 1,
+                  authority: "",
                   answer:"",
                   long_question: true,
                   questionnumber: subjectivesLocal.length + 1,
@@ -1274,6 +1287,7 @@ const SubjectiveExam = ({
                   question: "",
                   parent_sq_id: "",
                   marks: 1,
+                  authority: "",
                   answer:"",
                   long_question: true,
                   questionnumber: subjectivesLocal.length + 1,
@@ -1341,6 +1355,18 @@ const SubjectiveExam = ({
                 })
               }
             />
+
+            <div className="flex flex-col w-full mt-6">
+              <label htmlFor="">Authority</label>
+              <input 
+                type="text"
+                id="authority"
+                value={currentQuestion.authority}
+                onChange={handleNewQustionInputChange}
+                className="mt-2 bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+              />
+            </div>
+
             {!currentQuestion.parent_sq_id && btn_call !== "Create Question" && (
               <Input
                 // if parent exists the question number will be called part number other wise, question number
