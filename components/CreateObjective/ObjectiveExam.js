@@ -1153,6 +1153,9 @@ const MCQTable = ({
                 <th className="px-4 py-2 w-1/2">Question</th>
                 <th className="px-4 py-2 w-1/4">Options</th>
                 <th className="px-4 py-2">Correct Option</th>
+                <th className="px-4 py-2">Difficulty</th>
+                <th className="px-4 py-2">Topic</th>
+                <th className="px-4 py-2">Authority</th>
                 <th className="px-4 py-2">Marks</th>
                 {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
                 <th className="px-4 py-2">Edit</th>
@@ -1174,9 +1177,12 @@ const MCQTable = ({
                     </ol>
                   </td>
                   <td className="px-4 py-2">{mcq.correct_answer.replace(specialSequence, ",")}</td>
-                  <td className="px-4 py-2">{mcq.marks}</td>
+                  <td className="px-4 py-2 text-center">{mcq.difficulty}</td>
+                  <td className="px-4 py-2 text-center">{mcq.topic}</td>
+                  <td className="px-4 py-2 text-center">{mcq.authority}</td>
+                  <td className="px-4 py-2 text-center">{mcq.marks}</td>
                   {freeFlow ? null : (
-                    <td className="px-4 py-2">{mcq.timeAllowed}</td>
+                    <td className="px-4 py-2 text-center">{mcq.timeAllowed}</td>
                   )}
                   <td className="px-4 py-2">
                     <button

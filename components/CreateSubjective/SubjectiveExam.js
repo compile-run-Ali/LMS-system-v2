@@ -316,6 +316,9 @@ const SubjectiveExam = ({
             paper_id: paperId,
             question: question.question,
             answer: question.correct_answer,
+            difficulty: question.difficulty,
+            topic: question.topic,
+            authority: question.authority,
             parent_sq_id: "",
             long_question: true,
             marks: question.marks,
@@ -1463,7 +1466,10 @@ const SubjectiveExam = ({
                 <th className="px-4">Part</th>
                 <th className="px-4 py-2 w-1/3">Question</th>
                 <th className="px-4 py-2">Answer</th>
-                <th className="px-4 py-2">Parent Question</th>
+                {/* <th className="px-4 py-2">Parent Question</th> */}
+                <th className="px-4 py-2">Difficulty</th>
+                <th className="px-4 py-2">Topic</th>
+                <th className="px-4 py-2">Authority</th>
                 <th className="px-4 py-2">Marks</th>
                 <th className="px-4 py-2">Edit</th>
                 {btn_call === "Generate Random Paper" 
@@ -1490,10 +1496,13 @@ const SubjectiveExam = ({
                       <td className="px-4 py-2">{subjective.question}</td>
                       {/* cut answer short and show ... */}
                       <td className="px-4 py-2">{subjective.answer?.slice(0, 20)}...</td>
-                      <td className="px-4 py-2">
+                      {/* <td className="px-4 py-2">
                         {subjective.parent_sq_id?.question}
-                      </td>
-                      <td className="px-4 py-2">{subjective.marks}</td>
+                      </td> */}
+                      <td className="px-4 py-2 text-center">{subjective.difficulty}</td>
+                      <td className="px-4 py-2 text-center">{subjective.topic}</td>
+                      <td className="px-4 py-2 text-center">{subjective.authority}</td>
+                      <td className="px-4 py-2 text-center">{subjective.marks}</td>
                       <td className="px-4 py-2">
                         <button
                           onClick={handleEditMCQ(subjective)}

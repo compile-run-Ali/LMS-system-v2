@@ -118,7 +118,7 @@ model Paper {
   weightage        Int?
   status           String         @default("Draft")
   total_marks      Float          @default(0)
-  objective_marks  Float            @default(0)
+  objective_marks  Float          @default(0)
   subjective_marks Float          @default(0)
   language         String         @default("English")
 
@@ -151,6 +151,9 @@ model SubjectiveQuestion {
   questionnumber Int
   question       String  @db.VarChar(5000)
   answer         String? @db.VarChar(5000)
+  difficulty     String  @default("-")
+  topic          String  @default("-")
+  authority      String  @default("-")
   long_question  Boolean @default(true)
   marks          Float
 
@@ -182,6 +185,9 @@ model ObjectiveQuestion {
   question       String @db.VarChar(10000)
   answers        String @db.VarChar(1000)
   correct_answer String
+  difficulty     String @default("-")
+  topic          String @default("-")
+  authority      String @default("-")
   marks          Float
   timeAllowed    Int    @default(0)
 
