@@ -3,7 +3,6 @@ import ExamTable from "./ExamTable";
 import Modal from "./Subcomponents/Modal";
 import DashboardButton from "./DashboardButton";
 import { useSession } from "next-auth/react";
-import Courses_Subjects_Topics from "../AdminPanel/Containers/Courses_Subjects_Topics";
 
 export default function DashboardComponent({
   exams_data,
@@ -84,97 +83,99 @@ export default function DashboardComponent({
   };
   console.log("Exams in dash", exams);
   return (
-    exams !== null &&
-    courses !== null && (
-      <div>
-        <div className="ml-6">
-          <h1 className="text-2xl font-poppins font-bold">Courses List:</h1>
-          <select
-            className="bg-white border rounded-md px-3 py-2"
-            onChange={handleCourseChange}
-            value={selectedCourse}
-          >
-            {courses && courses.length > 0 ? (
-              courses
-                .sort((a, b) =>
-                  a.course.course_name.localeCompare(b.course.course_name)
-                )
-                .map((course, index) => (
-                  <option key={index} value={course.course.course_code}>
-                    {course.course.course_code} - {course.course.course_name}
-                  </option>
-                ))
-            ) : (
-              <option value="">No Courses</option>
-            )}
-          </select>
-        </div>
-        {courses.length > 0 && level < 3 && (
-          <div className="flex flex-row justify-end pr-10">
-            {/* <DashboardButton open={open} setOpen={setOpen} courseCode={selectedCourse} btn_text="Create Question"/> */}
-            <DashboardButton courseCode={selectedCourse} btn_text="Generate Random Paper"/>
-            <DashboardButton courseCode={selectedCourse} btn_text="Create Paper"/>
-            <DashboardButton courseCode={null} btn_text="Create Question"/>
-            {/* <Courses_Subjects_Topics faculty={true}/> */}
+    <div>
+      {exams !== null &&
+      courses !== null && (
+        <div className="mt-9">
+          <div className="ml-6">
+            <h1 className="text-2xl font-poppins font-bold">Courses List:</h1>
+            <select
+              className="bg-white border rounded-md px-3 py-2"
+              onChange={handleCourseChange}
+              value={selectedCourse}
+            >
+              {courses && courses.length > 0 ? (
+                courses
+                  .sort((a, b) =>
+                    a.course.course_name.localeCompare(b.course.course_name)
+                  )
+                  .map((course, index) => (
+                    <option key={index} value={course.course.course_code}>
+                      {course.course.course_code} - {course.course.course_name}
+                    </option>
+                  ))
+              ) : (
+                <option value="">No Courses</option>
+              )}
+            </select>
+          </div>
+          {courses.length > 0 && level < 3 && (
+            <div className="flex flex-row justify-end pr-10">
+              {/* <DashboardButton open={open} setOpen={setOpen} courseCode={selectedCourse} btn_text="Create Question"/> */}
+              <DashboardButton courseCode={selectedCourse} btn_text="Generate Random Paper"/>
+              <DashboardButton courseCode={selectedCourse} btn_text="Create Paper"/>
+              <DashboardButton courseCode={null} btn_text="Create Question"/>
 
-            {/* <div className="flex justify-end pr-10 font-poppins mt-10 ml-2">
-              <button
-                onClick={toggleModal}
-                className="bg-blue-800 hover:bg-blue-700 transition-all text-white border rounded-md px-3 py-2"
-              >
-                Create Paper
-              </button>
+              {/* <div className="flex justify-end pr-10 font-poppins mt-10 ml-2">
+                <button
+                  onClick={toggleModal}
+                  className="bg-blue-800 hover:bg-blue-700 transition-all text-white border rounded-md px-3 py-2"
+                >
+                  Create Paper
+                </button>
+              </div>
+              <Modal open={open} setOpen={setOpen} courseCode={selectedCourse} /> */}
             </div>
-            <Modal open={open} setOpen={setOpen} courseCode={selectedCourse} /> */}
-          </div>
-        )}
-        {paperapproval_data && paperapproval_data.length > 0 && (
-          <div className="pr-10 pl-5 my-10">
-            <h1 className="text-2xl font-poppins font-bold">To Approve:</h1>
-            <ExamTable
-              approve_row={true}
-              exams_data={paperapproval.filter(
-                (paper) => paper.status === "Pending Approval"
-              )}
-            />
-          </div>
-        )}
-        {level < 2 && (
-          <div className="pr-10 pl-5 mt-10">
-            <h1 className="text-2xl font-poppins font-bold">
-              Open Exams of {selectedCourse}
-            </h1>
-            <ExamTable
-              exams_data={exams.filter(
-                (paper) =>
-                  (facultyId !== paper.examofficer?.faculty_id &&
-                    paper.status === "Pending Approval") ||
-                  paper.status === "Draft"
-              )}
-            />
-          </div>
-        )}
-        {
-          <div>
-            <div className="pr-10 pl-5 mt-10">
-              <h1 className="text-2xl font-poppins font-bold">
-                {level < 3 ? "Previous" : "Approved"} Exams of {selectedCourse}
-              </h1>
+          )}
+          {paperapproval_data && paperapproval_data.length > 0 && (
+            <div className="pr-10 pl-5 my-10">
+              <h1 className="text-2xl font-poppins font-bold">To Approve:</h1>
               <ExamTable
-                isPrevious={true}
-                exams_data={exams.filter(
-                  (paper) =>
-                    (level < 3 &&
-                      paper.status !== "Pending Approval" &&
-                      paper.status !== "Draft" &&
-                      paper.status !== "unapproved") ||
-                    (level > 2 && paper.status === "Approved")
+                approve_row={true}
+                exams_data={paperapproval.filter(
+                  (paper) => paper.status === "Pending Approval"
                 )}
               />
             </div>
-          </div>
-        }
-      </div>
-    )
+          )}
+          {level < 2 && (
+            <div className="pr-10 pl-5 mt-10">
+              <h1 className="text-2xl font-poppins font-bold">
+                Open Exams of {selectedCourse}
+              </h1>
+              <ExamTable
+                exams_data={exams.filter(
+                  (paper) =>
+                    (facultyId !== paper.examofficer?.faculty_id &&
+                      paper.status === "Pending Approval") ||
+                    paper.status === "Draft"
+                )}
+              />
+            </div>
+          )}
+          {
+            <div>
+              <div className="pr-10 pl-5 mt-10">
+                <h1 className="text-2xl font-poppins font-bold">
+                  {level < 3 ? "Previous" : "Approved"} Exams of {selectedCourse}
+                </h1>
+                <ExamTable
+                  isPrevious={true}
+                  exams_data={exams.filter(
+                    (paper) =>
+                      (level < 3 &&
+                        paper.status !== "Pending Approval" &&
+                        paper.status !== "Draft" &&
+                        paper.status !== "unapproved") ||
+                      (level > 2 && paper.status === "Approved")
+                  )}
+                />
+              </div>
+            </div>
+          }
+        </div>
+      )
+    }
+    </div>
   );
 }

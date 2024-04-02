@@ -5,6 +5,9 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Loader from "@/components/Loader";
+import Tabs from "@/components/AdminPanel/Tabs";
+import Courses_Subjects_Topics from "@/components/AdminPanel/Containers/Courses_Subjects_Topics";
+import DB_Questions from "@/components/DB_Questions/DB_Questions";
 
 export default function Dashboard() {
   const session = useSession();
@@ -13,6 +16,8 @@ export default function Dashboard() {
   const [comments, setComments] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState(null); // [course_code, course_name
+  // const [control, setControl] = useState(0) //0 for exam, 1 for subject and topic, 2 for edit db questions
+  const [active, setActive] = useState("Exams");
   const fetchExams = () => {
     axios
       .post("/api/faculty/get_exams", {
@@ -30,6 +35,11 @@ export default function Dashboard() {
         console.log("error in api: /api/faculty/get_exams", error);
       });
   };
+
+  useEffect(() => {
+    setActive("Exams")
+  }, [])
+
   useEffect(() => {
     if (session.status === "authenticated") {
       fetchExams();
@@ -44,15 +54,27 @@ export default function Dashboard() {
   return (
     <BaseLayout title={"Dashboard"}>
       <DashboardLayout>
-        {loading || exams === null ? (
-          <Loader />
-        ) : (
-          <DashboardComponent
-            exams_data={exams}
-            paperapproval_data={paperapproval}
-            level={session.data.user.level}
-            setSelectedCourseDash={setSelectedCourse}
-          />
+        {loading || exams === null 
+        ? <Loader /> 
+        : (
+          <div>
+            <div className="px-6"><Tabs active={active} setActive={setActive} role={"Instructor"}/></div>
+
+            {active === "Exams" && 
+              <DashboardComponent
+              exams_data={exams}
+              paperapproval_data={paperapproval}
+              level={session.data.user.level}
+              setSelectedCourseDash={setSelectedCourse}
+              />}
+
+            {active === "Courses_Subjects_Topics" && 
+              <Courses_Subjects_Topics/>}
+
+            {active === "DB_Questions" &&
+              <DB_Questions />}
+            
+          </div>
         )}
       </DashboardLayout>
     </BaseLayout>

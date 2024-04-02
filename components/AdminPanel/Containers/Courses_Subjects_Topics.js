@@ -6,7 +6,7 @@ import View_Courses_Subjects_Topics from "./View_Courses_Subjects_Topics";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function Courses_Subjects_Topics({faculty}){
+export default function Courses_Subjects_Topics(){
     const [active, setActive] = useState(0)
     const [topics, setTopics] = useState([])
     const [subjects, setSubjects] = useState([])
@@ -98,7 +98,7 @@ export default function Courses_Subjects_Topics({faculty}){
     return(
         <div className="flex flex-col">
             <div className="flex flex-col justify-center">
-                {active === 0 && <div className="flex flex-row justify-end pt-9">
+                {active === 0 && <div className="flex flex-row justify-end pt-9 px-5">
                     <Courses_Subjects_Topics_btn btn_name={"Add Courses"} setActive={setActive}/>
                     <Courses_Subjects_Topics_btn btn_name={"Add Subjects"} setActive={setActive} />
                     <Courses_Subjects_Topics_btn btn_name={"Add Topics"} setActive={setActive} />
@@ -107,7 +107,7 @@ export default function Courses_Subjects_Topics({faculty}){
                 {active === 2 && <SubjectModal setActive={setActive} getSubjectList={getSubjectList}/>}
                 {active === 3 && <TopicModal setActive={setActive} getTopicList={getTopicList}/>}
             </div>
-            {faculty === false && <div className="mt-5">
+            <div className="mt-5">
                 <p className="text-center block font-bold text-base mb-2">Select to view Courses, Subjects and Topics</p>
                 <View_Courses_Subjects_Topics 
                     courses={courses}
@@ -122,7 +122,7 @@ export default function Courses_Subjects_Topics({faculty}){
                     error={error}
                     setError={setError}
                 />
-            </div>}
+            </div>
         </div>
     )
 }
