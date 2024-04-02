@@ -108,6 +108,9 @@ export default function TopicModal({setActive, getTopicList}){
                 if (error.response.data.error.meta.target === "DbTopic_name_key"){
                     setError("-- Topic with the same name is already registered --")
                 }
+                if (error.response.data.error.meta.target === "DbTopic_course_name_key"){
+                    setError("-- Topic with the same name is already registered with this course --")
+                }
                 else{
                     setError("-- Error adding topic --")
                 }

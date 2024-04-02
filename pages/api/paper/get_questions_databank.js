@@ -9,12 +9,12 @@ const handler = async (req, res) => {
     
     req.body.type === "objective" ? console.log("prevMCQsID: ", req.body.prevMCQsID) : console.log("subjective")
 
-    try{
+    // try{
 
-    }
-    catch(error){
+    // }
+    // catch(error){
 
-    }
+    // }
 
     try{
         if(req.body.flag === "regen"){
@@ -72,6 +72,7 @@ const handler = async (req, res) => {
                         `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Easy" AND
                         topic = ${req.body.randomPaperConfig.topic[i]} AND
+                        course = ${req.body.randomPaperConfig.course} AND
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 

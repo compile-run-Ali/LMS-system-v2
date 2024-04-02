@@ -287,7 +287,7 @@ model DataBankQuestion {
   correct_answer String  @db.VarChar(4000)
   marks          Float
   timeAllowed    Int?    @default(0)
-  authority      String @default("-")
+  authority      String  @default("-")
   difficulty     String
   course         String
   subject        String
@@ -297,26 +297,30 @@ model DataBankQuestion {
 
 model DbCourse {
   id       String      @id @default(uuid())
-  name     String      @unique @db.VarChar(100)
+  name     String      @unique @db.VarChar(32)
   subjects DbSubject[]
   topics   DbTopic[]
 }
 
 model DbSubject {
-  id     String    @id @default(uuid())
-  name   String    @unique @db.VarChar(100)
+  id     String @id @default(uuid())
+  name   String @db.VarChar(32)
   course String
-  topics DbTopic[]
+  // topics DbTopic[]
 
   course_name DbCourse @relation(fields: [course], references: [name], onDelete: Cascade)
+
+  @@unique([name, course], name: "subject_course_unique")
 }
 
 model DbTopic {
   id      String @id @default(uuid())
-  name    String @unique @db.VarChar(100)
+  name    String @db.VarChar(32)
   course  String
   subject String
 
-  course_name  DbCourse  @relation(fields: [course], references: [name], onDelete: Cascade)
-  subject_name DbSubject @relation(fields: [subject], references: [name], onDelete: Cascade)
+  course_name DbCourse @relation(fields: [course], references: [name], onDelete: Cascade)
+  // subject_name DbSubject @relation(fields: [subject], references: [name], onDelete: Cascade)
+
+  @@unique([course, name], name: "subject_course_topic_unique")
 }

@@ -6,7 +6,7 @@ import View_Courses_Subjects_Topics from "./View_Courses_Subjects_Topics";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function Courses_Subjects_Topics(){
+export default function Courses_Subjects_Topics({faculty}){
     const [active, setActive] = useState(0)
     const [topics, setTopics] = useState([])
     const [subjects, setSubjects] = useState([])
@@ -107,7 +107,7 @@ export default function Courses_Subjects_Topics(){
                 {active === 2 && <SubjectModal setActive={setActive} getSubjectList={getSubjectList}/>}
                 {active === 3 && <TopicModal setActive={setActive} getTopicList={getTopicList}/>}
             </div>
-            <div className="mt-5">
+            {faculty === false && <div className="mt-5">
                 <p className="text-center block font-bold text-base mb-2">Select to view Courses, Subjects and Topics</p>
                 <View_Courses_Subjects_Topics 
                     courses={courses}
@@ -122,7 +122,7 @@ export default function Courses_Subjects_Topics(){
                     error={error}
                     setError={setError}
                 />
-            </div>
+            </div>}
         </div>
     )
 }

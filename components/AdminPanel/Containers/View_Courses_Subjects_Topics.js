@@ -112,7 +112,7 @@ export default function View_Courses_Subjects_Topics({
     return(
         <div className="flex flex-row mt-8 px-48">
             <div className="mb-5 w-1/3 mr-3">
-                <label className="font-medium block mb-2">Course</label>
+                <label className="pl-1 font-bold block mb-2">Course</label>
                 <select
                 className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
                 id="Courses_List"
@@ -126,7 +126,7 @@ export default function View_Courses_Subjects_Topics({
                 </select>
             </div>
             <div className="mb-5 w-1/3 mx-3">
-                <label className="font-medium block mb-2">Subject</label>
+                <label className="pl-1 font-bold block mb-2">Subject</label>
                 <select
                 className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
                 id="Subjects_List"
@@ -139,7 +139,7 @@ export default function View_Courses_Subjects_Topics({
                 </select>
             </div>
             <div className="mb-5 w-1/3 ml-3">
-                <label className="font-medium block mb-2">Topics</label>
+                <label className="pl-1 font-bold block mb-2">Topics</label>
                 <select
                 className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
                 id="Topics_List"
