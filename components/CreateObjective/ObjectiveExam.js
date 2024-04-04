@@ -39,6 +39,7 @@ const MCQTable = ({
   const [loading, setLoading] = useState({});
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
+  const [mcqIDs, setMcqIDs] = useState([])
   const [mcqs, setMCQs] = useState(
     objective_questions.map((mcq) => {
       // console.log("mcq in map: ", mcq)
@@ -358,19 +359,19 @@ const MCQTable = ({
       newMCQ.data.options = newMCQ.data.answers.split(",");
       setMultipleOptions(false);
 
-      setCurrentMCQ({
-        question: "",
-        options: ["", "", "", ""],
-        correct_answer: "",
-        marks: 1,
-        timeAllowed: currentMCQ.timeAllowed || 60,
-        difficulty: selectedDifficulty,
-        course: selectedCourse,
-        subject: selectedSubject,
-        topic: selectedTopic,
-        type: "objective",
-        checked: false
-      });
+      // setCurrentMCQ({
+      //   question: "",
+      //   options: ["", "", "", ""],
+      //   correct_answer: "",
+      //   marks: 1,
+      //   timeAllowed: currentMCQ.timeAllowed || 60,
+      //   difficulty: selectedDifficulty,
+      //   course: selectedCourse,
+      //   subject: selectedSubject,
+      //   topic: selectedTopic,
+      //   type: "objective",
+      //   checked: false
+      // });
       return newMCQ.data
 
     } catch (err) {
@@ -428,19 +429,19 @@ const MCQTable = ({
       let mcqs_to_regen_ids = []
       for (let i = 0; i < mcqs_to_regen.length; i++){
         indexes = [...indexes, mcqs.indexOf(mcqs_to_regen[i])]
-        mcqs_to_regen_ids = [...mcqs_to_regen_ids, prevMCQsID[indexes[indexes.length-1]]]
+        mcqs_to_regen_ids = [...mcqs_to_regen_ids, mcqIDs[indexes[indexes.length-1]]]
       }
 
       console.log("indexes: ", indexes)
       console.log("mcqs_to_regen_ids: ", mcqs_to_regen_ids)
       
-      deleteCurrentQuestions(mcqs_to_regen_oq_ids)
-      const new_mcqs = [...mcqs]
-      const rest_ids = [...prevMCQsID]
-      for(let i = 0; i < indexes.length; i++){
-        new_mcqs.splice(indexes[i]-i, 1)
-        rest_ids.splice(indexes[i]-i, 1)
-      }
+      // deleteCurrentQuestions(mcqs_to_regen_oq_ids)
+      // const new_mcqs = [...mcqs]
+      // const rest_ids = [...prevMCQsID]
+      // for(let i = 0; i < indexes.length; i++){
+      //   new_mcqs.splice(indexes[i]-i, 1)
+      //   rest_ids.splice(indexes[i]-i, 1)
+      // }
 
       try{
         const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID, flag: "regen", mcqs_to_regen_ids})
@@ -450,36 +451,58 @@ const MCQTable = ({
         //   return
         // }
         console.log("res from get_questions_databank in regen: ", res.data)
-        console.log("mcqs in regen: ", mcqs)
-        console.log("objective_questions in regen: ", objective_questions)
+        // console.log("mcqs in regen: ", mcqs)
+        // console.log("objective_questions in regen: ", objective_questions)
   
-        let ids_array = [...rest_ids]
-        let mcqs_array = [...new_mcqs]
+        // let ids_array = [...rest_ids]
+        let mcqs_array = [...mcqs]
+        let new_mcq_ids = []
+        let mcq_ids = [...mcqIDs]
         let mmcq;
+
+        const res_mcqs = await Promise.all(res.data);
   
-        for (let i = 0; i < res.data.length; i++) {
-          ids_array = [...ids_array, res.data[i].id]
-          mmcq = addQuestion(i, res.data[i])
-          mcqs_array = [...mcqs_array, mmcq]
+        for (let i = 0; i < res_mcqs.length; i++) {
+          // ids_array = [...ids_array, res_mcqs[i].id]
+          mmcq = addQuestion(i, res_mcqs[i])
+          mcqs_array[indexes[i]] = mmcq
+          mcq_ids[indexes[i]] = res_mcqs[i].id
+          new_mcq_ids = [...new_mcq_ids, res_mcqs[i].id]
+          // mcqs_array = [...mcqs_array, mmcq]
         }
+        mcq_ids = await Promise.all(mcq_ids)
+        new_mcq_ids = await Promise.all(new_mcq_ids)
         const resolvedMcqs = await Promise.all(mcqs_array);
-        console.log("mcqs_array: ", resolvedMcqs)
+        // console.log("mcqs_array: ", resolvedMcqs)
         resolvedMcqs.map((mcq) => {mcq.checked = false})
-        console.log("mcqs_array after adding checked: ", resolvedMcqs)
-        setPrevMCQsID(ids_array)
+        // console.log("mcqs_array after adding checked: ", resolvedMcqs)
+        console.log("updated mcqs in regen: ", mcq_ids)
+        console.log("prevmcqIDS in regen: ", [...prevMCQsID, ...new_mcq_ids])
+        setMcqIDs(mcq_ids)
+        setPrevMCQsID([...prevMCQsID, ...new_mcq_ids])
         setMCQs(resolvedMcqs);
         setObjectiveQuestions(resolvedMcqs);
-        console.log("ids of current questions: ", ids_array)
+        // console.log("ids of current questions: ", ids_array)
   
         setLoading({
           show: false,
           message: "",
         });
+        deleteCurrentQuestions(mcqs_to_regen_oq_ids)
   
       }
       catch (err) {
-        console.log("Error in regenerating Question: ", err);
-        // setLoading({error: "Error in regenerating Question."})
+        if(err.response.status === 503){
+          alert(err.response.data.message)
+          setLoading({
+            show: false,
+            message: "",
+          });
+        }
+        else{
+          console.log("Error in regenerating Question: ", err);
+          setLoading({error: "Error in regenerating Question."})
+        }
       }
     }
 
@@ -518,7 +541,7 @@ const MCQTable = ({
       mcqs_ids_array = [...mcqs_ids_array, mcqs[i].oq_id]
     }
     console.log("mcqs_ids_array: ", mcqs_ids_array)
-    if (mcqs_ids_array.length > 0) {deleteCurrentQuestions(mcqs_ids_array)}
+    // if (mcqs_ids_array.length > 0) {deleteCurrentQuestions(mcqs_ids_array)}
 
     try{
       const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID})
@@ -537,7 +560,8 @@ const MCQTable = ({
       console.log("mcqs_array: ", resolvedMcqs)
       resolvedMcqs.map((mcq) => {mcq.checked = false})
       console.log("mcqs_array after adding checked: ", resolvedMcqs)
-      setPrevMCQsID(ids_array)
+      setPrevMCQsID([...prevMCQsID, ...ids_array])
+      setMcqIDs(ids_array)
       setMCQs(resolvedMcqs);
       setObjectiveQuestions(resolvedMcqs);
       console.log("ids_array: ", ids_array)
@@ -547,6 +571,7 @@ const MCQTable = ({
         message: "",
       });
 
+      if (mcqs_ids_array.length > 0) {deleteCurrentQuestions(mcqs_ids_array)}
       setAdding(false);
       setControl(false);
       setControl_2(true);
