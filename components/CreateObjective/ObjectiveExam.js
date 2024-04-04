@@ -27,6 +27,7 @@ const MCQTable = ({
   console.log("in mcq table, objective_questions: ", objective_questions)
 
   const [difficultys, setDifficultys] = useState(["", "Easy", "Medium", "Hard"])
+  const [authority, setAuthority] = useState()
   const [topics, setTopics] = useState([""])
   const [subjects, setSubjects] = useState([""])
   const [courses, setCourses] = useState([""])
@@ -278,6 +279,10 @@ const MCQTable = ({
     : setCurrentMCQ({...currentMCQ, [id]: value})}
     console.log("in handleNewQustionInputChange -> currentMCQ: ", currentMCQ)
     console.log("in handleNewQustionInputChange -> randomPaperConfig: ", randomPaperConfig)
+  }
+
+  function handleAuthorityChange(event){
+    setCurrentMCQ({...currentMCQ, authority: event.target.value})
   }
 
 
@@ -563,7 +568,6 @@ const MCQTable = ({
   }
 
   const handleAddMCQ = async () => {
-    console.log("inside handleAddMCQ")
     if (
       currentMCQ.question === "" ||
       currentMCQ.options.includes("") ||
@@ -598,6 +602,7 @@ const MCQTable = ({
     });
 
     try {
+      setAuthority(currentMCQ.authority)
       const newMCQ = await axios.post(
         "/api/faculty/paper_creation/add_objective",
         {
@@ -850,6 +855,7 @@ const MCQTable = ({
               else{
                 getCoursesList()
                 setAdding(true);
+                setCurrentMCQ({...currentMCQ, authority: authority})
               }
             } else {
               alert(
@@ -1072,7 +1078,7 @@ const MCQTable = ({
               onChange={handleMarksChange}
             />
             {/* input for time allowed */}
-            {freeFlow ? null : (
+            {/* {freeFlow ? null : (
               <Input
                 text={"Time Allowed in Seconds"}
                 type={"number"}
@@ -1080,15 +1086,31 @@ const MCQTable = ({
                 value={currentMCQ.timeAllowed || 60}
                 onChange={handleTimeAllowedChange}
               />
-            )}
+            )} */}
+            
+            <div className="flex flex-col w-full mt-6">
+              {/* <div className="w-full"> */}
+                  <label className="block mb-2">Difficulty Level</label>
+                  <select
+                  className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+                  id="difficulty"
+                  onChange={handleSelect}
+                  value={selectedDifficulty}
+                  >
+                      {difficultys.map((option, index) => (
+                          <option key={index} disabled={option === "" ? true : false} value={option}>{option === "" ? "Select option" : option}</option>
+                      ))}
+                  </select>
+              {/* </div> */}
+            </div>
 
             <div className="flex flex-col w-full mt-6">
-              <label htmlFor="">Authority</label>
+              <label htmlFor="authority">Authority</label>
               <input 
                 type="text"
                 id="authority"
                 value={currentMCQ.authority}
-                onChange={handleNewQustionInputChange}
+                onChange={handleAuthorityChange}
                 className="mt-2 bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
               />
             </div>

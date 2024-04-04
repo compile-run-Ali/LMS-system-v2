@@ -22,6 +22,7 @@ const SubjectiveExam = ({
   console.log("in subjective exam, btn_call: ", btn_call)
 
   const [difficultys, setDifficultys] = useState(["", "Easy", "Medium", "Hard"])
+  const [authority, setAuthority] = useState()
   const [topics, setTopics] = useState([""])
   const [subjects, setSubjects] = useState([""])
   const [courses, setCourses] = useState([""])
@@ -230,6 +231,9 @@ const SubjectiveExam = ({
     // console.log("in handleNewQustionInputChange -> randomPaperConfig: ", randomPaperConfig)
   }
 
+  function handleAuthorityChange(event){
+    setCurrentQuestion({...currentQuestion, authority: event.target.value})
+  }
 
   const handleQuestionChange = (e) => {
     setCurrentQuestion({ ...currentQuestion, question: e.target.value });
@@ -579,6 +583,7 @@ const SubjectiveExam = ({
     console.log("subjective_questions in handleAddSubjective before: ", subjective_questions)
 
     try {
+      setAuthority(currentQuestion.authority)
       const newSubjective = await axios.post(
         "/api/faculty/paper_creation/add_subjective",
         {
@@ -1168,6 +1173,7 @@ const SubjectiveExam = ({
               else{
                 getCoursesList()
                 setAdding(true);
+                setCurrentQuestion({...currentQuestion, authority: authority})
               }
             } else {
               alert(
@@ -1357,12 +1363,26 @@ const SubjectiveExam = ({
             />
 
             <div className="flex flex-col w-full mt-6">
-              <label htmlFor="">Authority</label>
+                  <label className="block mb-2">Difficulty Level</label>
+                  <select
+                  className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+                  id="difficulty"
+                  onChange={handleSelect}
+                  value={selectedDifficulty}
+                  >
+                      {difficultys.map((option, index) => (
+                          <option key={index} disabled={option === "" ? true : false} value={option}>{option === "" ? "Select option" : option}</option>
+                      ))}
+                  </select>
+            </div>
+
+            <div className="flex flex-col w-full mt-6">
+              <label htmlFor="authority">Authority</label>
               <input 
                 type="text"
                 id="authority"
                 value={currentQuestion.authority}
-                onChange={handleNewQustionInputChange}
+                onChange={handleAuthorityChange}
                 className="mt-2 bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
               />
             </div>
