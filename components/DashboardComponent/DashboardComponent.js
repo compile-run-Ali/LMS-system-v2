@@ -113,7 +113,7 @@ export default function DashboardComponent({
             <div className="flex flex-row justify-end pr-10">
               {/* <DashboardButton open={open} setOpen={setOpen} courseCode={selectedCourse} btn_text="Create Question"/> */}
               <DashboardButton courseCode={selectedCourse} btn_text="Generate Random Paper"/>
-              <DashboardButton courseCode={selectedCourse} btn_text="Create Paper"/>
+              <DashboardButton courseCode={selectedCourse} btn_text="Design New Paper"/>
               <DashboardButton courseCode={null} btn_text="Create Question"/>
 
               {/* <div className="flex justify-end pr-10 font-poppins mt-10 ml-2">

@@ -1231,6 +1231,12 @@ const MCQTable = ({
           </table>
         </>
       )}
+      {!control && control_2 && <button
+        onClick={handleRegenQuestions}
+        className="mt-12 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
+      >
+        Regenerate Selected Questions
+      </button>}
     </div>
   );
 };

@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 import CreateWordButton from "../CreateWordButton";
 import GenerateRandomPaperButton from "../GenerateRandomPaperButton";
@@ -12,6 +13,7 @@ const ExamContainer = ({ courses, exams, setExams, faculty }) => {
   const [selectedForDeletion, setSelectedForDeletion] = useState(null);
   const [loading, setLoading] = useState({});
   const [open, setOpen] = useState(false);
+  const session = useSession()
 
   const handleDelete = () => {
     setLoading({
@@ -34,6 +36,10 @@ const ExamContainer = ({ courses, exams, setExams, faculty }) => {
       });
   };
 
+  useEffect(() => {
+    if(session) console.log("session.user: ", session.data.user.level)
+  }, [session])
+
   return (
     <div>
       <Spinner loading={loading} />
@@ -42,11 +48,12 @@ const ExamContainer = ({ courses, exams, setExams, faculty }) => {
         isOpen={open}
         handleDelete={handleDelete}
       />
-      <div className="flex flex-row justify-end">
+      {(session.data.user.level !== 3 && session.data.user.level !== 4) 
+      && <div className="flex flex-row justify-end">
         <CreateQuestionButton courses={courses}/>
         <GenerateRandomPaperButton courses={courses} />
         <CreateWordButton courses={courses} />
-      </div>
+      </div>}
       <ExamTable
         exams_data={exams}
         faculty={faculty}
