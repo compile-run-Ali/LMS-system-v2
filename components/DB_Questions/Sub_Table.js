@@ -2,9 +2,52 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
+import Spinner from "../Loader/Spinner";
+import Edit_Sub_Form from "./Edit_Sub_Form";
 
 export default function Sub_Table(){
     const [subs, setSubs] = useState([]);
+    const [currentQuestion, setCurrentQuestion] = useState()
+    const [editing, setEditing] = useState(false);
+    const [index, setIndex] = useState(null);
+    const [loading, setLoading] = useState({});
+    const btn_call = "Create Question"
+
+    const handleEditsub = (index) => () => {
+        if (!editing) {
+          setEditing(true);
+          setIndex(index);
+          setCurrentQuestion(subs[index]);
+          window.scrollTo(0, 0);
+        } else {
+          alert(
+            "Please save or cancel the current edit or add operation before editing another question."
+          );
+        }
+    };
+
+    const handleDeletesub = async (index) => {
+        setLoading({
+          message: "Deleting Question",
+        });
+    
+        const res = await axios.post("/api/faculty/remove_subjective", {
+          btn_call,
+          oq_id: subs[index].oq_id,
+          id: subs[index].id
+        });
+    
+        if (res.status === 200) {
+          setLoading({});
+          const newSubs = [...subs];
+          newSubs.splice(index, 1);
+          setSubs(newSubs);
+        } else {
+          setLoading({
+            error: "Error in Deleting Question.",
+          });
+        }
+    };
 
     async function getDBQuestions(){
         try{
@@ -24,7 +67,19 @@ export default function Sub_Table(){
 
     return(
         <div className="px-5 mt-6">
+            <Spinner loading={loading} />
+
             <h1 className="text-2xl font-poppins font-bold">Subjective Questions in DB</h1>
+            {editing === true && <Edit_Sub_Form 
+                currentQuestion={currentQuestion} 
+                setCurrentQuestion={setCurrentQuestion}
+                index={index} 
+                setIndex={setIndex} 
+                setEditing={setEditing}
+                subs={subs}
+                setSubs={setSubs}
+            />}
+
             <table className="table-auto w-full mt-3 font-poppins px-5">
             <thead>
               <tr className="bg-blue-800 text-white font-medium">
@@ -55,7 +110,7 @@ export default function Sub_Table(){
                   <td className="px-4 py-2 text-center">{sub.marks}</td>
                   <td className="px-4 py-2">
                     <button
-                    //   onClick={handleEditsub(index)}
+                      onClick={handleEditsub(index)}
                       className="bg-white text-blue-900 p-2 rounded hover:bg-blue-900 hover:text-white transition-colors"
                     >
                       <MdEdit />
@@ -63,9 +118,9 @@ export default function Sub_Table(){
                   </td>
                   <td className="px-4 py-2">
                     <button
-                    //   onClick={() => {
-                    //     handleDeletesub(index);
-                    //   }}
+                      onClick={() => {
+                        handleDeletesub(index);
+                      }}
                       className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                     >
                       <MdDelete />
