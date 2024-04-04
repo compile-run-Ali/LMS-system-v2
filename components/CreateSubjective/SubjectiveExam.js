@@ -33,6 +33,7 @@ const SubjectiveExam = ({
 
   const [control, setControl] = useState(false)
   const [loading, setLoading] = useState({});
+  const [mcqIDs, setMcqIDs] = useState([])
   const [subjectivesLocal, setSubjectivesLocal] =
     useState(subjective_questions);
   const [previousParent, setPreviousParent] = useState(null);
@@ -349,22 +350,22 @@ const SubjectiveExam = ({
 
       const prevLength = subjectivesLocal.length;
 
-      setCurrentQuestion({
-        sq_id: "",
-        question: "",
-        parent_sq_id: "",
-        marks: 1,
-        answer:"",
-        long_question: true,
-        questionnumber: prevLength + 1,
-        authority: "",
-        difficulty: selectedDifficulty,
-        course: selectedCourse,
-        subject: selectedSubject,
-        topic: selectedTopic,
-        type: "subjective",
-        checked: false      
-      });
+      // setCurrentQuestion({
+      //   sq_id: "",
+      //   question: "",
+      //   parent_sq_id: "",
+      //   marks: 1,
+      //   answer:"",
+      //   long_question: true,
+      //   questionnumber: prevLength + 1,
+      //   authority: "",
+      //   difficulty: selectedDifficulty,
+      //   course: selectedCourse,
+      //   subject: selectedSubject,
+      //   topic: selectedTopic,
+      //   type: "subjective",
+      //   checked: false      
+      // });
       return newSubjective.data
       ////
     } catch (err) {
@@ -413,44 +414,51 @@ const SubjectiveExam = ({
       let subs_to_regen_ids = []
       for (let i = 0; i < subs_to_regen.length; i++){
         indexes = [...indexes, subjectivesLocal.indexOf(subs_to_regen[i])]
-        subs_to_regen_ids = [...subs_to_regen_ids, prevMCQsID[indexes[indexes.length-1]]]
+        subs_to_regen_ids = [...subs_to_regen_ids, subjectivesLocal[indexes[indexes.length-1]]]
       }
 
       console.log("indexes: ", indexes)
       console.log("subs_to_regen_ids: ", subs_to_regen_ids)
       
-      deleteCurrentQuestions(subs_to_regen_sq_ids)
-      const new_subs = [...subjectivesLocal]
-      const rest_ids = [...prevMCQsID]
-      for(let i = 0; i < indexes.length; i++){
-        new_subs.splice(indexes[i]-i, 1)
-        rest_ids.splice(indexes[i]-i, 1)
-      }
+      // deleteCurrentQuestions(subs_to_regen_sq_ids)
+      // const new_subs = [...subjectivesLocal]
+      // const rest_ids = [...prevMCQsID]
+      // for(let i = 0; i < indexes.length; i++){
+      //   new_subs.splice(indexes[i]-i, 1)
+      //   rest_ids.splice(indexes[i]-i, 1)
+      // }
 
-      new_subs.map((sub, index) => {sub.questionnumber = index+1})
+      // new_subs.map((sub, index) => {sub.questionnumber = index+1})
 
       try{
         const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID, flag: "regen", subs_to_regen_ids})
         console.log("res from get_questions_databank in regen: ", res.data)
         console.log("subjectivesLocal in regen: ", subjectivesLocal)
   
-        let ids_array = [...rest_ids]
+        // let ids_array = [...rest_ids]
         let mcqs_array = [...new_subs]
+        let mcq_ids = [...mcqIDs]
         let mmcq;
+
+        const res_mcqs = await Promise.all(res.data);
   
-        for (let i = 0; i < res.data.length; i++) {
-          ids_array = [...ids_array, res.data[i].id]
-          mmcq = addQuestion(i, res.data[i])
-          mcqs_array = [...mcqs_array, mmcq]
+        for (let i = 0; i < res_mcqs.length; i++) {
+          mmcq = addQuestion(i, res_mcqs[i])
+          mcqs_array[indexes[i]] = mmcq
+          mcq_ids[indexes[i]] = res_mcqs[i].id
+          new_mcq_ids = [...new_mcq_ids, res_mcqs[i].id]
         }
+        mcq_ids = await Promise.all(mcq_ids)
+        new_mcq_ids = await Promise.all(new_mcq_ids)
         const resolvedMcqs = await Promise.all(mcqs_array);
         console.log("mcqs_array: ", resolvedMcqs)
         resolvedMcqs.map((mcq) => {mcq.checked = false})
         console.log("mcqs_array after adding checked: ", resolvedMcqs)
-
+        
+        setMcqIDs(mcq_ids)
+        setPrevMCQsID([...prevMCQsID, ...new_mcq_ids])
         setSubjectivesLocal(resolvedMcqs);
         setSubjectiveQuestions(resolvedMcqs)
-        setPrevMCQsID(ids_array)
         console.log("ids of current questions: ", ids_array)
 
   
@@ -458,11 +466,22 @@ const SubjectiveExam = ({
           show: false,
           message: "",
         });
+
+        deleteCurrentQuestions(subs_to_regen_sq_ids)
   
       }
       catch (err) {
-        console.log("err: ", err);
-        setLoading({error: "Error in regenerating Question."})
+        if(err.response.status === 503){
+          alert(err.response.data.message)
+          setLoading({
+            show: false,
+            message: "",
+          });
+        }
+        else{
+          console.log("Error in regenerating Question: ", err);
+          setLoading({error: "Error in regenerating Question."})
+        }
       }
     }
 
@@ -507,7 +526,7 @@ const SubjectiveExam = ({
       subjectives_ids_array = [...subjectives_ids_array, subjectivesLocal[i].sq_id]
     }
     console.log("subjectives_ids_array: ", subjectives_ids_array)
-    if (subjectives_ids_array.length > 0) {deleteCurrentQuestions(subjectives_ids_array)}
+    // if (subjectives_ids_array.length > 0) {deleteCurrentQuestions(subjectives_ids_array)}
 
     try{
       const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID})
@@ -527,7 +546,8 @@ const SubjectiveExam = ({
       setSubjectivesLocal(resolvedMcqs);
       setSubjectiveQuestions(resolvedMcqs)
 
-      setPrevMCQsID(ids_array)
+      setPrevMCQsID([...prevMCQsID, ...ids_array])
+      setMcqIDs(ids_array)
       console.log("ids_array: ", ids_array)
       console.log("mcqs_array: ", resolvedMcqs)
 
@@ -537,6 +557,7 @@ const SubjectiveExam = ({
         message: "",
       });
 
+      if (subjectives_ids_array.length > 0) {deleteCurrentQuestions(subjectives_ids_array)}
       setAdding(false);
       setControl(false);
       setControl_2(true);
@@ -1621,7 +1642,7 @@ const SubjectiveExam = ({
       )}
       {!control && control_2 && <button
         onClick={handleRegenQuestions}
-        className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
+        className="mt-12 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
       >
         Regenerate Selected Questions
       </button>}
