@@ -14,6 +14,7 @@ const handler = async (req, res) => {
           question: req.body.question_info.question,
           correct_answer: req.body.question_info.answer,
           marks: req.body.question_info.marks,
+          authority: req.body.question_info.authority,
           difficulty: req.body.question_info.difficulty,
           course: req.body.question_info.course,
           subject: req.body.question_info.subject[0],
@@ -35,6 +36,9 @@ const handler = async (req, res) => {
           data: {
             question: req.body.question_info.question,
             answer: req.body.question_info.answer,
+            difficulty: req.body.question_info.difficulty,
+            topic: req.body.question_info.topic,
+            authority: req.body.question_info.authority,
             marks: req.body.question_info.marks,
             long_question: req.body.question_info.long_question,
             questionnumber: req.body.question_info.questionnumber,

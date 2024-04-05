@@ -132,7 +132,7 @@ export default function AdminPanel({
 
       {active === "Courses_Subjects_Topics" && (
         <>
-          <Courses_Subjects_Topics />
+          <Courses_Subjects_Topics faculty={false}/>
         </>
       )}
     </div>

@@ -7,14 +7,14 @@ const handler = async (req, res) => {
                 parseInt(req.body.randomPaperConfig.no_of_medium), 
                 parseInt(req.body.randomPaperConfig.no_of_hard))
     
-    req.body.type === "objective" ? console.log("prevMCQsID: ", req.body.prevMCQsID) : console.log("subjective")
+    req.body.randomPaperConfig.type === "objective" ? console.log("prevMCQsID: ", req.body.prevMCQsID) : console.log("subjective")
 
-    try{
+    // try{
 
-    }
-    catch(error){
+    // }
+    // catch(error){
 
-    }
+    // }
 
     try{
         if(req.body.flag === "regen"){
@@ -29,6 +29,22 @@ const handler = async (req, res) => {
             else if(req.body.subs_to_regen_ids){
                 console.log("to_regen === req.body.subs_to_regen_ids")
                 to_regen = req.body.subs_to_regen_ids
+            }
+
+            console.log("to regen mcq_ids: ", to_regen)
+
+            const no_of_questions = await prisma.DataBankQuestion.findMany({
+                where:{
+                    course: req.body.randomPaperConfig.course,
+                    type: req.body.randomPaperConfig.type
+                }
+            })
+            console.log("no_of_questions_"+no_of_questions.length+"_:")
+            console.log("total_ids_"+total_ids.length+"_:")
+            console.log("difference: ", Math.abs(no_of_questions.length - total_ids.length))
+            if((no_of_questions.length - total_ids.length) < to_regen.length){
+                console.log("Not enough questions in DB to regenerate selected questions.")
+                res.status(503).json({message: "Not enough questions in DB to regenerate selected questions."});
             }
 
             for (let i = 0; i < to_regen.length; i++){
@@ -72,6 +88,7 @@ const handler = async (req, res) => {
                         `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Easy" AND
                         topic = ${req.body.randomPaperConfig.topic[i]} AND
+                        course = ${req.body.randomPaperConfig.course} AND
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 
@@ -162,18 +179,21 @@ const handler = async (req, res) => {
             for(let i = 0; i < req.body.randomPaperConfig.no_of_easy; i++) {
                 let randomIndex = Math.floor(Math.random() * easy_questions.length);
                 easy_questions_final = [...easy_questions_final, easy_questions[randomIndex]]
+                easy_questions.splice(randomIndex, 1)
             }
 
             let medium_questions_final = []
             for(let i = 0; i < req.body.randomPaperConfig.no_of_medium; i++) {
                 let randomIndex = Math.floor(Math.random() * medium_questions.length);
                 medium_questions_final = [...medium_questions_final, medium_questions[randomIndex]]
+                medium_questions.splice(randomIndex, 1)
             }
 
             let hard_questions_final = []
             for(let i = 0; i < req.body.randomPaperConfig.no_of_hard; i++) {
                 let randomIndex = Math.floor(Math.random() * hard_questions.length);
                 hard_questions_final = [...hard_questions_final, hard_questions[randomIndex]]
+                hard_questions.splice(randomIndex, 1)
             }
 
 
@@ -185,7 +205,8 @@ const handler = async (req, res) => {
             questions = questions.filter((ques) => {if(ques !== null && ques !== undefined){return ques}})
             console.log("questions after concat["+questions.length+"]: ", questions)
 
-            let ids = questions.filter(obj => {if(obj !== null && obj !== undefined){ return obj.id}});
+            // let ids = questions.filter(obj => {if(obj !== null && obj !== undefined){ return obj.id}});
+            let ids = questions.filter(obj => obj !== null && obj !== undefined).map(obj => obj.id);
             console.log("ids of new questions: ", ids)
             console.log("ids of prevquestions: ", req.body.prevMCQsID)
 

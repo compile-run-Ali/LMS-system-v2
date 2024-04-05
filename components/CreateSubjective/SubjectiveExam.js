@@ -22,6 +22,7 @@ const SubjectiveExam = ({
   console.log("in subjective exam, btn_call: ", btn_call)
 
   const [difficultys, setDifficultys] = useState(["", "Easy", "Medium", "Hard"])
+  const [authority, setAuthority] = useState()
   const [topics, setTopics] = useState([""])
   const [subjects, setSubjects] = useState([""])
   const [courses, setCourses] = useState([""])
@@ -32,6 +33,7 @@ const SubjectiveExam = ({
 
   const [control, setControl] = useState(false)
   const [loading, setLoading] = useState({});
+  const [mcqIDs, setMcqIDs] = useState([])
   const [subjectivesLocal, setSubjectivesLocal] =
     useState(subjective_questions);
   const [previousParent, setPreviousParent] = useState(null);
@@ -44,6 +46,7 @@ const SubjectiveExam = ({
     long_question: true,
     marks: 1,
     questionnumber: subjectivesLocal.length + 1,
+    authority: "",
     difficulty: "",
     course: "",
     subject: "",
@@ -229,6 +232,9 @@ const SubjectiveExam = ({
     // console.log("in handleNewQustionInputChange -> randomPaperConfig: ", randomPaperConfig)
   }
 
+  function handleAuthorityChange(event){
+    setCurrentQuestion({...currentQuestion, authority: event.target.value})
+  }
 
   const handleQuestionChange = (e) => {
     setCurrentQuestion({ ...currentQuestion, question: e.target.value });
@@ -316,6 +322,9 @@ const SubjectiveExam = ({
             paper_id: paperId,
             question: question.question,
             answer: question.correct_answer,
+            difficulty: question.difficulty,
+            topic: question.topic,
+            authority: question.authority,
             parent_sq_id: "",
             long_question: true,
             marks: question.marks,
@@ -341,21 +350,22 @@ const SubjectiveExam = ({
 
       const prevLength = subjectivesLocal.length;
 
-      setCurrentQuestion({
-        sq_id: "",
-        question: "",
-        parent_sq_id: "",
-        marks: 1,
-        answer:"",
-        long_question: true,
-        questionnumber: prevLength + 1,
-        difficulty: selectedDifficulty,
-        course: selectedCourse,
-        subject: selectedSubject,
-        topic: selectedTopic,
-        type: "subjective",
-        checked: false      
-      });
+      // setCurrentQuestion({
+      //   sq_id: "",
+      //   question: "",
+      //   parent_sq_id: "",
+      //   marks: 1,
+      //   answer:"",
+      //   long_question: true,
+      //   questionnumber: prevLength + 1,
+      //   authority: "",
+      //   difficulty: selectedDifficulty,
+      //   course: selectedCourse,
+      //   subject: selectedSubject,
+      //   topic: selectedTopic,
+      //   type: "subjective",
+      //   checked: false      
+      // });
       return newSubjective.data
       ////
     } catch (err) {
@@ -404,44 +414,51 @@ const SubjectiveExam = ({
       let subs_to_regen_ids = []
       for (let i = 0; i < subs_to_regen.length; i++){
         indexes = [...indexes, subjectivesLocal.indexOf(subs_to_regen[i])]
-        subs_to_regen_ids = [...subs_to_regen_ids, prevMCQsID[indexes[indexes.length-1]]]
+        subs_to_regen_ids = [...subs_to_regen_ids, subjectivesLocal[indexes[indexes.length-1]]]
       }
 
       console.log("indexes: ", indexes)
       console.log("subs_to_regen_ids: ", subs_to_regen_ids)
       
-      deleteCurrentQuestions(subs_to_regen_sq_ids)
-      const new_subs = [...subjectivesLocal]
-      const rest_ids = [...prevMCQsID]
-      for(let i = 0; i < indexes.length; i++){
-        new_subs.splice(indexes[i]-i, 1)
-        rest_ids.splice(indexes[i]-i, 1)
-      }
+      // deleteCurrentQuestions(subs_to_regen_sq_ids)
+      // const new_subs = [...subjectivesLocal]
+      // const rest_ids = [...prevMCQsID]
+      // for(let i = 0; i < indexes.length; i++){
+      //   new_subs.splice(indexes[i]-i, 1)
+      //   rest_ids.splice(indexes[i]-i, 1)
+      // }
 
-      new_subs.map((sub, index) => {sub.questionnumber = index+1})
+      // new_subs.map((sub, index) => {sub.questionnumber = index+1})
 
       try{
         const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID, flag: "regen", subs_to_regen_ids})
         console.log("res from get_questions_databank in regen: ", res.data)
         console.log("subjectivesLocal in regen: ", subjectivesLocal)
   
-        let ids_array = [...rest_ids]
+        // let ids_array = [...rest_ids]
         let mcqs_array = [...new_subs]
+        let mcq_ids = [...mcqIDs]
         let mmcq;
+
+        const res_mcqs = await Promise.all(res.data);
   
-        for (let i = 0; i < res.data.length; i++) {
-          ids_array = [...ids_array, res.data[i].id]
-          mmcq = addQuestion(i, res.data[i])
-          mcqs_array = [...mcqs_array, mmcq]
+        for (let i = 0; i < res_mcqs.length; i++) {
+          mmcq = addQuestion(i, res_mcqs[i])
+          mcqs_array[indexes[i]] = mmcq
+          mcq_ids[indexes[i]] = res_mcqs[i].id
+          new_mcq_ids = [...new_mcq_ids, res_mcqs[i].id]
         }
+        mcq_ids = await Promise.all(mcq_ids)
+        new_mcq_ids = await Promise.all(new_mcq_ids)
         const resolvedMcqs = await Promise.all(mcqs_array);
         console.log("mcqs_array: ", resolvedMcqs)
         resolvedMcqs.map((mcq) => {mcq.checked = false})
         console.log("mcqs_array after adding checked: ", resolvedMcqs)
-
+        
+        setMcqIDs(mcq_ids)
+        setPrevMCQsID([...prevMCQsID, ...new_mcq_ids])
         setSubjectivesLocal(resolvedMcqs);
         setSubjectiveQuestions(resolvedMcqs)
-        setPrevMCQsID(ids_array)
         console.log("ids of current questions: ", ids_array)
 
   
@@ -449,11 +466,22 @@ const SubjectiveExam = ({
           show: false,
           message: "",
         });
+
+        deleteCurrentQuestions(subs_to_regen_sq_ids)
   
       }
       catch (err) {
-        console.log("err: ", err);
-        setLoading({error: "Error in regenerating Question."})
+        if(err.response.status === 503){
+          alert(err.response.data.message)
+          setLoading({
+            show: false,
+            message: "",
+          });
+        }
+        else{
+          console.log("Error in regenerating Question: ", err);
+          setLoading({error: "Error in regenerating Question."})
+        }
       }
     }
 
@@ -498,7 +526,7 @@ const SubjectiveExam = ({
       subjectives_ids_array = [...subjectives_ids_array, subjectivesLocal[i].sq_id]
     }
     console.log("subjectives_ids_array: ", subjectives_ids_array)
-    if (subjectives_ids_array.length > 0) {deleteCurrentQuestions(subjectives_ids_array)}
+    // if (subjectives_ids_array.length > 0) {deleteCurrentQuestions(subjectives_ids_array)}
 
     try{
       const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID})
@@ -518,7 +546,8 @@ const SubjectiveExam = ({
       setSubjectivesLocal(resolvedMcqs);
       setSubjectiveQuestions(resolvedMcqs)
 
-      setPrevMCQsID(ids_array)
+      setPrevMCQsID([...prevMCQsID, ...ids_array])
+      setMcqIDs(ids_array)
       console.log("ids_array: ", ids_array)
       console.log("mcqs_array: ", resolvedMcqs)
 
@@ -528,6 +557,7 @@ const SubjectiveExam = ({
         message: "",
       });
 
+      if (subjectives_ids_array.length > 0) {deleteCurrentQuestions(subjectives_ids_array)}
       setAdding(false);
       setControl(false);
       setControl_2(true);
@@ -554,6 +584,7 @@ const SubjectiveExam = ({
       currentQuestion.question === "" ||
       currentQuestion.correct_answer === "" ||
       currentQuestion.marks === "" ||
+      currentQuestion.authority === "" ||
       currentQuestion.difficulty === "" ||
       currentQuestion.course === "" ||
       currentQuestion.subject === "" ||
@@ -573,6 +604,7 @@ const SubjectiveExam = ({
     console.log("subjective_questions in handleAddSubjective before: ", subjective_questions)
 
     try {
+      setAuthority(currentQuestion.authority)
       const newSubjective = await axios.post(
         "/api/faculty/paper_creation/add_subjective",
         {
@@ -581,6 +613,7 @@ const SubjectiveExam = ({
           question: currentQuestion.question,
           answer: currentQuestion.correct_answer,
           marks: currentQuestion.marks,
+          authority: currentQuestion.authority,
           difficulty: currentQuestion.difficulty,
           course: currentQuestion.course,
           subject: currentQuestion.subject,
@@ -613,6 +646,7 @@ const SubjectiveExam = ({
         parent_sq_id: "",
         marks: 1,
         answer:"",
+        authority: "",
         long_question: true,
         questionnumber: prevLength + 1,
         difficulty: selectedDifficulty,
@@ -676,6 +710,7 @@ const SubjectiveExam = ({
           paper_id: paperId,
           question: currentQuestion.question,
           answer:currentQuestion.answer,
+          authority: currentQuestion.authority,
           parent_sq_id: currentQuestion.parent_sq_id,
           long_question: true,
           marks: currentQuestion.marks,
@@ -726,6 +761,7 @@ const SubjectiveExam = ({
         parent_sq_id: "",
         marks: 1,
         answer:"",
+        authority: "",
         long_question: true,
         questionnumber: isChild ? prevLength + 1 : prevLength + 2,
         difficulty: selectedDifficulty,
@@ -764,6 +800,7 @@ const SubjectiveExam = ({
       question.question === "" ||
       question.correct_answer === "" ||
       question.marks === "" ||
+      question.authority === "" ||
       question.difficulty === "" ||
       question.course === "" ||
       question.subject === "" ||
@@ -785,6 +822,7 @@ const SubjectiveExam = ({
         question: question.question,
         correct_answer: question.correct_answer,
         marks: question.marks,
+        authority: question.authority,
         difficulty: question.difficulty,
         course: question.course,
         subject: question.subject,
@@ -820,6 +858,7 @@ const SubjectiveExam = ({
         parent_sq_id: "",
         marks: 1,
         answer:"",
+        authority: "",
         long_question: true,
         questionnumber: subjectivesLocal.length + 1,
         difficulty: selectedDifficulty,
@@ -993,6 +1032,7 @@ const SubjectiveExam = ({
           answer:"",
           question: "",
           parent_sq_id: "",
+          authority: "",
           marks: 1,
           long_question: true,
           questionnumber: subjectivesLocal.length + 1,
@@ -1087,6 +1127,7 @@ const SubjectiveExam = ({
         question: "",
         parent_sq_id: "",
         marks: 1,
+        authority: "",
         answer:"",
         long_question: true,
         questionnumber: isChild
@@ -1153,6 +1194,7 @@ const SubjectiveExam = ({
               else{
                 getCoursesList()
                 setAdding(true);
+                setCurrentQuestion({...currentQuestion, authority: authority})
               }
             } else {
               alert(
@@ -1206,6 +1248,7 @@ const SubjectiveExam = ({
                   question: "",
                   parent_sq_id: "",
                   marks: 1,
+                  authority: "",
                   answer:"",
                   long_question: true,
                   questionnumber: subjectivesLocal.length + 1,
@@ -1271,6 +1314,7 @@ const SubjectiveExam = ({
                   question: "",
                   parent_sq_id: "",
                   marks: 1,
+                  authority: "",
                   answer:"",
                   long_question: true,
                   questionnumber: subjectivesLocal.length + 1,
@@ -1338,6 +1382,32 @@ const SubjectiveExam = ({
                 })
               }
             />
+
+            <div className="flex flex-col w-full mt-6">
+                  <label className="block mb-2">Difficulty Level</label>
+                  <select
+                  className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+                  id="difficulty"
+                  onChange={handleSelect}
+                  value={selectedDifficulty}
+                  >
+                      {difficultys.map((option, index) => (
+                          <option key={index} disabled={option === "" ? true : false} value={option}>{option === "" ? "Select option" : option}</option>
+                      ))}
+                  </select>
+            </div>
+
+            <div className="flex flex-col w-full mt-6">
+              <label htmlFor="authority">Authority</label>
+              <input 
+                type="text"
+                id="authority"
+                value={currentQuestion.authority}
+                onChange={handleAuthorityChange}
+                className="mt-2 bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+              />
+            </div>
+
             {!currentQuestion.parent_sq_id && btn_call !== "Create Question" && (
               <Input
                 // if parent exists the question number will be called part number other wise, question number
@@ -1463,7 +1533,10 @@ const SubjectiveExam = ({
                 <th className="px-4">Part</th>
                 <th className="px-4 py-2 w-1/3">Question</th>
                 <th className="px-4 py-2">Answer</th>
-                <th className="px-4 py-2">Parent Question</th>
+                {/* <th className="px-4 py-2">Parent Question</th> */}
+                <th className="px-4 py-2">Difficulty</th>
+                <th className="px-4 py-2">Topic</th>
+                <th className="px-4 py-2">Authority</th>
                 <th className="px-4 py-2">Marks</th>
                 <th className="px-4 py-2">Edit</th>
                 {btn_call === "Generate Random Paper" 
@@ -1490,10 +1563,13 @@ const SubjectiveExam = ({
                       <td className="px-4 py-2">{subjective.question}</td>
                       {/* cut answer short and show ... */}
                       <td className="px-4 py-2">{subjective.answer?.slice(0, 20)}...</td>
-                      <td className="px-4 py-2">
+                      {/* <td className="px-4 py-2">
                         {subjective.parent_sq_id?.question}
-                      </td>
-                      <td className="px-4 py-2">{subjective.marks}</td>
+                      </td> */}
+                      <td className="px-4 py-2 text-center">{subjective.difficulty}</td>
+                      <td className="px-4 py-2 text-center">{subjective.topic}</td>
+                      <td className="px-4 py-2 text-center">{subjective.authority}</td>
+                      <td className="px-4 py-2 text-center">{subjective.marks}</td>
                       <td className="px-4 py-2">
                         <button
                           onClick={handleEditMCQ(subjective)}
@@ -1564,6 +1640,12 @@ const SubjectiveExam = ({
           </table>
         </>
       )}
+      {!control && control_2 && <button
+        onClick={handleRegenQuestions}
+        className="mt-12 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
+      >
+        Regenerate Selected Questions
+      </button>}
     </div>
   );
 };

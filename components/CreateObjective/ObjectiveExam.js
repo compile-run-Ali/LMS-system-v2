@@ -27,6 +27,7 @@ const MCQTable = ({
   console.log("in mcq table, objective_questions: ", objective_questions)
 
   const [difficultys, setDifficultys] = useState(["", "Easy", "Medium", "Hard"])
+  const [authority, setAuthority] = useState()
   const [topics, setTopics] = useState([""])
   const [subjects, setSubjects] = useState([""])
   const [courses, setCourses] = useState([""])
@@ -38,6 +39,7 @@ const MCQTable = ({
   const [loading, setLoading] = useState({});
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
+  const [mcqIDs, setMcqIDs] = useState([])
   const [mcqs, setMCQs] = useState(
     objective_questions.map((mcq) => {
       // console.log("mcq in map: ", mcq)
@@ -56,6 +58,7 @@ const MCQTable = ({
     course: "",
     subject: "",
     topic: "",
+    authority: "",
     type: "objective",
     checked: false
   });
@@ -279,6 +282,10 @@ const MCQTable = ({
     console.log("in handleNewQustionInputChange -> randomPaperConfig: ", randomPaperConfig)
   }
 
+  function handleAuthorityChange(event){
+    setCurrentMCQ({...currentMCQ, authority: event.target.value})
+  }
+
 
   const handleQuestionChange = (e) => {
     setCurrentMCQ({ ...currentMCQ, question: e.target.value });
@@ -352,19 +359,19 @@ const MCQTable = ({
       newMCQ.data.options = newMCQ.data.answers.split(",");
       setMultipleOptions(false);
 
-      setCurrentMCQ({
-        question: "",
-        options: ["", "", "", ""],
-        correct_answer: "",
-        marks: 1,
-        timeAllowed: currentMCQ.timeAllowed || 60,
-        difficulty: selectedDifficulty,
-        course: selectedCourse,
-        subject: selectedSubject,
-        topic: selectedTopic,
-        type: "objective",
-        checked: false
-      });
+      // setCurrentMCQ({
+      //   question: "",
+      //   options: ["", "", "", ""],
+      //   correct_answer: "",
+      //   marks: 1,
+      //   timeAllowed: currentMCQ.timeAllowed || 60,
+      //   difficulty: selectedDifficulty,
+      //   course: selectedCourse,
+      //   subject: selectedSubject,
+      //   topic: selectedTopic,
+      //   type: "objective",
+      //   checked: false
+      // });
       return newMCQ.data
 
     } catch (err) {
@@ -422,19 +429,19 @@ const MCQTable = ({
       let mcqs_to_regen_ids = []
       for (let i = 0; i < mcqs_to_regen.length; i++){
         indexes = [...indexes, mcqs.indexOf(mcqs_to_regen[i])]
-        mcqs_to_regen_ids = [...mcqs_to_regen_ids, prevMCQsID[indexes[indexes.length-1]]]
+        mcqs_to_regen_ids = [...mcqs_to_regen_ids, mcqIDs[indexes[indexes.length-1]]]
       }
 
       console.log("indexes: ", indexes)
       console.log("mcqs_to_regen_ids: ", mcqs_to_regen_ids)
       
-      deleteCurrentQuestions(mcqs_to_regen_oq_ids)
-      const new_mcqs = [...mcqs]
-      const rest_ids = [...prevMCQsID]
-      for(let i = 0; i < indexes.length; i++){
-        new_mcqs.splice(indexes[i]-i, 1)
-        rest_ids.splice(indexes[i]-i, 1)
-      }
+      // deleteCurrentQuestions(mcqs_to_regen_oq_ids)
+      // const new_mcqs = [...mcqs]
+      // const rest_ids = [...prevMCQsID]
+      // for(let i = 0; i < indexes.length; i++){
+      //   new_mcqs.splice(indexes[i]-i, 1)
+      //   rest_ids.splice(indexes[i]-i, 1)
+      // }
 
       try{
         const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID, flag: "regen", mcqs_to_regen_ids})
@@ -444,36 +451,58 @@ const MCQTable = ({
         //   return
         // }
         console.log("res from get_questions_databank in regen: ", res.data)
-        console.log("mcqs in regen: ", mcqs)
-        console.log("objective_questions in regen: ", objective_questions)
+        // console.log("mcqs in regen: ", mcqs)
+        // console.log("objective_questions in regen: ", objective_questions)
   
-        let ids_array = [...rest_ids]
-        let mcqs_array = [...new_mcqs]
+        // let ids_array = [...rest_ids]
+        let mcqs_array = [...mcqs]
+        let new_mcq_ids = []
+        let mcq_ids = [...mcqIDs]
         let mmcq;
+
+        const res_mcqs = await Promise.all(res.data);
   
-        for (let i = 0; i < res.data.length; i++) {
-          ids_array = [...ids_array, res.data[i].id]
-          mmcq = addQuestion(i, res.data[i])
-          mcqs_array = [...mcqs_array, mmcq]
+        for (let i = 0; i < res_mcqs.length; i++) {
+          // ids_array = [...ids_array, res_mcqs[i].id]
+          mmcq = addQuestion(i, res_mcqs[i])
+          mcqs_array[indexes[i]] = mmcq
+          mcq_ids[indexes[i]] = res_mcqs[i].id
+          new_mcq_ids = [...new_mcq_ids, res_mcqs[i].id]
+          // mcqs_array = [...mcqs_array, mmcq]
         }
+        mcq_ids = await Promise.all(mcq_ids)
+        new_mcq_ids = await Promise.all(new_mcq_ids)
         const resolvedMcqs = await Promise.all(mcqs_array);
-        console.log("mcqs_array: ", resolvedMcqs)
+        // console.log("mcqs_array: ", resolvedMcqs)
         resolvedMcqs.map((mcq) => {mcq.checked = false})
-        console.log("mcqs_array after adding checked: ", resolvedMcqs)
-        setPrevMCQsID(ids_array)
+        // console.log("mcqs_array after adding checked: ", resolvedMcqs)
+        console.log("updated mcqs in regen: ", mcq_ids)
+        console.log("prevmcqIDS in regen: ", [...prevMCQsID, ...new_mcq_ids])
+        setMcqIDs(mcq_ids)
+        setPrevMCQsID([...prevMCQsID, ...new_mcq_ids])
         setMCQs(resolvedMcqs);
         setObjectiveQuestions(resolvedMcqs);
-        console.log("ids of current questions: ", ids_array)
+        // console.log("ids of current questions: ", ids_array)
   
         setLoading({
           show: false,
           message: "",
         });
+        deleteCurrentQuestions(mcqs_to_regen_oq_ids)
   
       }
       catch (err) {
-        console.log("Error in regenerating Question: ", err);
-        // setLoading({error: "Error in regenerating Question."})
+        if(err.response.status === 503){
+          alert(err.response.data.message)
+          setLoading({
+            show: false,
+            message: "",
+          });
+        }
+        else{
+          console.log("Error in regenerating Question: ", err);
+          setLoading({error: "Error in regenerating Question."})
+        }
       }
     }
 
@@ -512,7 +541,7 @@ const MCQTable = ({
       mcqs_ids_array = [...mcqs_ids_array, mcqs[i].oq_id]
     }
     console.log("mcqs_ids_array: ", mcqs_ids_array)
-    if (mcqs_ids_array.length > 0) {deleteCurrentQuestions(mcqs_ids_array)}
+    // if (mcqs_ids_array.length > 0) {deleteCurrentQuestions(mcqs_ids_array)}
 
     try{
       const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID})
@@ -531,7 +560,8 @@ const MCQTable = ({
       console.log("mcqs_array: ", resolvedMcqs)
       resolvedMcqs.map((mcq) => {mcq.checked = false})
       console.log("mcqs_array after adding checked: ", resolvedMcqs)
-      setPrevMCQsID(ids_array)
+      setPrevMCQsID([...prevMCQsID, ...ids_array])
+      setMcqIDs(ids_array)
       setMCQs(resolvedMcqs);
       setObjectiveQuestions(resolvedMcqs);
       console.log("ids_array: ", ids_array)
@@ -541,6 +571,7 @@ const MCQTable = ({
         message: "",
       });
 
+      if (mcqs_ids_array.length > 0) {deleteCurrentQuestions(mcqs_ids_array)}
       setAdding(false);
       setControl(false);
       setControl_2(true);
@@ -562,12 +593,12 @@ const MCQTable = ({
   }
 
   const handleAddMCQ = async () => {
-    console.log("inside handleAddMCQ")
     if (
       currentMCQ.question === "" ||
       currentMCQ.options.includes("") ||
       currentMCQ.correct_answer === "" ||
       currentMCQ.marks === "" ||
+      currentMCQ.authority === "" ||
       (!freeFlow && !currentMCQ.timeAllowed)
     ) {
       alert("Please fill all the fields");
@@ -596,6 +627,7 @@ const MCQTable = ({
     });
 
     try {
+      setAuthority(currentMCQ.authority)
       const newMCQ = await axios.post(
         "/api/faculty/paper_creation/add_objective",
         {
@@ -606,6 +638,7 @@ const MCQTable = ({
           correct_answer: currentMCQ.correct_answer,
           marks: currentMCQ.marks,
           timeAllowed: currentMCQ.timeAllowed || 60,
+          authority: currentMCQ.authority,
           difficulty: currentMCQ.difficulty,
           course: currentMCQ.course,
           subject: currentMCQ.subject,
@@ -628,6 +661,7 @@ const MCQTable = ({
         correct_answer: "",
         marks: 1,
         timeAllowed: currentMCQ.timeAllowed || 60,
+        authority: "",
         difficulty: selectedDifficulty,
         course: selectedCourse,
         subject: selectedSubject,
@@ -667,6 +701,7 @@ const MCQTable = ({
       currentMCQ.options.includes("") ||
       currentMCQ.correct_answer === "" ||
       currentMCQ.marks === "" ||
+      currentMCQ.authority === "" ||
       (!freeFlow && !currentMCQ.timeAllowed)
     ) {
       alert("Please fill all the fields");
@@ -705,6 +740,7 @@ const MCQTable = ({
         answers: currentMCQ.options.toString(),
         correct_answer: currentMCQ.correct_answer,
         marks: currentMCQ.marks,
+        authority: currentMCQ.authority,
         timeAllowed: currentMCQ.timeAllowed || 60,
         difficulty: currentMCQ.difficulty,
         course: currentMCQ.course,
@@ -751,6 +787,7 @@ const MCQTable = ({
         correct_answer: "",
         marks: 1,
         timeAllowed: currentMCQ.timeAllowed || 60,
+        authority: "",
         difficulty: selectedDifficulty,
         course: selectedCourse,
         subject: selectedSubject,
@@ -843,6 +880,7 @@ const MCQTable = ({
               else{
                 getCoursesList()
                 setAdding(true);
+                setCurrentMCQ({...currentMCQ, authority: authority})
               }
             } else {
               alert(
@@ -897,6 +935,7 @@ const MCQTable = ({
                   options: ["", "", "", ""],
                   correct_answer: "",
                   marks: 1,
+                  authority: "",
                   timeAllowed: currentMCQ.timeAllowed || 60,
                   difficulty: selectedDifficulty,
                   course: selectedCourse,
@@ -965,6 +1004,7 @@ const MCQTable = ({
                     options: ["", "", "", ""],
                     correct_answer: "",
                     marks: 1,
+                    authority: "",
                     timeAllowed: currentMCQ.timeAllowed || 60,
                     difficulty: selectedDifficulty,
                     course: selectedCourse,
@@ -1063,7 +1103,7 @@ const MCQTable = ({
               onChange={handleMarksChange}
             />
             {/* input for time allowed */}
-            {freeFlow ? null : (
+            {/* {freeFlow ? null : (
               <Input
                 text={"Time Allowed in Seconds"}
                 type={"number"}
@@ -1071,7 +1111,35 @@ const MCQTable = ({
                 value={currentMCQ.timeAllowed || 60}
                 onChange={handleTimeAllowedChange}
               />
-            )}
+            )} */}
+            
+            <div className="flex flex-col w-full mt-6">
+              {/* <div className="w-full"> */}
+                  <label className="block mb-2">Difficulty Level</label>
+                  <select
+                  className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+                  id="difficulty"
+                  onChange={handleSelect}
+                  value={selectedDifficulty}
+                  >
+                      {difficultys.map((option, index) => (
+                          <option key={index} disabled={option === "" ? true : false} value={option}>{option === "" ? "Select option" : option}</option>
+                      ))}
+                  </select>
+              {/* </div> */}
+            </div>
+
+            <div className="flex flex-col w-full mt-6">
+              <label htmlFor="authority">Authority</label>
+              <input 
+                type="text"
+                id="authority"
+                value={currentMCQ.authority}
+                onChange={handleAuthorityChange}
+                className="mt-2 bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+              />
+            </div>
+            
           </div>
 
           {/* {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between"> */}
@@ -1153,6 +1221,9 @@ const MCQTable = ({
                 <th className="px-4 py-2 w-1/2">Question</th>
                 <th className="px-4 py-2 w-1/4">Options</th>
                 <th className="px-4 py-2">Correct Option</th>
+                <th className="px-4 py-2">Difficulty</th>
+                <th className="px-4 py-2">Topic</th>
+                <th className="px-4 py-2">Authority</th>
                 <th className="px-4 py-2">Marks</th>
                 {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
                 <th className="px-4 py-2">Edit</th>
@@ -1174,9 +1245,12 @@ const MCQTable = ({
                     </ol>
                   </td>
                   <td className="px-4 py-2">{mcq.correct_answer.replace(specialSequence, ",")}</td>
-                  <td className="px-4 py-2">{mcq.marks}</td>
+                  <td className="px-4 py-2 text-center">{mcq.difficulty}</td>
+                  <td className="px-4 py-2 text-center">{mcq.topic}</td>
+                  <td className="px-4 py-2 text-center">{mcq.authority}</td>
+                  <td className="px-4 py-2 text-center">{mcq.marks}</td>
                   {freeFlow ? null : (
-                    <td className="px-4 py-2">{mcq.timeAllowed}</td>
+                    <td className="px-4 py-2 text-center">{mcq.timeAllowed}</td>
                   )}
                   <td className="px-4 py-2">
                     <button
@@ -1204,6 +1278,12 @@ const MCQTable = ({
           </table>
         </>
       )}
+      {!control && control_2 && <button
+        onClick={handleRegenQuestions}
+        className="mt-12 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
+      >
+        Regenerate Selected Questions
+      </button>}
     </div>
   );
 };

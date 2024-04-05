@@ -6,7 +6,7 @@ export default function Info_Modal({difficultys, courses, subjects, topics, hand
     function proceed(){
         if(btn_call === "Create Question"){
             if (
-              selectedDifficulty === "" ||
+            //   selectedDifficulty === "" ||
               selectedCourse === "" ||
               selectedSubject === "" ||
               selectedTopic === ""
@@ -23,7 +23,7 @@ export default function Info_Modal({difficultys, courses, subjects, topics, hand
     return(
         <div className="p-10 rounded-lg bg-white flex flex-col items-end justify-center">
             <div className="mb-10 gap-x-4 flex justify-between">
-                <NewQuestionInput label={"Difficulty Level"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/>
+                {/* <NewQuestionInput label={"Difficulty Level"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/> */}
                 <NewQuestionInput label={"Course"} options={courses} id={"course"} handleChange={(e)=>handleSelect(e)} value={selectedCourse} btn_call={btn_call}/>
                 <NewQuestionInput label={"Subject"} options={subjects} id={"subject"} handleChange={(e)=>handleSelect(e)} value={selectedSubject} btn_call={btn_call}/>
                 <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={(e)=>handleSelect(e)} value={selectedTopic} btn_call={btn_call}/>

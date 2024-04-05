@@ -3,7 +3,7 @@ export default function NewQuestionInput({label, options, id, handleChange, valu
     // console.log("in NewQuestionInput: id", id)
     // console.log("in NewQuestionInput: isMultiple", isMultiple)
     return(
-        <div className={btn_call === "Generate Random Paper" ? "w-4/12" : "w-3/12"}>
+        <div className={btn_call === "Generate Random Paper" ? "w-4/12" : "w-4/12"}>
             <label className="block mb-2">{label}</label>
             <select
             className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"

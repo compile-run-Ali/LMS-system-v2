@@ -98,7 +98,7 @@ export default function Courses_Subjects_Topics(){
     return(
         <div className="flex flex-col">
             <div className="flex flex-col justify-center">
-                {active === 0 && <div className="flex flex-row justify-end pt-9">
+                {active === 0 && <div className="flex flex-row justify-end pt-9 px-5">
                     <Courses_Subjects_Topics_btn btn_name={"Add Courses"} setActive={setActive}/>
                     <Courses_Subjects_Topics_btn btn_name={"Add Subjects"} setActive={setActive} />
                     <Courses_Subjects_Topics_btn btn_name={"Add Topics"} setActive={setActive} />

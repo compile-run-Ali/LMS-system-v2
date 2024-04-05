@@ -68,6 +68,9 @@ export default function SubjectModal({setActive, getSubjectList}){
                 if (error.response.data.error.meta.target === "DbSubject_name_key"){
                     setError("-- Subject with the same name is already registered --")
                 }
+                if(error.response.data.error.meta.target === "DbSubject_name_course_key"){
+                    setError("-- Subject with the same name is already registered with this course --")
+                }
                 else{
                     setError("-- Error adding subject --")
                 }
