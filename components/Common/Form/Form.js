@@ -49,6 +49,9 @@ export default function Form({
       setLoading({
         message: "Loading Exam Details...",
       });
+      if(!examDetails?.paper_id){
+        return;
+      }
       axios
         .post("/api/faculty/get_exam", {
           paper_id: examDetails?.paper_id,
