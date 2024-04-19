@@ -49,7 +49,10 @@ export default function Form({
       setLoading({
         message: "Loading Exam Details...",
       });
-      if(!examDetails?.paper_id){
+      if (examDetails === null) {
+        return;
+      }
+      if (!examDetails?.paper_id) {
         return;
       }
       axios
