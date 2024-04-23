@@ -390,6 +390,10 @@ const SubjectiveExam = ({
     }
   }
 
+  function reset_highlight(){
+    subjectivesLocal.map((sub) => {sub.highlight = false;})
+  }
+
   async function handleRegenQuestions(){
     console.log("ids of current questions: ", prevMCQsID)
     console.log("subjectivesLocal: ", subjectivesLocal)
@@ -410,11 +414,14 @@ const SubjectiveExam = ({
         message: "Regenerating selected questions",
       });
 
+      reset_highlight()
+
       let indexes = []
       let subs_to_regen_ids = []
       for (let i = 0; i < subs_to_regen.length; i++){
         indexes = [...indexes, subjectivesLocal.indexOf(subs_to_regen[i])]
-        subs_to_regen_ids = [...subs_to_regen_ids, subjectivesLocal[indexes[indexes.length-1]]]
+        // subs_to_regen_ids = [...subs_to_regen_ids, subjectivesLocal[indexes[indexes.length-1]]]
+        subs_to_regen_ids = [...subs_to_regen_ids, mcqIDs[indexes[indexes.length-1]]]
       }
 
       console.log("indexes: ", indexes)
@@ -436,7 +443,8 @@ const SubjectiveExam = ({
         console.log("subjectivesLocal in regen: ", subjectivesLocal)
   
         // let ids_array = [...rest_ids]
-        let mcqs_array = [...new_subs]
+        let mcqs_array = [...subjectivesLocal]
+        let new_mcq_ids = []
         let mcq_ids = [...mcqIDs]
         let mmcq;
 
@@ -453,14 +461,17 @@ const SubjectiveExam = ({
         const resolvedMcqs = await Promise.all(mcqs_array);
         console.log("mcqs_array: ", resolvedMcqs)
         resolvedMcqs.map((mcq) => {mcq.checked = false})
+
+        for(let j = 0; j < indexes.length; j++){
+          resolvedMcqs[indexes[j]].highlight = true
+        }
+
         console.log("mcqs_array after adding checked: ", resolvedMcqs)
         
         setMcqIDs(mcq_ids)
         setPrevMCQsID([...prevMCQsID, ...new_mcq_ids])
         setSubjectivesLocal(resolvedMcqs);
         setSubjectiveQuestions(resolvedMcqs)
-        console.log("ids of current questions: ", ids_array)
-
   
         setLoading({
           show: false,
@@ -471,7 +482,7 @@ const SubjectiveExam = ({
   
       }
       catch (err) {
-        if(err.response.status === 503){
+        if(err.response && err.response.status === 503){
           alert(err.response.data.message)
           setLoading({
             show: false,
@@ -810,6 +821,11 @@ const SubjectiveExam = ({
       return;
     }
 
+    if(question.marks === 0){
+      alert("Marks can't be zero");
+      return;
+    }
+
     setLoading({
       message: "Updating Question",
     })
@@ -898,6 +914,7 @@ const SubjectiveExam = ({
         question: currentQuestion.question,
         parent_sq_id: currentQuestion.parent_sq_id,
         questionnumber: currentQuestion.questionnumber,
+        authority: currentQuestion.authority,
         answer:currentQuestion.answer,
         long_question: true,
         marks: currentQuestion.marks,
@@ -1183,6 +1200,7 @@ const SubjectiveExam = ({
     <div className="flex font-poppins flex-col items-center p-6">
       <Spinner loading={loading} />
 
+      {!editing && 
       <div className="w-4/12 flex flex-col justify-center gap-y-4">
         <button
           onClick={() => {
@@ -1213,7 +1231,7 @@ const SubjectiveExam = ({
         >
           Regenerate Selected Questions
         </button>}
-      </div>
+      </div>}
 
       {btn_call === "Create Question" && modalControl &&
         <div className="w-full h-full backdrop-blur bg-black/50 fixed inset-0 flex items-center justify-center">
@@ -1546,7 +1564,7 @@ const SubjectiveExam = ({
             </thead>
             <tbody>
               {subjectivesLocal
-                .sort((a, b) => a.questionnumber - b.questionnumber)
+                // .sort((a, b) => a.questionnumber - b.questionnumber)
                 .map((subjective, index) => (
                   <React.Fragment key={subjective.sq_id}>
                     <tr
@@ -1556,6 +1574,7 @@ const SubjectiveExam = ({
                 subjective.child_question.length > 0 &&
                 "border border-b-0"
               }
+              ${subjective.highlight && "bg-blue-50"}
               `}
                     >
                       <td className="px-6">{index+1}</td>
@@ -1640,7 +1659,7 @@ const SubjectiveExam = ({
           </table>
         </>
       )}
-      {!control && control_2 && <button
+      {!control && control_2 && !editing &&<button
         onClick={handleRegenQuestions}
         className="mt-12 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
       >

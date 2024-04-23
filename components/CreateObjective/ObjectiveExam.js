@@ -406,6 +406,10 @@ const MCQTable = ({
     setMCQs(checkedMCQs)
   }
 
+  function reset_highlight(){
+    mcqs.map((mcq) => {mcq.highlight = false;})
+  }
+
   async function handleRegenQuestions(){
     console.log("ids of current questions: ", prevMCQsID)
     console.log("mcqs: ", mcqs)
@@ -424,6 +428,8 @@ const MCQTable = ({
       setLoading({
         message: "Regenerating selected questions",
       });
+      
+      reset_highlight()
 
       let indexes = []
       let mcqs_to_regen_ids = []
@@ -465,6 +471,7 @@ const MCQTable = ({
         for (let i = 0; i < res_mcqs.length; i++) {
           // ids_array = [...ids_array, res_mcqs[i].id]
           mmcq = addQuestion(i, res_mcqs[i])
+          // mmcq.highlight = true
           mcqs_array[indexes[i]] = mmcq
           mcq_ids[indexes[i]] = res_mcqs[i].id
           new_mcq_ids = [...new_mcq_ids, res_mcqs[i].id]
@@ -474,7 +481,12 @@ const MCQTable = ({
         new_mcq_ids = await Promise.all(new_mcq_ids)
         const resolvedMcqs = await Promise.all(mcqs_array);
         // console.log("mcqs_array: ", resolvedMcqs)
-        resolvedMcqs.map((mcq) => {mcq.checked = false})
+        resolvedMcqs.map((mcq) => {mcq.checked = false;})
+
+        for(let j = 0; j < indexes.length; j++){
+          resolvedMcqs[indexes[j]].highlight = true
+        }
+
         // console.log("mcqs_array after adding checked: ", resolvedMcqs)
         console.log("updated mcqs in regen: ", mcq_ids)
         console.log("prevmcqIDS in regen: ", [...prevMCQsID, ...new_mcq_ids])
@@ -535,6 +547,8 @@ const MCQTable = ({
     setLoading({
       message: "Fetching questions from Data Bank",
     });
+
+    // reset_highlight()
 
     let mcqs_ids_array = []
     for(let i = 0; i < mcqs.length; i++){
@@ -708,6 +722,11 @@ const MCQTable = ({
       return;
     }
 
+    if(currentMCQ.marks === 0){
+      alert("Marks can't be zero");
+      return;
+    }
+
     if(btn_call === "Create Question"){
       if (
         currentMCQ.difficulty === "" ||
@@ -869,6 +888,7 @@ const MCQTable = ({
     <div className="flex font-poppins flex-col items-center p-6">
       <Spinner loading={loading} />
 
+      {!editing && 
       <div className="w-3/12 flex flex-col justify-center gap-y-4">
         {!control && <button
           onClick={() => {
@@ -900,7 +920,7 @@ const MCQTable = ({
           Regenerate Selected Questions
         </button>}
 
-      </div>
+      </div>}
 
       {btn_call === "Create Question" && modalControl &&
       <div className="w-full h-full backdrop-blur bg-black/50 fixed inset-0 flex items-center justify-center">
@@ -1234,7 +1254,7 @@ const MCQTable = ({
             </thead>
             <tbody>
               {mcqs.map((mcq, index) => (
-                <tr key={index} className="border-t">
+                <tr key={index} className={`border-t ${mcq.highlight && "bg-blue-50"}`}>
                   <td className="px-4 py-2">{index + 1}</td>
                   <td className="px-4 py-2">{mcq.question}</td>
                   <td className="px-4 py-2">
@@ -1278,7 +1298,7 @@ const MCQTable = ({
           </table>
         </>
       )}
-      {!control && control_2 && <button
+      {!control && control_2 && !editing && <button
         onClick={handleRegenQuestions}
         className="mt-12 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
       >
