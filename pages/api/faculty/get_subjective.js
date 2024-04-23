@@ -18,6 +18,9 @@ const handler = async (req, res) => {
             parent_question: true,
             questionnumber: true,
             parent_sq_id: true,
+            authority: true,
+            difficulty: true,
+            topic: true,
             child_question: {
               select: {
                 sq_id: true,

@@ -347,6 +347,7 @@ const MCQTable = ({
           correct_answer: question.correct_answer,
           marks: question.marks,
           timeAllowed: question.timeAllowed || 60,
+          authority: question.authority,
           difficulty: question.difficulty,
           course: question.course,
           subject: question.subject,
@@ -698,6 +699,7 @@ const MCQTable = ({
       setEditing(true);
       setIndex(index);
       setCurrentMCQ(mcqs[index]);
+      setSelectedDifficulty(mcqs[index].difficulty)
       // scroll to top
       window.scrollTo(0, 0);
       //if edited mcq is correct anser, then we need to update correct answer
@@ -797,23 +799,24 @@ const MCQTable = ({
       setMCQs(newMCQs);
       console.log("new mcqs after edit: ", mcqs)
       btn_call === "Create Question" ? "" : setObjectiveQuestions(newMCQs);
-      console.log("objective_questions after edit: ", objective_questions)
       // setObjectiveQuestions(newMCQs);
       setMultipleOptions(false);
-      setCurrentMCQ({
-        question: "",
-        options: ["", "", "", ""],
-        correct_answer: "",
-        marks: 1,
-        timeAllowed: currentMCQ.timeAllowed || 60,
-        authority: "",
-        difficulty: selectedDifficulty,
-        course: selectedCourse,
-        subject: selectedSubject,
-        topic: selectedTopic,
-        type: "objective",
-        checked: false
-      });
+      if(btn_call !== "Create Question"){
+        setCurrentMCQ({
+          question: "",
+          options: ["", "", "", ""],
+          correct_answer: "",
+          marks: 1,
+          timeAllowed: currentMCQ.timeAllowed || 60,
+          authority: "",
+          difficulty: selectedDifficulty,
+          course: selectedCourse,
+          subject: selectedSubject,
+          topic: selectedTopic,
+          type: "objective",
+          checked: false
+        });
+      }
       setEditing(false);
       setIndex(null);
     } else {
@@ -1141,6 +1144,7 @@ const MCQTable = ({
                   id="difficulty"
                   onChange={handleSelect}
                   value={selectedDifficulty}
+                  // value={btn_call === "Create Question" ? selectedDifficulty : currentMCQ.difficulty}
                   >
                       {difficultys.map((option, index) => (
                           <option key={index} disabled={option === "" ? true : false} value={option}>{option === "" ? "Select option" : option}</option>
@@ -1248,8 +1252,8 @@ const MCQTable = ({
                 {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
                 <th className="px-4 py-2">Edit</th>
                 {btn_call === "Generate Random Paper" 
-                ? <th className="px-4 py-2">Select</th> 
-                : <th className="px-4 py-2">Delete</th>}
+                && <th className="px-4 py-2">Select</th>}
+                <th className="px-4 py-2">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -1280,17 +1284,19 @@ const MCQTable = ({
                       <MdEdit />
                     </button>
                   </td>
+                  {btn_call === "Generate Random Paper" && 
+                  <td className="px-4 py-2 text-center">
+                    <input type="checkbox" onClick={() => {handleSelectMCQ(index)}} checked={mcq.checked}/>
+                  </td>}
                   <td className="px-4 py-2">
-                    {btn_call === "Generate Random Paper" 
-                    ? <input type="checkbox" onClick={() => {handleSelectMCQ(index)}} checked={mcq.checked}/>
-                    : <button
+                    <button
                       onClick={() => {
                         handleDeleteMCQ(index);
                       }}
                       className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                     >
                       <MdDelete />
-                    </button>}
+                    </button>
                   </td>
                 </tr>
               ))}

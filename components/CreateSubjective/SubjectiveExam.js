@@ -1150,7 +1150,7 @@ const SubjectiveExam = ({
         questionnumber: isChild
           ? subjectivesLocal.length + 1
           : subjectivesLocal.length,
-          difficulty: selectedDifficulty,
+        difficulty: selectedDifficulty,
         course: selectedCourse,
         subject: selectedSubject,
         topic: selectedTopic,
@@ -1557,9 +1557,9 @@ const SubjectiveExam = ({
                 <th className="px-4 py-2">Authority</th>
                 <th className="px-4 py-2">Marks</th>
                 <th className="px-4 py-2">Edit</th>
-                {btn_call === "Generate Random Paper" 
-                ? <th className="px-4 py-2">Select</th> 
-                : <th className="px-4 py-2">Delete</th>}
+                {btn_call === "Generate Random Paper" && 
+                <th className="px-4 py-2">Select</th>} 
+                <th className="px-4 py-2">Delete</th>
               </tr>
             </thead>
             <tbody>
@@ -1597,10 +1597,12 @@ const SubjectiveExam = ({
                           <MdEdit />
                         </button>
                       </td>
+                      {btn_call === "Generate Random Paper"  &&
+                      <td className="px-4 py-2 text-center">
+                        <input type="checkbox" onClick={() => {handleSelectMCQ(index)}} checked={subjective.checked}/>
+                      </td>}
                       <td className="px-4 py-2">
-                        {btn_call === "Generate Random Paper" 
-                        ?  <input type="checkbox" onClick={() => {handleSelectMCQ(index)}} checked={subjective.checked}/>
-                        : <button
+                        <button
                           onClick={() => {
                             btn_call === "Create Question" 
                             ? handleDeleteSubjective(subjective.id) 
@@ -1609,7 +1611,7 @@ const SubjectiveExam = ({
                           className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                         >
                           <MdDelete />
-                        </button>}
+                        </button>
                       </td>
                     </tr>
                     {subjective.child_question
