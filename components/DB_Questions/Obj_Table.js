@@ -100,7 +100,22 @@ export default function Obj_Table(){
         <div className="px-5 mt-6">
             <Spinner loading={loading} />
 
-            <h1 className="text-2xl font-poppins font-bold bg-blue-800 text-white px-3 py-2 w-fit rounded-sm">Objective Questions in DB</h1>
+            <h1 className="text-2xl font-poppins font-bold bg-blue-800 text-white px-3 py-2 w-fit rounded-sm">Objective Questions in Databank</h1>
+            
+            <div className="mt-5 flex flex-row space-x-7 font-poppins">
+              <div className="flex flex-row items-center space-x-1.5">
+                <label htmlFor="search_course" className="block font-semibold font-poppins">Course: </label>
+                <input type="text" id="search_course" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
+              </div>
+              <div className="flex flex-row items-center space-x-1.5">
+                <label htmlFor="search_course" className="block font-semibold font-poppins">Subject: </label>
+                <input type="text" id="search_course" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
+              </div>
+              <div className="flex flex-row items-center space-x-1.5">
+                <label htmlFor="search_course" className="block font-semibold font-poppins">Topic: </label>
+                <input type="text" id="search_course" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
+              </div>
+            </div>
             {editing === true && <Edit_MCQ_Form 
                 currentMCQ={currentMCQ} 
                 setCurrentMCQ={setCurrentMCQ}
