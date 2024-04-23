@@ -26,8 +26,8 @@ const DashboardButton = ({courseCode, btn_text}) => {
       onClick={toggleModal}
       className="bg-blue-800 hover:bg-blue-700 transition-all text-white border rounded-md px-3 py-2"
       >
-      {btn_text === "Generate Random Paper" && "Generate Paper From DB"}
-      {btn_text === "Create Question" && "Add Question to DB"}
+      {btn_text === "Generate Random Paper" && "Generate Paper From Databank"}
+      {btn_text === "Create Question" && "Add Question to Databank"}
       {btn_text === "Design New Paper" && btn_text}
       </button>
     </div>

@@ -70,6 +70,11 @@ export default function Form({
           setFreeflow(res.data.freeflow);
           setFreeFlowGlobal(res.data.freeflow);
           setReview(res.data.review);
+          
+          
+          // ?????????
+          // et courses
+          // ????????????
 
           setLoading({});
         })

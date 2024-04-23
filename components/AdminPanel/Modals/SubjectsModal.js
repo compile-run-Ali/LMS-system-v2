@@ -2,32 +2,32 @@ import axios from "axios"
 import { useState } from "react"
 import { useEffect } from "react"
 
-export default function SubjectModal({setActive, getSubjectList}){
+export default function SubjectModal({setActive, courses, getSubjectList, selectedCourse, setSelectedCourse}){
     const [subject, setSubject] = useState("")
     const [error, setError] = useState("")
-    const [courses, setCourses] = useState([])
-    const [selectedCourse, setSelectedCourse] = useState("")
+    // const [courses, setCourses] = useState([])
+    // const [selectedCourse, setSelectedCourse] = useState("")
 
-    async function getCoursesList(){
-        try{
-            const coursesList = await axios.get("/api/courses_subjects_topics/get_courses")
-            console.log(coursesList.data)
-            setCourses(coursesList.data.map((course) => {return course.name}))
-            console.log("courses: ", courses)
-        }
-        catch(error){
-            console.log(error)
-            setError("-- Can't fetch courses list --")
-        }
-    }
-    useEffect(() => {
-        getCoursesList()
-    }, [])
+    // async function getCoursesList(){
+    //     try{
+    //         const coursesList = await axios.get("/api/courses_subjects_topics/get_courses")
+    //         console.log(coursesList.data)
+    //         setCourses(coursesList.data.map((course) => {return course.name}))
+    //         console.log("courses: ", courses)
+    //     }
+    //     catch(error){
+    //         console.log(error)
+    //         setError("-- Can't fetch courses list --")
+    //     }
+    // }
+    // useEffect(() => {
+    //     getCoursesList()
+    // }, [])
 
-    useEffect(() => {
-        console.log("courses: ", courses)
-        setSelectedCourse(courses[0])
-    }, [courses])
+    // useEffect(() => {
+    //     console.log("courses: ", courses)
+    //     setSelectedCourse(courses[0])
+    // }, [courses])
 
     function handleChange(event){
         setError("")

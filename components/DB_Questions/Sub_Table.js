@@ -69,7 +69,7 @@ export default function Sub_Table(){
         <div className="px-5 mt-6">
             <Spinner loading={loading} />
 
-            <h1 className="text-2xl font-poppins font-bold">Subjective Questions in DB</h1>
+            <h1 className="text-2xl font-poppins font-bold bg-blue-800 text-white px-3 py-2 w-fit rounded-sm">Subjective Questions in DB</h1>
             {editing === true && <Edit_Sub_Form 
                 currentQuestion={currentQuestion} 
                 setCurrentQuestion={setCurrentQuestion}
