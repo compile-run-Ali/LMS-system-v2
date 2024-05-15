@@ -33,6 +33,50 @@ const handler = async (req, res) => {
 
             console.log("to regen mcq_ids: ", to_regen)
 
+            //finding unique pairs of course and topic
+            const questions_to_regen_info = await prisma.DataBankQuestion.findMany({
+                where: {
+                    id: {in: to_regen}
+                },
+                select: {
+                    id: true,
+                    course: true,
+                    subject: true,
+                    topic: true,
+                    difficulty: true
+                }
+            })
+            console.log("questions_to_regen_info: ", questions_to_regen_info)
+            let unique_pairs = Array.from(new Set(questions_to_regen_info.map(question => JSON.stringify({course: question.course, topic: question.topic, difficulty: question.difficulty})))).map(str => JSON.parse(str));
+            console.log("unique_pairs: ", unique_pairs)
+
+            //getting count of questions of each pair present in db
+            let count_pair = []
+            for(let j = 0; j < unique_pairs.length; j++){
+                const qs = await prisma.DataBankQuestion.findMany({
+                    where: {
+                        course: unique_pairs[j].course,
+                        topic: unique_pairs[j].topic,
+                        difficulty: unique_pairs[j].difficulty
+                    }
+                })
+                count_pair = [...count_pair, qs.length]
+            }
+
+            //generating grouped questions
+            let grouped_questions = {};
+
+            for(let question of questions_to_regen_info) {
+                let key = JSON.stringify({course: question.course, topic: question.topic, difficulty: question.difficulty});
+                if(!grouped_questions[key]) {
+                    grouped_questions[key] = [];
+                }
+                grouped_questions[key].push(question);
+            }
+            console.log("grouped_questions: ", grouped_questions);
+            
+            //getting count of each group of questions for regen
+
             const no_of_questions = await prisma.DataBankQuestion.findMany({
                 where:{
                     course: req.body.randomPaperConfig.course,
