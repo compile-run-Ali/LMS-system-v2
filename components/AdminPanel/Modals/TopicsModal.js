@@ -2,26 +2,26 @@ import axios from "axios"
 import { useState } from "react"
 import { useEffect } from "react"
 
-export default function TopicModal({setActive, getTopicList}){
+export default function TopicModal({setActive, courses, subjects, getTopicList, selectedCourse, setSelectedCourse, selectedSubject, setSelectedSubject}){
     const [topic, setTopic] = useState("")
-    const [subjects, setSubjects] = useState([])
+    // const [subjects, setSubjects] = useState([])
     const [error, setError] = useState("")
-    const [courses, setCourses] = useState([])
-    const [selectedCourse, setSelectedCourse] = useState("")
-    const [selectedSubject, setSelectedSubject] = useState("")
+    // const [courses, setCourses] = useState([])
+    // const [selectedCourse, setSelectedCourse] = useState("")
+    // const [selectedSubject, setSelectedSubject] = useState("")
 
-    async function getCoursesList(){
-        try{
-            const coursesList = await axios.get("/api/courses_subjects_topics/get_courses")
-            console.log(coursesList.data)
-            setCourses(coursesList.data.map((course) => {return course.name}))
-            console.log("courses: ", courses)
-        }
-        catch(error){
-            console.log(error)
-            setError("-- Can't fetch courses list --")
-        }
-    }
+    // async function getCoursesList(){
+    //     try{
+    //         const coursesList = await axios.get("/api/courses_subjects_topics/get_courses")
+    //         console.log(coursesList.data)
+    //         setCourses(coursesList.data.map((course) => {return course.name}))
+    //         console.log("courses: ", courses)
+    //     }
+    //     catch(error){
+    //         console.log(error)
+    //         setError("-- Can't fetch courses list --")
+    //     }
+    // }
 
     async function getSubjectList(){
         console.log("selectedCourse in getSubjectList: ", selectedCourse)
@@ -41,25 +41,25 @@ export default function TopicModal({setActive, getTopicList}){
         }
     }
 
-    useEffect(() => {
-        getCoursesList()
-    }, [])
+    // useEffect(() => {
+    //     getCoursesList()
+    // }, [])
 
-    useEffect(() => {
-        console.log("courses: ", courses)
-        setSelectedCourse(courses[0])
-        console.log("selectedCourse: ", selectedCourse)
-        // getSubjectList()
-    }, [courses])
+    // useEffect(() => {
+    //     console.log("courses: ", courses)
+    //     setSelectedCourse(courses[0])
+    //     console.log("selectedCourse: ", selectedCourse)
+    //     // getSubjectList()
+    // }, [courses])
     
-    useEffect(() => {
-        getSubjectList()
-    }, [selectedCourse])
+    // useEffect(() => {
+    //     getSubjectList()
+    // }, [selectedCourse])
 
-    useEffect(() => {
-        console.log("subjects in useEffect: ", subjects)
-        setSelectedSubject(subjects[0])
-    }, [subjects])
+    // useEffect(() => {
+    //     console.log("subjects in useEffect: ", subjects)
+    //     setSelectedSubject(subjects[0])
+    // }, [subjects])
 
     function handleChange(event){
         setError("")

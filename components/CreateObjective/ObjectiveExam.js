@@ -347,6 +347,7 @@ const MCQTable = ({
           correct_answer: question.correct_answer,
           marks: question.marks,
           timeAllowed: question.timeAllowed || 60,
+          authority: question.authority,
           difficulty: question.difficulty,
           course: question.course,
           subject: question.subject,
@@ -406,6 +407,10 @@ const MCQTable = ({
     setMCQs(checkedMCQs)
   }
 
+  function reset_highlight(){
+    mcqs.map((mcq) => {mcq.highlight = false;})
+  }
+
   async function handleRegenQuestions(){
     console.log("ids of current questions: ", prevMCQsID)
     console.log("mcqs: ", mcqs)
@@ -424,6 +429,8 @@ const MCQTable = ({
       setLoading({
         message: "Regenerating selected questions",
       });
+      
+      reset_highlight()
 
       let indexes = []
       let mcqs_to_regen_ids = []
@@ -465,6 +472,7 @@ const MCQTable = ({
         for (let i = 0; i < res_mcqs.length; i++) {
           // ids_array = [...ids_array, res_mcqs[i].id]
           mmcq = addQuestion(i, res_mcqs[i])
+          // mmcq.highlight = true
           mcqs_array[indexes[i]] = mmcq
           mcq_ids[indexes[i]] = res_mcqs[i].id
           new_mcq_ids = [...new_mcq_ids, res_mcqs[i].id]
@@ -474,7 +482,12 @@ const MCQTable = ({
         new_mcq_ids = await Promise.all(new_mcq_ids)
         const resolvedMcqs = await Promise.all(mcqs_array);
         // console.log("mcqs_array: ", resolvedMcqs)
-        resolvedMcqs.map((mcq) => {mcq.checked = false})
+        resolvedMcqs.map((mcq) => {mcq.checked = false;})
+
+        for(let j = 0; j < indexes.length; j++){
+          resolvedMcqs[indexes[j]].highlight = true
+        }
+
         // console.log("mcqs_array after adding checked: ", resolvedMcqs)
         console.log("updated mcqs in regen: ", mcq_ids)
         console.log("prevmcqIDS in regen: ", [...prevMCQsID, ...new_mcq_ids])
@@ -535,6 +548,8 @@ const MCQTable = ({
     setLoading({
       message: "Fetching questions from Data Bank",
     });
+
+    // reset_highlight()
 
     let mcqs_ids_array = []
     for(let i = 0; i < mcqs.length; i++){
@@ -684,6 +699,7 @@ const MCQTable = ({
       setEditing(true);
       setIndex(index);
       setCurrentMCQ(mcqs[index]);
+      setSelectedDifficulty(mcqs[index].difficulty)
       // scroll to top
       window.scrollTo(0, 0);
       //if edited mcq is correct anser, then we need to update correct answer
@@ -705,6 +721,11 @@ const MCQTable = ({
       (!freeFlow && !currentMCQ.timeAllowed)
     ) {
       alert("Please fill all the fields");
+      return;
+    }
+
+    if(currentMCQ.marks === 0){
+      alert("Marks can't be zero");
       return;
     }
 
@@ -778,23 +799,24 @@ const MCQTable = ({
       setMCQs(newMCQs);
       console.log("new mcqs after edit: ", mcqs)
       btn_call === "Create Question" ? "" : setObjectiveQuestions(newMCQs);
-      console.log("objective_questions after edit: ", objective_questions)
       // setObjectiveQuestions(newMCQs);
       setMultipleOptions(false);
-      setCurrentMCQ({
-        question: "",
-        options: ["", "", "", ""],
-        correct_answer: "",
-        marks: 1,
-        timeAllowed: currentMCQ.timeAllowed || 60,
-        authority: "",
-        difficulty: selectedDifficulty,
-        course: selectedCourse,
-        subject: selectedSubject,
-        topic: selectedTopic,
-        type: "objective",
-        checked: false
-      });
+      if(btn_call !== "Create Question"){
+        setCurrentMCQ({
+          question: "",
+          options: ["", "", "", ""],
+          correct_answer: "",
+          marks: 1,
+          timeAllowed: currentMCQ.timeAllowed || 60,
+          authority: "",
+          difficulty: selectedDifficulty,
+          course: selectedCourse,
+          subject: selectedSubject,
+          topic: selectedTopic,
+          type: "objective",
+          checked: false
+        });
+      }
       setEditing(false);
       setIndex(null);
     } else {
@@ -869,6 +891,7 @@ const MCQTable = ({
     <div className="flex font-poppins flex-col items-center p-6">
       <Spinner loading={loading} />
 
+      {!editing && 
       <div className="w-3/12 flex flex-col justify-center gap-y-4">
         {!control && <button
           onClick={() => {
@@ -900,7 +923,7 @@ const MCQTable = ({
           Regenerate Selected Questions
         </button>}
 
-      </div>
+      </div>}
 
       {btn_call === "Create Question" && modalControl &&
       <div className="w-full h-full backdrop-blur bg-black/50 fixed inset-0 flex items-center justify-center">
@@ -1121,6 +1144,7 @@ const MCQTable = ({
                   id="difficulty"
                   onChange={handleSelect}
                   value={selectedDifficulty}
+                  // value={btn_call === "Create Question" ? selectedDifficulty : currentMCQ.difficulty}
                   >
                       {difficultys.map((option, index) => (
                           <option key={index} disabled={option === "" ? true : false} value={option}>{option === "" ? "Select option" : option}</option>
@@ -1228,13 +1252,13 @@ const MCQTable = ({
                 {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
                 <th className="px-4 py-2">Edit</th>
                 {btn_call === "Generate Random Paper" 
-                ? <th className="px-4 py-2">Select</th> 
-                : <th className="px-4 py-2">Delete</th>}
+                && <th className="px-4 py-2">Select</th>}
+                <th className="px-4 py-2">Delete</th>
               </tr>
             </thead>
             <tbody>
               {mcqs.map((mcq, index) => (
-                <tr key={index} className="border-t">
+                <tr key={index} className={`border-t ${mcq.highlight && "bg-blue-50"}`}>
                   <td className="px-4 py-2">{index + 1}</td>
                   <td className="px-4 py-2">{mcq.question}</td>
                   <td className="px-4 py-2">
@@ -1260,17 +1284,19 @@ const MCQTable = ({
                       <MdEdit />
                     </button>
                   </td>
+                  {btn_call === "Generate Random Paper" && 
+                  <td className="px-4 py-2 text-center">
+                    <input type="checkbox" onClick={() => {handleSelectMCQ(index)}} checked={mcq.checked}/>
+                  </td>}
                   <td className="px-4 py-2">
-                    {btn_call === "Generate Random Paper" 
-                    ? <input type="checkbox" onClick={() => {handleSelectMCQ(index)}} checked={mcq.checked}/>
-                    : <button
+                    <button
                       onClick={() => {
                         handleDeleteMCQ(index);
                       }}
                       className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                     >
                       <MdDelete />
-                    </button>}
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -1278,7 +1304,7 @@ const MCQTable = ({
           </table>
         </>
       )}
-      {!control && control_2 && <button
+      {!control && control_2 && !editing && <button
         onClick={handleRegenQuestions}
         className="mt-12 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
       >

@@ -104,8 +104,8 @@ export default function Courses_Subjects_Topics(){
                     <Courses_Subjects_Topics_btn btn_name={"Add Topics"} setActive={setActive} />
                 </div>}
                 {active === 1 && <CourseModal setActive={setActive} getCoursesList={getCoursesList}/>}
-                {active === 2 && <SubjectModal setActive={setActive} getSubjectList={getSubjectList}/>}
-                {active === 3 && <TopicModal setActive={setActive} getTopicList={getTopicList}/>}
+                {active === 2 && <SubjectModal setActive={setActive} courses={courses} getSubjectList={getSubjectList} selectedCourse={selectedCourse} setSelectedCourse={setSelectedCourse}/>}
+                {active === 3 && <TopicModal setActive={setActive} courses={courses} subjects={subjects} getTopicList={getTopicList} selectedCourse={selectedCourse} setSelectedCourse={setSelectedCourse} selectedSubject={selectedSubject} setSelectedSubject={setSelectedSubject}/>}
             </div>
             <div className="mt-5">
                 <p className="text-center block font-bold text-base mb-2">Select to view Courses, Subjects and Topics</p>
