@@ -43,31 +43,35 @@ const handler = async (req, res) => {
                     course: true,
                     subject: true,
                     topic: true,
-                    difficulty: true
+                    difficulty: true,
+                    type: true
                 }
             })
             console.log("questions_to_regen_info: ", questions_to_regen_info)
-            let unique_pairs = Array.from(new Set(questions_to_regen_info.map(question => JSON.stringify({course: question.course, topic: question.topic, difficulty: question.difficulty})))).map(str => JSON.parse(str));
+            let unique_pairs = Array.from(new Set(questions_to_regen_info.map(question => JSON.stringify({course: question.course, topic: question.topic, difficulty: question.difficulty, type: question.type})))).map(str => JSON.parse(str));
             console.log("unique_pairs: ", unique_pairs)
 
-            //getting count of questions of each pair present in db
+            //getting count of questions of each pair present in db excluding currently fetched questions
             let count_pair = []
             for(let j = 0; j < unique_pairs.length; j++){
                 const qs = await prisma.DataBankQuestion.findMany({
                     where: {
                         course: unique_pairs[j].course,
                         topic: unique_pairs[j].topic,
-                        difficulty: unique_pairs[j].difficulty
+                        difficulty: unique_pairs[j].difficulty,
+                        type: unique_pairs[j].type,
+                        id: {notIn: total_ids}
                     }
                 })
                 count_pair = [...count_pair, qs.length]
             }
+            console.log("count of pair in db: ", count_pair)
 
             //generating grouped questions
             let grouped_questions = {};
 
             for(let question of questions_to_regen_info) {
-                let key = JSON.stringify({course: question.course, topic: question.topic, difficulty: question.difficulty});
+                let key = JSON.stringify({course: question.course, topic: question.topic, difficulty: question.difficulty, type: question.type});
                 if(!grouped_questions[key]) {
                     grouped_questions[key] = [];
                 }
@@ -76,53 +80,108 @@ const handler = async (req, res) => {
             console.log("grouped_questions: ", grouped_questions);
             
             //getting count of each group of questions for regen
-
-            const no_of_questions = await prisma.DataBankQuestion.findMany({
-                where:{
-                    course: req.body.randomPaperConfig.course,
-                    type: req.body.randomPaperConfig.type
+            for(let i = 0; i < unique_pairs.length; i++){
+                let key = JSON.stringify({course: unique_pairs[i].course, topic: unique_pairs[i].topic, difficulty: unique_pairs[i].difficulty, type: unique_pairs[i].type});
+                console.log("length pair in map: ", grouped_questions[key].length)
+                if(count_pair[i] < grouped_questions[key].length){
+                    console.log("Not enough questions in DB to regenerate selected questions.")
+                    res.status(503).json({message: "Not enough questions in DB to regenerate selected questions."})
+                    return
                 }
-            })
-            console.log("no_of_questions_"+no_of_questions.length+"_:")
-            console.log("total_ids_"+total_ids.length+"_:")
-            console.log("difference: ", Math.abs(no_of_questions.length - total_ids.length))
-            if((no_of_questions.length - total_ids.length) < to_regen.length){
-                console.log("Not enough questions in DB to regenerate selected questions.")
-                res.status(503).json({message: "Not enough questions in DB to regenerate selected questions."});
             }
+            // unique_pairs.map((pair, index) => {
+            //     let key = JSON.stringify({course: pair.course, topic: pair.topic, difficulty: pair.difficulty, type: pair.type});
+            //     console.log("length pair in map: ", grouped_questions[key].length)
+            //     if(count_pair[index] < grouped_questions[key].length){
+            //         console.log("Not enough questions in DB to regenerate selected questions.")
+            //         res.status(503).json({message: "Not enough questions in DB to regenerate selected questions."})
+            //         return
+            //     }
+            // })
 
-            for (let i = 0; i < to_regen.length; i++){
-                console.log("total_ids: ", total_ids)
-
-                const question = await prisma.DataBankQuestion.findUnique({
-                    where:{
-                        id: to_regen[i]
-                    }
-                })
-                console.log("question["+question.id+"] in regen: ", question)
-
+            for(let i = 0; i < unique_pairs.length; i++){
+                let key = JSON.stringify({course: unique_pairs[i].course, topic: unique_pairs[i].topic, difficulty: unique_pairs[i].difficulty, type: unique_pairs[i].type});
                 const new_question = await prisma.DataBankQuestion.findFirst({
                     where:{
-                        difficulty: question.difficulty,
-                        course: question.course,
-                        subject: question.subject,
-                        topic: question.topic,
-                        type: question.type,
+                        difficulty: unique_pairs[i].difficulty,
+                        course: unique_pairs[i].course,
+                        topic: unique_pairs[i].topic,
+                        type: unique_pairs[i].type,
                         id: {notIn: total_ids}
-                    }
+                    },
+                    take: grouped_questions[key].length
                 })
-                console.log("new_question in regen: ", new_question)
-                if(new_question === null || new_question === undefined){
-                    console.log("skipping")
-                    continue
-                }
+                console.log("new_question fetched for regen: ", new_question)
                 total_ids = [...total_ids, new_question.id]
-
-                // console.log("new_question in regen: ", new_question)
                 new_questions = [...new_questions, new_question]
             }
+
+            // unique_pairs.map(async (pair, index) => {
+            //     let key = JSON.stringify({course: pair.course, topic: pair.topic, difficulty: pair.difficulty, type: pair.type});
+            //     const new_question = await prisma.DataBankQuestion.findFirst({
+            //         where:{
+            //             difficulty: pair.difficulty,
+            //             course: pair.course,
+            //             topic: pair.topic,
+            //             type: pair.type,
+            //             id: {notIn: total_ids}
+            //         },
+            //         take: grouped_questions[key].length
+            //     })
+            //     console.log("new_question fetched for regen: ", new_question)
+            //     total_ids = [...total_ids, new_question.id]
+            //     new_questions = [...new_questions, new_question]
+            // })
             console.log("new_questions after concat["+new_questions.length+"]: ", new_questions)
             res.status(200).json(new_questions);
+
+
+            // const no_of_questions = await prisma.DataBankQuestion.findMany({
+            //     where:{
+            //         course: req.body.randomPaperConfig.course,
+            //         type: req.body.randomPaperConfig.type
+            //     }
+            // })
+            // console.log("no_of_questions_"+no_of_questions.length+"_:")
+            // console.log("total_ids_"+total_ids.length+"_:")
+            // console.log("difference: ", Math.abs(no_of_questions.length - total_ids.length))
+            // if((no_of_questions.length - total_ids.length) < to_regen.length){
+            //     console.log("Not enough questions in DB to regenerate selected questions.")
+            //     res.status(503).json({message: "Not enough questions in DB to regenerate selected questions."});
+            // }
+
+            // for (let i = 0; i < to_regen.length; i++){
+            //     console.log("total_ids: ", total_ids)
+
+            //     const question = await prisma.DataBankQuestion.findUnique({
+            //         where:{
+            //             id: to_regen[i]
+            //         }
+            //     })
+            //     console.log("question["+question.id+"] in regen: ", question)
+
+            //     const new_question = await prisma.DataBankQuestion.findFirst({
+            //         where:{
+            //             difficulty: question.difficulty,
+            //             course: question.course,
+            //             subject: question.subject,
+            //             topic: question.topic,
+            //             type: question.type,
+            //             id: {notIn: total_ids}
+            //         }
+            //     })
+            //     console.log("new_question in regen: ", new_question)
+            //     if(new_question === null || new_question === undefined){
+            //         console.log("skipping")
+            //         continue
+            //     }
+            //     total_ids = [...total_ids, new_question.id]
+
+            //     // console.log("new_question in regen: ", new_question)
+            //     new_questions = [...new_questions, new_question]
+            // }
+            // console.log("new_questions after concat["+new_questions.length+"]: ", new_questions)
+            // res.status(200).json(new_questions);
         }
         else{
             let easy_questions = []
