@@ -224,7 +224,13 @@ const MCQTable = ({
               }
           })
           console.log("topicList.data in getTopicList: ", topicList.data)
-          let topics_names = topicList.data.map((topic) => {return topic.name})
+          let topics_names = []
+          if(btn_call === "Generate Random Paper"){
+            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course}})  
+          }
+          else{
+            topics_names = topicList.data.map((topic) => {return topic.name})
+          }
           console.log("topics_names: ", [...topics_names])
           setTopics(["", ...topics_names])
           // setTopics([...topics_names])
@@ -238,7 +244,11 @@ const MCQTable = ({
     console.log("event in handleSelect: ", event.target.value)
       //setError("")
       if(event.target.id === "course"){
-        setSelectedCourse(event.target.value)
+        // setSelectedCourse(event.target.value)
+        const selectedCourses = Array.from(event.target.selectedOptions).map(
+          (option) => option.value
+        )
+        setSelectedCourse(selectedCourses)
       }
       else if(event.target.id === "subject"){
         // setSelectedSubject(event.target.value)
@@ -992,7 +1002,7 @@ const MCQTable = ({
 
         </div>
 
-        <div className="mb-10 gap-x-4 flex justify-between">
+        <div className="mb-10 gap-x-4 flex justify-between border border-red-500">
           {/* <NewQuestionInput label={"Course"} options={["", "C1", "C2", "C3", "C4"]} id={"course"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.course} btn_call={btn_call}/>
           <NewQuestionInput label={"Subject"} options={["", "ABC", "EFG", "HIJ"]} id={"subject"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.subject} btn_call={btn_call}/>
           <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.topic} btn_call={btn_call}/> */}

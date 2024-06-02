@@ -187,11 +187,20 @@ const handler = async (req, res) => {
             let easy_questions = []
             for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
                 console.log("topic: ", req.body.randomPaperConfig.topic[i])
+                // const fetched_questions = await prisma.$queryRaw
+                //         `SELECT * FROM DataBankQuestion
+                //         WHERE difficulty = "Easy" AND
+                //         topic = ${req.body.randomPaperConfig.topic[i]} AND
+                //         course = ${req.body.randomPaperConfig.course} AND
+                //         type = ${req.body.randomPaperConfig.type} AND
+                //         id NOT IN (${req.body.prevMCQsID.join(',')})
+                //         ORDER BY RAND() 
+                //         LIMIT ${parseInt(req.body.randomPaperConfig.no_of_easy)}`;
                 const fetched_questions = await prisma.$queryRaw
                         `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Easy" AND
-                        topic = ${req.body.randomPaperConfig.topic[i]} AND
-                        course = ${req.body.randomPaperConfig.course} AND
+                        topic = ${req.body.randomPaperConfig.topic[i].name} AND
+                        course = ${req.body.randomPaperConfig.topic[i].course} AND
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 
@@ -207,11 +216,20 @@ const handler = async (req, res) => {
 
             let medium_questions = []
             for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
-                console.log("topic: ", req.body.randomPaperConfig.topic[i])
+                console.log("topic: ", req.body.randomPaperConfig.topic[i].keys())
+                // const fetched_questions = await prisma.$queryRaw
+                //         `SELECT * FROM DataBankQuestion
+                //         WHERE difficulty = "Medium" AND
+                //         topic = ${req.body.randomPaperConfig.topic[i]} AND
+                //         type = ${req.body.randomPaperConfig.type} AND
+                //         id NOT IN (${req.body.prevMCQsID.join(',')})
+                //         ORDER BY RAND() 
+                //         LIMIT ${parseInt(req.body.randomPaperConfig.no_of_medium)}`;
                 const fetched_questions = await prisma.$queryRaw
                         `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Medium" AND
-                        topic = ${req.body.randomPaperConfig.topic[i]} AND
+                        topic = ${req.body.randomPaperConfig.topic[i].name} AND
+                        course = ${req.body.randomPaperConfig.topic[i].course} AND
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 
@@ -226,11 +244,20 @@ const handler = async (req, res) => {
 
             let hard_questions = []
             for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
-                console.log("topic: ", req.body.randomPaperConfig.topic[i])
+                console.log("topic: ", req.body.randomPaperConfig.topic[i].keys())
+                // const fetched_questions = await prisma.$queryRaw
+                //         `SELECT * FROM DataBankQuestion
+                //         WHERE difficulty = "Hard" AND
+                //         topic = ${req.body.randomPaperConfig.topic[i]} AND
+                //         type = ${req.body.randomPaperConfig.type} AND
+                //         id NOT IN (${req.body.prevMCQsID.join(',')})
+                //         ORDER BY RAND() 
+                //         LIMIT ${parseInt(req.body.randomPaperConfig.no_of_hard)}`;
                 const fetched_questions = await prisma.$queryRaw
                         `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Hard" AND
-                        topic = ${req.body.randomPaperConfig.topic[i]} AND
+                        topic = ${req.body.randomPaperConfig.topic[i].name} AND
+                        course = ${req.body.randomPaperConfig.topic[i].course} AND
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 
