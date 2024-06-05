@@ -1280,7 +1280,7 @@ const MCQTable = ({
                   </td>
                   <td className="px-4 py-2">{mcq.correct_answer.replace(specialSequence, ",")}</td>
                   <td className="px-4 py-2 text-center">{mcq.difficulty}</td>
-                  <td className="px-4 py-2 text-center">{`${mcq.topic} - ${mcq.course}`}</td>
+                  <td className="px-4 py-2 text-center">{`${mcq.topic}`}</td>
                   <td className="px-4 py-2 text-center">{mcq.authority}</td>
                   <td className="px-4 py-2 text-center">{mcq.marks}</td>
                   {freeFlow ? null : (
