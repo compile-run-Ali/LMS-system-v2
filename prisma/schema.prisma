@@ -185,6 +185,7 @@ model ObjectiveQuestion {
   question       String @db.VarChar(10000)
   answers        String @db.VarChar(1000)
   correct_answer String
+  course         String @default("-")
   difficulty     String @default("-")
   topic          String @default("-")
   authority      String @default("-")

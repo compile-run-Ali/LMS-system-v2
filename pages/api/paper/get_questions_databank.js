@@ -199,8 +199,8 @@ const handler = async (req, res) => {
                 const fetched_questions = await prisma.$queryRaw
                         `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Easy" AND
-                        topic = ${req.body.randomPaperConfig.topic[i].name} AND
-                        course = ${req.body.randomPaperConfig.topic[i].course} AND
+                        topic = ${req.body.randomPaperConfig.topic[i].split('-')[0]} AND
+                        course = ${req.body.randomPaperConfig.topic[i].split('-')[1]} AND
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 
@@ -216,7 +216,6 @@ const handler = async (req, res) => {
 
             let medium_questions = []
             for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
-                console.log("topic: ", req.body.randomPaperConfig.topic[i].keys())
                 // const fetched_questions = await prisma.$queryRaw
                 //         `SELECT * FROM DataBankQuestion
                 //         WHERE difficulty = "Medium" AND
@@ -228,8 +227,8 @@ const handler = async (req, res) => {
                 const fetched_questions = await prisma.$queryRaw
                         `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Medium" AND
-                        topic = ${req.body.randomPaperConfig.topic[i].name} AND
-                        course = ${req.body.randomPaperConfig.topic[i].course} AND
+                        topic = ${req.body.randomPaperConfig.topic[i].split('-')[0]} AND
+                        course = ${req.body.randomPaperConfig.topic[i].split('-')[1]} AND
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 
@@ -244,7 +243,6 @@ const handler = async (req, res) => {
 
             let hard_questions = []
             for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
-                console.log("topic: ", req.body.randomPaperConfig.topic[i].keys())
                 // const fetched_questions = await prisma.$queryRaw
                 //         `SELECT * FROM DataBankQuestion
                 //         WHERE difficulty = "Hard" AND
@@ -256,8 +254,8 @@ const handler = async (req, res) => {
                 const fetched_questions = await prisma.$queryRaw
                         `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Hard" AND
-                        topic = ${req.body.randomPaperConfig.topic[i].name} AND
-                        course = ${req.body.randomPaperConfig.topic[i].course} AND
+                        topic = ${req.body.randomPaperConfig.topic[i].split('-')[0]} AND
+                        course = ${req.body.randomPaperConfig.topic[i].split('-')[1]} AND
                         type = ${req.body.randomPaperConfig.type} AND
                         id NOT IN (${req.body.prevMCQsID.join(',')})
                         ORDER BY RAND() 

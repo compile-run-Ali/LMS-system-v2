@@ -16,7 +16,7 @@ export default function NewQuestionInput({label, options, id, handleChange, valu
             >
                 {id === "topic" ? 
                 options.map((option, index) => (
-                    <option key={index} disabled={option === "" ? true : false} value={option}>{option === "" ? "Select option" : option.name}</option>
+                    <option key={index} disabled={option === "" ? true : false} value={`${option.name}-${option.course}`}>{option === "" ? "Select option" : option.name}</option>
                 )) : 
                 options.map((option, index) => (
                     <option key={index} disabled={option === "" ? true : false} value={option}>{option === "" ? "Select option" : option}</option>
