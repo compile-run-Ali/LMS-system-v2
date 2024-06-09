@@ -29,7 +29,7 @@ const SubjectiveExam = ({
   const [selectedCourse, setSelectedCourse] = useState("")
   const [selectedSubject, setSelectedSubject] = useState("")
   const [selectedTopic, setSelectedTopic] = useState("")
-  const [selectedDifficulty, setSelectedDifficulty] = useState("")
+  const [selectedDifficulty, setSelectedDifficulty] = useState(btn_call === undefined ? "Easy" : "")
 
   const [control, setControl] = useState(false)
   const [loading, setLoading] = useState({});
@@ -147,7 +147,7 @@ const SubjectiveExam = ({
   }, [])
 
   useEffect(() => {
-    if(Array.isArray(subjectivesLocal) && subjectivesLocal.length > 1){
+    if(Array.isArray(subjectivesLocal) && subjectivesLocal.length > 1 && btn_call === "Generate Random Paper"){
       // console.log("mcqs in useEffect: ", mcqs)
       setControl_2(true)
     }
@@ -739,6 +739,7 @@ const SubjectiveExam = ({
           question: currentQuestion.question,
           answer:currentQuestion.answer,
           authority: currentQuestion.authority,
+          difficulty: currentQuestion.difficulty,
           parent_sq_id: currentQuestion.parent_sq_id,
           long_question: true,
           marks: currentQuestion.marks,
@@ -1570,7 +1571,7 @@ const SubjectiveExam = ({
                 <th className="px-4 py-2">Answer</th>
                 {/* <th className="px-4 py-2">Parent Question</th> */}
                 <th className="px-4 py-2">Difficulty</th>
-                <th className="px-4 py-2">Topic</th>
+                {btn_call && <th className="px-4 py-2">Topic</th>}
                 <th className="px-4 py-2">Authority</th>
                 <th className="px-4 py-2">Marks</th>
                 <th className="px-4 py-2">Edit</th>
@@ -1603,7 +1604,7 @@ const SubjectiveExam = ({
                         {subjective.parent_sq_id?.question}
                       </td> */}
                       <td className="px-4 py-2 text-center">{subjective.difficulty}</td>
-                      <td className="px-4 py-2 text-center">{subjective.topic}</td>
+                      {btn_call && <td className="px-4 py-2 text-center">{subjective.topic}</td>}
                       <td className="px-4 py-2 text-center">{subjective.authority}</td>
                       <td className="px-4 py-2 text-center">{subjective.marks}</td>
                       <td className="px-4 py-2">
