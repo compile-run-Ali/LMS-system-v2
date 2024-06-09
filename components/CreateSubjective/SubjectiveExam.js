@@ -174,10 +174,16 @@ const SubjectiveExam = ({
                   selectedSubject: selectedSubject
               }
           })
-          let topics_names = topicList.data.map((topic) => {return topic.name})
+          // let topics_names = topicList.data.map((topic) => {return topic.name})
+          let topics_names = []
+          if(btn_call === "Generate Random Paper"){
+            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course}})  
+          }
+          else{
+            topics_names = topicList.data.map((topic) => {return topic.name})
+          }
           console.log("topics_names: ", [...topics_names])
           setTopics(["", ...topics_names])
-          // setTopics([...topics_names])
       }
       catch(error){
           console.log(error)
@@ -188,7 +194,11 @@ const SubjectiveExam = ({
     console.log("event in handleSelect: ", event.target.value)
       //setError("")
       if(event.target.id === "course"){
-        setSelectedCourse(event.target.value)
+        // setSelectedCourse(event.target.value)
+        const selectedCourses = Array.from(event.target.selectedOptions).map(
+          (option) => option.value
+        )
+        setSelectedCourse(selectedCourses)
       }
       else if(event.target.id === "subject"){
         // setSelectedSubject(event.target.value)

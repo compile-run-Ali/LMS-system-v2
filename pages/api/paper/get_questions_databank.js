@@ -18,7 +18,7 @@ const handler = async (req, res) => {
 
     try{
         if(req.body.flag === "regen"){
-            let new_questions = []
+            let new_questions_db = []
             let total_ids = [...req.body.prevMCQsID]
 
             let to_regen = []
@@ -52,19 +52,31 @@ const handler = async (req, res) => {
             console.log("unique_pairs: ", unique_pairs)
 
             //getting count of questions of each pair present in db excluding currently fetched questions
-            let count_pair = []
-            for(let j = 0; j < unique_pairs.length; j++){
+            // let count_pair = []
+            // for(let j = 0; j < unique_pairs.length; j++){
+            //     const qs = await prisma.DataBankQuestion.count({
+            //         where: {
+            //             course: unique_pairs[j].course,
+            //             topic: unique_pairs[j].topic,
+            //             difficulty: unique_pairs[j].difficulty,
+            //             type: unique_pairs[j].type,
+            //             id: {notIn: total_ids}
+            //         }
+            //     })
+            //     count_pair = [...count_pair, qs.length]
+            // }
+            let count_pair = await Promise.all(unique_pairs.map(async (pair) => {
                 const qs = await prisma.DataBankQuestion.findMany({
                     where: {
-                        course: unique_pairs[j].course,
-                        topic: unique_pairs[j].topic,
-                        difficulty: unique_pairs[j].difficulty,
-                        type: unique_pairs[j].type,
-                        id: {notIn: total_ids}
+                        course: pair.course,
+                        topic: pair.topic,
+                        difficulty: pair.difficulty,
+                        type: pair.type,
+                        id: { notIn: total_ids }
                     }
-                })
-                count_pair = [...count_pair, qs.length]
-            }
+                });
+                return qs.length;
+            }));            
             console.log("count of pair in db: ", count_pair)
 
             //generating grouped questions
@@ -101,7 +113,7 @@ const handler = async (req, res) => {
 
             for(let i = 0; i < unique_pairs.length; i++){
                 let key = JSON.stringify({course: unique_pairs[i].course, topic: unique_pairs[i].topic, difficulty: unique_pairs[i].difficulty, type: unique_pairs[i].type});
-                const new_question = await prisma.DataBankQuestion.findFirst({
+                const new_questions = await prisma.DataBankQuestion.findMany({
                     where:{
                         difficulty: unique_pairs[i].difficulty,
                         course: unique_pairs[i].course,
@@ -111,9 +123,9 @@ const handler = async (req, res) => {
                     },
                     take: grouped_questions[key].length
                 })
-                console.log("new_question fetched for regen: ", new_question)
-                total_ids = [...total_ids, new_question.id]
-                new_questions = [...new_questions, new_question]
+                console.log("new_questions fetched for regen: ", new_questions)
+                total_ids = [...total_ids, ...new_questions.map(q => q.id)]
+                new_questions_db = [...new_questions_db, ...new_questions]
             }
 
             // unique_pairs.map(async (pair, index) => {
@@ -132,8 +144,20 @@ const handler = async (req, res) => {
             //     total_ids = [...total_ids, new_question.id]
             //     new_questions = [...new_questions, new_question]
             // })
-            console.log("new_questions after concat["+new_questions.length+"]: ", new_questions)
-            res.status(200).json(new_questions);
+            
+            //Sorting the questions based on their difficulty
+            const difficultyOrder = {
+                "Easy": 1,
+                "Medium": 2,
+                "Hard": 3
+            };
+            
+            // Sort the questions based on the difficulty
+            new_questions_db.sort((a, b) => {
+                return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+            })
+            console.log("new_questions_db after concat["+new_questions_db.length+"]: ", new_questions_db)
+            res.status(200).json(new_questions_db);
 
 
             // const no_of_questions = await prisma.DataBankQuestion.findMany({
