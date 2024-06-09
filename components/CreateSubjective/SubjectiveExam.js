@@ -146,6 +146,13 @@ const SubjectiveExam = ({
     if(btn_call === "Create Question"){getCoursesList()}
   }, [])
 
+  useEffect(() => {
+    if(Array.isArray(subjectivesLocal) && subjectivesLocal.length > 1){
+      // console.log("mcqs in useEffect: ", mcqs)
+      setControl_2(true)
+    }
+  }, [subjectivesLocal])
+
 
   async function getSubjectList(){
       console.log("selectedCourse in getSubjectList: ", selectedCourse)

@@ -195,6 +195,14 @@ const MCQTable = ({
     if(btn_call === "Create Question"){getCoursesList()}
   }, [])
 
+  useEffect(() => {
+    console.log("mcqs in useEffect: ", mcqs)
+    if(Array.isArray(mcqs) && mcqs.length > 1){
+      // console.log("mcqs in useEffect: ", mcqs)
+      setControl_2(true)
+    }
+  }, [mcqs])
+
   async function getSubjectList(){
       console.log("selectedCourse in getSubjectList: ", selectedCourse)
       try{
