@@ -34,7 +34,7 @@ const MCQTable = ({
   const [selectedCourse, setSelectedCourse] = useState("")
   const [selectedSubject, setSelectedSubject] = useState("")
   const [selectedTopic, setSelectedTopic] = useState("")
-  const [selectedDifficulty, setSelectedDifficulty] = useState("")
+  const [selectedDifficulty, setSelectedDifficulty] = useState(btn_call === undefined ? "Easy" : "")
 
   const [loading, setLoading] = useState({});
   const [multipleOptions, setMultipleOptions] = useState(false);
@@ -195,6 +195,14 @@ const MCQTable = ({
     if(btn_call === "Create Question"){getCoursesList()}
   }, [])
 
+  useEffect(() => {
+    console.log("mcqs in useEffect: ", mcqs)
+    if(Array.isArray(mcqs) && mcqs.length > 1 && btn_call === "Generate Random Paper"){
+      // console.log("mcqs in useEffect: ", mcqs)
+      setControl_2(true)
+    }
+  }, [mcqs])
+
   async function getSubjectList(){
       console.log("selectedCourse in getSubjectList: ", selectedCourse)
       try{
@@ -224,7 +232,13 @@ const MCQTable = ({
               }
           })
           console.log("topicList.data in getTopicList: ", topicList.data)
-          let topics_names = topicList.data.map((topic) => {return topic.name})
+          let topics_names = []
+          if(btn_call === "Generate Random Paper"){
+            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course}})  
+          }
+          else{
+            topics_names = topicList.data.map((topic) => {return topic.name})
+          }
           console.log("topics_names: ", [...topics_names])
           setTopics(["", ...topics_names])
           // setTopics([...topics_names])
@@ -238,7 +252,11 @@ const MCQTable = ({
     console.log("event in handleSelect: ", event.target.value)
       //setError("")
       if(event.target.id === "course"){
-        setSelectedCourse(event.target.value)
+        // setSelectedCourse(event.target.value)
+        const selectedCourses = Array.from(event.target.selectedOptions).map(
+          (option) => option.value
+        )
+        setSelectedCourse(selectedCourses)
       }
       else if(event.target.id === "subject"){
         // setSelectedSubject(event.target.value)
@@ -613,6 +631,7 @@ const MCQTable = ({
       currentMCQ.options.includes("") ||
       currentMCQ.correct_answer === "" ||
       currentMCQ.marks === "" ||
+      currentMCQ.difficulty === "" ||
       currentMCQ.authority === "" ||
       (!freeFlow && !currentMCQ.timeAllowed)
     ) {
@@ -1246,7 +1265,7 @@ const MCQTable = ({
                 <th className="px-4 py-2 w-1/4">Options</th>
                 <th className="px-4 py-2">Correct Option</th>
                 <th className="px-4 py-2">Difficulty</th>
-                <th className="px-4 py-2">Topic</th>
+                {btn_call && <th className="px-4 py-2">Topic</th>}
                 <th className="px-4 py-2">Authority</th>
                 <th className="px-4 py-2">Marks</th>
                 {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
@@ -1270,7 +1289,7 @@ const MCQTable = ({
                   </td>
                   <td className="px-4 py-2">{mcq.correct_answer.replace(specialSequence, ",")}</td>
                   <td className="px-4 py-2 text-center">{mcq.difficulty}</td>
-                  <td className="px-4 py-2 text-center">{mcq.topic}</td>
+                  {btn_call && <td className="px-4 py-2 text-center">{`${mcq.topic}`}</td>}
                   <td className="px-4 py-2 text-center">{mcq.authority}</td>
                   <td className="px-4 py-2 text-center">{mcq.marks}</td>
                   {freeFlow ? null : (

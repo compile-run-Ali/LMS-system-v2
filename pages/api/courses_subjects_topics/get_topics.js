@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 
 const handler = async (req, res) => {
-    console.log("req.query: ", req.query)
+    console.log("req.query in get_topics: ", req.query)
     // console.log("req.query['selectedSubject[]']: ", req.query['selectedSubject[]'].length)
     let all_topics = []
     try{

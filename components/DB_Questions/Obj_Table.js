@@ -108,12 +108,12 @@ export default function Obj_Table(){
                 <input type="text" id="search_course" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
               </div>
               <div className="flex flex-row items-center space-x-1.5">
-                <label htmlFor="search_course" className="block font-semibold font-poppins">Subject: </label>
-                <input type="text" id="search_course" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
+                <label htmlFor="search_subject" className="block font-semibold font-poppins">Subject: </label>
+                <input type="text" id="search_subject" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
               </div>
               <div className="flex flex-row items-center space-x-1.5">
-                <label htmlFor="search_course" className="block font-semibold font-poppins">Topic: </label>
-                <input type="text" id="search_course" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
+                <label htmlFor="search_topic" className="block font-semibold font-poppins">Topic: </label>
+                <input type="text" id="search_topic" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
               </div>
             </div>
             {editing === true && <Edit_MCQ_Form 

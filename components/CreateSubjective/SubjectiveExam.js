@@ -29,7 +29,7 @@ const SubjectiveExam = ({
   const [selectedCourse, setSelectedCourse] = useState("")
   const [selectedSubject, setSelectedSubject] = useState("")
   const [selectedTopic, setSelectedTopic] = useState("")
-  const [selectedDifficulty, setSelectedDifficulty] = useState("")
+  const [selectedDifficulty, setSelectedDifficulty] = useState(btn_call === undefined ? "Easy" : "")
 
   const [control, setControl] = useState(false)
   const [loading, setLoading] = useState({});
@@ -146,6 +146,13 @@ const SubjectiveExam = ({
     if(btn_call === "Create Question"){getCoursesList()}
   }, [])
 
+  useEffect(() => {
+    if(Array.isArray(subjectivesLocal) && subjectivesLocal.length > 1 && btn_call === "Generate Random Paper"){
+      // console.log("mcqs in useEffect: ", mcqs)
+      setControl_2(true)
+    }
+  }, [subjectivesLocal])
+
 
   async function getSubjectList(){
       console.log("selectedCourse in getSubjectList: ", selectedCourse)
@@ -174,10 +181,16 @@ const SubjectiveExam = ({
                   selectedSubject: selectedSubject
               }
           })
-          let topics_names = topicList.data.map((topic) => {return topic.name})
+          // let topics_names = topicList.data.map((topic) => {return topic.name})
+          let topics_names = []
+          if(btn_call === "Generate Random Paper"){
+            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course}})  
+          }
+          else{
+            topics_names = topicList.data.map((topic) => {return topic.name})
+          }
           console.log("topics_names: ", [...topics_names])
           setTopics(["", ...topics_names])
-          // setTopics([...topics_names])
       }
       catch(error){
           console.log(error)
@@ -188,7 +201,11 @@ const SubjectiveExam = ({
     console.log("event in handleSelect: ", event.target.value)
       //setError("")
       if(event.target.id === "course"){
-        setSelectedCourse(event.target.value)
+        // setSelectedCourse(event.target.value)
+        const selectedCourses = Array.from(event.target.selectedOptions).map(
+          (option) => option.value
+        )
+        setSelectedCourse(selectedCourses)
       }
       else if(event.target.id === "subject"){
         // setSelectedSubject(event.target.value)
@@ -722,6 +739,7 @@ const SubjectiveExam = ({
           question: currentQuestion.question,
           answer:currentQuestion.answer,
           authority: currentQuestion.authority,
+          difficulty: currentQuestion.difficulty,
           parent_sq_id: currentQuestion.parent_sq_id,
           long_question: true,
           marks: currentQuestion.marks,
@@ -1553,7 +1571,7 @@ const SubjectiveExam = ({
                 <th className="px-4 py-2">Answer</th>
                 {/* <th className="px-4 py-2">Parent Question</th> */}
                 <th className="px-4 py-2">Difficulty</th>
-                <th className="px-4 py-2">Topic</th>
+                {btn_call && <th className="px-4 py-2">Topic</th>}
                 <th className="px-4 py-2">Authority</th>
                 <th className="px-4 py-2">Marks</th>
                 <th className="px-4 py-2">Edit</th>
@@ -1586,7 +1604,7 @@ const SubjectiveExam = ({
                         {subjective.parent_sq_id?.question}
                       </td> */}
                       <td className="px-4 py-2 text-center">{subjective.difficulty}</td>
-                      <td className="px-4 py-2 text-center">{subjective.topic}</td>
+                      {btn_call && <td className="px-4 py-2 text-center">{subjective.topic}</td>}
                       <td className="px-4 py-2 text-center">{subjective.authority}</td>
                       <td className="px-4 py-2 text-center">{subjective.marks}</td>
                       <td className="px-4 py-2">
