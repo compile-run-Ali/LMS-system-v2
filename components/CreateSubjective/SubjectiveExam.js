@@ -1326,6 +1326,8 @@ const SubjectiveExam = ({
           <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={handleSelect} value={selectedTopic} btn_call={btn_call}/>
         </div>
 
+        {btn_call === "Generate Random Paper" && <h1 className="text-sm pl-2">Note: Hold Ctrl for multiple select</h1>}
+
         <button 
         className="mt-5 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700 w-48 self-center"
         onClick={handleGetQuestions}>
