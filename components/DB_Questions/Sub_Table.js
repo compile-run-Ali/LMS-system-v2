@@ -14,6 +14,13 @@ export default function Sub_Table(){
     const btn_call = "Create Question"
     const [courses_subjects_topics, setCourses_subjects_topics] = useState([])
 
+    const [topics, setTopics] = useState([""])
+    const [subjects, setSubjects] = useState([""])
+    const [courses, setCourses] = useState([""])
+    const [selectedCourse, setSelectedCourse] = useState("")
+    const [selectedSubject, setSelectedSubject] = useState("")
+    const [selectedTopic, setSelectedTopic] = useState("")
+    const [query, SetQuery] = useState({course: "", subject: "", topic: ""})
     const handleEditsub = (sub, index) => () => {
         if (!editing) {
           setEditing(true);
@@ -82,24 +89,125 @@ export default function Sub_Table(){
         get_courses_subjects_topics()
     }, [])
 
+    async function getCoursesList(){
+      try{
+          const coursesList = await axios.get("/api/courses_subjects_topics/get_courses")
+          let courses_names = coursesList.data.map((course) => {return course.name})
+          console.log("courses_names: ", [...courses_names])
+          setCourses(["", ...courses_names])
+      }
+      catch(error){
+          console.log(error)
+      }
+    }
+
+    useEffect(() => {
+      getCoursesList()
+    }, [])
+
+    async function getSubjectList(){
+      console.log("selectedCourse in getSubjectList: ", selectedCourse)
+      try{
+          const subjectList = await axios.get("/api/courses_subjects_topics/get_subjects_single",{
+              params:{
+                  selectedCourse: selectedCourse
+              }
+          })
+          let subjects_names = subjectList.data.map((subject) => {return subject.name})
+          setSubjects(["", ...subjects_names])
+      }
+      catch(error){
+          console.log(error)
+      }
+    }
+
+    useEffect(() => {
+      if(selectedCourse && selectedCourse !== ""){
+        getSubjectList()
+      }
+      else if(selectedCourse === ""){
+        setSubjects([""])
+      }
+    }, [selectedCourse])
+
+    async function getTopicList(){
+      console.log("selectedSubject in getSubjectList: ", selectedSubject)
+      try{
+          const topicList = await axios.get("/api/courses_subjects_topics/get_topics_single",{
+              params:{
+                  selectedCourse: selectedCourse,
+                  selectedSubject: selectedSubject
+              }
+          })
+          let topics_names = []
+          topics_names = topicList.data.map((topic) => {return topic.name})
+          setTopics(["", ...topics_names])
+      }
+      catch(error){
+          console.log(error)
+      }
+    }
+
+    useEffect(() => {
+      if(selectedSubject && selectedSubject !== ""){
+        getTopicList()
+      }
+      else if(selectedSubject === ""){
+        setTopics([""])
+      }
+    }, [selectedSubject])
+
+    function handleSelect(event){
+      if(event.target.id === "search_course"){
+        setSelectedCourse(event.target.value)
+        setSelectedSubject("")
+        setSelectedTopic("")
+        let temp_query = {...query, "course": event.target.value, "subject": "", "topic": ""}
+        SetQuery(temp_query)
+      }
+      else if(event.target.id === "search_subject"){
+        setSelectedSubject(event.target.value)
+        setSelectedTopic("")
+        let temp_query = {...query, "subject": event.target.value, 'topic': ""}
+        SetQuery(temp_query)
+      }
+      else if(event.target.id === "search_topic"){
+        setSelectedTopic(event.target.value)
+        let temp_query = {...query, "topic": event.target.value}
+        SetQuery(temp_query)
+      }
+    }
+
     return(
         <div className="px-5 mt-6">
             <Spinner loading={loading} />
 
             <h1 className="text-2xl font-poppins font-bold bg-blue-800 text-white px-3 py-2 w-fit rounded-sm">Subjective Questions in Databank</h1>
 
-            <div className="mt-5 flex flex-row space-x-7 font-poppins">
-              <div className="flex flex-row items-center space-x-1.5">
+            <div className="w-4/6 mt-5 flex flex-row space-x-7 font-poppins">
+              <div className="w-1/3 flex flex-row items-center space-x-1.5">
                 <label htmlFor="search_course" className="block font-semibold font-poppins">Course: </label>
-                <input type="text" id="search_course" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
+                <select value={selectedCourse} onChange={handleSelect} id="search_course" className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full">
+                  {courses.map((course, index) => (
+                    <option ket={index} value={course}>{course === "" ? "None" : course}</option>
+                  ))}
+                </select>
               </div>
-              <div className="flex flex-row items-center space-x-1.5">
-                <label htmlFor="search_course" className="block font-semibold font-poppins">Subject: </label>
-                <input type="text" id="search_course" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
+              <div className="w-1/3 flex flex-row items-center space-x-1.5">
+                <label htmlFor="search_subject" className="block font-semibold font-poppins">Subject: </label>
+                <select value={selectedSubject} onChange={handleSelect} id="search_subject" className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full">
+                  {subjects.map((subject, index) => (
+                    <option ket={index} value={subject}>{subject === "" ? "None" : subject}</option>
+                  ))}
+                </select>
               </div>
-              <div className="flex flex-row items-center space-x-1.5">
-                <label htmlFor="search_course" className="block font-semibold font-poppins">Topic: </label>
-                <input type="text" id="search_course" className="bg-white border border-primary-black focus:outline-none focus:border-[#edbd12] border-opacity-[0.15] p-2 rounded-lg w-full"/>
+              <div className="w-1/3 flex flex-row items-center space-x-1.5">
+                <label htmlFor="search_topic" className="block font-semibold font-poppins">Topic: </label>
+                <select value={selectedTopic} onChange={handleSelect} id="search_topic" className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full">
+                  {topics.map((topic, index) => (
+                    <option ket={index} value={topic}>{topic === "" ? "None" : topic}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -113,7 +221,20 @@ export default function Sub_Table(){
                 setSubs={setSubs}
             />}
 
-            {courses_subjects_topics.map((course_subject_topic, index) => (
+            {courses_subjects_topics.filter(pair => {
+              if(query.course === "" && query.subject === "" && query.topic === ""){
+                return pair
+              }
+              else if(query.course !== "" && query.course === pair.course && query.subject === ""){
+                return pair
+              }
+              else if(query.course !== "" && query.course === pair.course && query.subject !== "" && query.subject === pair.subject && query.topic === ""){
+                return pair
+              }
+              else if(query.course !== "" && query.course === pair.course && query.subject !== "" && query.subject === pair.subject && query.topic !== "" && query.topic === pair.topic){
+                return pair
+              }
+            }).map((course_subject_topic, index) => (
               <div className="my-12 border-b border-gray-900">
                 <div className="flex flex-row space-x-4">
                   <h1 className="font-bold text-lg font-poppins">Course: <span className="ml-0.5 font-normal">{course_subject_topic.course}</span>,</h1>
