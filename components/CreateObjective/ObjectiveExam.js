@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import Spinner from "../Loader/Spinner";
 import Link from "next/link";
 import Info_Modal from "./Info_Modal";
+import Replace_Modal from "./Replace_Modal";
 
 const MCQTable = ({
   exam,
@@ -77,7 +78,15 @@ const MCQTable = ({
   const [control, setControl] = useState(false)
   const [prevMCQsID, setPrevMCQsID] = useState([])
   const [control_2, setControl_2] = useState(false)
+  const [control_3, setControl_3] = useState(false)
   const [modalControl, setModalControl] = useState(true) //used to control info_model visibility
+  const [foucs_question, setFocusQuestion] = useState({})
+
+  function handleReplaceBtn(event, mcq){
+    console.log("mcq in handleReplaceBtn: ", mcq)
+    setControl_3(true)
+    setFocusQuestion(mcq)
+  }
 
   useEffect(() => {
     if (mcqs.length === 0) {
@@ -908,7 +917,9 @@ const MCQTable = ({
 
   return (
     <div className="flex font-poppins flex-col items-center p-6">
-      <Spinner loading={loading} />
+      <Spinner loading={loading}/>
+
+      {control_3 && <Replace_Modal mcqs={mcqs} setMCQs={setMCQs} prevMCQsID={prevMCQsID} setPrevMCQsID={setPrevMCQsID} mcqIDs={mcqIDs} setMcqIDs={setMcqIDs} question={foucs_question} addQuestion={addQuestion} setControl_3={setControl_3} setFocusQuestion={setFocusQuestion} type={"objective"}/>}
 
       {!editing && 
       <div className="w-3/12 flex flex-col justify-center gap-y-4">
@@ -1275,6 +1286,7 @@ const MCQTable = ({
                 {btn_call === "Generate Random Paper" 
                 && <th className="px-4 py-2">Select</th>}
                 <th className="px-4 py-2">Delete</th>
+                <th className="px-4 py-2">Replace</th>
               </tr>
             </thead>
             <tbody>
@@ -1317,6 +1329,11 @@ const MCQTable = ({
                       className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                     >
                       <MdDelete />
+                    </button>
+                  </td>
+                  <td className="px-4 py-2">
+                    <button className="text-sm bg-blue-800 text-white px-3 py-2 rounded" onClick={(event) => {handleReplaceBtn(event, mcq)}}>
+                      Replace
                     </button>
                   </td>
                 </tr>

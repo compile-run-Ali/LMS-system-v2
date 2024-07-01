@@ -152,6 +152,8 @@ model SubjectiveQuestion {
   question       String  @db.VarChar(5000)
   answer         String? @db.VarChar(5000)
   difficulty     String  @default("-")
+  course         String  @default("-")
+  subject        String  @default("-")
   topic          String  @default("-")
   authority      String  @default("-")
   long_question  Boolean @default(true)
@@ -186,6 +188,7 @@ model ObjectiveQuestion {
   answers        String @db.VarChar(1000)
   correct_answer String
   course         String @default("-")
+  subject        String @default("-")
   difficulty     String @default("-")
   topic          String @default("-")
   authority      String @default("-")

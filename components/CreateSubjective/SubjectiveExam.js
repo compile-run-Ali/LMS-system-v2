@@ -9,6 +9,7 @@ import NewQuestionInput from "../CreateObjective/NewQuestionInput";
 import NoOfQuestions from "../CreateObjective/NoOfQuestions";
 import Link from "next/link";
 import Info_Modal from "../CreateObjective/Info_Modal";
+import Replace_Modal from "../CreateObjective/Replace_Modal";
 
 const SubjectiveExam = ({
   exam,
@@ -71,7 +72,13 @@ const SubjectiveExam = ({
   const [prevMCQsID, setPrevMCQsID] = useState([])
   const [control_2, setControl_2] = useState(false)
   const [modalControl, setModalControl] = useState(true) //used to control info_model visibility
+  const [control_3, setControl_3] = useState(false)
+  const [foucs_question, setFocusQuestion] = useState({})
 
+  function handleReplaceBtn(event, mcq){
+    setControl_3(true)
+    setFocusQuestion(mcq)
+  }
 
 
   async function getCoursesList(){
@@ -345,7 +352,11 @@ const SubjectiveExam = ({
             parent_sq_id: "",
             long_question: true,
             marks: question.marks,
-            questionnumber: i+1
+            questionnumber: i+1,
+            course: question.course,
+            subject: question.subject,
+            topic: question.topic,
+            type: question.type
             }
         }
       );
@@ -1218,6 +1229,8 @@ const SubjectiveExam = ({
     <div className="flex font-poppins flex-col items-center p-6">
       <Spinner loading={loading} />
 
+      {control_3 && <Replace_Modal mcqs={subjectivesLocal} setMCQs={setSubjectivesLocal} prevMCQsID={prevMCQsID} setPrevMCQsID={setPrevMCQsID} mcqIDs={mcqIDs} setMcqIDs={setMcqIDs} question={foucs_question} addQuestion={addQuestion} setControl_3={setControl_3} setFocusQuestion={setFocusQuestion} type={"subjective"}/>}
+
       {!editing && 
       <div className="w-4/12 flex flex-col justify-center gap-y-4">
         <button
@@ -1573,6 +1586,7 @@ const SubjectiveExam = ({
                 <th className="px-4 py-2">Answer</th>
                 {/* <th className="px-4 py-2">Parent Question</th> */}
                 <th className="px-4 py-2">Difficulty</th>
+                <th className="px-4 py-2">Course</th>
                 {btn_call && <th className="px-4 py-2">Topic</th>}
                 <th className="px-4 py-2">Authority</th>
                 <th className="px-4 py-2">Marks</th>
@@ -1580,6 +1594,7 @@ const SubjectiveExam = ({
                 {btn_call === "Generate Random Paper" && 
                 <th className="px-4 py-2">Select</th>} 
                 <th className="px-4 py-2">Delete</th>
+                <th className="px-4 py-2">Replace</th>
               </tr>
             </thead>
             <tbody>
@@ -1606,6 +1621,7 @@ const SubjectiveExam = ({
                         {subjective.parent_sq_id?.question}
                       </td> */}
                       <td className="px-4 py-2 text-center">{subjective.difficulty}</td>
+                      <td className="px-4 py-2 text-center">{subjective.course}</td>
                       {btn_call && <td className="px-4 py-2 text-center">{subjective.topic}</td>}
                       <td className="px-4 py-2 text-center">{subjective.authority}</td>
                       <td className="px-4 py-2 text-center">{subjective.marks}</td>
@@ -1631,6 +1647,11 @@ const SubjectiveExam = ({
                           className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                         >
                           <MdDelete />
+                        </button>
+                      </td>
+                      <td className="px-4 py-2">
+                        <button className="text-sm bg-blue-800 text-white px-3 py-2 rounded" onClick={(event) => {handleReplaceBtn(event, subjective)}}>
+                          Replace
                         </button>
                       </td>
                     </tr>
