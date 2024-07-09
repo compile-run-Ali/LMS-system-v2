@@ -10,7 +10,7 @@ const handler = async (req, res) => {
                 topic: req.query.topic,
                 difficulty: req.query.difficulty,
                 type: req.query.type,
-                id: { notIn: req.query['prevMCQsID[]'] }
+                id: { notIn: req.query['mcqIDs[]'] }
             }
         })
         console.log("replace_questions: ", replace_questions)

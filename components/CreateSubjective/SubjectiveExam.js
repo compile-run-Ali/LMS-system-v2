@@ -169,7 +169,7 @@ const SubjectiveExam = ({
                   selectedCourse: selectedCourse
               }
           })
-          let subjects_names = subjectList.data.map((subject) => {return subject.name})
+          let subjects_names = subjectList.data.map((subject) => {return {name: subject.name, course: subject.course}})
           console.log("subjects_names: ", [...subjects_names])
           setSubjects(["", ...subjects_names])
           // setSubjects([...subjects_names])
@@ -191,7 +191,7 @@ const SubjectiveExam = ({
           // let topics_names = topicList.data.map((topic) => {return topic.name})
           let topics_names = []
           if(btn_call === "Generate Random Paper"){
-            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course}})  
+            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course, subject: topic.subject}})
           }
           else{
             topics_names = topicList.data.map((topic) => {return topic.name})

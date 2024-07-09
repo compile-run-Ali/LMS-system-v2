@@ -220,11 +220,11 @@ const MCQTable = ({
                   selectedCourse: selectedCourse
               }
           })
-          let subjects_names = subjectList.data.map((subject) => {return subject.name})
+          console.log('res.data of getSubjectList: ', subjectList.data)
+          let subjects_names = subjectList.data.map((subject) => {return {name: subject.name, course: subject.course}})
           console.log("subjects_names: ", [...subjects_names])
           console.log("subjects_names[0]: ", subjects_names[0])
           setSubjects(["", ...subjects_names])
-          // setSubjects([...subjects_names])
       }
       catch(error){
           console.log(error)
@@ -243,7 +243,7 @@ const MCQTable = ({
           console.log("topicList.data in getTopicList: ", topicList.data)
           let topics_names = []
           if(btn_call === "Generate Random Paper"){
-            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course}})  
+            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course, subject: topic.subject}})
           }
           else{
             topics_names = topicList.data.map((topic) => {return topic.name})

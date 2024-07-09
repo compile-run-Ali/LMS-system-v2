@@ -14,7 +14,7 @@ export default function Replace_Modal({mcqs, setMCQs, prevMCQsID, setPrevMCQsID,
                     topic: question.topic,
                     difficulty: question.difficulty,
                     type: type,
-                    prevMCQsID: prevMCQsID
+                    mcqIDs: mcqIDs
                 }
             })
             console.log("replace_questions: ", res.data)
