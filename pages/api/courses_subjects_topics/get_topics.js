@@ -12,17 +12,19 @@ const handler = async (req, res) => {
         }
         else {
             if(Array.isArray(req.query['selectedSubject[]'])){
-                await Promise.all(req.query['selectedSubject[]'].map(async (subejct, index) => {
+                await Promise.all(req.query['selectedSubject[]'].map(async (subject, index) => {
+                    let sub_temp = subject.split("-")
                     const topics = await prisma.DbTopic.findMany(
-                        {where: {course: req.query.selectedCourse, subject: subejct}}
+                        {where: {course: sub_temp[1], subject: sub_temp[0]}}
                     )
                     all_topics = [...all_topics, ...topics]
-                    console.log("all_topics: ", all_topics)
+                    // console.log("all_topics: ", all_topics)
                 }))
             }
             else{
+                let sub_temp = req.query['selectedSubject[]'].split("-")
                 all_topics = await prisma.DbTopic.findMany({
-                    where: {course: req.query.selectedCourse, subject: req.query['selectedSubject[]']}
+                    where: {course: sub_temp[1], subject: sub_temp[0]}
                 })
             }
         }

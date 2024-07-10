@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import Spinner from "../Loader/Spinner";
 import Link from "next/link";
 import Info_Modal from "./Info_Modal";
+import Replace_Modal from "./Replace_Modal";
 
 const MCQTable = ({
   exam,
@@ -77,7 +78,15 @@ const MCQTable = ({
   const [control, setControl] = useState(false)
   const [prevMCQsID, setPrevMCQsID] = useState([])
   const [control_2, setControl_2] = useState(false)
+  const [control_3, setControl_3] = useState(false)
   const [modalControl, setModalControl] = useState(true) //used to control info_model visibility
+  const [foucs_question, setFocusQuestion] = useState({})
+
+  function handleReplaceBtn(event, mcq){
+    console.log("mcq in handleReplaceBtn: ", mcq)
+    setControl_3(true)
+    setFocusQuestion(mcq)
+  }
 
   useEffect(() => {
     if (mcqs.length === 0) {
@@ -211,11 +220,11 @@ const MCQTable = ({
                   selectedCourse: selectedCourse
               }
           })
-          let subjects_names = subjectList.data.map((subject) => {return subject.name})
+          console.log('res.data of getSubjectList: ', subjectList.data)
+          let subjects_names = subjectList.data.map((subject) => {return {name: subject.name, course: subject.course}})
           console.log("subjects_names: ", [...subjects_names])
           console.log("subjects_names[0]: ", subjects_names[0])
           setSubjects(["", ...subjects_names])
-          // setSubjects([...subjects_names])
       }
       catch(error){
           console.log(error)
@@ -234,7 +243,7 @@ const MCQTable = ({
           console.log("topicList.data in getTopicList: ", topicList.data)
           let topics_names = []
           if(btn_call === "Generate Random Paper"){
-            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course}})  
+            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course, subject: topic.subject}})
           }
           else{
             topics_names = topicList.data.map((topic) => {return topic.name})
@@ -908,7 +917,9 @@ const MCQTable = ({
 
   return (
     <div className="flex font-poppins flex-col items-center p-6">
-      <Spinner loading={loading} />
+      <Spinner loading={loading}/>
+
+      {control_3 && <Replace_Modal mcqs={mcqs} setMCQs={setMCQs} prevMCQsID={prevMCQsID} setPrevMCQsID={setPrevMCQsID} mcqIDs={mcqIDs} setMcqIDs={setMcqIDs} question={foucs_question} addQuestion={addQuestion} setControl_3={setControl_3} setFocusQuestion={setFocusQuestion} type={"objective"}/>}
 
       {!editing && 
       <div className="w-3/12 flex flex-col justify-center gap-y-4">
@@ -1021,6 +1032,8 @@ const MCQTable = ({
           <NewQuestionInput label={"Subject"} options={subjects} id={"subject"} handleChange={(e)=>handleSelect(e)} value={selectedSubject} btn_call={btn_call}/>
           <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={(e)=>handleSelect(e)} value={selectedTopic} btn_call={btn_call}/>
         </div>
+
+        {btn_call === "Generate Random Paper" && <h1 className="text-sm pl-2">Note: Hold Ctrl for multiple select</h1>}
 
         <button 
         className="mt-5 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700 w-48 self-center"
@@ -1273,6 +1286,7 @@ const MCQTable = ({
                 {btn_call === "Generate Random Paper" 
                 && <th className="px-4 py-2">Select</th>}
                 <th className="px-4 py-2">Delete</th>
+                <th className="px-4 py-2">Replace</th>
               </tr>
             </thead>
             <tbody>
@@ -1315,6 +1329,11 @@ const MCQTable = ({
                       className="bg-white text-red-600 p-2 rounded hover:bg-red-600 hover:text-white transition-colors"
                     >
                       <MdDelete />
+                    </button>
+                  </td>
+                  <td className="px-4 py-2">
+                    <button className="text-sm bg-blue-800 text-white px-3 py-2 rounded" onClick={(event) => {handleReplaceBtn(event, mcq)}}>
+                      Replace
                     </button>
                   </td>
                 </tr>
