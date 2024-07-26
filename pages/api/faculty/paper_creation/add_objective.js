@@ -18,7 +18,7 @@ const handler = async (req, res) => {
           timeAllowed: req.body.question_info.timeAllowed,
           authority: req.body.question_info.authority,
           difficulty: req.body.question_info.difficulty,
-          course: req.body.question_info.course,
+          course: req.body.question_info.course[0],
           subject: req.body.question_info.subject[0],
           topic: req.body.question_info.topic[0],
           type: req.body.question_info.type

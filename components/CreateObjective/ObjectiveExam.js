@@ -21,26 +21,33 @@ const MCQTable = ({
   setObjectiveQuestions,
   freeFlow,
   btn_call,
-  fetchObjectives
+  fetchObjectives,
 }) => {
-  console.log("in mcq table, btn_call: ", btn_call)
-  console.log("in mcq table, paperId: ", paperId)
-  console.log("in mcq table, objective_questions: ", objective_questions)
+  console.log("in mcq table, btn_call: ", btn_call);
+  console.log("in mcq table, paperId: ", paperId);
+  console.log("in mcq table, objective_questions: ", objective_questions);
 
-  const [difficultys, setDifficultys] = useState(["", "Easy", "Medium", "Hard"])
-  const [authority, setAuthority] = useState()
-  const [topics, setTopics] = useState([""])
-  const [subjects, setSubjects] = useState([""])
-  const [courses, setCourses] = useState([""])
-  const [selectedCourse, setSelectedCourse] = useState("")
-  const [selectedSubject, setSelectedSubject] = useState("")
-  const [selectedTopic, setSelectedTopic] = useState("")
-  const [selectedDifficulty, setSelectedDifficulty] = useState(btn_call === undefined ? "Easy" : "")
+  const [difficultys, setDifficultys] = useState([
+    "",
+    "Easy",
+    "Medium",
+    "Hard",
+  ]);
+  const [authority, setAuthority] = useState();
+  const [topics, setTopics] = useState([""]);
+  const [subjects, setSubjects] = useState([""]);
+  const [courses, setCourses] = useState([""]);
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const [selectedSubject, setSelectedSubject] = useState("");
+  const [selectedTopic, setSelectedTopic] = useState("");
+  const [selectedDifficulty, setSelectedDifficulty] = useState(
+    btn_call === undefined ? "Easy" : ""
+  );
 
   const [loading, setLoading] = useState({});
   const [multipleOptions, setMultipleOptions] = useState(false);
   const [index, setIndex] = useState(null);
-  const [mcqIDs, setMcqIDs] = useState([])
+  const [mcqIDs, setMcqIDs] = useState([]);
   const [mcqs, setMCQs] = useState(
     objective_questions.map((mcq) => {
       // console.log("mcq in map: ", mcq)
@@ -61,9 +68,9 @@ const MCQTable = ({
     topic: "",
     authority: "",
     type: "objective",
-    checked: false
+    checked: false,
   });
-  const specialSequence="###"
+  const specialSequence = "###";
 
   const [randomPaperConfig, setRandomPaperConfig] = useState({
     no_of_easy: 3,
@@ -72,20 +79,20 @@ const MCQTable = ({
     course: "",
     subject: "",
     topic: "",
-    type: "objective"
-  })
+    type: "objective",
+  });
 
-  const [control, setControl] = useState(false)
-  const [prevMCQsID, setPrevMCQsID] = useState([])
-  const [control_2, setControl_2] = useState(false)
-  const [control_3, setControl_3] = useState(false)
-  const [modalControl, setModalControl] = useState(true) //used to control info_model visibility
-  const [foucs_question, setFocusQuestion] = useState({})
+  const [control, setControl] = useState(false);
+  const [prevMCQsID, setPrevMCQsID] = useState([]);
+  const [control_2, setControl_2] = useState(false);
+  const [control_3, setControl_3] = useState(false);
+  const [modalControl, setModalControl] = useState(true); //used to control info_model visibility
+  const [foucs_question, setFocusQuestion] = useState({});
 
-  function handleReplaceBtn(event, mcq){
-    console.log("mcq in handleReplaceBtn: ", mcq)
-    setControl_3(true)
-    setFocusQuestion(mcq)
+  function handleReplaceBtn(event, mcq) {
+    console.log("mcq in handleReplaceBtn: ", mcq);
+    setControl_3(true);
+    setFocusQuestion(mcq);
   }
 
   useEffect(() => {
@@ -130,189 +137,225 @@ const MCQTable = ({
     setMultipleOptions(e.target.checked);
   };
 
-
-  async function getCoursesList(){
-    try{
-        const coursesList = await axios.get("/api/courses_subjects_topics/get_courses")
-        let courses_names = coursesList.data.map((course) => {return course.name})
-        console.log("courses_names: ", [...courses_names])
-        setCourses(["", ...courses_names])
-    }
-    catch(error){
-        console.log(error)
+  async function getCoursesList() {
+    try {
+      const coursesList = await axios.get(
+        "/api/courses_subjects_topics/get_courses"
+      );
+      let courses_names = coursesList.data.map((course) => {
+        return course.name;
+      });
+      console.log("courses_names: ", [...courses_names]);
+      setCourses(["", ...courses_names]);
+    } catch (error) {
+      console.log(error);
     }
   }
 
   useEffect(() => {
-    console.log("courses in useEffect: ", courses)
-  }, [courses])
+    console.log("courses in useEffect: ", courses);
+  }, [courses]);
 
   useEffect(() => {
     if (selectedCourse !== "" && selectedCourse !== undefined) {
-      console.log("selectedCourse: ", selectedCourse)
-      btn_call === "Generate Random Paper" 
-      ? setRandomPaperConfig({...randomPaperConfig, ["course"]: selectedCourse})
-      : setCurrentMCQ({...currentMCQ, ["course"]: selectedCourse})
-      getSubjectList()
+      console.log("selectedCourse: ", selectedCourse);
+      btn_call === "Generate Random Paper"
+        ? setRandomPaperConfig({
+            ...randomPaperConfig,
+            ["course"]: selectedCourse,
+          })
+        : setCurrentMCQ({ ...currentMCQ, ["course"]: selectedCourse });
+      getSubjectList();
     }
-  }, [selectedCourse])
+  }, [selectedCourse]);
 
   useEffect(() => {
-    console.log("subjects in useEffect: ", subjects)
-  }, [subjects])
+    console.log("subjects in useEffect: ", subjects);
+  }, [subjects]);
 
   useEffect(() => {
     if (selectedSubject !== "" && selectedSubject !== undefined) {
-      console.log("selectedSubject: ", selectedSubject)
-      btn_call === "Generate Random Paper" 
-      ? setRandomPaperConfig({...randomPaperConfig, ["subject"]: selectedSubject})
-      : setCurrentMCQ({...currentMCQ, ["subject"]: selectedSubject})
-      getTopicList()
+      console.log("selectedSubject: ", selectedSubject);
+      btn_call === "Generate Random Paper"
+        ? setRandomPaperConfig({
+            ...randomPaperConfig,
+            ["subject"]: selectedSubject,
+          })
+        : setCurrentMCQ({ ...currentMCQ, ["subject"]: selectedSubject });
+      getTopicList();
     }
-  }, [selectedSubject])
+  }, [selectedSubject]);
 
   useEffect(() => {
-    console.log("topics in useEffect: ", topics)
-  }, [topics])
+    console.log("topics in useEffect: ", topics);
+  }, [topics]);
 
   useEffect(() => {
     if (selectedTopic !== "" && selectedTopic !== undefined) {
-      console.log("selectedTopic: ", selectedTopic)
-      btn_call === "Generate Random Paper" 
-      ? setRandomPaperConfig({...randomPaperConfig, ["topic"]: selectedTopic})
-      : setCurrentMCQ({...currentMCQ, ["topic"]: selectedTopic})
+      console.log("selectedTopic: ", selectedTopic);
+      btn_call === "Generate Random Paper"
+        ? setRandomPaperConfig({
+            ...randomPaperConfig,
+            ["topic"]: selectedTopic,
+          })
+        : setCurrentMCQ({ ...currentMCQ, ["topic"]: selectedTopic });
     }
-  }, [selectedTopic])
+  }, [selectedTopic]);
 
   useEffect(() => {
     if (selectedDifficulty !== "" && selectedDifficulty !== undefined) {
-      console.log("selectedDifficulty: ", selectedDifficulty)
-      setCurrentMCQ({...currentMCQ, ["difficulty"]: selectedDifficulty})
+      console.log("selectedDifficulty: ", selectedDifficulty);
+      setCurrentMCQ({ ...currentMCQ, ["difficulty"]: selectedDifficulty });
     }
-  }, [selectedDifficulty])
+  }, [selectedDifficulty]);
 
   useEffect(() => {
-    console.log("in useEffect, currentMCQ: ", currentMCQ)
-  }, [currentMCQ])
+    console.log("in useEffect, currentMCQ: ", currentMCQ);
+  }, [currentMCQ]);
 
   useEffect(() => {
-    console.log("in useEffect, randomPaperConfig: ", randomPaperConfig)
-  }, [randomPaperConfig])
-
-
-  useEffect(() => {
-    if(btn_call === "Create Question"){getCoursesList()}
-  }, [])
+    console.log("in useEffect, randomPaperConfig: ", randomPaperConfig);
+  }, [randomPaperConfig]);
 
   useEffect(() => {
-    console.log("mcqs in useEffect: ", mcqs)
-    if(Array.isArray(mcqs) && mcqs.length > 1 && btn_call === "Generate Random Paper"){
+    if (btn_call === "Create Question") {
+      getCoursesList();
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log("mcqs in useEffect: ", mcqs);
+    if (
+      Array.isArray(mcqs) &&
+      mcqs.length > 1 &&
+      btn_call === "Generate Random Paper"
+    ) {
       // console.log("mcqs in useEffect: ", mcqs)
-      setControl_2(true)
+      setControl_2(true);
     }
-  }, [mcqs])
+  }, [mcqs]);
 
-  async function getSubjectList(){
-      console.log("selectedCourse in getSubjectList: ", selectedCourse)
-      try{
-          const subjectList = await axios.get("/api/courses_subjects_topics/get_subjects",{
-              params:{
-                  selectedCourse: selectedCourse
-              }
-          })
-          console.log('res.data of getSubjectList: ', subjectList.data)
-          let subjects_names = subjectList.data.map((subject) => {return {name: subject.name, course: subject.course}})
-          console.log("subjects_names: ", [...subjects_names])
-          console.log("subjects_names[0]: ", subjects_names[0])
-          setSubjects(["", ...subjects_names])
+  async function getSubjectList() {
+    console.log("selectedCourse in getSubjectList: ", selectedCourse);
+    try {
+      const subjectList = await axios.get(
+        "/api/courses_subjects_topics/get_subjects",
+        {
+          params: {
+            selectedCourse: selectedCourse,
+          },
+        }
+      );
+      console.log("res.data of getSubjectList: ", subjectList.data);
+      let subjects_names = [];
+      if (btn_call === "Generate Random Paper") {
+        subjects_names = subjectList.data.map((subject) => {
+          return { name: subject.name, course: subject.course };
+        });
+      } else {
+        subjects_names = subjectList.data.map((subject) => {
+          return subject.name;
+        });
       }
-      catch(error){
-          console.log(error)
-      }
+      console.log("subjects_names: ", [...subjects_names]);
+      console.log("subjects_names[0]: ", subjects_names[0]);
+      setSubjects(["", ...subjects_names]);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  async function getTopicList(){
-      console.log("selectedSubject in getSubjectList: ", selectedSubject)
-      try{
-          const topicList = await axios.get("/api/courses_subjects_topics/get_topics",{
-              params:{
-                  selectedCourse: selectedCourse,
-                  selectedSubject: selectedSubject
-              }
-          })
-          console.log("topicList.data in getTopicList: ", topicList.data)
-          let topics_names = []
-          if(btn_call === "Generate Random Paper"){
-            topics_names = topicList.data.map((topic) => {return {name: topic.name, course: topic.course, subject: topic.subject}})
-          }
-          else{
-            topics_names = topicList.data.map((topic) => {return topic.name})
-          }
-          console.log("topics_names: ", [...topics_names])
-          setTopics(["", ...topics_names])
-          // setTopics([...topics_names])
+  async function getTopicList() {
+    console.log("selectedSubject in getSubjectList: ", selectedSubject);
+    try {
+      const topicList = await axios.get(
+        "/api/courses_subjects_topics/get_topics",
+        {
+          params: {
+            selectedCourse: selectedCourse,
+            selectedSubject: selectedSubject,
+          },
+        }
+      );
+      console.log("topicList.data in getTopicList: ", topicList.data);
+      let topics_names = [];
+      if (btn_call === "Generate Random Paper") {
+        topics_names = topicList.data.map((topic) => {
+          return {
+            name: topic.name,
+            course: topic.course,
+            subject: topic.subject,
+          };
+        });
+      } else {
+        topics_names = topicList.data.map((topic) => {
+          return topic.name;
+        });
       }
-      catch(error){
-          console.log(error)
-      }
+      console.log("topics_names: ", [...topics_names]);
+      setTopics(["", ...topics_names]);
+      // setTopics([...topics_names])
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  function handleSelect(event){
-    console.log("event in handleSelect: ", event.target.value)
-      //setError("")
-      if(event.target.id === "course"){
-        // setSelectedCourse(event.target.value)
-        const selectedCourses = Array.from(event.target.selectedOptions).map(
-          (option) => option.value
-        )
-        setSelectedCourse(selectedCourses)
-      }
-      else if(event.target.id === "subject"){
-        // setSelectedSubject(event.target.value)
-        const selectedSubjects = Array.from(event.target.selectedOptions).map(
-          (option) => option.value
-        )
-        setSelectedSubject(selectedSubjects)
-      }
-      else if(event.target.id === "topic"){
-        // setSelectedTopic(event.target.value)
-        const selectedTopics = Array.from(event.target.selectedOptions).map(
-          (option) => option.value
-        )
-        setSelectedTopic(selectedTopics)
-      }
-      else if(event.target.id === "difficulty"){
-        setSelectedDifficulty(event.target.value)
-      }
-      console.log("in handleSelect, currentMCQ: ", currentMCQ)
+  function handleSelect(event) {
+    console.log("event in handleSelect: ", event.target.value);
+    //setError("")
+    if (event.target.id === "course") {
+      // setSelectedCourse(event.target.value)
+      const selectedCourses = Array.from(event.target.selectedOptions).map(
+        (option) => option.value
+      );
+      setSelectedCourse(selectedCourses);
+    } else if (event.target.id === "subject") {
+      // setSelectedSubject(event.target.value)
+      const selectedSubjects = Array.from(event.target.selectedOptions).map(
+        (option) => option.value
+      );
+      setSelectedSubject(selectedSubjects);
+    } else if (event.target.id === "topic") {
+      // setSelectedTopic(event.target.value)
+      const selectedTopics = Array.from(event.target.selectedOptions).map(
+        (option) => option.value
+      );
+      setSelectedTopic(selectedTopics);
+    } else if (event.target.id === "difficulty") {
+      setSelectedDifficulty(event.target.value);
+    }
+    console.log("in handleSelect, currentMCQ: ", currentMCQ);
   }
 
-  function reset(){
-    setCourses([""])
-    setSubjects([""])
-    setTopics([""])
-    setSelectedDifficulty("")
-    setSelectedCourse("")
-    setSelectedSubject("")
-    setSelectedTopic("")
+  function reset() {
+    setCourses([""]);
+    setSubjects([""]);
+    setTopics([""]);
+    setSelectedDifficulty("");
+    setSelectedCourse("");
+    setSelectedSubject("");
+    setSelectedTopic("");
   }
 
-
-  function handleNewQustionInputChange(event){
-    const {id, value} = event.target
-    console.log("in handleNewQustionInputChange => ID: ", id)
-    console.log("in handleNewQustionInputChange => VALUE: ", value)
-    {btn_call === "Generate Random Paper" 
-    ? setRandomPaperConfig({...randomPaperConfig, [id]: value})
-    : setCurrentMCQ({...currentMCQ, [id]: value})}
-    console.log("in handleNewQustionInputChange -> currentMCQ: ", currentMCQ)
-    console.log("in handleNewQustionInputChange -> randomPaperConfig: ", randomPaperConfig)
+  function handleNewQustionInputChange(event) {
+    const { id, value } = event.target;
+    console.log("in handleNewQustionInputChange => ID: ", id);
+    console.log("in handleNewQustionInputChange => VALUE: ", value);
+    {
+      btn_call === "Generate Random Paper"
+        ? setRandomPaperConfig({ ...randomPaperConfig, [id]: value })
+        : setCurrentMCQ({ ...currentMCQ, [id]: value });
+    }
+    console.log("in handleNewQustionInputChange -> currentMCQ: ", currentMCQ);
+    console.log(
+      "in handleNewQustionInputChange -> randomPaperConfig: ",
+      randomPaperConfig
+    );
   }
 
-  function handleAuthorityChange(event){
-    setCurrentMCQ({...currentMCQ, authority: event.target.value})
+  function handleAuthorityChange(event) {
+    setCurrentMCQ({ ...currentMCQ, authority: event.target.value });
   }
-
 
   const handleQuestionChange = (e) => {
     setCurrentMCQ({ ...currentMCQ, question: e.target.value });
@@ -328,8 +371,7 @@ const MCQTable = ({
         options: newOptions,
         correct_answer: e.target.value.replace(/,/g, specialSequence),
       });
-    }
-    else {
+    } else {
       setCurrentMCQ({
         ...currentMCQ,
         options: newOptions,
@@ -359,7 +401,7 @@ const MCQTable = ({
     setCurrentMCQ({ ...currentMCQ, timeAllowed: parseInt(e.target.value) });
   };
 
-  async function addQuestion(i, question){
+  async function addQuestion(i, question) {
     // console.log("["+i+"] - " + "current question in addQuestion: ", question)
 
     try {
@@ -367,23 +409,25 @@ const MCQTable = ({
         "/api/faculty/paper_creation/add_objective",
         {
           btn_call,
-          question_info: {paper_id: paperId,
-          question: question.question,
-          // answers: question.options.toString(),
-          answers: question.answers,
-          correct_answer: question.correct_answer,
-          marks: question.marks,
-          timeAllowed: question.timeAllowed || 60,
-          authority: question.authority,
-          difficulty: question.difficulty,
-          course: question.course,
-          subject: question.subject,
-          topic: question.topic,
-          type: question.type}
+          question_info: {
+            paper_id: paperId,
+            question: question.question,
+            // answers: question.options.toString(),
+            answers: question.answers,
+            correct_answer: question.correct_answer,
+            marks: question.marks,
+            timeAllowed: question.timeAllowed || 60,
+            authority: question.authority,
+            difficulty: question.difficulty,
+            course: question.course,
+            subject: question.subject,
+            topic: question.topic,
+            type: question.type,
+          },
         }
       );
       // console.log("["+i+"] - " + "got response of addMCQ:", newMCQ.data)
-      
+
       newMCQ.data.options = newMCQ.data.answers.split(",");
       setMultipleOptions(false);
 
@@ -400,8 +444,7 @@ const MCQTable = ({
       //   type: "objective",
       //   checked: false
       // });
-      return newMCQ.data
-
+      return newMCQ.data;
     } catch (err) {
       console.log("err: ", err);
       setLoading({
@@ -410,65 +453,77 @@ const MCQTable = ({
     }
   }
 
-  const deleteCurrentQuestions = async(mcqs_ids_array) => {
-    try{
-      console.log("mcqs in deleteCurrentQuestions: ", mcqs_ids_array)
+  const deleteCurrentQuestions = async (mcqs_ids_array) => {
+    try {
+      console.log("mcqs in deleteCurrentQuestions: ", mcqs_ids_array);
       const res = await axios.post("/api/faculty/remove_objective", {
         flag: "deleteCurrentQuestions",
-        mcqs_ids_array: mcqs_ids_array
+        mcqs_ids_array: mcqs_ids_array,
       });
-    }
-    catch (err) {
+    } catch (err) {
       console.log("err: ", err);
-      setLoading({error: "Error in Deleting current Question."})
+      setLoading({ error: "Error in Deleting current Question." });
     }
-  }
+  };
 
-  function handleSelectMCQ(input_index){
-    console.log("input_index: ", input_index)
+  function handleSelectMCQ(input_index) {
+    console.log("input_index: ", input_index);
     // const checkedMCQs = mcqs.map((mcq, index) => {index === input_index ? !mcq.checked : mcq})
-    const checkedMCQs = [...mcqs]
-    console.log("checkedMCQs in handleSelectMCQ: ", checkedMCQs)
-    checkedMCQs[input_index].checked = !checkedMCQs[input_index].checked
+    const checkedMCQs = [...mcqs];
+    console.log("checkedMCQs in handleSelectMCQ: ", checkedMCQs);
+    checkedMCQs[input_index].checked = !checkedMCQs[input_index].checked;
     // console.log("checkedMCQs: ", checkedMCQs)
-    setMCQs(checkedMCQs)
+    setMCQs(checkedMCQs);
   }
 
-  function reset_highlight(){
-    mcqs.map((mcq) => {mcq.highlight = false;})
+  function reset_highlight() {
+    mcqs.map((mcq) => {
+      mcq.highlight = false;
+    });
   }
 
-  async function handleRegenQuestions(){
-    console.log("ids of current questions: ", prevMCQsID)
-    console.log("mcqs: ", mcqs)
-    console.log("oq_ids of current questions: ", mcqs.map((mcq) => {return mcq.oq_id}))
-    const mcqs_to_regen = mcqs.filter((mcq) => {return mcq.checked === true})
-    const mcqs_to_regen_oq_ids = mcqs_to_regen.map((mcq) => {return mcq.oq_id})
-    
-    console.log("mcqs_to_regen: ", mcqs_to_regen)
-    console.log("mcqs_to_regen_oq_ids: ", mcqs_to_regen_oq_ids)
+  async function handleRegenQuestions() {
+    console.log("ids of current questions: ", prevMCQsID);
+    console.log("mcqs: ", mcqs);
+    console.log(
+      "oq_ids of current questions: ",
+      mcqs.map((mcq) => {
+        return mcq.oq_id;
+      })
+    );
+    const mcqs_to_regen = mcqs.filter((mcq) => {
+      return mcq.checked === true;
+    });
+    const mcqs_to_regen_oq_ids = mcqs_to_regen.map((mcq) => {
+      return mcq.oq_id;
+    });
+
+    console.log("mcqs_to_regen: ", mcqs_to_regen);
+    console.log("mcqs_to_regen_oq_ids: ", mcqs_to_regen_oq_ids);
 
     if (mcqs_to_regen.length === 0) {
       alert("No questions selected to regenerate");
       return;
-    }
-    else{
+    } else {
       setLoading({
         message: "Regenerating selected questions",
       });
-      
-      reset_highlight()
 
-      let indexes = []
-      let mcqs_to_regen_ids = []
-      for (let i = 0; i < mcqs_to_regen.length; i++){
-        indexes = [...indexes, mcqs.indexOf(mcqs_to_regen[i])]
-        mcqs_to_regen_ids = [...mcqs_to_regen_ids, mcqIDs[indexes[indexes.length-1]]]
+      reset_highlight();
+
+      let indexes = [];
+      let mcqs_to_regen_ids = [];
+      for (let i = 0; i < mcqs_to_regen.length; i++) {
+        indexes = [...indexes, mcqs.indexOf(mcqs_to_regen[i])];
+        mcqs_to_regen_ids = [
+          ...mcqs_to_regen_ids,
+          mcqIDs[indexes[indexes.length - 1]],
+        ];
       }
 
-      console.log("indexes: ", indexes)
-      console.log("mcqs_to_regen_ids: ", mcqs_to_regen_ids)
-      
+      console.log("indexes: ", indexes);
+      console.log("mcqs_to_regen_ids: ", mcqs_to_regen_ids);
+
       // deleteCurrentQuestions(mcqs_to_regen_oq_ids)
       // const new_mcqs = [...mcqs]
       // const rest_ids = [...prevMCQsID]
@@ -477,81 +532,83 @@ const MCQTable = ({
       //   rest_ids.splice(indexes[i]-i, 1)
       // }
 
-      try{
-        const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID, flag: "regen", mcqs_to_regen_ids})
+      try {
+        const res = await axios.post("/api/paper/get_questions_databank", {
+          randomPaperConfig,
+          prevMCQsID,
+          flag: "regen",
+          mcqs_to_regen_ids,
+        });
         // if(res.status === 503){
         //   alert("503 error")
         //   console.log("res in get_questions_databank: ", res)
         //   return
         // }
-        console.log("res from get_questions_databank in regen: ", res.data)
+        console.log("res from get_questions_databank in regen: ", res.data);
         // console.log("mcqs in regen: ", mcqs)
         // console.log("objective_questions in regen: ", objective_questions)
-  
+
         // let ids_array = [...rest_ids]
-        let mcqs_array = [...mcqs]
-        let new_mcq_ids = []
-        let mcq_ids = [...mcqIDs]
+        let mcqs_array = [...mcqs];
+        let new_mcq_ids = [];
+        let mcq_ids = [...mcqIDs];
         let mmcq;
 
         const res_mcqs = await Promise.all(res.data);
-  
+
         for (let i = 0; i < res_mcqs.length; i++) {
           // ids_array = [...ids_array, res_mcqs[i].id]
-          mmcq = addQuestion(i, res_mcqs[i])
+          mmcq = addQuestion(i, res_mcqs[i]);
           // mmcq.highlight = true
-          mcqs_array[indexes[i]] = mmcq
-          mcq_ids[indexes[i]] = res_mcqs[i].id
-          new_mcq_ids = [...new_mcq_ids, res_mcqs[i].id]
+          mcqs_array[indexes[i]] = mmcq;
+          mcq_ids[indexes[i]] = res_mcqs[i].id;
+          new_mcq_ids = [...new_mcq_ids, res_mcqs[i].id];
           // mcqs_array = [...mcqs_array, mmcq]
         }
-        mcq_ids = await Promise.all(mcq_ids)
-        new_mcq_ids = await Promise.all(new_mcq_ids)
+        mcq_ids = await Promise.all(mcq_ids);
+        new_mcq_ids = await Promise.all(new_mcq_ids);
         const resolvedMcqs = await Promise.all(mcqs_array);
         // console.log("mcqs_array: ", resolvedMcqs)
-        resolvedMcqs.map((mcq) => {mcq.checked = false;})
+        resolvedMcqs.map((mcq) => {
+          mcq.checked = false;
+        });
 
-        for(let j = 0; j < indexes.length; j++){
-          resolvedMcqs[indexes[j]].highlight = true
+        for (let j = 0; j < indexes.length; j++) {
+          resolvedMcqs[indexes[j]].highlight = true;
         }
 
         // console.log("mcqs_array after adding checked: ", resolvedMcqs)
-        console.log("updated mcqs in regen: ", mcq_ids)
-        console.log("prevmcqIDS in regen: ", [...prevMCQsID, ...new_mcq_ids])
-        setMcqIDs(mcq_ids)
-        setPrevMCQsID([...prevMCQsID, ...new_mcq_ids])
+        console.log("updated mcqs in regen: ", mcq_ids);
+        console.log("prevmcqIDS in regen: ", [...prevMCQsID, ...new_mcq_ids]);
+        setMcqIDs(mcq_ids);
+        setPrevMCQsID([...prevMCQsID, ...new_mcq_ids]);
         setMCQs(resolvedMcqs);
         setObjectiveQuestions(resolvedMcqs);
         // console.log("ids of current questions: ", ids_array)
-  
+
         setLoading({
           show: false,
           message: "",
         });
-        deleteCurrentQuestions(mcqs_to_regen_oq_ids)
-  
-      }
-      catch (err) {
-        if(err.response.status === 503){
-          alert(err.response.data.message)
+        deleteCurrentQuestions(mcqs_to_regen_oq_ids);
+      } catch (err) {
+        if (err.response.status === 503) {
+          alert(err.response.data.message);
           setLoading({
             show: false,
             message: "",
           });
-        }
-        else{
+        } else {
           console.log("Error in regenerating Question: ", err);
-          setLoading({error: "Error in regenerating Question."})
+          setLoading({ error: "Error in regenerating Question." });
         }
       }
     }
-
   }
-  
 
-  const handleGetQuestions = async() => {
-    console.log("randomPaperConfig in handleGetQuestions: ", randomPaperConfig)
-    if(btn_call === "Generate Random Paper"){
+  const handleGetQuestions = async () => {
+    console.log("randomPaperConfig in handleGetQuestions: ", randomPaperConfig);
+    if (btn_call === "Generate Random Paper") {
       if (
         randomPaperConfig.no_of_easy === "" ||
         randomPaperConfig.no_of_medium === "" ||
@@ -564,11 +621,12 @@ const MCQTable = ({
         return;
       }
     }
-    if(
+    if (
       randomPaperConfig.no_of_easy < 0 ||
       randomPaperConfig.no_of_medium < 0 ||
-      randomPaperConfig.no_of_hard < 0){
-        alert("No of questions can't be negative");
+      randomPaperConfig.no_of_hard < 0
+    ) {
+      alert("No of questions can't be negative");
       return;
     }
 
@@ -578,61 +636,66 @@ const MCQTable = ({
 
     // reset_highlight()
 
-    let mcqs_ids_array = []
-    for(let i = 0; i < mcqs.length; i++){
-      mcqs_ids_array = [...mcqs_ids_array, mcqs[i].oq_id]
+    let mcqs_ids_array = [];
+    for (let i = 0; i < mcqs.length; i++) {
+      mcqs_ids_array = [...mcqs_ids_array, mcqs[i].oq_id];
     }
-    console.log("mcqs_ids_array: ", mcqs_ids_array)
+    console.log("mcqs_ids_array: ", mcqs_ids_array);
     // if (mcqs_ids_array.length > 0) {deleteCurrentQuestions(mcqs_ids_array)}
 
-    try{
-      const res = await axios.post("/api/paper/get_questions_databank", {randomPaperConfig, prevMCQsID})
-      console.log("res from get_questions_databank: ", res.data)
+    try {
+      const res = await axios.post("/api/paper/get_questions_databank", {
+        randomPaperConfig,
+        prevMCQsID,
+      });
+      console.log("res from get_questions_databank: ", res.data);
 
-      let ids_array = []
-      let mcqs_array = []
+      let ids_array = [];
+      let mcqs_array = [];
       let mmcq;
 
       for (let i = 0; i < res.data.length; i++) {
-        ids_array = [...ids_array, res.data[i].id]
-        mmcq = addQuestion(i, res.data[i])
-        mcqs_array = [...mcqs_array, mmcq]
+        ids_array = [...ids_array, res.data[i].id];
+        mmcq = addQuestion(i, res.data[i]);
+        mcqs_array = [...mcqs_array, mmcq];
       }
       const resolvedMcqs = await Promise.all(mcqs_array);
-      console.log("mcqs_array: ", resolvedMcqs)
-      resolvedMcqs.map((mcq) => {mcq.checked = false})
-      console.log("mcqs_array after adding checked: ", resolvedMcqs)
-      setPrevMCQsID([...prevMCQsID, ...ids_array])
-      setMcqIDs(ids_array)
+      console.log("mcqs_array: ", resolvedMcqs);
+      resolvedMcqs.map((mcq) => {
+        mcq.checked = false;
+      });
+      console.log("mcqs_array after adding checked: ", resolvedMcqs);
+      setPrevMCQsID([...prevMCQsID, ...ids_array]);
+      setMcqIDs(ids_array);
       setMCQs(resolvedMcqs);
       setObjectiveQuestions(resolvedMcqs);
-      console.log("ids_array: ", ids_array)
+      console.log("ids_array: ", ids_array);
 
       setLoading({
         show: false,
         message: "",
       });
 
-      if (mcqs_ids_array.length > 0) {deleteCurrentQuestions(mcqs_ids_array)}
+      if (mcqs_ids_array.length > 0) {
+        deleteCurrentQuestions(mcqs_ids_array);
+      }
       setAdding(false);
       setControl(false);
       setControl_2(true);
       // reset()
-    }
-    catch (err) {
-      if(err.response.status === 503){
-        alert(err.response.data.message)
+    } catch (err) {
+      if (err.response.status === 503) {
+        alert(err.response.data.message);
         setLoading({
           show: false,
           message: "",
         });
-      }
-      else{
+      } else {
         console.log("error in handleGetQuestions: ", err);
-        setLoading({error: "Error in Fetching Question."})
+        setLoading({ error: "Error in Fetching Question." });
       }
     }
-  }
+  };
 
   const handleAddMCQ = async () => {
     if (
@@ -648,7 +711,7 @@ const MCQTable = ({
       return;
     }
 
-    if(btn_call === "Create Question"){
+    if (btn_call === "Create Question") {
       if (
         currentMCQ.difficulty === "" ||
         currentMCQ.course === "" ||
@@ -670,26 +733,28 @@ const MCQTable = ({
     });
 
     try {
-      setAuthority(currentMCQ.authority)
+      setAuthority(currentMCQ.authority);
       const newMCQ = await axios.post(
         "/api/faculty/paper_creation/add_objective",
         {
           btn_call,
-          question_info: {paper_id: paperId,
-          question: currentMCQ.question,
-          answers: currentMCQ.options.toString(),
-          correct_answer: currentMCQ.correct_answer,
-          marks: currentMCQ.marks,
-          timeAllowed: currentMCQ.timeAllowed || 60,
-          authority: currentMCQ.authority,
-          difficulty: currentMCQ.difficulty,
-          course: currentMCQ.course,
-          subject: currentMCQ.subject,
-          topic: currentMCQ.topic,
-          type: currentMCQ.type}
+          question_info: {
+            paper_id: paperId,
+            question: currentMCQ.question,
+            answers: currentMCQ.options.toString(),
+            correct_answer: currentMCQ.correct_answer,
+            marks: currentMCQ.marks,
+            timeAllowed: currentMCQ.timeAllowed || 60,
+            authority: currentMCQ.authority,
+            difficulty: currentMCQ.difficulty,
+            course: currentMCQ.course,
+            subject: currentMCQ.subject,
+            topic: currentMCQ.topic,
+            type: currentMCQ.type,
+          },
         }
       );
-      console.log("got response of addMCQ:", newMCQ)
+      console.log("got response of addMCQ:", newMCQ);
       setLoading({
         show: false,
         message: "",
@@ -697,7 +762,9 @@ const MCQTable = ({
       newMCQ.data.options = newMCQ.data.answers.split(",");
       setMultipleOptions(false);
       setMCQs([...mcqs, newMCQ.data]);
-      btn_call === "Create Question" ? "" : setObjectiveQuestions([...mcqs, newMCQ.data]);
+      btn_call === "Create Question"
+        ? ""
+        : setObjectiveQuestions([...mcqs, newMCQ.data]);
       setCurrentMCQ({
         question: "",
         options: ["", "", "", ""],
@@ -710,7 +777,7 @@ const MCQTable = ({
         subject: selectedSubject,
         topic: selectedTopic,
         type: "objective",
-        checked: false
+        checked: false,
       });
       setAdding(false);
       // reset()
@@ -727,7 +794,7 @@ const MCQTable = ({
       setEditing(true);
       setIndex(index);
       setCurrentMCQ(mcqs[index]);
-      setSelectedDifficulty(mcqs[index].difficulty)
+      setSelectedDifficulty(mcqs[index].difficulty);
       // scroll to top
       window.scrollTo(0, 0);
       //if edited mcq is correct anser, then we need to update correct answer
@@ -752,12 +819,12 @@ const MCQTable = ({
       return;
     }
 
-    if(currentMCQ.marks === 0){
+    if (currentMCQ.marks === 0) {
       alert("Marks can't be zero");
       return;
     }
 
-    if(btn_call === "Create Question"){
+    if (btn_call === "Create Question") {
       if (
         currentMCQ.difficulty === "" ||
         currentMCQ.course === "" ||
@@ -778,10 +845,10 @@ const MCQTable = ({
       message: "Updating Question",
     });
 
-    console.log("currentMCQ in edit question: ", currentMCQ );
+    console.log("currentMCQ in edit question: ", currentMCQ);
     const newMCQ = await axios.post("/api/faculty/edit_objective", {
       btn_call,
-      question_info:{
+      question_info: {
         oq_id: mcqs[index].oq_id,
         id: mcqs[index].id,
         paper_id: paperId,
@@ -794,42 +861,39 @@ const MCQTable = ({
         difficulty: currentMCQ.difficulty,
         course: currentMCQ.course,
         subject: currentMCQ.subject,
-        topic: currentMCQ.topic
-      }
+        topic: currentMCQ.topic,
+      },
     });
 
     console.log(newMCQ.data, "newMCQ");
-    console.log("index: ", index)
+    console.log("index: ", index);
 
     if (newMCQ.status === 200) {
       setLoading({});
       const newMCQs = [...mcqs];
-      if(btn_call !== "Generate Random Paper"){
+      if (btn_call !== "Generate Random Paper") {
         const newWithOptions = {
           options: newMCQ.data.answers.split(","),
           ...newMCQ.data,
         };
         newMCQs[index] = newWithOptions;
-      }
-      else if(btn_call === "Generate Random Paper"){
+      } else if (btn_call === "Generate Random Paper") {
         newMCQs[index] = newMCQ.data;
       }
 
-      
       // const newWithOptions = {
       //   options: newMCQ.data.answers.split(","),
       //   ...newMCQ.data,
       // };
       // newMCQs[index] = newWithOptions;
-      
 
-      console.log("newMCQs in edit: ", newMCQs)
+      console.log("newMCQs in edit: ", newMCQs);
       setMCQs(newMCQs);
-      console.log("new mcqs after edit: ", mcqs)
+      console.log("new mcqs after edit: ", mcqs);
       btn_call === "Create Question" ? "" : setObjectiveQuestions(newMCQs);
       // setObjectiveQuestions(newMCQs);
       setMultipleOptions(false);
-      if(btn_call !== "Create Question"){
+      if (btn_call !== "Create Question") {
         setCurrentMCQ({
           question: "",
           options: ["", "", "", ""],
@@ -842,7 +906,7 @@ const MCQTable = ({
           subject: selectedSubject,
           topic: selectedTopic,
           type: "objective",
-          checked: false
+          checked: false,
         });
       }
       setEditing(false);
@@ -862,7 +926,7 @@ const MCQTable = ({
     const res = await axios.post("/api/faculty/remove_objective", {
       btn_call,
       oq_id: mcqs[index].oq_id,
-      id: mcqs[index].id
+      id: mcqs[index].id,
     });
 
     if (res.status === 200) {
@@ -870,7 +934,9 @@ const MCQTable = ({
       const newMCQs = [...mcqs];
       newMCQs.splice(index, 1);
       setMCQs(newMCQs);
-      btn_call === "Create Question" || btn_call === "Generate Random Paper" ? "" : setObjectiveQuestions(newMCQs);
+      btn_call === "Create Question" || btn_call === "Generate Random Paper"
+        ? ""
+        : setObjectiveQuestions(newMCQs);
       // setObjectiveQuestions(newMCQs);
     } else {
       setLoading({
@@ -917,131 +983,190 @@ const MCQTable = ({
 
   return (
     <div className="flex font-poppins flex-col items-center p-6">
-      <Spinner loading={loading}/>
+      <Spinner loading={loading} />
 
-      {control_3 && <Replace_Modal mcqs={mcqs} setMCQs={setMCQs} prevMCQsID={prevMCQsID} setPrevMCQsID={setPrevMCQsID} mcqIDs={mcqIDs} setMcqIDs={setMcqIDs} question={foucs_question} addQuestion={addQuestion} setControl_3={setControl_3} setFocusQuestion={setFocusQuestion} type={"objective"}/>}
+      {control_3 && (
+        <Replace_Modal
+          mcqs={mcqs}
+          setMCQs={setMCQs}
+          prevMCQsID={prevMCQsID}
+          setPrevMCQsID={setPrevMCQsID}
+          mcqIDs={mcqIDs}
+          setMcqIDs={setMcqIDs}
+          question={foucs_question}
+          addQuestion={addQuestion}
+          setControl_3={setControl_3}
+          setFocusQuestion={setFocusQuestion}
+          type={"objective"}
+        />
+      )}
 
-      {!editing && 
-      <div className="w-3/12 flex flex-col justify-center gap-y-4">
-        {!control && <button
-          onClick={() => {
-            if (!adding && !editing) {
-              if (btn_call === "Generate Random Paper"){
-                getCoursesList()
-                setControl(true)
-              }
-              else{
-                getCoursesList()
-                setAdding(true);
-                setCurrentMCQ({...currentMCQ, authority: authority})
-              }
-            } else {
-              alert(
-                "Please save or cancel the current edit or add operation before editing another question."
-              );
-            }
-          }}
-          className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
-        >
-          {btn_call === "Generate Random Paper" ? "Load MCQs from Data Bank" : "Add MCQ"}
-        </button>}
-        
-        {!control && control_2 && <button
-          onClick={handleRegenQuestions}
-          className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
-        >
-          Regenerate Selected Questions
-        </button>}
-
-      </div>}
-
-      {btn_call === "Create Question" && modalControl &&
-      <div className="w-full h-full backdrop-blur bg-black/50 fixed inset-0 flex items-center justify-center">
-        <Info_Modal 
-          difficultys={difficultys} 
-          courses={courses} 
-          subjects={subjects}
-          topics={topics}
-          handleSelect={handleSelect}
-          selectedDifficulty={selectedDifficulty}
-          selectedCourse={selectedCourse}
-          selectedSubject={selectedSubject}
-          selectedTopic={selectedTopic}
-          btn_call={btn_call}
-          setModalControl={setModalControl}/>
-      </div>}
-
-      {control && 
-      <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl flex flex-col justify-center">
-        <div className="flex justify-between">
-          <h2 className="text-xl font-bold mb-4">
-            Add MCQs
-          </h2>
-          <div className="rounded-full text-white bg-red-500 my-auto flex justify-between items-center p-2 cursor-pointer">
+      {!editing && (
+        <div className="w-3/12 flex flex-col justify-center gap-y-4">
+          {!control && (
             <button
               onClick={() => {
-                setEditing(false);
-                setAdding(false);
-                setControl(false)
-                setCurrentMCQ({
-                  question: "",
-                  options: ["", "", "", ""],
-                  correct_answer: "",
-                  marks: 1,
-                  authority: "",
-                  timeAllowed: currentMCQ.timeAllowed || 60,
-                  difficulty: selectedDifficulty,
-                  course: selectedCourse,
-                  subject: selectedSubject,
-                  topic: selectedTopic,
-                  type: "objective"
-                })
-                setRandomPaperConfig({
-                  no_of_easy: 3,
-                  no_of_medium: 3,
-                  no_of_hard: 3,
-                  course: selectedCourse,
-                  subject: selectedSubject,
-                  topic: selectedTopic,
-                  type: "objective"  
-                })
+                if (!adding && !editing) {
+                  if (btn_call === "Generate Random Paper") {
+                    getCoursesList();
+                    setControl(true);
+                  } else {
+                    getCoursesList();
+                    setAdding(true);
+                    setCurrentMCQ({ ...currentMCQ, authority: authority });
+                  }
+                } else {
+                  alert(
+                    "Please save or cancel the current edit or add operation before editing another question."
+                  );
+                }
               }}
+              className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
             >
-              <ImCross />
+              {btn_call === "Generate Random Paper"
+                ? "Load MCQs from Data Bank"
+                : "Add MCQ"}
             </button>
-          </div>
+          )}
+
+          {!control && control_2 && (
+            <button
+              onClick={handleRegenQuestions}
+              className="bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
+            >
+              Regenerate Selected Questions
+            </button>
+          )}
         </div>
+      )}
 
-        <div className="mb-10 mt-3">
-          <p className="block mb-2 font-bold">No of Questions</p>
-          <div className="flex flex-row gap-x-4">
-            <NoOfQuestions label={"Easy"} id={"no_of_easy"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.no_of_easy}/>
-            <NoOfQuestions label={"Medium"} id={"no_of_medium"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.no_of_medium}/>
-            <NoOfQuestions label={"Hard"} id={"no_of_hard"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.no_of_hard}/>
+      {btn_call === "Create Question" && modalControl && (
+        <div className="w-full h-full backdrop-blur bg-black/50 fixed inset-0 flex items-center justify-center">
+          <Info_Modal
+            difficultys={difficultys}
+            courses={courses}
+            subjects={subjects}
+            topics={topics}
+            handleSelect={handleSelect}
+            selectedDifficulty={selectedDifficulty}
+            selectedCourse={selectedCourse}
+            selectedSubject={selectedSubject}
+            selectedTopic={selectedTopic}
+            btn_call={btn_call}
+            setModalControl={setModalControl}
+          />
+        </div>
+      )}
+
+      {control && (
+        <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl flex flex-col justify-center">
+          <div className="flex justify-between">
+            <h2 className="text-xl font-bold mb-4">Add MCQs</h2>
+            <div className="rounded-full text-white bg-red-500 my-auto flex justify-between items-center p-2 cursor-pointer">
+              <button
+                onClick={() => {
+                  setEditing(false);
+                  setAdding(false);
+                  setControl(false);
+                  setCurrentMCQ({
+                    question: "",
+                    options: ["", "", "", ""],
+                    correct_answer: "",
+                    marks: 1,
+                    authority: "",
+                    timeAllowed: currentMCQ.timeAllowed || 60,
+                    difficulty: selectedDifficulty,
+                    course: selectedCourse,
+                    subject: selectedSubject,
+                    topic: selectedTopic,
+                    type: "objective",
+                  });
+                  setRandomPaperConfig({
+                    no_of_easy: 3,
+                    no_of_medium: 3,
+                    no_of_hard: 3,
+                    course: selectedCourse,
+                    subject: selectedSubject,
+                    topic: selectedTopic,
+                    type: "objective",
+                  });
+                }}
+              >
+                <ImCross />
+              </button>
+            </div>
           </div>
 
-        </div>
+          <div className="mb-10 mt-3">
+            <p className="block mb-2 font-bold">No of Questions</p>
+            <div className="flex flex-row gap-x-4">
+              <NoOfQuestions
+                label={"Easy"}
+                id={"no_of_easy"}
+                handleChange={handleNewQustionInputChange}
+                value={randomPaperConfig.no_of_easy}
+              />
+              <NoOfQuestions
+                label={"Medium"}
+                id={"no_of_medium"}
+                handleChange={handleNewQustionInputChange}
+                value={randomPaperConfig.no_of_medium}
+              />
+              <NoOfQuestions
+                label={"Hard"}
+                id={"no_of_hard"}
+                handleChange={handleNewQustionInputChange}
+                value={randomPaperConfig.no_of_hard}
+              />
+            </div>
+          </div>
 
-        <div className="mb-10 gap-x-4 flex justify-between">
-          {/* <NewQuestionInput label={"Course"} options={["", "C1", "C2", "C3", "C4"]} id={"course"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.course} btn_call={btn_call}/>
+          <div className="mb-10 gap-x-4 flex justify-between">
+            {/* <NewQuestionInput label={"Course"} options={["", "C1", "C2", "C3", "C4"]} id={"course"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.course} btn_call={btn_call}/>
           <NewQuestionInput label={"Subject"} options={["", "ABC", "EFG", "HIJ"]} id={"subject"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.subject} btn_call={btn_call}/>
           <NewQuestionInput label={"Topic"} options={["", "T1", "T2", "T3", "T4", "T5", "T6", "T7"]} id={"topic"} handleChange={handleNewQustionInputChange} value={randomPaperConfig.topic} btn_call={btn_call}/> */}
-          
-          {/* <NewQuestionInput label={"Difficulty"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/> */}
-          <NewQuestionInput label={"Course"} options={courses} id={"course"} handleChange={(e)=>handleSelect(e)} value={selectedCourse} btn_call={btn_call}/>
-          <NewQuestionInput label={"Subject"} options={subjects} id={"subject"} handleChange={(e)=>handleSelect(e)} value={selectedSubject} btn_call={btn_call}/>
-          <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={(e)=>handleSelect(e)} value={selectedTopic} btn_call={btn_call}/>
+
+            {/* <NewQuestionInput label={"Difficulty"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/> */}
+            <NewQuestionInput
+              label={"Course"}
+              options={courses}
+              id={"course"}
+              handleChange={(e) => handleSelect(e)}
+              value={selectedCourse}
+              btn_call={btn_call}
+            />
+            <NewQuestionInput
+              label={"Subject"}
+              options={subjects}
+              id={"subject"}
+              handleChange={(e) => handleSelect(e)}
+              value={selectedSubject}
+              btn_call={btn_call}
+            />
+            <NewQuestionInput
+              label={"Topic"}
+              options={topics}
+              id={"topic"}
+              handleChange={(e) => handleSelect(e)}
+              value={selectedTopic}
+              btn_call={btn_call}
+            />
+          </div>
+
+          {btn_call === "Generate Random Paper" && (
+            <h1 className="text-sm pl-2">
+              Note: Hold Ctrl for multiple select
+            </h1>
+          )}
+
+          <button
+            className="mt-5 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700 w-48 self-center"
+            onClick={handleGetQuestions}
+          >
+            Get Questions
+          </button>
         </div>
-
-        {btn_call === "Generate Random Paper" && <h1 className="text-sm pl-2">Note: Hold Ctrl for multiple select</h1>}
-
-        <button 
-        className="mt-5 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700 w-48 self-center"
-        onClick={handleGetQuestions}>
-          Get Questions
-        </button>
-        
-      </div>}
+      )}
 
       {(editing || adding) && (
         <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl ">
@@ -1064,7 +1189,7 @@ const MCQTable = ({
                     difficulty: selectedDifficulty,
                     course: selectedCourse,
                     subject: selectedSubject,
-                    topic: selectedTopic
+                    topic: selectedTopic,
                   });
                 }}
               >
@@ -1167,27 +1292,33 @@ const MCQTable = ({
                 onChange={handleTimeAllowedChange}
               />
             )} */}
-            
+
             <div className="flex flex-col w-full mt-6">
               {/* <div className="w-full"> */}
-                  <label className="block mb-2">Difficulty Level</label>
-                  <select
-                  className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
-                  id="difficulty"
-                  onChange={handleSelect}
-                  value={selectedDifficulty}
-                  // value={btn_call === "Create Question" ? selectedDifficulty : currentMCQ.difficulty}
+              <label className="block mb-2">Difficulty Level</label>
+              <select
+                className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+                id="difficulty"
+                onChange={handleSelect}
+                value={selectedDifficulty}
+                // value={btn_call === "Create Question" ? selectedDifficulty : currentMCQ.difficulty}
+              >
+                {difficultys.map((option, index) => (
+                  <option
+                    key={index}
+                    disabled={option === "" ? true : false}
+                    value={option}
                   >
-                      {difficultys.map((option, index) => (
-                          <option key={index} disabled={option === "" ? true : false} value={option}>{option === "" ? "Select option" : option}</option>
-                      ))}
-                  </select>
+                    {option === "" ? "Select option" : option}
+                  </option>
+                ))}
+              </select>
               {/* </div> */}
             </div>
 
             <div className="flex flex-col w-full mt-6">
               <label htmlFor="authority">Authority</label>
-              <input 
+              <input
                 type="text"
                 id="authority"
                 value={currentMCQ.authority}
@@ -1195,17 +1326,16 @@ const MCQTable = ({
                 className="mt-2 bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
               />
             </div>
-            
           </div>
 
           {/* {btn_call === "Create Question" && <div className="mb-10 gap-x-4 flex justify-between"> */}
-            
-            {/* <NewQuestionInput label={"Difficulty Level"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/>
+
+          {/* <NewQuestionInput label={"Difficulty Level"} options={difficultys} id={"difficulty"} handleChange={(e)=>handleSelect(e)} value={selectedDifficulty} btn_call={btn_call}/>
             <NewQuestionInput label={"Course"} options={courses} id={"course"} handleChange={(e)=>handleSelect(e)} value={selectedCourse} btn_call={btn_call}/>
             <NewQuestionInput label={"Subject"} options={subjects} id={"subject"} handleChange={(e)=>handleSelect(e)} value={selectedSubject} btn_call={btn_call}/>
             <NewQuestionInput label={"Topic"} options={topics} id={"topic"} handleChange={(e)=>handleSelect(e)} value={selectedTopic} btn_call={btn_call}/> */}
 
-            {/* <Info_Modal 
+          {/* <Info_Modal 
               difficultys={difficultys} 
               courses={courses} 
               subjects={subjects}
@@ -1238,33 +1368,44 @@ const MCQTable = ({
         </div>
       )}
       <div className="mt-10 w-full pr-10 flex justify-end gap-x-5">
-        
-        {btn_call === "Create Question" ? 
-        <Link href="/faculty" className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8">Back</Link>
-        : 
-        <button
-          type="button"
-          className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
-          onClick={() => {
-            setActive(1);
-            editExam();
-          }}
-        >
-          Back
-        </button>}
+        {btn_call === "Create Question" ? (
+          <Link
+            href="/faculty"
+            className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
+          >
+            Back
+          </Link>
+        ) : (
+          <button
+            type="button"
+            className="border-2 border-[#FEC703] hover:bg-[#FEAF03] hover:text-white font-medium text-primary-black rounded-lg py-3 px-8"
+            onClick={() => {
+              setActive(1);
+              editExam();
+            }}
+          >
+            Back
+          </button>
+        )}
 
-        {btn_call === "Create Question" ? 
-        <Link href="/faculty" className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8">Done</Link>
-        : 
-        <button
-          type="submit"
-          className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
-          onClick={() => {
-            updateMarks();
-          }}
-        >
-          Save and Proceed
-        </button>}
+        {btn_call === "Create Question" ? (
+          <Link
+            href="/faculty"
+            className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+          >
+            Done
+          </Link>
+        ) : (
+          <button
+            type="submit"
+            className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8"
+            onClick={() => {
+              updateMarks();
+            }}
+          >
+            Save and Proceed
+          </button>
+        )}
       </div>
       {mcqs.length > 0 && (
         <>
@@ -1283,27 +1424,37 @@ const MCQTable = ({
                 <th className="px-4 py-2">Marks</th>
                 {freeFlow ? null : <th className="px-4 py-2">Time Allowed</th>}
                 <th className="px-4 py-2">Edit</th>
-                {btn_call === "Generate Random Paper" 
-                && <th className="px-4 py-2">Select</th>}
+                {btn_call === "Generate Random Paper" && (
+                  <th className="px-4 py-2">Select</th>
+                )}
                 <th className="px-4 py-2">Delete</th>
                 <th className="px-4 py-2">Replace</th>
               </tr>
             </thead>
             <tbody>
               {mcqs.map((mcq, index) => (
-                <tr key={index} className={`border-t ${mcq.highlight && "bg-blue-50"}`}>
+                <tr
+                  key={index}
+                  className={`border-t ${mcq.highlight && "bg-blue-50"}`}
+                >
                   <td className="px-4 py-2">{index + 1}</td>
                   <td className="px-4 py-2">{mcq.question}</td>
                   <td className="px-4 py-2">
                     <ol className="list-[lower-alpha] list-inside">
                       {mcq.options?.map((option, index) => (
-                        <li key={index}>{option.replace(specialSequence, ",")}</li>
+                        <li key={index}>
+                          {option.replace(specialSequence, ",")}
+                        </li>
                       ))}
                     </ol>
                   </td>
-                  <td className="px-4 py-2">{mcq.correct_answer.replace(specialSequence, ",")}</td>
+                  <td className="px-4 py-2">
+                    {mcq.correct_answer.replace(specialSequence, ",")}
+                  </td>
                   <td className="px-4 py-2 text-center">{mcq.difficulty}</td>
-                  {btn_call && <td className="px-4 py-2 text-center">{`${mcq.topic}`}</td>}
+                  {btn_call && (
+                    <td className="px-4 py-2 text-center">{`${mcq.topic}`}</td>
+                  )}
                   <td className="px-4 py-2 text-center">{mcq.authority}</td>
                   <td className="px-4 py-2 text-center">{mcq.marks}</td>
                   {freeFlow ? null : (
@@ -1317,10 +1468,17 @@ const MCQTable = ({
                       <MdEdit />
                     </button>
                   </td>
-                  {btn_call === "Generate Random Paper" && 
-                  <td className="px-4 py-2 text-center">
-                    <input type="checkbox" onClick={() => {handleSelectMCQ(index)}} checked={mcq.checked}/>
-                  </td>}
+                  {btn_call === "Generate Random Paper" && (
+                    <td className="px-4 py-2 text-center">
+                      <input
+                        type="checkbox"
+                        onClick={() => {
+                          handleSelectMCQ(index);
+                        }}
+                        checked={mcq.checked}
+                      />
+                    </td>
+                  )}
                   <td className="px-4 py-2">
                     <button
                       onClick={() => {
@@ -1332,7 +1490,12 @@ const MCQTable = ({
                     </button>
                   </td>
                   <td className="px-4 py-2">
-                    <button className="text-sm bg-blue-800 text-white px-3 py-2 rounded" onClick={(event) => {handleReplaceBtn(event, mcq)}}>
+                    <button
+                      className="text-sm bg-blue-800 text-white px-3 py-2 rounded"
+                      onClick={(event) => {
+                        handleReplaceBtn(event, mcq);
+                      }}
+                    >
                       Replace
                     </button>
                   </td>
@@ -1342,12 +1505,14 @@ const MCQTable = ({
           </table>
         </>
       )}
-      {!control && control_2 && !editing && <button
-        onClick={handleRegenQuestions}
-        className="mt-12 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
-      >
-        Regenerate Selected Questions
-      </button>}
+      {!control && control_2 && !editing && (
+        <button
+          onClick={handleRegenQuestions}
+          className="mt-12 bg-blue-800 text-white py-2 px-4 rounded hover:bg-blue-700"
+        >
+          Regenerate Selected Questions
+        </button>
+      )}
     </div>
   );
 };

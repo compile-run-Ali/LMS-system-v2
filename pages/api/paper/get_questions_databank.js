@@ -74,7 +74,7 @@ const handler = async (req, res) => {
             //getting count of each group of questions for regen
             for(let i = 0; i < unique_pairs.length; i++){
                 let key = JSON.stringify({course: unique_pairs[i].course, subject: unique_pairs[i].subject, topic: unique_pairs[i].topic, difficulty: unique_pairs[i].difficulty, type: unique_pairs[i].type});
-                console.log("length pair in map: ", grouped_questions[key].length)
+                console.log("length pair in map: ", grouped_questions[key].length,count_pair)
                 if(count_pair[i] < grouped_questions[key].length){
                     console.log("Not enough questions in DB to regenerate selected questions.")
                     res.status(503).json({message: "Not enough questions in DB to regenerate selected questions."})
@@ -116,8 +116,10 @@ const handler = async (req, res) => {
             let easy_questions = []
             let total_ids = [...req.body.prevMCQsID]
             for(let i = 0; i < req.body.randomPaperConfig.topic.length; i++){
-                console.log("topic: ", req.body.randomPaperConfig.topic[i])
-                
+                console.log("topic: ", req.body.randomPaperConfig.topic[i].split('-')[0])
+                console.log("topic: ", req.body.randomPaperConfig.topic[i].split('-')[1])
+                console.log("topic: ", req.body.randomPaperConfig.topic[i].split('-')[2])
+
                 const fetched_questions = await prisma.$queryRaw
                         `SELECT * FROM DataBankQuestion
                         WHERE difficulty = "Easy" AND
