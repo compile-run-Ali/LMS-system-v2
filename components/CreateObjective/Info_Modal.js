@@ -1,7 +1,10 @@
 import Link from "next/link"
 import NewQuestionInput from "./NewQuestionInput"
 
-export default function Info_Modal({difficultys, courses, subjects, topics, handleSelect, selectedDifficulty, selectedCourse, selectedSubject, selectedTopic, btn_call, setModalControl}){
+export default function Info_Modal({courses, subjects, topics, handleSelect, selectedCourse, selectedSubject, selectedTopic, btn_call, setModalControl}){
+    console.log("course in info modal: ", courses)
+    console.log("subjects in info modal: ", subjects)
+    console.log("topics in info modal: ", topics)
 
     function proceed(){
         if(btn_call === "Create Question"){

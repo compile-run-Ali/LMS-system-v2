@@ -169,7 +169,14 @@ const SubjectiveExam = ({
                   selectedCourse: selectedCourse
               }
           })
-          let subjects_names = subjectList.data.map((subject) => {return {name: subject.name, course: subject.course}})
+          let subjects_names = []
+          if (btn_call === "Generate Random Paper"){
+            subjects_names = subjectList.data.map((subject) => {return {name: subject.name, course: subject.course}})
+          }
+          else{
+            subjects_names = subjectList.data.map((subject) => {return subject.name})
+          }
+          
           console.log("subjects_names: ", [...subjects_names])
           setSubjects(["", ...subjects_names])
           // setSubjects([...subjects_names])
@@ -213,6 +220,8 @@ const SubjectiveExam = ({
           (option) => option.value
         )
         setSelectedCourse(selectedCourses)
+        setSelectedSubject(subjects[0])
+        setSelectedTopic("")
       }
       else if(event.target.id === "subject"){
         // setSelectedSubject(event.target.value)
@@ -220,6 +229,7 @@ const SubjectiveExam = ({
           (option) => option.value
         )
         setSelectedSubject(selectedSubjects)
+        setSelectedTopic(topics[0])
       }
       else if(event.target.id === "topic"){
         // setSelectedTopic(event.target.value)
@@ -1267,12 +1277,10 @@ const SubjectiveExam = ({
       {btn_call === "Create Question" && modalControl &&
         <div className="w-full h-full backdrop-blur bg-black/50 fixed inset-0 flex items-center justify-center">
           <Info_Modal 
-            difficultys={difficultys} 
             courses={courses} 
             subjects={subjects}
             topics={topics}
             handleSelect={handleSelect}
-            selectedDifficulty={selectedDifficulty}
             selectedCourse={selectedCourse}
             selectedSubject={selectedSubject}
             selectedTopic={selectedTopic}
@@ -1594,7 +1602,7 @@ const SubjectiveExam = ({
                 {btn_call === "Generate Random Paper" && 
                 <th className="px-4 py-2">Select</th>} 
                 <th className="px-4 py-2">Delete</th>
-                <th className="px-4 py-2">Replace</th>
+                {btn_call === "Generate Random Paper" && <th className="px-4 py-2">Replace</th>}
               </tr>
             </thead>
             <tbody>
@@ -1649,11 +1657,11 @@ const SubjectiveExam = ({
                           <MdDelete />
                         </button>
                       </td>
-                      <td className="px-4 py-2">
+                      {btn_call === "Generate Random Paper" && <td className="px-4 py-2">
                         <button className="text-sm bg-blue-800 text-white px-3 py-2 rounded" onClick={(event) => {handleReplaceBtn(event, subjective)}}>
                           Replace
                         </button>
-                      </td>
+                      </td>}
                     </tr>
                     {subjective.child_question
                       ?.sort((a, b) => a.questionnumber - b.questionnumber)
