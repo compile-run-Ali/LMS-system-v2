@@ -31,7 +31,7 @@ const StudentsTable = ({
   const [exam, setExam] = useState(examDetails);
   const [showShareModal, setShowShareModal] = useState(false);
   const session = useSession();
-  const user = session.data.user;
+  const user = session?.data?.user;
   const router = useRouter();
 
   const handlePrint = () => {
@@ -325,7 +325,7 @@ const StudentsTable = ({
             </th>
           </tr>
           <tr id="second-row" className="bg-blue-800 text-white font-medium ">
-            {user.level < 1 ? (
+            {user?.level < 1 ? (
               <React.Fragment>
                 <th className="px-4 py-2">Army Number</th>
                 <th className="px-4 py-2">Student Name</th>
@@ -354,7 +354,7 @@ const StudentsTable = ({
                   : "bg-gray-200"
               }`}
             >
-              {user.level < 1 ? (
+              {user?.level < 1 ? (
                 <React.Fragment>
                   <td
                     className={`px-4 py-2 border ${
@@ -433,10 +433,10 @@ const StudentsTable = ({
               >
                 {((student.student.status !== "Not Attempted" &&
                   exam.status !== "Result Locked") ||
-                  user.level < 1) && (
+                  user?.level < 1) && (
                   <Link
                     href={`/faculty/${
-                      user.level < 1 ? "print_results" : "mark_exam"
+                      user?.level < 1 ? "print_results" : "mark_exam"
                     }/${exam?.paper_id}/${student.student.p_number}`}
                   >
                     <button className="bg-blue-800 hover:bg-blue-700 text-white py-2 px-2 text-sm rounded ">
@@ -484,7 +484,7 @@ const StudentsTable = ({
       </table>
       {!isPrinter && (
         <div className="flex justify-end py-4 space-x-10 mt-10">
-          {exam.status === "Result Locked" && user.level >= 4 && (
+          {exam.status === "Result Locked" && user?.level >= 4 && (
             <button
               className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
               onClick={() => {
@@ -495,7 +495,7 @@ const StudentsTable = ({
               <MdShare className="ml-2 mb-0.5 inline" />
             </button>
           )}
-          {user.level < 1 && (
+          {user?.level < 1 && (
             <button
               className={`bg-blue-800 hover:bg-blue-700 text-white text-lg py-3 px-4 rounded-md`}
               onClick={handleExport}

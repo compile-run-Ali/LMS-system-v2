@@ -12,7 +12,7 @@ const ShareModal = ({ showModal, setShowModal, exam }) => {
   const [loading, setLoading] = useState({});
 
   const session = useSession();
-  const user = session.data.user;
+  const user = session?.data?.user;
 
   useEffect(() => {
     axios
@@ -21,7 +21,7 @@ const ShareModal = ({ showModal, setShowModal, exam }) => {
         setFacultyDetails(
           res.data?.filter(
             (faculty) =>
-              faculty.faculty_id !== user.id &&
+              faculty.faculty_id !== user?.id &&
               (faculty.level === 2 ||
                 faculty.level === 3 ||
                 faculty.level === 4)
@@ -51,7 +51,7 @@ const ShareModal = ({ showModal, setShowModal, exam }) => {
       .post("/api/faculty/share_exam", {
         faculty_ids: selectedFacultyIds,
         exam: exam,
-        shared_by: user.name,
+        shared_by: user?.name,
       })
       .then((res) => {
         console.log(res.data);

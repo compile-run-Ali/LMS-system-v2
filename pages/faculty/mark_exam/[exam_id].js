@@ -13,6 +13,7 @@ const MarkingPage = () => {
   const [loading, setLoading] = useState(true);
 
   const { exam_id,selectedCourse } = router.query;
+  console.log(selectedCourse,"selectedCourse")
 
   const fetchStudents = async () => {
     // first fetch students
@@ -88,7 +89,7 @@ const MarkingPage = () => {
   return (
     <BaseLayout title={"Mark Exam"}>
       <DashboardLayout>
-        {loading ? (
+        {loading && !selectedCourse ? (
           <Loader />
         ) : (
           <MarkingDashboard
