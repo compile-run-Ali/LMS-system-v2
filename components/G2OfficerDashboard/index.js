@@ -1,105 +1,57 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import Table from "./Table";
 import Spinner from "../Loader/Spinner";
 import Loader from "../Loader";
-import { useSession } from "next-auth/react";
 
-const G2OfficerDashboard = () => {
-  const session = useSession();
-
+const G2OfficerDashboard = ({ exams_data, paperapproval_data, selectedCourse, setSelectedCourseDash }) => {
   const [exams, setExams] = useState([]);
-  const [spinning, setSpinner] = useState({});
-  const [loading, setLoading] = useState({});
-  const [selectedCourse, setSelectedCourse] = useState(null); // [course_code, course_name
-  const [courses, setCourses] = useState(null);
-  
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  console.log(exams_data, "exams_data");
   useEffect(() => {
-    if(selectedCourse !== "" && selectedCourse !== null && selectedCourse !== undefined){
-      console.log("in get_exams pre: ", selectedCourse)
-      setLoading(true);
-      axios
-        .get("/api/admin/paper/get_exams", {
-          params:{
-            faculty_id: session?.data?.user?.id,
-            course_code: selectedCourse
-          }
-        })
-        .then((res) => {
-          setLoading(false);
-          setExams(res.data.filter((exam) => exam.status === "Result Locked"));
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
-          setSpinner({
-            error: "Error in loading exams.",
-          });
-        });
+    if (exams_data && exams_data.length > 0) {
+      const sortedExams = exams_data?.sort((a, b) =>
+        a.course_name.localeCompare(b.course_name)
+      );
+      const uniqueCourses = [...new Map(sortedExams.map((exam) => [exam.course_code, exam])).values()];
+
+      setCourses(uniqueCourses);
+      const initialCourse = localStorage.getItem("selectedCourse") || (uniqueCourses[0]?.course_code || "");
+      setSelectedCourseDash(initialCourse);
+      setExams(sortedExams.filter((exam) => exam.course_code === initialCourse));
     }
-  }, [selectedCourse]);
+  }, [exams_data, selectedCourse, setSelectedCourseDash]);
 
-  useEffect(() => {
-    axios
-      .get("/api/admin/course/get_courses")
-      .then((res) => {
-        setCourses(res.data);
-        setSelectedCourse(res.data[0].course_code);
-      })
-      .catch((err) => {
-        console.log(err);
-        setSpinner({
-          error: "Error in loading courses.",
-        });
-      });
-  }, []);
-
-  if (loading) {
-    return <Loader />;
-  }
   const handleCourseChange = (e) => {
-    setSelectedCourse(e.target.value);
+    const newCourseCode = e.target.value;
+    setSelectedCourseDash(newCourseCode);
+    localStorage.setItem("selectedCourse", newCourseCode);
+
+    const courseExams = exams_data.filter((exam) => exam.course_code === newCourseCode);
+    setExams(courseExams);
   };
 
   return (
     <div className="px-10">
+      <Spinner loading={loading} />
+      <div className="text-4xl mt-10 mb-4 font-poppins">Print Results</div>
+      <h1 className="text-2xl font-poppins font-bold">Courses List:</h1>
       <select
         className="bg-white border rounded-md px-3 py-2"
         onChange={handleCourseChange}
         value={selectedCourse}
       >
-        {/* {courses && courses.length > 0 ? (
-          courses
-            .sort((a, b) =>
-              a.course.course_name.localeCompare(b.course.course_name)
-            )
-            .map((course, index) => (
-              <option key={index} value={course.course_code}>
-                {course.course_code} - {course.course_name}
-              </option>
-            ))
-        ) : (
-          <option value="">No Courses</option>
-        )} */}
-
-        {courses && courses.length > 0 ? (
-          courses
-            .sort((a, b) =>
-              a.course_name.localeCompare(b.course_name)
-            )
-            .map((course, index) => (
-              <option key={index} value={course.course_code}>
-                {course.course_code} - {course.course_name}
-              </option>
-            ))
+        {courses.length > 0 ? (
+          courses.map((course, index) => (
+            <option key={index} value={course.course_code}>
+              {course.course_code} - {course.course_name}
+            </option>
+          ))
         ) : (
           <option value="">No Courses</option>
         )}
-
       </select>
-      <Spinner loading={spinning} />
-      <div className="text-4xl mt-10 mb-4 font-poppins">Print Results</div>
-      <Table exams={exams} course = {selectedCourse} />
+      <Table exams={exams[0]} selectedCourse={selectedCourse} />
     </div>
   );
 };

@@ -12,7 +12,7 @@ const MarkingPage = () => {
   const [exam, setExam] = useState({});
   const [loading, setLoading] = useState(true);
 
-  const { exam_id } = router.query;
+  const { exam_id,selectedCourse } = router.query;
 
   const fetchStudents = async () => {
     // first fetch students
@@ -30,6 +30,7 @@ const MarkingPage = () => {
       "/api/student/paper/get_attempt_by_paper",
       {
         paperId: exam_id,
+        selectedCourse: selectedCourse,
       }
     );
 
@@ -94,6 +95,7 @@ const MarkingPage = () => {
             students_data={studentsData}
             exam_id={exam_id}
             exam={exam}
+            selectedCourse={selectedCourse}
           />
         )}
       </DashboardLayout>

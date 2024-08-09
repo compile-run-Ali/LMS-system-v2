@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 
 export default function ExamPage() {
   const router = useRouter();
-  const { exam_id } = router.query;
+  const { exam_id,selectedCourse } = router.query;
   const [examDetails, setExamDetails] = useState(null);
   const [objectiveQuestions, setObjectiveQuestions] = useState(null);
   const [subjectiveQuestions, setSubjectiveQuestions] = useState(null);
@@ -76,6 +76,7 @@ export default function ExamPage() {
             objectiveQuestions={objectiveQuestions}
             subjectiveQuestions={subjectiveQuestions}
             isEdit={true}
+            selectedCourse={selectedCourse}
           />
         )}
       </DashboardLayout>

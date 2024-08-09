@@ -29,7 +29,6 @@ export default function Paper() {
   const [score, setScore] = useState(0);
   const [IE, setIE] = useState(null);
   const [ObjDone, setObjDone] = useState(null);
-
   const fetchPaper = async () => {
     // fetch paper details from api
     const res = await axios.get(`/api/paper/${paper}`);
@@ -51,24 +50,36 @@ export default function Paper() {
           .split(";")
           .filter((item) => item.includes(`${paper}-time`))[0]
           .split("=")[1];
-        if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 || paperDetails?.paper_type==="IE" ) {
+        // if paperType exists then put in a vbariable
+        const paperType = document.cookie
+          .split(";")
+          .filter((item) => item.includes("paperType"))[0]
+          .split("=")[1];
+        if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 ) {
           setAttemptTime(timeLeft);
         }
-        else setObjAttempt(timeLeft);
+        else {
+          setObjAttempt(timeLeft);
+          console.log(paperType, "paper type")
+          if (paperType === "IE") {
+            console.log("peper type is IE so set attempt")
+            setAttemptTime(timeLeft)
+          }
+        }
       } else {
-        if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 || paperDetails?.paper_type==="IE") {
+        if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 ) {
           setAttemptTime(-100);
         }
         else setObjAttempt(-100);
       }
     } else {
-      if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 || paperDetails?.paper_type==="IE") {
+      if (ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 ) {
         setAttemptTime(-100);
       }
       else setObjAttempt(-100);
     }
   };
-  console.log(attemptTime, "time left");
+  console.log(attemptTime, "time left",objAttempt);
   const fetchAttemptOrCreateAttempt = async () => {
     let getAttempt;
     try {
@@ -83,7 +94,6 @@ export default function Paper() {
       if (getAttempt.data.status === "Attempted") {
         getTimeCookie();
       }
-
       if (
         localStorage.getItem(`paper ${paper}`) !== "null" &&
         localStorage.getItem(`paper ${paper}`) !== null
@@ -97,6 +107,7 @@ export default function Paper() {
         console.log("fetching paper details from api");
         fetchPaper();
       }
+
     } catch (err) {
       console.log(err);
       alert("Something went wrong!");
@@ -143,7 +154,6 @@ export default function Paper() {
 
     isObjective && setSubmitted(true);
   };
-
   useEffect(() => {
     if (session.status === "authenticated" && paper) {
       if (!paperAttempt) {
@@ -165,7 +175,6 @@ export default function Paper() {
             });
             setIE(res.data);
             setObjDone(true);
-            localStorage.setItem(`paper ${paper} student ${session.data.user.id} objDone`, "true");
           } catch (err) {
             console.log(err);
           }
@@ -180,6 +189,10 @@ export default function Paper() {
     localStorage.removeItem(`attempted_questions_${paper}`);
   };
   console.log(paperDetails?.subjective_questions, "abcd");
+  
+  
+  
+  
   const updateStatus = () => {
     //update spa status to Attempted
     const isObjective = paperDetails?.subjective_questions?.length === 0;
@@ -224,9 +237,7 @@ export default function Paper() {
     }
   }, [paperDetails]);
   useEffect(() => {
-    console.log("here",attemptTime)
     if ((attemptTime === -100||attemptTime===null) && paperDetails) {
-      console.log("here")
       setAttemptTime(paperDetails.duration * 60);
       return;
     }
@@ -244,6 +255,8 @@ export default function Paper() {
         document.cookie = `studentId=${
           session.data.user.id
         }; expires=${nowObj.toUTCString()}; path=/`;
+        // papertype
+        document.cookie = `paperType=${paperDetails?.paper_type}; expires=${nowObj.toUTCString()}; path=/`;
       }, 1000);
     } else if (
       objAttempt <= 0 &&
@@ -252,13 +265,10 @@ export default function Paper() {
       !ObjDone
     ) {
       console.log("obj attempt time is very high ", objAttempt);
-      //clearPaperFromLocal();
       handleSubmitObjective();
     }
-    // if(paperDetails?.paper_type==="IE"){
-    //   return
-    // }
-    if ( attemptTime > 0 &&(ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0 || paperDetails?.paper_type==="IE")) {
+
+    if ( attemptTime > 0 &&(ObjDone || localStorage.getItem(`paper ${paper} student ${session.data.user.id} objDone`) === "true" || paperDetails?.objective_questions?.length === 0)) {
       setTimeout(() => {
         setAttemptTime(attemptTime - 1);
         var now = new Date();
@@ -267,6 +277,8 @@ export default function Paper() {
         document.cookie = `studentId=${
           session.data.user.id
         }; expires=${now.toUTCString()}; path=/`;
+        // papertype
+        document.cookie = `paperType=${paperDetails?.paper_type}; expires=${now.toUTCString()}; path=/`;
       }, 1000);
     } else if (attemptTime <= 0 && attemptTime > -100 && attemptTime !== null) {
       console.log("attempt time is very high ", attemptTime);
@@ -279,6 +291,7 @@ export default function Paper() {
   if (!paperDetails) {
     return <Loader />;
   }
+  console.log(solveObjective,"solve",paperDetails)
 
   return (
     <BaseLayout>
@@ -298,7 +311,6 @@ export default function Paper() {
               attemptTime={attemptTime}
               startTime={startTime}
               paperId={paper}
-              studentId={session?.data?.user.id}
               setSubmitted={setSubmitted}
               updateStatus={updateStatus}
             />

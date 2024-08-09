@@ -14,7 +14,8 @@ export default function Exam({
   objectiveQuestions,
   isEdit,
   setActive,
-  btn_call
+  btn_call,
+  selectedCourse,
 }) {
   const session = useSession();
   const router = useRouter();
@@ -161,21 +162,22 @@ export default function Exam({
     date.setHours(date.getHours() + 5);
     return date.toISOString();
   };
-  console.log(exam, "exam")
+  console.log(exam, "exam");
   const editExam = () => {
-    console.log("in editExam, exam: ", exam)
+    console.log("in editExam, exam: ", exam);
     if (setActive) {
       setActive(1);
     }
     router.push({
-      pathname: `/faculty/create_exam/${exam.paper_type === "Objective"
-        ? "objective"
-        : exam.paper_type === "Subjective/Objective"
+      pathname: `/faculty/create_exam/${
+        exam.paper_type === "Objective"
+          ? "objective"
+          : exam.paper_type === "Subjective/Objective"
           ? "subjective"
           : exam.paper_type === "IE"
-            ? "ie"
-            : "word"
-        }`,
+          ? "ie"
+          : "word"
+      }`,
       query: {
         paper_id: exam.paper_id,
         is_edit: true,
@@ -196,10 +198,11 @@ export default function Exam({
       setLoading({});
 
       addComment({
-        comment: `Exam Submitted by ${session.data.user.name} to ${faculties.filter(
-          (faculty) => faculty.faculty_id === selectedFaculty
-        )[0].name
-          }`,
+        comment: `Exam Submitted by ${session.data.user.name} to ${
+          faculties.filter(
+            (faculty) => faculty.faculty_id === selectedFaculty
+          )[0].name
+        }`,
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
@@ -229,10 +232,11 @@ export default function Exam({
           const res = await axios.post(apiEndpoint, linkedData);
           console.log("linked paper sent forward");
           addComment({
-            comment: `Exam Sent Forward by ${session.data.user.name} to ${faculties.filter(
-              (faculty) => faculty.faculty_id === selectedFaculty
-            )[0].name
-              }`,
+            comment: `Exam Sent Forward by ${session.data.user.name} to ${
+              faculties.filter(
+                (faculty) => faculty.faculty_id === selectedFaculty
+              )[0].name
+            }`,
             faculty_id: session.data.user.id,
             paper_id: linkedId,
           });
@@ -306,10 +310,13 @@ export default function Exam({
           faculty_id: session.data.user.id,
           paper_id: exam.paper_id,
         });
-        const approveLinkedExam = await axios.post("/api/faculty/update_exam_status", {
-          paper_id: linkedId,
-          status: "unapproved",
-        });
+        const approveLinkedExam = await axios.post(
+          "/api/faculty/update_exam_status",
+          {
+            paper_id: linkedId,
+            status: "unapproved",
+          }
+        );
         if (approveLinkedExam.status === 200) {
           addComment({
             comment: `Exam Approved by ${session.data.user.name}`,
@@ -317,8 +324,6 @@ export default function Exam({
             paper_id: linkedId,
           });
         }
-
-
       }
     } catch (err) {
       console.log(err);
@@ -358,10 +363,13 @@ export default function Exam({
         paper_id: exam.paper_id,
       });
       if (linkedId) {
-        const sendBackLinked = await axios.post("/api/faculty/edit_paperapproval", {
-          paper_id: linkedId,
-          examofficer: null,
-        });
+        const sendBackLinked = await axios.post(
+          "/api/faculty/edit_paperapproval",
+          {
+            paper_id: linkedId,
+            examofficer: null,
+          }
+        );
         if (sendBackLinked.status === 200) {
           addComment({
             comment: `Exam Sent Back by ${session.data.user.name}`,
@@ -398,10 +406,11 @@ export default function Exam({
     });
     if (sendForward.status === 200) {
       addComment({
-        comment: `Exam Sent Forward by ${session.data.user.name} to ${faculties.filter(
-          (faculty) => faculty.faculty_id === selectedFaculty
-        )[0].name
-          }`,
+        comment: `Exam Sent Forward by ${session.data.user.name} to ${
+          faculties.filter(
+            (faculty) => faculty.faculty_id === selectedFaculty
+          )[0].name
+        }`,
         faculty_id: session.data.user.id,
         paper_id: exam.paper_id,
       });
@@ -419,10 +428,11 @@ export default function Exam({
           console.log("linked paper sent forward");
           if (res.status === 200) {
             addComment({
-              comment: `Exam Sent Forward by ${session.data.user.name} to ${faculties.filter(
-                (faculty) => faculty.faculty_id === selectedFaculty
-              )[0].name
-                }`,
+              comment: `Exam Sent Forward by ${session.data.user.name} to ${
+                faculties.filter(
+                  (faculty) => faculty.faculty_id === selectedFaculty
+                )[0].name
+              }`,
               faculty_id: session.data.user.id,
               paper_id: linkedId,
             });
@@ -522,31 +532,28 @@ export default function Exam({
               </span>
             </div>
             <div className="pl-20">
-              {
-                exam.paper_type === "Objective" ? (
-                  <React.Fragment>
-                    <span className=" font-medium">Exam Duration:</span>
-                    <span className="ml-2">{exam.objDuration} Minutes</span>
-                  </React.Fragment>
-                )
-                  :
-                  exam.paper_type === "Subjective/Objective" || "Word" && !"IE" ? (
-                    <React.Fragment>
-                      <span className=" font-medium">Objective Duration:</span>
-                      <span className="ml-2">{exam.objDuration} Minutes</span>
-                      <span className=" font-medium"><br />Subjective Duration:</span>
-                      <span className="ml-2">{exam.duration} Minutes</span>
-                    </React.Fragment>
-                  )
-
-                    :
-                    (
-                      <React.Fragment>
-                        <span className=" font-medium">Exam Duration:</span>
-                        <span className="ml-2">{exam.duration} Minutes</span>
-                      </React.Fragment>
-                    )
-              }
+              {exam.paper_type === "Objective" ? (
+                <React.Fragment>
+                  <span className=" font-medium">Exam Duration:</span>
+                  <span className="ml-2">{exam.objDuration} Minutes</span>
+                </React.Fragment>
+              ) : exam.paper_type === "Subjective/Objective" ||
+                ("Word" && !"IE") ? (
+                <React.Fragment>
+                  <span className=" font-medium">Objective Duration:</span>
+                  <span className="ml-2">{exam.objDuration} Minutes</span>
+                  <span className=" font-medium">
+                    <br />
+                    Subjective Duration:
+                  </span>
+                  <span className="ml-2">{exam.duration} Minutes</span>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <span className=" font-medium">Exam Duration:</span>
+                  <span className="ml-2">{exam.duration} Minutes</span>
+                </React.Fragment>
+              )}
             </div>
 
             <div className="pl-20">
@@ -780,7 +787,6 @@ export default function Exam({
                         // router.push("/");
                         approve();
                         router.push("/");
-
                       }}
                     >
                       Save and Approve
@@ -791,13 +797,16 @@ export default function Exam({
             )}
           </div>
         )}
-        {(session?.data?.user?.level === 1 || session?.data?.user?.level === 5) &&
+        {(session?.data?.user?.level === 1 ||
+          session?.data?.user?.level === 5) &&
           exam.status !== "Draft" &&
           exam.status !== "Pending Approval" && (
             <button
               className="bg-blue-800 hover:bg-blue-700 font-medium text-white rounded-lg py-4 px-8 my-10"
               onClick={() => {
-                router.push("/faculty/mark_exam/" + exam.paper_id);
+                router.push(
+                  `/faculty/mark_exam/${exam.paper_id}?selectedCourse=${selectedCourse}`
+                );
               }}
             >
               Evaluate

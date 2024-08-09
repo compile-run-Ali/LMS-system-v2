@@ -10,6 +10,8 @@ const MarkingDashboard = ({ students_data, exam_id, exam, isPrinter }) => {
         exam_id={exam_id}
         exam={exam}
         isPrinter={isPrinter}
+        selectedCourse={selectedCourse}
+
       />
     </div>
   );
