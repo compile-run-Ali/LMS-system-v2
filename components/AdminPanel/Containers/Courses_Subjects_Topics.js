@@ -80,6 +80,7 @@ export default function Courses_Subjects_Topics(){
     
     useEffect(() => {
         getSubjectList()
+        console.log("selectedCourse in useEffect: ", selectedCourse)
     }, [selectedCourse])
 
     useEffect(() => {
