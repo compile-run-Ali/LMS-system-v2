@@ -70,7 +70,9 @@ export default function Form({
           setFreeflow(res.data.freeflow);
           setFreeFlowGlobal(res.data.freeflow);
           setReview(res.data.review);
-          
+          if(router.query.admin) {
+            setSelectedCourses([res.data.course_code]);
+          }
           
           // ?????????
           // et courses
@@ -309,7 +311,7 @@ export default function Form({
         });
       });
   };
-
+  console.log(router.query.course_code);
   useEffect(() => {
     // When the component mounts or when router.query.course_code changes,
     // add it to the selectedCourses array if it's not already there
@@ -324,6 +326,7 @@ export default function Form({
       ]);
     }
   }, [router.query.course_code]);
+  
   const handleSelectedCourses = (e) => {
     const selectedOptions = Array.from(e.target.selectedOptions).map(
       (option) => option.value

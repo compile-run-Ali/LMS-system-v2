@@ -39,6 +39,7 @@ const ExamTable = ({
       query: {
         paper_id: exam.paper_id,
         is_edit: true,
+        admin: true,
       },
     });
   };
