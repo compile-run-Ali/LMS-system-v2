@@ -264,13 +264,20 @@ const SubjectiveExam = ({
       const selectedCourses = Array.from(event.target.selectedOptions).map(
         (option) => option.value
       );
-      setSelectedCourse(selectedCourses);
+      setSelectedCourse(selectedCourses)
+      if(btn_call === "Create Question"){  
+        setSelectedSubject(subjects[0])
+        setSelectedTopic("")
+      }
     } else if (event.target.id === "subject") {
       // setSelectedSubject(event.target.value)
       const selectedSubjects = Array.from(event.target.selectedOptions).map(
         (option) => option.value
       );
       setSelectedSubject(selectedSubjects);
+      if(btn_call === "Create Question"){
+        setSelectedTopic(topics[0])
+      }
     } else if (event.target.id === "topic") {
       // setSelectedTopic(event.target.value)
       const selectedTopics = Array.from(event.target.selectedOptions).map(
@@ -717,6 +724,11 @@ const SubjectiveExam = ({
       return;
     }
 
+    if(currentQuestion.marks <= 0){
+      alert("Marks should be greater than zero");
+      return
+    }
+
     setLoading({
       message: "Adding Question",
     });
@@ -929,7 +941,8 @@ const SubjectiveExam = ({
   };
 
   const handleEditMCQ = (question) => () => {
-    console.log(editing, "is editing");
+    console.log(editing, "is editing")
+    console.log("question in handleEdit: ", question);
     window.scrollTo(0, 0);
     if (!editing && !adding) {
       setEditing(true);
@@ -960,8 +973,8 @@ const SubjectiveExam = ({
       return;
     }
 
-    if (question.marks === 0) {
-      alert("Marks can't be zero");
+    if (question.marks <= 0) {
+      alert("Marks should be greater than zero");
       return;
     }
 
@@ -1052,6 +1065,7 @@ const SubjectiveExam = ({
       const res = await axios.post("/api/faculty/edit_subjective", {
         sq_id: question.sq_id,
         question: currentQuestion.question,
+        difficulty: currentQuestion.difficulty,
         parent_sq_id: currentQuestion.parent_sq_id,
         questionnumber: currentQuestion.questionnumber,
         authority: currentQuestion.authority,
@@ -1609,7 +1623,7 @@ const SubjectiveExam = ({
                 className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
                 id="difficulty"
                 onChange={handleSelect}
-                value={selectedDifficulty}
+                value={(editing && btn_call === "Generate Random Paper") ? currentQuestion.difficulty : selectedDifficulty}
               >
                 {difficultys.map((option, index) => (
                   <option
@@ -1782,7 +1796,7 @@ const SubjectiveExam = ({
                   <th className="px-4 py-2">Select</th>
                 )}
                 <th className="px-4 py-2">Delete</th>
-                <th className="px-4 py-2">Replace</th>
+                {btn_call === "Generate Random Paper" && <th className="px-4 py-2">Replace</th>}
               </tr>
             </thead>
             <tbody>
@@ -1858,6 +1872,7 @@ const SubjectiveExam = ({
                           <MdDelete />
                         </button>
                       </td>
+                      {btn_call === "Generate Random Paper" && 
                       <td className="px-4 py-2">
                         <button
                           className="text-sm bg-blue-800 text-white px-3 py-2 rounded"
@@ -1867,7 +1882,7 @@ const SubjectiveExam = ({
                         >
                           Replace
                         </button>
-                      </td>
+                      </td>}
                     </tr>
                     {subjective.child_question
                       ?.sort((a, b) => a.questionnumber - b.questionnumber)
