@@ -64,7 +64,7 @@ export default function Replace_Modal({mcqs, setMCQs, prevMCQsID, setPrevMCQsID,
         let mcqs_array = [...mcqs]
         let index = mcqs_array.indexOf(question)
         console.log("index of replace question: ", index)
-        let temp_question = addQuestion(null, new_question)
+        let temp_question = addQuestion(question.questionnumber-1, new_question)
         mcqs_array[index] = await temp_question
         setMCQs(mcqs_array)
         
