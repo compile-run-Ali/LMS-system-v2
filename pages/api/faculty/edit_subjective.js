@@ -13,6 +13,7 @@ const handler = async (req, res) => {
     long_question,
     parent_sq_id,
     questionnumber,
+    difficulty,
     authority
   } = req.body;
 
@@ -49,6 +50,7 @@ const handler = async (req, res) => {
             question: question,
             answer: answer,
             authority: authority,
+            difficulty: difficulty,
             marks: marks,
             long_question: long_question,
             questionnumber: questionnumber,
