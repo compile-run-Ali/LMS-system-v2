@@ -10,6 +10,8 @@ export default function Edit_Sub_Form({currentQuestion, setCurrentQuestion, inde
     const [multipleOptions, setMultipleOptions] = useState(false);
     const [loading, setLoading] = useState({});
     const btn_call = "Create Question"
+    const [difficultys, setDifficultys] = useState(["", "Easy", "Medium", "Hard"])
+    const [selectedDifficulty, setSelectedDifficulty] = useState(currentQuestion.difficulty)
 
     const handleQuestionChange = (e) => {
         setCurrentQuestion({ ...currentQuestion, question: e.target.value });
@@ -33,7 +35,12 @@ export default function Edit_Sub_Form({currentQuestion, setCurrentQuestion, inde
           alert("Please fill all the fields");
           return;
         }
-    
+
+        if(question.marks <= 0){
+            alert("Marks should be greater than zero");
+            return;
+        }
+
         setLoading({
           message: "Updating Question",
         })
@@ -93,6 +100,15 @@ export default function Edit_Sub_Form({currentQuestion, setCurrentQuestion, inde
     function handleNewQustionInputChange(event){
         const {id, value} = event.target
         setCurrentQuestion({...currentQuestion, [id]: value})
+    }
+
+    function handleSelect(event) {
+        console.log("event in handleSelect: ", event.target.value);
+        if (event.target.id === "difficulty") {
+            // setSelectedDifficulty(event.target.value);
+            let temp_mcq = {...currentQuestion, ["difficulty"]: event.target.value}
+            setCurrentQuestion(temp_mcq)
+        }
     }
     
 
@@ -180,6 +196,26 @@ export default function Edit_Sub_Form({currentQuestion, setCurrentQuestion, inde
                     })
                 }
                 />
+
+            <div className="flex flex-col w-full mt-6">
+              <label className="block mb-2">Difficulty Level</label>
+              <select
+                className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+                id="difficulty"
+                onChange={handleSelect}
+                value={currentQuestion.difficulty}
+              >
+                {difficultys.map((option, index) => (
+                  <option
+                    key={index}
+                    disabled={option === "" ? true : false}
+                    value={option}
+                  >
+                    {option === "" ? "Select option" : option}
+                  </option>
+                ))}
+              </select>
+            </div>
 
                 <div className="flex flex-col w-full mt-6">
                 <label htmlFor="authority">Authority</label>
