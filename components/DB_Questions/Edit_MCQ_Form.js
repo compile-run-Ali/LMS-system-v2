@@ -12,6 +12,8 @@ export default function Edit_MCQ_Form({currentMCQ, setCurrentMCQ, index, setInde
     const [loading, setLoading] = useState({});
     const specialSequence="###"
     const btn_call = "Create Question"
+    const [difficultys, setDifficultys] = useState(["", "Easy", "Medium", "Hard"])
+    const [selectedDifficulty, setSelectedDifficulty] = useState(currentMCQ.difficulty)
 
     function handleQuestionChange(event){
         setCurrentMCQ({...currentMCQ, question: event.target.value})
@@ -91,6 +93,11 @@ export default function Edit_MCQ_Form({currentMCQ, setCurrentMCQ, index, setInde
         //   (!freeFlow && !currentMCQ.timeAllowed)
         ) {
           alert("Please fill all the fields");
+          return;
+        }
+
+        if(currentMCQ.marks <= 0){
+          alert("Marks should be greater than zero");
           return;
         }
     
@@ -174,6 +181,15 @@ export default function Edit_MCQ_Form({currentMCQ, setCurrentMCQ, index, setInde
           });
         }
     };
+
+    function handleSelect(event) {
+      console.log("event in handleSelect: ", event.target.value);
+      if (event.target.id === "difficulty") {
+        // setSelectedDifficulty(event.target.value);
+        let temp_mcq = {...currentMCQ, ["difficulty"]: event.target.value}
+        setCurrentMCQ(temp_mcq)
+      }
+    }
 
     return(
         <div className="w-full p-10 bg-slate-100 mt-6 rounded-2xl font-poppins">
@@ -307,6 +323,26 @@ export default function Edit_MCQ_Form({currentMCQ, setCurrentMCQ, index, setInde
                 onChange={handleTimeAllowedChange}
               />
             )} */}
+
+            <div className="flex flex-col w-full mt-6">
+              <label className="block mb-2">Difficulty Level</label>
+              <select
+                className="bg-white focus:outline-none focus:border-[#FEC703] border rounded-md px-3 py-2 w-full"
+                id="difficulty"
+                onChange={handleSelect}
+                value={currentMCQ.difficulty}
+              >
+                {difficultys.map((option, index) => (
+                  <option
+                    key={index}
+                    disabled={option === "" ? true : false}
+                    value={option}
+                  >
+                    {option === "" ? "Select option" : option}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <div className="flex flex-col w-full mt-6">
               <label htmlFor="authority">Authority</label>
